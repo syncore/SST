@@ -8,7 +8,7 @@ namespace SSB
         private readonly SynServerBot _ssb;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Gui"/> class.
+        ///     Initializes a new instance of the <see cref="Gui" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
         public Gui(SynServerBot ssb)
@@ -59,7 +59,7 @@ namespace SSB
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void getPlayersButton_Click(object sender, EventArgs e)
         {
-            _ssb.QlCommands.QlCmdPlayers(true);
+            _ssb.QlCommands.QlCmdPlayers();
         }
 
         /// <summary>

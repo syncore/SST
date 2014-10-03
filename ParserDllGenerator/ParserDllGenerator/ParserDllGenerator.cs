@@ -2,17 +2,20 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace SSB
+namespace ParserDllGenerator
 {
-    /// <summary>
-    ///     This class generates an assembly containing the compiled regular expressions that the application will use.
-    /// </summary>
-    public class CompileRegex
+    public class ParserDllGenerator
     {
         /// <summary>
-        /// Generates the regex assembly (.dll).
+        ///     Defines the entry point of the application.
         /// </summary>
-        public void GenerateAssembly()
+        /// <remarks>
+        ///     When this runs, it generates an assembly (.dll) containing the regexes that SSB will use.
+        ///     The SSB Visual Studio solution is currently set to silently execute this Main method to generate the .dll
+        ///     Every time the ParserDllGenerator solution successfully builds (before SSB itself builds) to keep the
+        ///     referenced assembly up to date.
+        /// </remarks>
+        public static void Main()
         {
             RegexCompilationInfo expr;
             var compilationList = new List<RegexCompilationInfo>();
@@ -37,6 +40,7 @@ namespace SSB
             compilationList.Add(expr);
 
             // command: players - Find name and player id after issuing 'players' command
+            // This requires the multiline (RegexOptions.Multiline) option
             /*
             ]\players
              0   [CLAN] Klesk
@@ -49,8 +53,9 @@ namespace SSB
              7   Mynx
              8 * syncore
              */
-            expr = new RegexCompilationInfo(@"((\d+\s\D\W+\w..+))",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "plPlayerNameAndId", "Utils.Parser",
+            expr = new RegexCompilationInfo(@"(^\s+\d+\s\D\W+\w..+)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant,
+                "plPlayerNameAndId", "Utils.Parser",
                 true);
             compilationList.Add(expr);
 
@@ -71,6 +76,11 @@ namespace SSB
             expr = new RegexCompilationInfo(@"\w+\s+(was kicked)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerKicked", "Utils.Parser",
                 true);
+            compilationList.Add(expr);
+
+            // event: map loaded
+            expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "Utils.Parser", true);
             compilationList.Add(expr);
 
             // Specific cvar values:

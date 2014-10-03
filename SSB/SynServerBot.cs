@@ -25,13 +25,14 @@ namespace SSB
             Parser = new Parser();
             QlWindowUtils = new QlWindowUtils();
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
+            ServerEventProcessor = new ServerEventProcessor(this);
 
             // Start reading the console
             StartConsoleReadThread();
 
             // First and foremost, clear the console and get the player listing (TODO: maybe have a method of general Init events)
             QlCommands.ClearQlWinConsole();
-            QlCommands.QlCmdPlayers(true);
+            QlCommands.QlCmdPlayers();
         }
 
         /// <summary>
@@ -89,6 +90,14 @@ namespace SSB
         /// The QL window utils.
         /// </value>
         public QlWindowUtils QlWindowUtils { get; private set; }
+
+        /// <summary>
+        /// Gets the server event processor.
+        /// </summary>
+        /// <value>
+        /// The server event processor.
+        /// </value>
+        public ServerEventProcessor ServerEventProcessor { get; private set; }
 
         /// <summary>
         /// Starts the console read thread.

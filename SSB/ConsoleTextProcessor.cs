@@ -24,8 +24,6 @@ namespace SSB
             _playerEventProcessor = new PlayerEventProcessor(_ssb);
         }
 
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
-
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -61,56 +59,6 @@ namespace SSB
         }
 
         /// <summary>
-        ///     Detects various events (such as connections, disconnections, chat messages, etc.)
-        /// </summary>
-        /// <param name="text">The text.</param>
-        public void DetectEvent(string text)
-        {
-            if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
-            {
-                Match m = _ssb.Parser.EvPlayerConnected.Match(text);
-                string incomingPlayer = m.Value.Replace(" connected", "");
-                _ssb.QlCommands.QlCmdPlayers(true);
-                _playerEventProcessor.HandlePlayerConnection(incomingPlayer);
-                return;
-            }
-            if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text))
-            {
-                Match m = _ssb.Parser.EvPlayerDisconnected.Match(text);
-                string outgoingPlayer = m.Value.Replace(" disconnected", "");
-                Debug.WriteLine("Detected outgoing disconnection for " + outgoingPlayer);
-                _ssb.QlCommands.QlCmdPlayers(true);
-                return;
-            }
-            if (_ssb.Parser.EvPlayerKicked.IsMatch(text))
-            {
-                Match m = _ssb.Parser.EvPlayerKicked.Match(text);
-                string outgoingPlayer = m.Value.Replace(" was kicked", "");
-                Debug.WriteLine("Detected outgoing disconnection [kick] for " + outgoingPlayer);
-                _ssb.QlCommands.RemovePlayer(outgoingPlayer);
-                _ssb.QlCommands.QlCmdPlayers(true);
-                return;
-            }
-
-            // Chat message
-            if (!_ssb.CurrentPlayers.Keys.Any(p => text.StartsWith(p + ":"))) return;
-            string msgContent = Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1));
-            string msgFrom = text.Substring(0, text.IndexOf(": ", StringComparison.Ordinal));
-            Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
-
-            // Commands
-            if (msgContent.Equals("!hello", StringComparison.InvariantCultureIgnoreCase))
-            {
-                _ssb.QlCommands.SendToQl("say ^3Hi there^6!", false);
-            }
-            if (msgContent.Equals("!idtest", StringComparison.InvariantCultureIgnoreCase))
-            {
-                _ssb.QlCommands.SendToQl("say qlpt's id is: ^1" + _ssb.QlCommands.RetrievePlayerId("qlpt"),
-                    false);
-            }
-        }
-
-        /// <summary>
         ///     Processes all of the text currently in the QL console.
         /// </summary>
         /// <param name="text">All of the text in the QL console.</param>
@@ -126,48 +74,13 @@ namespace SSB
             }
 
             _oldWholeConsoleLineLength = length;
-
-            var cmd = QlCommandType.Ignored;
-            if (_ssb.Parser.CsPlayerAndTeam.IsMatch(text))
-            {
-                cmd = QlCommandType.ConfigStrings;
-                foreach (Match m in _ssb.Parser.CsPlayerAndTeam.Matches(text))
-                {
-                    text = m.Value;
-                    ProcessCommand(cmd, text);
-                }
-            }
-            else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
-            {
-                cmd = QlCommandType.Players;
-                foreach (Match m in _ssb.Parser.PlPlayerNameAndId.Matches(text))
-                {
-                    text = Strip(m.Value);
-                    ProcessCommand(cmd, text);
-                }
-            }
-            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
-            {
-                cmd = QlCommandType.ServerInfo;
-                Match m = _ssb.Parser.CvarServerPublicId.Match(text);
-                text = m.Value;
-                ProcessCommand(cmd, text);
-            }
+            // Handle larger, crucial events.
+            DetectMultiLineEvent(text);
 
             // Append to our pretty UI or not
             if (_ssb.GuiOptions.IsAppendToSsbGuiConsole)
             {
-                // Can't update UI control from different thread
-                if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
-                {
-                    var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                    _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
-                    return;
-                }
-                //TODO: handle \r\n in text ( http://stackoverflow.com/questions/7013034/does-windows-carriage-return-r-n-consist-of-two-characters-or-one-character )
-                // If appending to textbox, must clear first
-                _ssb.GuiControls.ConsoleTextBox.Clear();
-                _ssb.GuiControls.ConsoleTextBox.AppendText(text);
+                AppendConsoleTextToGui(text, length);
             }
         }
 
@@ -196,7 +109,123 @@ namespace SSB
                 return;
             }
 
-            DetectEvent(msg);
+            DetectSingleLineEvent(msg);
+        }
+
+        /// <summary>
+        ///     Appends the console text to GUI.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="length">The length of the text.</param>
+        private void AppendConsoleTextToGui(string text, int length)
+        {
+            // Can't update UI control from different thread
+            if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
+            {
+                var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
+                return;
+            }
+            // If appending to textbox, must clear first
+            _ssb.GuiControls.ConsoleTextBox.Clear();
+            _ssb.GuiControls.ConsoleTextBox.AppendText(text);
+        }
+
+        /// <summary>
+        ///     Detects important QL events that occur over multiple lines of the console.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <remarks>
+        ///     This method generally detects events contained within
+        ///     large blocks of text related to crucial server information
+        ///     such as player names & ids, server id, and map changes, whereas <see cref="DetectSingleLineEvent" />
+        ///     detects important one-line events.
+        /// </remarks>
+        private void DetectMultiLineEvent(string text)
+        {
+            // 'configstrings' command has been detected; get the players and team #s from it.
+            if (_ssb.Parser.CsPlayerAndTeam.IsMatch(text))
+            {
+                var cmd = QlCommandType.ConfigStrings;
+                foreach (Match m in _ssb.Parser.CsPlayerAndTeam.Matches(text))
+                {
+                    text = m.Value;
+                    ProcessCommand(cmd, text);
+                }
+            }
+                // 'players' command has been detected; extract the player names and ids from it.
+            else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
+            {
+                var cmd = QlCommandType.Players;
+                foreach (Match m in _ssb.Parser.PlPlayerNameAndId.Matches(text))
+                {
+                    text = Strip(m.Value);
+                    ProcessCommand(cmd, text);
+                }
+            }
+                // 'serverinfo' command has been detected; extract the server id from it.
+            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
+            {
+                var cmd = QlCommandType.ServerInfo;
+                Match m = _ssb.Parser.CvarServerPublicId.Match(text);
+                text = m.Value;
+                ProcessCommand(cmd, text);
+            }
+                // map load or map change detected; handle it.
+            else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
+            {
+                var cmd = QlCommandType.InitInfo;
+                Match m = _ssb.Parser.EvMapLoaded.Match(text);
+                text = m.Value;
+                ProcessCommand(cmd, text);
+            }
+        }
+
+        /// <summary>
+        ///     Detects various events (such as connections, disconnections, chat messages, etc.)
+        ///     that occur as single lines of text within the console.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <remarks>
+        ///     This method basically handles one-liners whereas <see cref="DetectMultiLineEvent" />
+        ///     handles the events that occur within larger blocks of text.
+        /// </remarks>
+        private void DetectSingleLineEvent(string text)
+        {
+            // 'player connected' detected
+            if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
+            {
+                Match m = _ssb.Parser.EvPlayerConnected.Match(text);
+                string incomingPlayer = m.Value.Replace(" connected", "");
+                _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
+                return;
+            }
+            // 'player disconnected' detected or 'player was kicked' detected
+            if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text))
+            {
+                Match m;
+                string outgoingPlayer = string.Empty;
+                if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text))
+                {
+                    m = _ssb.Parser.EvPlayerDisconnected.Match(text);
+                    outgoingPlayer = m.Value.Replace(" disconnected", "");
+                }
+                else if (_ssb.Parser.EvPlayerKicked.IsMatch(text))
+                {
+                    m = _ssb.Parser.EvPlayerKicked.Match(text);
+                    outgoingPlayer = m.Value.Replace(" was kicked", "");
+                }
+                _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+                return;
+            }
+            // Chat message detected
+            // First make sure player is detected in our internal list, if not then do nothing.
+            if (_ssb.CurrentPlayers.Keys.Any(p => text.StartsWith(p + ":")))
+            {
+                _playerEventProcessor.HandlePlayerChatMessage(text);
+            }
+
+            // TODO: other one-liners such as votes
         }
 
         /// <summary>
@@ -209,20 +238,23 @@ namespace SSB
             switch (cmdType)
             {
                 case QlCommandType.ConfigStrings:
-                    _ssb.QlCommands.GetPlayersAndTeamsFromCfgString(text);
-                    _ssb.QlCommands.ClearBothQlConsoles();
+                    _ssb.ServerEventProcessor.GetPlayersAndTeamsFromCfgString(text);
                     break;
 
                 case QlCommandType.Players:
-                    _ssb.QlCommands.GetPlayersAndIdsFromPlayersCmd(text);
-                    _ssb.QlCommands.ClearBothQlConsoles();
+                    _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text);
                     break;
 
                 case QlCommandType.ServerInfo:
-                    _ssb.QlCommands.GetServerId(text);
-                    _ssb.QlCommands.ClearBothQlConsoles();
+                    _ssb.ServerEventProcessor.GetServerId(text);
+                    break;
+
+                case QlCommandType.InitInfo:
+                    _ssb.ServerEventProcessor.HandleMapLoad(text);
                     break;
             }
         }
+
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
 }

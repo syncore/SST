@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B348BB59-E933-41AD-8ADF-E0DBFA3B8F07}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{9B9E7279-2036-4C51-8C1D-BEA1B329E629}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SSB</RootNamespace>
-    <AssemblyName>SSB</AssemblyName>
+    <RootNamespace>ParserDllGenerator</RootNamespace>
+    <AssemblyName>ParserDllGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,69 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Parser">
-      <HintPath>..\ParserDllGenerator\ParserDllGenerator\bin\Release\Parser.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QlCommandType.cs" />
-    <Compile Include="ConsoleTextProcessor.cs" />
-    <Compile Include="Gui.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Gui.Designer.cs">
-      <DependentUpon>Gui.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GuiControls.cs" />
-    <Compile Include="GuiOptions.cs" />
-    <Compile Include="IQlCommands.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="PlayerEventProcessor.cs" />
-    <Compile Include="PlayerInfo.cs" />
-    <Compile Include="EntryPoint.cs" />
+    <Compile Include="ParserDllGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QlCommands.cs" />
-    <Compile Include="QLWindowUtils.cs" />
-    <Compile Include="ServerEventProcessor.cs" />
-    <Compile Include="SynServerBot.cs" />
-    <Compile Include="Team.cs" />
-    <Compile Include="Win32Api.cs" />
-    <EmbeddedResource Include="GUI.resx">
-      <DependentUpon>Gui.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(TargetPath)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
