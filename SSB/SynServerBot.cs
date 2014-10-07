@@ -7,14 +7,14 @@ using System.Threading;
 namespace SSB
 {
     /// <summary>
-    /// The main class for SSB.
+    ///     The main class for SSB.
     /// </summary>
     public class SynServerBot
     {
         private volatile bool _isReadingConsole;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SynServerBot"/> main class.
+        ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
         /// </summary>
         public SynServerBot()
         {
@@ -26,6 +26,7 @@ namespace SSB
             QlWindowUtils = new QlWindowUtils();
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
             ServerEventProcessor = new ServerEventProcessor(this);
+            BotCommands = new BotCommands(this);
 
             // Start reading the console
             StartConsoleReadThread();
@@ -36,78 +37,86 @@ namespace SSB
         }
 
         /// <summary>
-        /// Gets the console text processor.
+        ///     Gets the bot commands.
         /// </summary>
         /// <value>
-        /// The console text processor.
+        ///     The bot commands.
+        /// </value>
+        public BotCommands BotCommands { get; private set; }
+
+        /// <summary>
+        ///     Gets the console text processor.
+        /// </summary>
+        /// <value>
+        ///     The console text processor.
         /// </value>
         public ConsoleTextProcessor ConsoleTextProcessor { get; private set; }
 
         /// <summary>
-        /// Gets the current players.
+        ///     Gets the current players.
         /// </summary>
         /// <value>
-        /// The current players.
+        ///     The current players.
         /// </value>
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
-        /// Gets the GUI controls.
+        ///     Gets the GUI controls.
         /// </summary>
         /// <value>
-        /// The GUI controls.
+        ///     The GUI controls.
         /// </value>
         public GuiControls GuiControls { get; private set; }
 
         /// <summary>
-        /// Gets the GUI options.
+        ///     Gets the GUI options.
         /// </summary>
         /// <value>
-        /// The GUI options.
+        ///     The GUI options.
         /// </value>
         public GuiOptions GuiOptions { get; private set; }
 
         /// <summary>
-        /// Gets the Parser.
+        ///     Gets the Parser.
         /// </summary>
         /// <value>
-        /// The text parser.
+        ///     The text parser.
         /// </value>
         public Parser Parser { get; private set; }
 
         /// <summary>
-        /// Gets the QlCommands.
+        ///     Gets the QlCommands.
         /// </summary>
         /// <value>
-        /// The QlCommands.
+        ///     The QlCommands.
         /// </value>
         public QlCommands QlCommands { get; private set; }
 
         /// <summary>
-        /// Gets the QlWindowUtils
+        ///     Gets the QlWindowUtils
         /// </summary>
         /// <value>
-        /// The QL window utils.
+        ///     The QL window utils.
         /// </value>
         public QlWindowUtils QlWindowUtils { get; private set; }
 
         /// <summary>
-        /// Gets the server event processor.
+        ///     Gets the server event processor.
         /// </summary>
         /// <value>
-        /// The server event processor.
+        ///     The server event processor.
         /// </value>
         public ServerEventProcessor ServerEventProcessor { get; private set; }
 
         /// <summary>
-        /// Starts the console read thread.
+        ///     Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
         {
             if (_isReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             _isReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
         }
 
@@ -118,7 +127,7 @@ namespace SSB
         }
 
         /// <summary>
-        /// Reads the QL console window.
+        ///     Reads the QL console window.
         /// </summary>
         private void ReadQlConsole()
         {
@@ -131,7 +140,8 @@ namespace SSB
                 {
                     int textLength = Win32Api.SendMessage(cText, Win32Api.WM_GETTEXTLENGTH, IntPtr.Zero,
                         IntPtr.Zero);
-                    if ((textLength == 0) || (ConsoleTextProcessor.OldWholeConsoleLineLength == textLength)) continue;
+                    if ((textLength == 0) || (ConsoleTextProcessor.OldWholeConsoleLineLength == textLength))
+                        continue;
 
                     // Entire console window text
                     var test = new StringBuilder(textLength + 1);

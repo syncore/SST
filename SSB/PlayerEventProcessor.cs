@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SSB
 {
@@ -59,15 +60,20 @@ namespace SSB
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
 
             // Commands
-            if (msgContent.Equals("!hello", StringComparison.InvariantCultureIgnoreCase))
+            if (_ssb.BotCommands.AllBotCommands.Any(msgContent.StartsWith))
             {
-                _ssb.QlCommands.SendToQl("say ^3Hi there^6!", false);
+                _ssb.BotCommands.ProcessBotCommand(msgContent);
             }
-            if (msgContent.Equals("!idtest", StringComparison.InvariantCultureIgnoreCase))
-            {
-                _ssb.QlCommands.SendToQl("say qlpt's id is: ^1" + RetrievePlayerId("qlpt"),
-                    false);
-            }
+            
+            //if (msgContent.Equals("!hello", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    _ssb.QlCommands.SendToQl("say ^3Hi there^6!", false);
+            //}
+            //if (msgContent.Equals("!idtest", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    _ssb.QlCommands.SendToQl("say qlpt's id is: ^1" + RetrievePlayerId("qlpt"),
+            //        false);
+            //}
         }
 
         /// <summary>
