@@ -24,6 +24,8 @@ namespace SSB
             _playerEventProcessor = new PlayerEventProcessor(_ssb);
         }
 
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
+
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -123,7 +125,7 @@ namespace SSB
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
                 return;
             }
             // If appending to textbox, must clear first
@@ -153,7 +155,7 @@ namespace SSB
                     ProcessCommand(cmd, text);
                 }
             }
-                // 'players' command has been detected; extract the player names and ids from it.
+            // 'players' command has been detected; extract the player names and ids from it.
             else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
             {
                 var cmd = QlCommandType.Players;
@@ -163,7 +165,7 @@ namespace SSB
                     ProcessCommand(cmd, text);
                 }
             }
-                // 'serverinfo' command has been detected; extract the server id from it.
+            // 'serverinfo' command has been detected; extract the server id from it.
             else if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfo;
@@ -171,7 +173,7 @@ namespace SSB
                 text = m.Value;
                 ProcessCommand(cmd, text);
             }
-                // map load or map change detected; handle it.
+            // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
@@ -254,7 +256,5 @@ namespace SSB
                     break;
             }
         }
-
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
 }

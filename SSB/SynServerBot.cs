@@ -116,7 +116,7 @@ namespace SSB
             if (_isReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             _isReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 

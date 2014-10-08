@@ -7,20 +7,20 @@ using Newtonsoft.Json;
 namespace SSB
 {
     /// <summary>
-    /// Class responsible for handling SSB's configuration.
+    ///     Class responsible for handling SSB's configuration.
     /// </summary>
     public class ConfigHandler
     {
         /// <summary>
-        /// Core cfg item: Gets or sets SSB's initial admin users.
+        ///     Core cfg item: Gets or sets SSB's owner(s).
         /// </summary>
         /// <value>
-        /// SSB's initial admin users.
+        ///     SSB's owner(s).
         /// </value>
-        public List<string> InitialAdminUsers { get; set; }
+        public HashSet<string> Owners { get; set; }
 
         /// <summary>
-        /// Reads the configuration.
+        ///     Reads the configuration.
         /// </summary>
         public void ReadConfiguration()
         {
@@ -36,25 +36,26 @@ namespace SSB
                     var cfg = serializer.Deserialize<Configuration>(jsonTextReader);
 
                     // Core SSB options
-                    InitialAdminUsers = cfg.core.admins;
+                    Owners = cfg.core.owners;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error loading configuration " + ex);
+                Debug.WriteLine("Error loading configuration " + ex.Message);
                 RestoreDefaultConfiguration();
             }
         }
 
         /// <summary>
-        /// Restores the default configuration.
+        ///     Restores the default configuration.
         /// </summary>
         public void RestoreDefaultConfiguration()
         {
             // Load these fail-safe defaults and save as the new configuration
+            var owners = new HashSet<string> { "syncore" };
             var coreOptions = new CoreConfig
             {
-                admins = new List<string>()
+                owners = owners
             };
             var config = new Configuration
             {
@@ -70,7 +71,7 @@ namespace SSB
         }
 
         /// <summary>
-        /// Validates the configuration.
+        ///     Validates the configuration.
         /// </summary>
         public void ValidateConfiguration()
         {
@@ -78,13 +79,13 @@ namespace SSB
         }
 
         /// <summary>
-        /// Writes the configuration to the disk.
+        ///     Writes the configuration to the disk.
         /// </summary>
         public void WriteConfiguration()
         {
             var coreOptions = new CoreConfig
             {
-                admins = InitialAdminUsers
+                owners = Owners
             };
             var config = new Configuration
             {
@@ -96,7 +97,7 @@ namespace SSB
             {
                 writer.WriteLine(json);
                 Debug.WriteLine("> Wrote configuration to disk at: " + Filepaths.ConfigurationFilePath +
-                            " **");
+                                " **");
             }
         }
     }

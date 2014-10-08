@@ -59,6 +59,7 @@
     <Compile Include="ConfigHandler.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CoreConfig.cs" />
+    <Compile Include="DbResult.cs" />
     <Compile Include="Filepaths.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="QlCommandType.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="ServerEventProcessor.cs" />
     <Compile Include="SynServerBot.cs" />
     <Compile Include="Team.cs" />
+    <Compile Include="UserLevel.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Win32Api.cs" />
     <EmbeddedResource Include="GUI.resx">

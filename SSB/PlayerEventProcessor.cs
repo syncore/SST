@@ -55,25 +55,16 @@ namespace SSB
         public void HandlePlayerChatMessage(string text)
         {
             string msgContent =
-                ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1));
+                ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
+                    .ToLowerInvariant();
             string msgFrom = text.Substring(0, text.IndexOf(": ", StringComparison.Ordinal));
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
 
-            // Commands
+            // Check to see if chat message is a valid command
             if (_ssb.BotCommands.AllBotCommands.Any(msgContent.StartsWith))
             {
-                _ssb.BotCommands.ProcessBotCommand(msgContent);
+                _ssb.BotCommands.ProcessBotCommand(msgFrom, msgContent);
             }
-            
-            //if (msgContent.Equals("!hello", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    _ssb.QlCommands.SendToQl("say ^3Hi there^6!", false);
-            //}
-            //if (msgContent.Equals("!idtest", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    _ssb.QlCommands.SendToQl("say qlpt's id is: ^1" + RetrievePlayerId("qlpt"),
-            //        false);
-            //}
         }
 
         /// <summary>

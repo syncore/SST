@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SSB
@@ -17,6 +18,7 @@ namespace SSB
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
 
         private static readonly string _userDatabaseFilePath = Path.Combine(DataDirectory, UserDatabaseFile);
+
 
         /// <summary>
         /// Gets the configuration path.
@@ -38,6 +40,23 @@ namespace SSB
         public static string UserDatabaseFilePath
         {
             get { return _userDatabaseFilePath; }
+        }
+
+        /// <summary>
+        /// Creates the data directory.
+        /// </summary>
+        public static void CreateDataDirectory()
+        {
+            if (Directory.Exists(DataDirectory)) return;
+            try
+            {
+                Directory.CreateDirectory(DataDirectory);
+                Debug.WriteLine("Created data directory at: " + DataDirectory);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to create data directory: " + ex.Message);
+            }
         }
     }
 }

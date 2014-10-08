@@ -8,11 +8,11 @@ namespace SSB
     public class CoreConfig
     {
         /// <summary>
-        ///     Gets or sets the list of initial SSB administrators.
+        ///     Gets or sets the list SBB owner(s).
         /// </summary>
         /// <value>
-        ///     The list of initial SSB administrators.
+        ///     The list of SSB owner(s).
         /// </value>
-        public List<string> admins { get; set; }
+        public HashSet<string> owners { get; set; }
     }
 }

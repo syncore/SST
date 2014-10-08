@@ -43,7 +43,7 @@ namespace SSB
                 Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(c), IntPtr.Zero);
             }
 
-            // Simulate pressing of 'ENTER' key to send.
+            // Simulate the pressing of 'ENTER' key to send message.
             Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
 
             // Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
@@ -106,6 +106,15 @@ namespace SSB
         public void QlCmdPlayers()
         {
             SendToQl("players", true);
+        }
+
+        /// <summary>
+        ///     Sends the 'say' command to QL.
+        /// </summary>
+        /// <param name="text">The text to say.</param>
+        public void QlCmdSay(string text)
+        {
+            SendToQl(string.Format("say {0}", text), false);
         }
 
         /// <summary>

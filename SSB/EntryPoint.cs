@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Timers;
 using System.Windows.Forms;
+using Timer = System.Timers.Timer;
 
 namespace SSB
 {
     internal static class EntryPoint
     {
         private static bool _qlIsRunning;
-        private static System.Timers.Timer _qlProcessDetectionTimer;
+        private static Timer _qlProcessDetectionTimer;
 
         /// <summary>
         ///     The main entry point for the application.
@@ -17,6 +18,9 @@ namespace SSB
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Create necessary directories
+            Filepaths.CreateDataDirectory();
             // Main class
             var ssb = new SynServerBot();
 
@@ -24,7 +28,7 @@ namespace SSB
             if (qlw.QuakeLiveConsoleWindowExists())
             {
                 _qlIsRunning = false;
-                _qlProcessDetectionTimer = new System.Timers.Timer(5500);
+                _qlProcessDetectionTimer = new Timer(5500);
                 _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
                 _qlProcessDetectionTimer.Enabled = true;
                 Application.Run(new Gui(ssb));
@@ -38,10 +42,10 @@ namespace SSB
         }
 
         /// <summary>
-        /// Method that runs when the QL Process Detection Timer has elapsed.
+        ///     Method that runs when the QL Process Detection Timer has elapsed.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
         private static void QlProcessDetectionTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             bool active = QlWindowUtils.QlWindowHandle != IntPtr.Zero;
