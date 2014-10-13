@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Enum
 {
     public enum Team
     {

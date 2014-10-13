@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SSB
+namespace SSB.Config
 {
     /// <summary>
     ///     Model class representing the core configuration options of SSB.

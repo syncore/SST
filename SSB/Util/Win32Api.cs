@@ -1,13 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SSB
+namespace SSB.Util
 {
+    /// <summary>
+    /// Class that handles various functions from the Windows API
+    /// </summary>
     internal static class Win32Api
     {
+        public const int BN_CLICKED = 245;
+
+        public const int VK_RETURN = 0x0D;
+
+        public const int WM_CHAR = 0x0102;
+
+        public const int WM_GETTEXT = 0xD;
+
+        public const int WM_GETTEXTLENGTH = 0x000E;
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -21,12 +32,5 @@ namespace SSB
         // length
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        public const int BN_CLICKED = 245;
-        public const int VK_RETURN = 0x0D;
-        public const int WM_CHAR = 0x0102;
-        public const int WM_GETTEXT = 0xD;
-        public const int WM_GETTEXTLENGTH = 0x000E;
     }
-
 }

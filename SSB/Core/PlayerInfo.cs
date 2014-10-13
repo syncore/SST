@@ -1,4 +1,6 @@
-﻿namespace SSB
+﻿using SSB.Enum;
+
+namespace SSB.Core
 {
     /// <summary>
     /// Class that represents an individual player.

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using SSB.Ui;
+using SSB.Util;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     The main class for SSB.

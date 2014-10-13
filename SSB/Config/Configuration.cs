@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Config
 {
     /// <summary>
     ///     Model class representing the SSB configuration file.

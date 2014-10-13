@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Ui
 {
     partial class Gui
     {

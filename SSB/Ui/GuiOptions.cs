@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Ui
 {
     /// <summary>
     ///     Class responsible for the GUI options.

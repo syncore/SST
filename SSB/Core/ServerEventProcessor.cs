@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using SSB.Enum;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class responsible for handling various server events.

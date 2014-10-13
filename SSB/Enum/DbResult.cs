@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Enum
 {
     /// <summary>
     ///     An enumeration that specifies the different types of database results.

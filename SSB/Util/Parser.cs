@@ -1,8 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using SSB.Utils.Parser;
-using Utils.Parser;
+using SSB.External.Parser;
 
-namespace SSB
+namespace SSB.Util
 {
     /// <summary>
     ///     Class responsible for parsing text with regexes

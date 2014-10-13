@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace SSB
+namespace SSB.Util
 {
     /// <summary>
     ///     Class for various filepaths.

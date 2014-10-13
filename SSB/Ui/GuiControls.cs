@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace SSB
+namespace SSB.Ui
 {
     /// <summary>
     ///     Class that holds references to some of the selected GUI controls in GUI.cs, allowing us to access them from other

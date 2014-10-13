@@ -55,38 +55,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotCommands.cs" />
-    <Compile Include="ConfigHandler.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="CoreConfig.cs" />
-    <Compile Include="DbResult.cs" />
-    <Compile Include="Filepaths.cs" />
-    <Compile Include="IConfiguration.cs" />
-    <Compile Include="QlCommandType.cs" />
-    <Compile Include="ConsoleTextProcessor.cs" />
-    <Compile Include="Gui.cs">
+    <Compile Include="Core\BotCommands.cs" />
+    <Compile Include="Config\ConfigHandler.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\CoreConfig.cs" />
+    <Compile Include="Enum\DbResult.cs" />
+    <Compile Include="Util\Filepaths.cs" />
+    <Compile Include="Interfaces\IConfiguration.cs" />
+    <Compile Include="Enum\QlCommandType.cs" />
+    <Compile Include="Core\ConsoleTextProcessor.cs" />
+    <Compile Include="Ui\Gui.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gui.Designer.cs">
+    <Compile Include="Ui\Gui.Designer.cs">
       <DependentUpon>Gui.cs</DependentUpon>
     </Compile>
-    <Compile Include="GuiControls.cs" />
-    <Compile Include="GuiOptions.cs" />
-    <Compile Include="IQlCommands.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="PlayerEventProcessor.cs" />
-    <Compile Include="PlayerInfo.cs" />
+    <Compile Include="Ui\GuiControls.cs" />
+    <Compile Include="Ui\GuiOptions.cs" />
+    <Compile Include="Interfaces\IQlCommands.cs" />
+    <Compile Include="Util\Parser.cs" />
+    <Compile Include="Core\PlayerEventProcessor.cs" />
+    <Compile Include="Core\PlayerInfo.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QlCommands.cs" />
-    <Compile Include="QLWindowUtils.cs" />
-    <Compile Include="ServerEventProcessor.cs" />
-    <Compile Include="SynServerBot.cs" />
-    <Compile Include="Team.cs" />
-    <Compile Include="UserLevel.cs" />
-    <Compile Include="Users.cs" />
-    <Compile Include="Win32Api.cs" />
-    <EmbeddedResource Include="GUI.resx">
+    <Compile Include="Core\QlCommands.cs" />
+    <Compile Include="Util\QLWindowUtils.cs" />
+    <Compile Include="Core\ServerEventProcessor.cs" />
+    <Compile Include="Core\SynServerBot.cs" />
+    <Compile Include="Enum\Team.cs" />
+    <Compile Include="Enum\UserLevel.cs" />
+    <Compile Include="Core\Users.cs" />
+    <Compile Include="Util\Win32Api.cs" />
+    <EmbeddedResource Include="Ui\GUI.resx">
       <DependentUpon>Gui.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -120,7 +120,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

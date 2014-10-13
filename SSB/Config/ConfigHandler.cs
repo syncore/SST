@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
+using SSB.Util;
 
-namespace SSB
+namespace SSB.Config
 {
     /// <summary>
     ///     Class responsible for handling SSB's configuration.

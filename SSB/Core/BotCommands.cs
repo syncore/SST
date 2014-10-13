@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using SSB.Enum;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class that handles the bot's commands.

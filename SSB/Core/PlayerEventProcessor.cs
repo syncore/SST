@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class responsible for handling player events.

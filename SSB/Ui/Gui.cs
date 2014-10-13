@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using SSB.Core;
 
-namespace SSB
+namespace SSB.Ui
 {
     public partial class Gui : Form
     {

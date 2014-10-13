@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SSB.Enum;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class responsible for handling the QL console text.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace SSB
+namespace SSB.Util
 {
     /// <summary>
     /// Class responsible for various QL window functions.

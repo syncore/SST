@@ -4,8 +4,11 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
+using SSB.Config;
+using SSB.Enum;
+using SSB.Util;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class responsible for user database operations.

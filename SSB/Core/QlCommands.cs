@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using SSB.Util;
 
-namespace SSB
+namespace SSB.Core
 {
     /// <summary>
     ///     Class responsible for sending various commands to QL.
