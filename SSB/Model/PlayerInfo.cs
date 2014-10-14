@@ -1,6 +1,7 @@
 ﻿using SSB.Enum;
+using SSB.Model.QlRanks;
 
-namespace SSB.Core
+namespace SSB.Model
 {
     /// <summary>
     /// Class that represents an individual player.
@@ -33,6 +34,14 @@ namespace SSB.Core
             Name = name;
             Id = id;
         }
+
+        /// <summary>
+        /// Gets or sets the QLRanks elo data.
+        /// </summary>
+        /// <value>
+        /// The QLRanks elo data.
+        /// </value>
+        public EloData EloData { get; set; }
 
         /// <summary>
         /// Gets or sets the player identifier number.
