@@ -18,7 +18,7 @@ namespace SSB.Util
         /// <returns>QlRanks object</returns>
         public async Task<QlRanks> DoQlRanksRetrievalAsync<T>(IEnumerable<T> players)
         {
-            QlRanks q = await GetQlRanksObjectAsync(players as IList<string>);
+            QlRanks q = await GetQlRanksObjectAsync(players);
             return q;
         }
 
@@ -29,8 +29,8 @@ namespace SSB.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            //string url = "http://www.qlranks.com/api.aspx?nick=" + players;
-            string url = "http://10.0.0.7/api.aspx?nick=" + players;
+            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            //string url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try
             {
@@ -50,9 +50,9 @@ namespace SSB.Util
         ///     Asynchronously sends the list of players that need elo updates to the QLRanks API then sets the elo data once that
         ///     information is retrieved.
         /// </summary>
-        private async Task<QlRanks> GetQlRanksObjectAsync(IEnumerable<string> playersToUpdate)
+        private async Task<QlRanks> GetQlRanksObjectAsync<T>(IEnumerable<T> playersToUpdate)
         {
-            IList<string> toUpdate = playersToUpdate as IList<string> ?? playersToUpdate.ToList();
+            var toUpdate = playersToUpdate as IList<T> ?? playersToUpdate.ToList();
             QlRanks qlr = await GetEloDataFromQlRanksApiAsync(string.Join("+", toUpdate));
             Debug.WriteLine(string.Format("QLRANKS: URL: http://www.qlranks.com/api.aspx?nick={0}",
                 string.Join("+", toUpdate)));

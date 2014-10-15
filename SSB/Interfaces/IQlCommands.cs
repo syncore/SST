@@ -1,4 +1,4 @@
-﻿namespace SSB
+﻿namespace SSB.Interfaces
 {
     /// <summary>
     ///     Interface for sending QL commands.

@@ -65,6 +65,7 @@
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\CoreConfig.cs" />
     <Compile Include="Enum\DbResult.cs" />
+    <Compile Include="Interfaces\ISsbModule.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />
     <Compile Include="Model\QlRanks\Duel.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="Model\QlRanks\QlRanks.cs" />
     <Compile Include="Model\QlRanks\QlRanksPlayer.cs" />
     <Compile Include="Model\QlRanks\Tdm.cs" />
+    <Compile Include="Modules\EloLimiter.cs" />
+    <Compile Include="Modules\ModuleManager.cs" />
     <Compile Include="Util\EloCache.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\QlCommands.cs" />
     <Compile Include="Util\QlRanksEloRetriever.cs" />
+    <Compile Include="Util\QlRanksHelper.cs" />
     <Compile Include="Util\QLWindowUtils.cs" />
     <Compile Include="Core\ServerEventProcessor.cs" />
     <Compile Include="Core\SynServerBot.cs" />

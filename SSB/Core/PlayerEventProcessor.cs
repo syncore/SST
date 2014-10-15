@@ -31,7 +31,6 @@ namespace SSB.Core
             // Now update the current players from server. This will also take care of
             // adding the player to our internal list.
             _ssb.QlCommands.QlCmdPlayers();
-            _ssb.QlCommands.SendToQl(string.Format("tell {0} hello there {0}.", player), false);
         }
 
         /// <summary>

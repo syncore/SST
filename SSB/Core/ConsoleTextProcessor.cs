@@ -247,7 +247,7 @@ namespace SSB.Core
                     break;
 
                 case QlCommandType.Players:
-                    Task g = _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as HashSet<string>);
+                    Task g = _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
                     break;
 
                 case QlCommandType.ServerInfo:
