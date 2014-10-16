@@ -27,6 +27,79 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Gets the name of the bot account.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The name of the account running the bot.</returns>
+        public string GetBotAccountName(string text)
+        {
+            string name = ConsoleTextProcessor.GetCvarValue(text);
+            Debug.WriteLine("The name of the account running the bot is: " + name);
+            _ssb.BotName = name;
+            return name;
+        }
+
+        /// <summary>
+        ///     Gets the type of game running on this server.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The gametype as a <see cref="QlGameTypes" /> enum.</returns>
+        public QlGameTypes GetGameType(string text)
+        {
+            var gametype = QlGameTypes.Unspecified;
+            string gt = ConsoleTextProcessor.GetCvarValue(text);
+            int gtnum;
+            bool isNum = (int.TryParse(gt, out gtnum));
+            if (isNum)
+            {
+                if (gtnum == 0)
+                {
+                    // Special case for FFA
+                    gametype = (QlGameTypes) 999;
+                }
+                else
+                {
+                    gametype = (QlGameTypes) gtnum;
+                }
+            }
+            Debug.WriteLine("This server's gametype is: " + gametype);
+            //Set
+            _ssb.ServerInfo.CurrentGameType = gametype;
+            return gametype;
+        }
+
+        /// <summary>
+        ///     Retrieves a given player's player id (clientnum) from our internal list or
+        ///     queries the server with the 'players' command and returns the id if the player is
+        ///     not detected.
+        /// </summary>
+        /// <param name="player">The player whose id needs to be retrieved.</param>
+        /// <returns>The player</returns>
+        public string GetPlayerId(string player)
+        {
+            PlayerInfo pinfo;
+            string id = string.Empty;
+            if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo))
+            {
+                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
+                id = pinfo.Id;
+            }
+            else
+            {
+                // Player doesn't exist, request players from server
+                _ssb.QlCommands.QlCmdPlayers();
+                // Try again
+                if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo)) return id;
+                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
+                id = pinfo.Id;
+                // Only clear if we've had to use 'players' command
+                _ssb.QlCommands.ClearBothQlConsoles();
+            }
+
+            return id;
+        }
+
+        /// <summary>
         ///     Gets the players and ids from players command.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -42,14 +115,14 @@ namespace SSB.Core
                 string player = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
                 string id = text.Substring(0, 2).Trim();
                 Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n", player, id));
-                _ssb.CurrentPlayers[player] = new PlayerInfo(player, id);
+                _ssb.ServerInfo.CurrentPlayers[player] = new PlayerInfo(player, id);
                 if (qlranksHelper.DoesCachedEloExist(player))
                 {
-                    qlranksHelper.SetCachedEloData(_ssb.CurrentPlayers, player);
+                    qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, player);
                 }
                 else
                 {
-                    qlranksHelper.CreateNewPlayerEloData(_ssb.CurrentPlayers, player);
+                    qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, player);
                     eloNeedsUpdating.Add(player);
                 }
             }
@@ -59,7 +132,16 @@ namespace SSB.Core
             // Get the QLRanks info for these players
             if (eloNeedsUpdating.Any())
             {
-                await qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.CurrentPlayers, eloNeedsUpdating);
+                await
+                    qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
+                // Elo limiter kick, if active
+                if (_ssb.ModuleManager.IsModuleActive(_ssb.ModuleManager.ModNameEloLimiter))
+                {
+                    foreach (string player in eloNeedsUpdating)
+                    {
+                        _ssb.ModuleManager.ModEloLimiter.CheckPlayerEloRequirement(player);
+                    }
+                }
             }
         }
 
@@ -85,9 +167,10 @@ namespace SSB.Core
                     Debug.WriteLine(e.Message);
                 }
                 Team team = DetermineTeam(teamNum);
-                _ssb.CurrentPlayers[playerNameOnlyMatch.Value] = new PlayerInfo(playerNameOnlyMatch.Value,
-                    team,
-                    string.Empty);
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnlyMatch.Value] =
+                    new PlayerInfo(playerNameOnlyMatch.Value,
+                        team,
+                        string.Empty);
                 Debug.WriteLine("Name, Team: {0}, {1}", playerNameOnlyMatch.Value, team);
                 success = true;
             }
@@ -116,6 +199,10 @@ namespace SSB.Core
             return serverId;
         }
 
+        /// <summary>
+        ///     Handles the map load or change.
+        /// </summary>
+        /// <param name="text">The text.</param>
         public void HandleMapLoad(string text)
         {
             Debug.WriteLine("Detected map load (pak info): " + text);

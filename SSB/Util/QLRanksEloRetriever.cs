@@ -29,8 +29,8 @@ namespace SSB.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
-            //string url = "http://10.0.0.7/api.aspx?nick=" + players;
+            //string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            string url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try
             {
@@ -52,7 +52,7 @@ namespace SSB.Util
         /// </summary>
         private async Task<QlRanks> GetQlRanksObjectAsync<T>(IEnumerable<T> playersToUpdate)
         {
-            var toUpdate = playersToUpdate as IList<T> ?? playersToUpdate.ToList();
+            IList<T> toUpdate = playersToUpdate as IList<T> ?? playersToUpdate.ToList();
             QlRanks qlr = await GetEloDataFromQlRanksApiAsync(string.Join("+", toUpdate));
             Debug.WriteLine(string.Format("QLRANKS: URL: http://www.qlranks.com/api.aspx?nick={0}",
                 string.Join("+", toUpdate)));

@@ -69,11 +69,20 @@ namespace SSB.Util
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playersToUpdate">The players to update.</param>
         /// <returns></returns>
-        public async Task RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers, List<string> playersToUpdate)
+        public async Task<QlRanks> RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers, List<string> playersToUpdate)
         {
             var retriever = new QlRanksEloRetriever();
             QlRanks d = await retriever.DoQlRanksRetrievalAsync(playersToUpdate);
-            SetQlRanksInfo(currentPlayers, d);
+            if (d != null)
+            {
+                SetQlRanksInfo(currentPlayers, d);
+            }
+            else
+            {
+                Debug.WriteLine("QLRANKS: Error: object was null which indicates a problem with retrieval...");
+            }
+            return d;
+
         }
 
         /// <summary>

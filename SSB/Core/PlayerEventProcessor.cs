@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using SSB.Model;
+using SSB.Modules;
 
 namespace SSB.Core
 {
@@ -29,7 +30,7 @@ namespace SSB.Core
         {
             Debug.WriteLine("Detected incoming connection for " + player);
             // Now update the current players from server. This will also take care of
-            // adding the player to our internal list.
+            // adding the player to our internal list and getting the player's elo data.
             _ssb.QlCommands.QlCmdPlayers();
         }
 
@@ -39,8 +40,6 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public void HandleOutgoingPlayerConnection(string player)
         {
-            // Now update the current players
-            _ssb.QlCommands.QlCmdPlayers();
             // Remove player from our internal list
             RemovePlayer(player);
             // Now update the current players from server
@@ -73,7 +72,7 @@ namespace SSB.Core
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
         {
-            if (_ssb.CurrentPlayers.Remove(player))
+            if (_ssb.ServerInfo.CurrentPlayers.Remove(player))
             {
                 Debug.WriteLine(string.Format("Removed {0} from the current in-game players.", player));
             }
@@ -86,35 +85,5 @@ namespace SSB.Core
             }
         }
 
-        /// <summary>
-        ///     Retrieves a given player's player id (clientnum) from our internal list or
-        ///     queries the server with the 'players' command and returns the id if the player is
-        ///     not detected.
-        /// </summary>
-        /// <param name="player">The player whose id needs to be retrieved.</param>
-        /// <returns>The player</returns>
-        private string RetrievePlayerId(string player)
-        {
-            PlayerInfo pinfo;
-            string id = string.Empty;
-            if (_ssb.CurrentPlayers.TryGetValue(player, out pinfo))
-            {
-                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
-                id = pinfo.Id;
-            }
-            else
-            {
-                // Player doesn't exist, request players from server
-                _ssb.QlCommands.QlCmdPlayers();
-                // Try again
-                if (!_ssb.CurrentPlayers.TryGetValue(player, out pinfo)) return id;
-                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
-                id = pinfo.Id;
-                // Only clear if we've had to use 'players' command
-                _ssb.QlCommands.ClearBothQlConsoles();
-            }
-
-            return id;
-        }
     }
 }

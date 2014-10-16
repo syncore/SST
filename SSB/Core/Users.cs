@@ -186,6 +186,18 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Gets the requested user's level.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>The user's level.</returns>
+        public UserLevel GetUserLevel(string user)
+        {
+            RetrieveAllUsers();
+            UserLevel level;
+            return AllUsers.TryGetValue(user, out level) ? level : level;
+        }
+
+        /// <summary>
         ///     Retrieves all users from database and populates AllUsers dictionary.
         /// </summary>
         public void RetrieveAllUsers()

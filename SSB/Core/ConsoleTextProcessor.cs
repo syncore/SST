@@ -52,6 +52,16 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Returns the value of a parsed cvar with the quotes removed.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The value of a parsed cvar with the quotes removed.</returns>
+        public static string GetCvarValue(string text)
+        {
+            return text.Substring(text.IndexOf(":", StringComparison.Ordinal) + 1).Replace(@"""", "");
+        }
+
+        /// <summary>
         ///     Strips the specified text.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -223,9 +233,24 @@ namespace SSB.Core
                 _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
                 return;
             }
+            // gametype
+            if (_ssb.Parser.CvarServerGameType.IsMatch(text))
+            {
+                Match m = _ssb.Parser.CvarServerGameType.Match(text);
+                _ssb.ServerEventProcessor.GetGameType(m.Value);
+                return;
+            }
+            // bot account name
+            if (_ssb.Parser.CvarBotAccountName.IsMatch(text))
+            {
+                Match m = _ssb.Parser.CvarBotAccountName.Match(text);
+                _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
+                return;
+            }
+
             // Chat message detected
             // First make sure player is detected in our internal list, if not then do nothing.
-            if (_ssb.CurrentPlayers.Keys.Any(p => text.StartsWith(p + ":")))
+            if (_ssb.ServerInfo.CurrentPlayers.Keys.Any(p => text.StartsWith(p + ":")))
             {
                 _playerEventProcessor.HandlePlayerChatMessage(text);
             }
@@ -247,7 +272,8 @@ namespace SSB.Core
                     break;
 
                 case QlCommandType.Players:
-                    Task g = _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
+                    Task g =
+                        _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
                     break;
 
                 case QlCommandType.ServerInfo:

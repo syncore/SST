@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using SSB.Enum;
-using SSB.Model.QlRanks;
-using SSB.Modules;
-using SSB.Util;
 
 namespace SSB.Core
 {
@@ -20,15 +15,15 @@ namespace SSB.Core
         private const string DelUserCmd = "!deluser";
         private const string HelpCmd = "!help";
         private const string LimitEloCmd = "!elolimiter";
-        private const string LoadModuleCmd = "!loadmod";
+        private const string LoadModuleCmd = "!load";
+        private const string ModuleListCmd = "!modules";
 
         private const string NoPermission =
             "^3* ^1[ERROR]^7 You do not have permission to use that command. ^3*";
 
-        private const string UnloadModuleCmd = "!unloadmod";
+        private const string UnloadModuleCmd = "!unload";
         private readonly Dictionary<string, UserLevel> _cmdRequiredLevel;
 
-        private readonly ModuleManager _modManager;
         private readonly List<string> _multipleArgsRequiredCmds;
 
         private readonly SynServerBot _ssb;
@@ -41,11 +36,27 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _users = new Users();
-            _modManager = new ModuleManager(_ssb);
             _cmdRequiredLevel = new Dictionary<string, UserLevel>();
             SetupRequiredCmdLevels();
-            AllBotCommands = new List<string> { HelpCmd, AccessCmd, AddUserCmd, DelUserCmd, LimitEloCmd, LoadModuleCmd, UnloadModuleCmd };
-            _multipleArgsRequiredCmds = new List<string> { AddUserCmd, DelUserCmd, LimitEloCmd, LoadModuleCmd, UnloadModuleCmd };
+            AllBotCommands = new List<string>
+            {
+                HelpCmd,
+                AccessCmd,
+                AddUserCmd,
+                DelUserCmd,
+                LimitEloCmd,
+                LoadModuleCmd,
+                ModuleListCmd,
+                UnloadModuleCmd
+            };
+            _multipleArgsRequiredCmds = new List<string>
+            {
+                AddUserCmd,
+                DelUserCmd,
+                LimitEloCmd,
+                LoadModuleCmd,
+                UnloadModuleCmd
+            };
         }
 
         /// <summary>
@@ -85,7 +96,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Displays the command argument error.
+        ///     Displays the command argument error.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>A string containing the required command arguments.</returns>
@@ -102,13 +113,22 @@ namespace SSB.Core
                     return string.Format("^3* ^1[ERROR]^3 Usage: {0} user ^3*", DelUserCmd);
 
                 case LimitEloCmd:
-                    return string.Format("^3* ^1[ERROR]^3 Usage: {0} on/off minimumelo maximumelo ^7 - minimumelo must be >0 & maximumelo must be >600 ^3*", LimitEloCmd);
+                    return
+                        string.Format(
+                            "^3* ^1[ERROR]^3 Usage: {0} on/off minimumelo maximumelo ^7 - minimumelo must be >0 & maximumelo must be >600 ^3*",
+                            LimitEloCmd);
 
                 case LoadModuleCmd:
-                    return string.Format("^3* ^1[ERROR]^3 Usage: {0} modulename ^7 - Valid modules are:^2 {1} ^3*", LoadModuleCmd, string.Join(",", _modManager.ValidModules));
+                    return
+                        string.Format(
+                            "^3* ^1[ERROR]^3 Usage: {0} modulename^7 - Type: ^2{1}^7 for available modules. ^3*",
+                            LoadModuleCmd, ModuleListCmd);
 
                 case UnloadModuleCmd:
-                    return string.Format("^3* ^1[ERROR]^3 Usage: {0} modulename ^7 - Valid modules are:^2 {1} ^3*", UnloadModuleCmd, string.Join(",", _modManager.ValidModules));
+                    return
+                        string.Format(
+                            "^3* ^1[ERROR]^3 Usage: {0} modulename^7 - Type: ^2{1}^7 for available modules. ^3*",
+                            UnloadModuleCmd, string.Join(",", _ssb.ModuleManager.ValidModules));
             }
             return
                 "^3* ^1[ERROR]^3 Invalid number of arguments specified. ^3*";
@@ -124,8 +144,10 @@ namespace SSB.Core
         private void ExecAccessCmd(string fromUser, string[] args)
         {
             _ssb.QlCommands.QlCmdSay(args.Length > 1
-                ? string.Format("^3* ^5{0}'s^7 user level is: ^5[{1}] ^3*", args[1], GetUserLevel(args[1]))
-                : string.Format("^3* ^5{0}'s^7 user level is: ^5[{1}] ^3*", fromUser, GetUserLevel(fromUser)));
+                ? string.Format("^3* ^5{0}'s^7 user level is: ^5[{1}] ^3*", args[1],
+                    _users.GetUserLevel(args[1]))
+                : string.Format("^3* ^5{0}'s^7 user level is: ^5[{1}] ^3*", fromUser,
+                    _users.GetUserLevel(fromUser)));
         }
 
         /// <summary>
@@ -146,7 +168,7 @@ namespace SSB.Core
                 return;
             }
             // TODO: define this in terms of the enum instead of hardcoding values
-            if ((args[2].Equals("3")) && ((GetUserLevel(fromUser) != UserLevel.Owner)))
+            if ((args[2].Equals("3")) && ((_users.GetUserLevel(fromUser) != UserLevel.Owner)))
             {
                 _ssb.QlCommands.QlCmdSay(string.Format("^3* ^1[ERROR]^7 Only owners can add admins. ^3*"));
                 return;
@@ -174,12 +196,12 @@ namespace SSB.Core
         /// <param name="fromUser">The user who sent the user deletion command.</param>
         /// <param name="userToDelete">The user to delete.</param>
         /// <remarks>
-        /// Required permission level: Admin.
+        ///     Required permission level: Admin.
         /// </remarks>
         private void ExecDelUserCmd(string fromUser, string userToDelete)
         {
-            UserLevel todelUserLevel = GetUserLevel(userToDelete);
-            DbResult result = _users.DeleteUserFromDb(userToDelete, fromUser, GetUserLevel(fromUser));
+            UserLevel todelUserLevel = _users.GetUserLevel(userToDelete);
+            DbResult result = _users.DeleteUserFromDb(userToDelete, fromUser, _users.GetUserLevel(fromUser));
             if (result == DbResult.Success)
             {
                 _ssb.QlCommands.QlCmdSay(
@@ -210,32 +232,45 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Executes the limit elo command.
+        ///     Executes the limit elo command.
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <remarks>
-        /// args[1]: on/off, args[2]: minimum elo, args[3]: maximum elo
-        /// Required permission level: Admin
-        /// Module required: elolimiter
+        ///     args[1]: on/off, args[2]: minimum elo, args[3]: maximum elo
+        ///     Required permission level: Admin
+        ///     Module required: elolimiter
         /// </remarks>
         private async Task ExecLimitEloCmd(string[] args)
         {
-            var modname = _modManager.GetModuleName(LimitEloCmd.Replace("!", string.Empty));
-            if (!_modManager.IsModuleActive(modname))
+            string modname = _ssb.ModuleManager.GetModuleName(LimitEloCmd.Replace("!", string.Empty));
+            if (!_ssb.ModuleManager.IsModuleActive(modname))
             {
                 _ssb.QlCommands.QlCmdSay(string.Format(
-                "^3* ^1[ERROR]^7 Module ^3'{0}'^7 is not loaded. First load with:^2 {1} {0} ^3*", modname, LoadModuleCmd));
+                    "^3* ^1[ERROR]^7 Module ^3'{0}'^7 is not loaded. First load with:^2 {1} {0} ^3*", modname,
+                    LoadModuleCmd));
                 return;
             }
-
+            // Get server type
+            _ssb.QlCommands.QlCvarG_gametype();
+            if (_ssb.ServerInfo.CurrentGameType == QlGameTypes.Unspecified)
+            {
+                _ssb.QlCommands.QlCmdSay("^3* ^1[ERROR]^7 Unable to process gametype information ^3*");
+                return;
+            }
+            // Invalid first parameter
             if (!args[1].Equals("on") && !args[1].Equals("off"))
             {
                 _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
                 return;
             }
+            // Disable elo limiter
             if (args[1].Equals("off"))
             {
-                _ssb.QlCommands.QlCmdSay("^3* ^2[SUCCESS]:^7 Elo limit ^1disabled.^7 Players with any Elo can play on this server. ^3*");
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3* ^2[SUCCESS]:^7 {0} Elo limit ^1disabled.^7 and module unloaded. Players with any {0} Elo can now play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper()));
+                _ssb.ModuleManager.Unload(_ssb.ModuleManager.GetModuleType(modname));
                 return;
             }
             // Only the mininmum elo is specified...
@@ -248,12 +283,14 @@ namespace SSB.Core
                     _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
                     return;
                 }
+                // Success
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3* ^2[SUCCESS]:^7 Elo limit ^2enabled.^7 Players must have at least^2 {0} ^7elo to play on this server. ^3*",
-                        min));
-                // Perform the removal of the current players on the server...
-                await _modManager.ModEloLimiter.RemoveEloPlayers(min, 0);
+                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min));
+                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
+                // Finally try to perform the removal of the current players on the server...
+                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
             }
             // An elo range (min to max) has been specified...
             else if (args[1].Equals("on") && args.Length == 4)
@@ -267,13 +304,16 @@ namespace SSB.Core
                     _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
                     return;
                 }
+                // Success
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3* ^2[SUCCESS]:^7 Elo limit ^2enabled.^7 Players must have between^2 {0} ^7and^2 {1}^7 elo to play on this server. ^3*",
-                        min, max
+                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min, max
                         ));
-                // Perform the removal of the current players on the server...
-                await _modManager.ModEloLimiter.RemoveEloPlayers(min, max);
+                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
+                _ssb.ModuleManager.ModEloLimiter.MaximumRequiredElo = max;
+                // Finally try to perform the removal of the current players on the server...
+                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
             }
             else
             {
@@ -282,77 +322,73 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Executes the load module command.
+        ///     Executes the load module command.
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <remarks>
         ///     args[1]: The module name
-        /// Required permission level: Admin
+        ///     Required permission level: Admin
         /// </remarks>
         private void ExecLoadModuleCmd(string[] args)
         {
-            if (!_modManager.ValidModules.Contains(args[1]))
+            if (!_ssb.ModuleManager.ValidModules.Contains(args[1]))
             {
                 _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^3* ^1[ERROR]^7 Invalid module ^1'{0}'^7 Available modules are:^2 {1} ^3*",
-                        args[1], string.Join(",", _modManager.ValidModules)));
+                    "^3* ^1[ERROR]^7 Invalid module ^1'{0}'^7 - Type: ^3{1}^1 to see available modules. ^3*",
+                    args[1], ModuleListCmd));
                 return;
             }
-            var modname = _modManager.GetModuleName(args[1]);
-            if (_modManager.IsModuleActive(modname))
+            string modname = _ssb.ModuleManager.GetModuleName(args[1]);
+            if (_ssb.ModuleManager.IsModuleActive(modname))
             {
                 _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^3* ^1[ERROR]^7 Module ^1'{0}'^7 is already ^2active! ^3*",
-                        modname));
+                    "^3* ^1[ERROR]^7 Module ^1'{0}'^7 is already ^2active! ^3*",
+                    modname));
                 return;
             }
-            var modtype = _modManager.GetModuleType(modname);
-            _modManager.Load(modtype);
+            Type modtype = _ssb.ModuleManager.GetModuleType(modname);
+            _ssb.ModuleManager.Load(modtype);
             _ssb.QlCommands.QlCmdSay(
                 string.Format("^3* ^2[SUCCESS]:^7 Successfully loaded ^2'{0}'^7 module. ^3*", modname));
         }
 
         /// <summary>
-        /// Executes the unload module command.
+        /// Executes the module list command.
         /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <remarks>
-        /// args[1]: The module name
-        /// Required permission level: Admin
-        /// </remarks>
-        private void ExecUnloadModuleCmd(string[] args)
+        private void ExecModuleListCmd()
         {
-            if (!_modManager.ValidModules.Contains(args[1]))
-            {
-                _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^3* ^1[ERROR]^7 Invalid module ^1'{0}'^7 Available modules are:^2 {1} ^3*",
-                        args[1], string.Join(",", _modManager.ValidModules)));
-                return;
-            }
-            var modname = _modManager.GetModuleName(args[1]);
-            if (!_modManager.IsModuleActive(modname))
-            {
-                _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^3* ^1[ERROR]^7 Module ^1'{0}'^7 is not ^2active! ^3*",
-                        modname));
-                return;
-            }
-            var modtype = _modManager.GetModuleType(modname);
-            _modManager.Unload(modtype);
-            _ssb.QlCommands.QlCmdSay(
-                string.Format("^3* ^2[SUCCESS]:^7 Successfully unloaded ^2'{0}'^7 module. ^3*", modname));
+            _ssb.QlCommands.QlCmdSay(string.Format("^3*^7 Modules (^2++^7 means on): {0} ^3*", _ssb.ModuleManager.ValidModulesWithStatus));
         }
 
         /// <summary>
-        ///     Gets the requested user;s level.
+        ///     Executes the unload module command.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>The user's level.</returns>
-        private UserLevel GetUserLevel(string user)
+        /// <param name="args">The arguments.</param>
+        /// <remarks>
+        ///     args[1]: The module name
+        ///     Required permission level: Admin
+        /// </remarks>
+        private void ExecUnloadModuleCmd(string[] args)
         {
-            _users.RetrieveAllUsers();
-            UserLevel level;
-            return _users.AllUsers.TryGetValue(user, out level) ? level : level;
+            if (!_ssb.ModuleManager.ValidModules.Contains(args[1]))
+            {
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^3* ^1[ERROR]^7 Invalid module ^1'{0}'^7 - Type: ^3{1}^1 to see available modules. ^3*",
+                    args[1], ModuleListCmd));
+                return;
+            }
+            string modname = _ssb.ModuleManager.GetModuleName(args[1]);
+            if (!_ssb.ModuleManager.IsModuleActive(modname))
+            {
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^3* ^1[ERROR]^7 Module ^1'{0}'^7 is not ^2active! ^3*",
+                    modname));
+                return;
+            }
+            Type modtype = _ssb.ModuleManager.GetModuleType(modname);
+            _ssb.ModuleManager.Unload(modtype);
+            _ssb.QlCommands.QlCmdSay(
+                string.Format("^3* ^2[SUCCESS]:^7 Successfully unloaded ^2'{0}'^7 module. ^3*", modname));
         }
 
         /// <summary>
@@ -379,13 +415,13 @@ namespace SSB.Core
                     break;
                 // !limitelo <on/off> <min> <max>
                 case LimitEloCmd:
-                    ExecLimitEloCmd(args);
+                    Task e = ExecLimitEloCmd(args);
                     break;
-                // !loadmod <module>
+                // !load <module>
                 case LoadModuleCmd:
                     ExecLoadModuleCmd(args);
                     break;
-                // !unloadmod <module>
+                // !unload <module>
                 case UnloadModuleCmd:
                     ExecUnloadModuleCmd(args);
                     break;
@@ -402,35 +438,43 @@ namespace SSB.Core
             string command = args[0];
             switch (command)
             {
-                // !help
-                case HelpCmd:
-                    ExecHelpCmd();
-                    break;
                 // !access
                 case AccessCmd:
                     ExecAccessCmd(fromUser, args);
                     break;
+                // !help
+                case HelpCmd:
+                    ExecHelpCmd();
+                    break;
+
+                case ModuleListCmd:
+                    // !modules
+                    ExecModuleListCmd();
+                    break;
             }
         }
-
-        
 
         /// <summary>
         ///     Sets up the required command levels for the bot commands.
         /// </summary>
         /// <returns>A dictionary with key: command, value: <see cref="UserLevel" />.</returns>
-        /// <remarks>Note: commands that require no privelegs (ex: !help) are not defined here.</remarks>
         private void SetupRequiredCmdLevels()
         {
+            // !access
+            _cmdRequiredLevel[AccessCmd] = UserLevel.None;
             // !adduser
             _cmdRequiredLevel[AddUserCmd] = UserLevel.Admin;
             // !deluser
             _cmdRequiredLevel[DelUserCmd] = UserLevel.Admin;
-            // !limitelo
+            // !elolimiter
             _cmdRequiredLevel[LimitEloCmd] = UserLevel.Admin;
-            // !loadmod
+            // !help
+            _cmdRequiredLevel[HelpCmd] = UserLevel.None;
+            // !load
             _cmdRequiredLevel[LoadModuleCmd] = UserLevel.Admin;
-            // !unloadmod
+            // !modules
+            _cmdRequiredLevel[ModuleListCmd] = UserLevel.Admin;
+            // !unload
             _cmdRequiredLevel[UnloadModuleCmd] = UserLevel.Admin;
         }
 
@@ -443,7 +487,7 @@ namespace SSB.Core
         private bool UserHasReqLevel(string user, UserLevel requiredLevel)
         {
             _users.RetrieveAllUsers();
-            if (GetUserLevel(user) >= requiredLevel)
+            if (_users.GetUserLevel(user) >= requiredLevel)
             {
                 return true;
             }

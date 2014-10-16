@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using SSB.Model;
+using SSB.Modules;
 using SSB.Ui;
 using SSB.Util;
 
@@ -21,10 +20,11 @@ namespace SSB.Core
         /// </summary>
         public SynServerBot()
         {
-            CurrentPlayers = new Dictionary<string, PlayerInfo>();
             GuiOptions = new GuiOptions();
             GuiControls = new GuiControls();
+            ServerInfo = new ServerInfo();
             QlCommands = new QlCommands(this);
+            ModuleManager = new ModuleManager(this);
             Parser = new Parser();
             QlWindowUtils = new QlWindowUtils();
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
@@ -33,10 +33,8 @@ namespace SSB.Core
 
             // Start reading the console
             StartConsoleReadThread();
-
-            // First and foremost, clear the console and get the player listing (TODO: maybe have a method of general Init events)
-            QlCommands.ClearQlWinConsole();
-            QlCommands.QlCmdPlayers();
+            // Set the important details of the server
+            InitServerInformation();
         }
 
         /// <summary>
@@ -48,20 +46,20 @@ namespace SSB.Core
         public BotCommands BotCommands { get; private set; }
 
         /// <summary>
+        ///     Gets or sets the name of the account that is running the bot.
+        /// </summary>
+        /// <value>
+        ///     The name of the account that is running the bot.
+        /// </value>
+        public string BotName { get; set; }
+
+        /// <summary>
         ///     Gets the console text processor.
         /// </summary>
         /// <value>
         ///     The console text processor.
         /// </value>
         public ConsoleTextProcessor ConsoleTextProcessor { get; private set; }
-
-        /// <summary>
-        ///     Gets the current players.
-        /// </summary>
-        /// <value>
-        ///     The current players.
-        /// </value>
-        public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
         ///     Gets the GUI controls.
@@ -78,6 +76,14 @@ namespace SSB.Core
         ///     The GUI options.
         /// </value>
         public GuiOptions GuiOptions { get; private set; }
+
+        /// <summary>
+        ///     Gets the module manager.
+        /// </summary>
+        /// <value>
+        ///     The module manager.
+        /// </value>
+        public ModuleManager ModuleManager { get; private set; }
 
         /// <summary>
         ///     Gets the Parser.
@@ -112,6 +118,14 @@ namespace SSB.Core
         public ServerEventProcessor ServerEventProcessor { get; private set; }
 
         /// <summary>
+        ///     Gets the server information.
+        /// </summary>
+        /// <value>
+        ///     The server information.
+        /// </value>
+        public ServerInfo ServerInfo { get; private set; }
+
+        /// <summary>
         ///     Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
@@ -127,6 +141,20 @@ namespace SSB.Core
         {
             _isReadingConsole = false;
             Debug.WriteLine("...stopping QL console read thread.");
+        }
+
+        /// <summary>
+        ///     Initializes the server information.
+        /// </summary>
+        private void InitServerInformation()
+        {
+            // First and foremost, clear the console and get the player listing.
+            QlCommands.ClearQlWinConsole();
+            QlCommands.QlCmdPlayers();
+            // Name of account running the bot.
+            QlCommands.QlCvarName();
+            // Server's gametype.
+            QlCommands.QlCvarG_gametype();
         }
 
         /// <summary>

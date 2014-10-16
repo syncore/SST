@@ -64,7 +64,9 @@
     <Compile Include="Config\ConfigHandler.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\CoreConfig.cs" />
+    <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Enum\DbResult.cs" />
+    <Compile Include="Enum\QlGameTypes.cs" />
     <Compile Include="Interfaces\ISsbModule.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />

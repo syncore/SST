@@ -23,6 +23,41 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Sends the given text to the QL console.
+        /// </summary>
+        /// <param name="toSend">To text to send.</param>
+        /// <param name="delay">if set to <c>true</c> then sends the text to QL and waits with a slight delay.</param>
+        /// <remarks>
+        ///     Some commands that return significant amounts of text (i.e. serverinfo) have to have some time to be
+        ///     received, so a delay is necessary.
+        /// </remarks>
+        public void SendToQl(string toSend, bool delay)
+        {
+            IntPtr iText =
+                _ssb.QlWindowUtils.GetQuakeLiveConsoleInputArea(_ssb.QlWindowUtils.GetQuakeLiveConsoleWindow());
+            if (iText == IntPtr.Zero)
+            {
+                Debug.WriteLine("Couldn't find Quake Live input text area");
+                return;
+            }
+            foreach (char c in toSend)
+            {
+                Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(c), IntPtr.Zero);
+            }
+
+            // Simulate the pressing of 'ENTER' key to send message.
+            Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
+
+            // Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
+            if (delay)
+            {
+                //Thread.Sleep(1);
+                // Creates a new event handler that will never be set, and then waits the full timeout period
+                new ManualResetEvent(false).WaitOne(10);
+            }
+        }
+
+        /// <summary>
         ///     Clear both the QL WinConsole and the in-game console.
         /// </summary>
         public void ClearBothQlConsoles()
@@ -68,12 +103,21 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the 'kick' command to QL.
+        ///     Sends the 'kickban' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void QlCmdKick(string player)
+        public void QlCmdKickban(string player)
         {
-            SendToQl(string.Format("kick {0}", player), false);
+            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            if (!String.IsNullOrEmpty(id))
+            {
+                SendToQl(string.Format("kickban {0}", id), false);
+            }
+            else
+            {
+                Debug.WriteLine(string.Format("Unable to kick player {0} because ID could not be retrieved.",
+                    player));
+            }
         }
 
         /// <summary>
@@ -102,38 +146,19 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Sends the given text to the QL console.
+        ///     Sends a request for the 'g_gametype' cvar to QL.
         /// </summary>
-        /// <param name="toSend">To text to send.</param>
-        /// <param name="delay">if set to <c>true</c> then sends the text to QL and waits with a slight delay.</param>
-        /// <remarks>
-        ///     Some commands that return significant amounts of text (i.e. serverinfo) have to have some time to be
-        ///     received, so a delay is necessary.
-        /// </remarks>
-        public void SendToQl(string toSend, bool delay)
+        public void QlCvarG_gametype()
         {
-            IntPtr iText =
-                _ssb.QlWindowUtils.GetQuakeLiveConsoleInputArea(_ssb.QlWindowUtils.GetQuakeLiveConsoleWindow());
-            if (iText == IntPtr.Zero)
-            {
-                Debug.WriteLine("Couldn't find Quake Live input text area");
-                return;
-            }
-            foreach (char c in toSend)
-            {
-                Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(c), IntPtr.Zero);
-            }
+            SendToQl("g_gametype", true);
+        }
 
-            // Simulate the pressing of 'ENTER' key to send message.
-            Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
-
-            // Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
-            if (delay)
-            {
-                //Thread.Sleep(1);
-                // Creates a new event handler that will never be set, and then waits the full timeout period
-                new ManualResetEvent(false).WaitOne(10);
-            }
+        /// <summary>
+        ///     Sends a request for the 'name' cvar to QL.
+        /// </summary>
+        public void QlCvarName()
+        {
+            SendToQl("name", false);
         }
     }
 }
