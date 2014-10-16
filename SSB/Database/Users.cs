@@ -9,7 +9,7 @@ using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Util;
 
-namespace SSB.Core
+namespace SSB.Database
 {
     /// <summary>
     ///     Class responsible for user database operations.
@@ -178,7 +178,7 @@ namespace SSB.Core
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding deleting user from database: " + ex.Message);
+                    Debug.WriteLine("Problem deleting user from database: " + ex.Message);
                     return DbResult.InternalError;
                 }
             }

@@ -9,16 +9,31 @@ namespace SSB.Util
     /// </summary>
     public static class Filepaths
     {
+        private const string AccountDateDatabaseFile = "modacctdate.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
         private const string UserDatabaseFile = "ssbusers.db";
 
         private static readonly string DataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
             "data");
         
+        private static readonly string _accountDateDatabaseFilePath = Path.Combine(DataDirectory,
+            AccountDateDatabaseFile);
+
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
 
         private static readonly string _userDatabaseFilePath = Path.Combine(DataDirectory, UserDatabaseFile);
 
+
+        /// <summary>
+        /// Gets the account date database file path.
+        /// </summary>
+        /// <value>
+        /// The account date database file path.
+        /// </value>
+        public static string AccountDateDatabaseFilePath
+        {
+            get { return _accountDateDatabaseFilePath; }
+        }
 
         /// <summary>
         /// Gets the configuration path.
