@@ -15,8 +15,9 @@ namespace SSB.Core
         private const string AddUserCmd = "!adduser";
         private const string DelUserCmd = "!deluser";
         private const string HelpCmd = "!help";
-        private const string LimitEloCmd = "!elolimiter";
         private const string LoadModuleCmd = "!load";
+        private const string ModAccountDateCmd = "!accountdate";
+        private const string ModLimitEloCmd = "!elolimiter";
         private const string ModuleListCmd = "!modules";
 
         private const string NoPermission =
@@ -45,7 +46,8 @@ namespace SSB.Core
                 AccessCmd,
                 AddUserCmd,
                 DelUserCmd,
-                LimitEloCmd,
+                ModLimitEloCmd,
+                ModAccountDateCmd,
                 LoadModuleCmd,
                 ModuleListCmd,
                 UnloadModuleCmd
@@ -54,7 +56,8 @@ namespace SSB.Core
             {
                 AddUserCmd,
                 DelUserCmd,
-                LimitEloCmd,
+                ModLimitEloCmd,
+                ModAccountDateCmd,
                 LoadModuleCmd,
                 UnloadModuleCmd
             };
@@ -75,8 +78,9 @@ namespace SSB.Core
         /// <param name="command">The full command text.</param>
         public void ProcessBotCommand(string fromUser, string command)
         {
-            char[] sep = { ' ' };
+            char[] sep = {' '};
             string[] args = command.Split(sep, 5);
+            if (!IsValidCommand(args[0])) return;
             if (!UserHasReqLevel(fromUser, _cmdRequiredLevel[args[0]]))
             {
                 return;
@@ -113,11 +117,16 @@ namespace SSB.Core
                 case DelUserCmd:
                     return string.Format("^3* ^1[ERROR]^3 Usage: {0} user ^3*", DelUserCmd);
 
-                case LimitEloCmd:
+                case ModLimitEloCmd:
                     return
                         string.Format(
-                            "^3* ^1[ERROR]^3 Usage: {0} on/off minimumelo maximumelo ^7 - minimumelo must be >0 & maximumelo must be >600 ^3*",
-                            LimitEloCmd);
+                            "^3* ^1[ERROR]^3 Usage: {0} <on/off> <minimumelo> [maximumelo] ^7 - minimumelo must be >0 & maximumelo must be >600 ^3*",
+                            ModLimitEloCmd);
+                case ModAccountDateCmd:
+                    return
+                        string.Format(
+                            "^3* ^1[ERROR]^3 Usage: {0} <on/off> <days> ^7 - days must be >0 ^3*",
+                            ModAccountDateCmd);
 
                 case LoadModuleCmd:
                     return
@@ -175,19 +184,19 @@ namespace SSB.Core
                 return;
             }
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            DbResult result = _users.AddUserToDb(args[1], (UserLevel)Convert.ToInt32(args[2]), fromUser, date);
+            DbResult result = _users.AddUserToDb(args[1], (UserLevel) Convert.ToInt32(args[2]), fromUser, date);
             if (result == DbResult.Success)
             {
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^3* ^2[SUCCESS]:^7 Added user^2 {0} ^7to the^2 [{1}] ^7group. ^3*", args[1],
-                        (UserLevel)Convert.ToInt32(args[2])));
+                        (UserLevel) Convert.ToInt32(args[2])));
             }
             else
             {
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3* ^1[ERROR]^7 Unable to add user^1 {0}^7 to the^1 [{1}] ^7group. Code:^1 {2} ^3*",
-                        args[1], (UserLevel)Convert.ToInt32(args[2]), result));
+                        args[1], (UserLevel) Convert.ToInt32(args[2]), result));
             }
         }
 
@@ -233,96 +242,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Executes the limit elo command.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <remarks>
-        ///     args[1]: on/off, args[2]: minimum elo, args[3]: maximum elo
-        ///     Required permission level: Admin
-        ///     Module required: elolimiter
-        /// </remarks>
-        private async Task ExecLimitEloCmd(string[] args)
-        {
-            string modname = _ssb.ModuleManager.GetModuleName(LimitEloCmd.Replace("!", string.Empty));
-            if (!_ssb.ModuleManager.IsModuleActive(modname))
-            {
-                _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^3* ^1[ERROR]^7 Module ^3'{0}'^7 is not loaded. First load with:^2 {1} {0} ^3*", modname,
-                    LoadModuleCmd));
-                return;
-            }
-            // Get server type
-            _ssb.QlCommands.QlCvarG_gametype();
-            if (_ssb.ServerInfo.CurrentGameType == QlGameTypes.Unspecified)
-            {
-                _ssb.QlCommands.QlCmdSay("^3* ^1[ERROR]^7 Unable to process gametype information ^3*");
-                return;
-            }
-            // Invalid first parameter
-            if (!args[1].Equals("on") && !args[1].Equals("off"))
-            {
-                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
-                return;
-            }
-            // Disable elo limiter
-            if (args[1].Equals("off"))
-            {
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3* ^2[SUCCESS]:^7 {0} Elo limit ^1disabled.^7 and module unloaded. Players with any {0} Elo can now play on this server. ^3*",
-                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper()));
-                _ssb.ModuleManager.Unload(_ssb.ModuleManager.GetModuleType(modname));
-                return;
-            }
-            // Only the mininmum elo is specified...
-            if (args[1].Equals("on") && args.Length == 3)
-            {
-                int min;
-                bool minAcceptable = ((int.TryParse(args[2], out min) && min > 0));
-                if ((!minAcceptable))
-                {
-                    _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
-                    return;
-                }
-                // Success
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server. ^3*",
-                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min));
-                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
-                // Finally try to perform the removal of the current players on the server...
-                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
-            }
-            // An elo range (min to max) has been specified...
-            else if (args[1].Equals("on") && args.Length == 4)
-            {
-                int min;
-                int max;
-                bool minAcceptable = ((int.TryParse(args[2], out min) && min > 0));
-                bool maxAcceptable = ((int.TryParse(args[3], out max) && max > 600));
-                if ((!minAcceptable || !maxAcceptable))
-                {
-                    _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
-                    return;
-                }
-                // Success
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server. ^3*",
-                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min, max
-                        ));
-                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
-                _ssb.ModuleManager.ModEloLimiter.MaximumRequiredElo = max;
-                // Finally try to perform the removal of the current players on the server...
-                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
-            }
-            else
-            {
-                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(LimitEloCmd));
-            }
-        }
-
-        /// <summary>
         ///     Executes the load module command.
         /// </summary>
         /// <param name="args">The arguments.</param>
@@ -354,11 +273,152 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Executes the module list command.
+        ///     Module: executes the account date limiter command.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        private async Task ExecModAccountDateCmd(string[] args)
+        {
+            string modname = _ssb.ModuleManager.GetModuleName(ModAccountDateCmd.Replace("!", string.Empty));
+            if (!_ssb.ModuleManager.IsModuleActive(modname))
+            {
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^3* ^1[ERROR]^7 Module ^3'{0}'^7 is not loaded. First load with:^2 {1} {0} ^3*", modname,
+                    LoadModuleCmd));
+                return;
+            }
+            // Invalid first parameter
+            if (!args[1].Equals("on") && !args[1].Equals("off"))
+            {
+                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModAccountDateCmd));
+                return;
+            }
+            // Disable account date limiter
+            if (args[1].Equals("off"))
+            {
+                _ssb.QlCommands.QlCmdSay(
+                    "^3* ^2[SUCCESS]:^7 Account date limit ^1disabled^7 and module unloaded. Players who registered on any date can play. ^3*");
+                _ssb.ModuleManager.Unload(_ssb.ModuleManager.GetModuleType(modname));
+                return;
+            }
+            if (args[1].Equals("on") && args.Length == 3)
+            {
+                int days;
+                bool isValidNum = ((int.TryParse(args[2], out days) && days > 0));
+                if ((!isValidNum))
+                {
+                    _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModAccountDateCmd));
+                    return;
+                }
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3* ^2[SUCCESS]:^7 Account date limit ^2enabled.^7 Players with accounts registered in the last^1 {0}^7 days may not play on this server. ^3*",
+                        days));
+                _ssb.ModuleManager.ModAccountDate.MinimumDaysRequired = days;
+                await _ssb.ModuleManager.ModAccountDate.RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+            }
+            else
+            {
+                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModAccountDateCmd));
+            }
+        }
+
+        /// <summary>
+        ///     Module: executes the limit elo command.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <remarks>
+        ///     args[1]: on/off, args[2]: minimum elo, args[3]: maximum elo
+        ///     Required permission level: Admin
+        ///     Module required: elolimiter
+        /// </remarks>
+        private async Task ExecModLimitEloCmd(string[] args)
+        {
+            string modname = _ssb.ModuleManager.GetModuleName(ModLimitEloCmd.Replace("!", string.Empty));
+            if (!_ssb.ModuleManager.IsModuleActive(modname))
+            {
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^3* ^1[ERROR]^7 Module ^3'{0}'^7 is not loaded. First load with:^2 {1} {0} ^3*", modname,
+                    LoadModuleCmd));
+                return;
+            }
+            // Get server type
+            _ssb.QlCommands.QlCvarG_gametype();
+            if (_ssb.ServerInfo.CurrentGameType == QlGameTypes.Unspecified)
+            {
+                _ssb.QlCommands.QlCmdSay("^3* ^1[ERROR]^7 Unable to process gametype information ^3*");
+                return;
+            }
+            // Invalid first parameter
+            if (!args[1].Equals("on") && !args[1].Equals("off"))
+            {
+                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModLimitEloCmd));
+                return;
+            }
+            // Disable elo limiter
+            if (args[1].Equals("off"))
+            {
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3* ^2[SUCCESS]:^7 {0} Elo limit ^1disabled^7 and module unloaded. Players with any {0} Elo can now play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper()));
+                _ssb.ModuleManager.Unload(_ssb.ModuleManager.GetModuleType(modname));
+                return;
+            }
+            // Only the mininmum elo is specified...
+            if (args[1].Equals("on") && args.Length == 3)
+            {
+                int min;
+                bool minAcceptable = ((int.TryParse(args[2], out min) && min > 0));
+                if ((!minAcceptable))
+                {
+                    _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModLimitEloCmd));
+                    return;
+                }
+                // Success
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min));
+                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
+                // Finally try to perform the removal of the current players on the server...
+                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
+            }
+                // An elo range (min to max) has been specified...
+            else if (args[1].Equals("on") && args.Length == 4)
+            {
+                int min;
+                int max;
+                bool minAcceptable = ((int.TryParse(args[2], out min) && min > 0));
+                bool maxAcceptable = ((int.TryParse(args[3], out max) && max > 600));
+                if ((!minAcceptable || !maxAcceptable))
+                {
+                    _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModLimitEloCmd));
+                    return;
+                }
+                // Success
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3* ^2[SUCCESS]: ^2{0}^7 Elo limit ^2enabled.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server. ^3*",
+                        _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min, max
+                        ));
+                _ssb.ModuleManager.ModEloLimiter.MinimumRequiredElo = min;
+                _ssb.ModuleManager.ModEloLimiter.MaximumRequiredElo = max;
+                // Finally try to perform the removal of the current players on the server...
+                await _ssb.ModuleManager.ModEloLimiter.BatchRemoveEloPlayers();
+            }
+            else
+            {
+                _ssb.QlCommands.QlCmdSay(DisplayCmdArgError(ModLimitEloCmd));
+            }
+        }
+
+        /// <summary>
+        ///     Executes the module list command.
         /// </summary>
         private void ExecModuleListCmd()
         {
-            _ssb.QlCommands.QlCmdSay(string.Format("^3*^7 Modules (^2++^7 means on): {0} ^3*", _ssb.ModuleManager.ValidModulesWithStatus));
+            _ssb.QlCommands.QlCmdSay(string.Format("^3*^7 Modules (^2++^7 means on): {0} ^3*",
+                _ssb.ModuleManager.ValidModulesWithStatus));
         }
 
         /// <summary>
@@ -402,27 +462,31 @@ namespace SSB.Core
             string command = args[0];
             switch (command)
             {
-                // !addauser <name> <level>
+                    // !addauser <name> <level>
                 case AddUserCmd:
                     ExecAddUserCmd(fromUser, args);
                     break;
-                // !deluser <name>
+                    // !deluser <name>
                 case DelUserCmd:
                     ExecDelUserCmd(fromUser, args[1]);
                     break;
-                // !access <name>
+                    // !access <name>
                 case AccessCmd:
                     ExecAccessCmd(fromUser, args);
                     break;
-                // !limitelo <on/off> <min> <max>
-                case LimitEloCmd:
-                    Task e = ExecLimitEloCmd(args);
+                    // [mod] !limitelo <on/off> <min> <max>
+                case ModLimitEloCmd:
+                    Task e = ExecModLimitEloCmd(args);
                     break;
-                // !load <module>
+                    // [mod] !accountdate <on/off> <days>
+                case ModAccountDateCmd:
+                    Task a = ExecModAccountDateCmd(args);
+                    break;
+                    // !load <module>
                 case LoadModuleCmd:
                     ExecLoadModuleCmd(args);
                     break;
-                // !unload <module>
+                    // !unload <module>
                 case UnloadModuleCmd:
                     ExecUnloadModuleCmd(args);
                     break;
@@ -439,20 +503,30 @@ namespace SSB.Core
             string command = args[0];
             switch (command)
             {
-                // !access
+                    // !access
                 case AccessCmd:
                     ExecAccessCmd(fromUser, args);
                     break;
-                // !help
+                    // !help
                 case HelpCmd:
                     ExecHelpCmd();
                     break;
-
+                    // !modules
                 case ModuleListCmd:
                     // !modules
                     ExecModuleListCmd();
                     break;
             }
+        }
+
+        /// <summary>
+        ///     Determines whether a valid command has been specified.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns><c>True</c> if the command is valid, otherwise false.</returns>
+        private bool IsValidCommand(string command)
+        {
+            return (AllBotCommands.Contains(command));
         }
 
         /// <summary>
@@ -467,8 +541,10 @@ namespace SSB.Core
             _cmdRequiredLevel[AddUserCmd] = UserLevel.Admin;
             // !deluser
             _cmdRequiredLevel[DelUserCmd] = UserLevel.Admin;
-            // !elolimiter
-            _cmdRequiredLevel[LimitEloCmd] = UserLevel.Admin;
+            // [mod] !elolimiter
+            _cmdRequiredLevel[ModLimitEloCmd] = UserLevel.Admin;
+            // [mod] !accountdate
+            _cmdRequiredLevel[ModAccountDateCmd] = UserLevel.Admin;
             // !help
             _cmdRequiredLevel[HelpCmd] = UserLevel.None;
             // !load

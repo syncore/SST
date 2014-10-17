@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using SSB.Core;
 
@@ -11,8 +10,8 @@ namespace SSB.Modules
     /// </summary>
     public class ModuleManager
     {
+        private const string MNameAccountDate = "accountdate";
         private const string MNameEloLimiter = "elolimiter";
-
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -21,8 +20,16 @@ namespace SSB.Modules
         public ModuleManager(SynServerBot ssb)
         {
             _ssb = ssb;
-            ValidModules = new List<string> {MNameEloLimiter};
+            ValidModules = new List<string> {MNameEloLimiter, MNameAccountDate};
         }
+
+        /// <summary>
+        ///     Gets the account date module.
+        /// </summary>
+        /// <value>
+        ///     The account date module.
+        /// </value>
+        public AccountDate ModAccountDate { get; private set; }
 
         /// <summary>
         ///     Gets the Elo limiter module.
@@ -31,6 +38,17 @@ namespace SSB.Modules
         ///     The elo limiter module.
         /// </value>
         public EloLimiter ModEloLimiter { get; private set; }
+
+        /// <summary>
+        ///     Gets the name of the account date limit module.
+        /// </summary>
+        /// <value>
+        ///     The name of the account date limit module.
+        /// </value>
+        public string ModNameAccountDate
+        {
+            get { return MNameAccountDate; }
+        }
 
         /// <summary>
         ///     Gets the name of the elo limiter module.
@@ -85,6 +103,10 @@ namespace SSB.Modules
                 case MNameEloLimiter:
                     mod = MNameEloLimiter;
                     break;
+
+                case MNameAccountDate:
+                    mod = MNameAccountDate;
+                    break;
             }
             return mod;
         }
@@ -101,6 +123,10 @@ namespace SSB.Modules
             {
                 case MNameEloLimiter:
                     t = typeof (EloLimiter);
+                    break;
+
+                case MNameAccountDate:
+                    t = typeof (AccountDate);
                     break;
             }
             return t;
@@ -124,6 +150,13 @@ namespace SSB.Modules
                         active = true;
                     }
                     break;
+
+                case MNameAccountDate:
+                    if (ModAccountDate != null && ModAccountDate.IsEnabled)
+                    {
+                        active = true;
+                    }
+                    break;
             }
             return active;
         }
@@ -136,9 +169,13 @@ namespace SSB.Modules
         {
             if (modtype == typeof (EloLimiter))
             {
-                if (IsModuleActive(ModNameEloLimiter)) return;
+                if (IsModuleActive(MNameEloLimiter)) return;
                 ModEloLimiter = new EloLimiter(_ssb) {IsEnabled = true};
-                Debug.WriteLine(string.Format(" *** LOADED: {0} module ***", ModNameEloLimiter));
+            }
+            if (modtype == typeof (AccountDate))
+            {
+                if (IsModuleActive(MNameAccountDate)) return;
+                ModAccountDate = new AccountDate(_ssb) {IsEnabled = true};
             }
         }
 
@@ -150,10 +187,15 @@ namespace SSB.Modules
         {
             if (modtype == typeof (EloLimiter))
             {
-                if (!IsModuleActive(ModNameEloLimiter)) return;
+                if (!IsModuleActive(MNameEloLimiter)) return;
                 ModEloLimiter.IsEnabled = false;
                 ModEloLimiter = null;
-                Debug.WriteLine(string.Format(" *** UNLOADED: {0} module ***", ModNameEloLimiter));
+            }
+            if (modtype == typeof (AccountDate))
+            {
+                if (!IsModuleActive(MNameAccountDate)) return;
+                ModAccountDate.IsEnabled = false;
+                ModAccountDate = null;
             }
         }
     }

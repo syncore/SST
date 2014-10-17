@@ -143,6 +143,11 @@ namespace SSB.Core
                     }
                 }
             }
+            // Account date kick, if active
+            if (_ssb.ModuleManager.IsModuleActive(_ssb.ModuleManager.ModNameAccountDate))
+            {
+                await _ssb.ModuleManager.ModAccountDate.RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+            }
         }
 
         /// <summary>

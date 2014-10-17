@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using SSB.Core;
 using SSB.Database;
 using SSB.Interfaces;
+using SSB.Model;
 
 namespace SSB.Modules
 {
@@ -19,16 +18,18 @@ namespace SSB.Modules
     /// </summary>
     public class AccountDate : ModuleManager, ISsbModule
     {
-        private readonly SynServerBot _ssb;
-        private readonly RegistrationDates _regDateDb;
         private const string UserAgent =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1003.1 Safari/535.19 Awesomium/1.7.1";
-        
+
+        private readonly RegistrationDates _regDateDb;
+        private readonly SynServerBot _ssb;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountDate"/> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public AccountDate(SynServerBot ssb) : base(ssb)
+        public AccountDate(SynServerBot ssb)
+            : base(ssb)
         {
             _ssb = ssb;
             _regDateDb = new RegistrationDates();
@@ -51,34 +52,18 @@ namespace SSB.Modules
         public int MinimumDaysRequired { get; set; }
 
         /// <summary>
-        /// Loads this instance.
-        /// </summary>
-        public void Load()
-        {
-            Load(GetType());
-        }
-
-        /// <summary>
-        /// Unloads this instance.
-        /// </summary>
-        public void Unload()
-        {
-            Unload(GetType());
-        }
-
-        /// <summary>
         /// Asynchrounously scrapes the Quakelive.com site to retrieve the player's registration date.
         /// </summary>
         /// <returns><c>true</c> if the player was found on QL site, otherwise <c>false</c>.</returns>
         /// <remarks>Unfortunately, this is the best way to do this, since there is no exposed QL API for this.
         /// </remarks>
-        private async Task<string> GetUserRegistrationDateFromQl(string user)
+        public async Task<DateTime> GetUserRegistrationDateFromQl(string user)
         {
             var httpClientHandler = new HttpClientHandler();
             var httpClient = new HttpClient(httpClientHandler);
             var playerurl = "http://www.quakelive.com/profile/summary/" + user.ToLowerInvariant();
-            var regdate = string.Empty;
-            //var playerurl = "http://10.0.0.7/parsetest.html";
+            var registeredDate = new DateTime();
+            //var playerurl = "http://10.0.0.7/datetest.html";
 
             using (httpClient)
             {
@@ -104,7 +89,6 @@ namespace SSB.Modules
                             /* <div class="prf_vitals">
                             <img src="http://cdn.quakelive.com/web/2014091104/images/profile/titles/ttl_vitalstats_v2014091104.0.png" alt="Vital Stats" width="108" height="13" class="prf_title" />
                             <br />
-                
                             <p>
                             <b>Member Since:</b> Sep. 19, 2014<br />
                             .
@@ -114,8 +98,9 @@ namespace SSB.Modules
 
                             var elem = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(@class,'prf_vitals')]");
                             var pg = elem.SelectSingleNode("p");
-                            regdate = pg.ChildNodes[1].InnerText.Trim();
-                            Debug.WriteLine("Got date text: " + regdate);
+                            string regdateStr = pg.ChildNodes[2].InnerText.Trim();
+                            DateTime.TryParse(regdateStr, out registeredDate);
+                            Debug.WriteLine("Got date text: " + regdateStr);
                         }
                     }
                 }
@@ -124,31 +109,88 @@ namespace SSB.Modules
                     Debug.WriteLine("Error accessing Quake Live website: " + e.Message);
                 }
             }
-            return regdate;
+            return registeredDate;
         }
-        
-        public async Task CheckUserRegistrationDate(string user)
+
+        /// <summary>
+        /// Loads this instance.
+        /// </summary>
+        public void Load()
+        {
+            Load(GetType());
+        }
+
+        /// <summary>
+        /// Runs the user date check on all current players.
+        /// </summary>
+        /// <param name="players">The players.</param>
+        public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
+        {
+            foreach (var player in players)
+            {
+                await RunUserDateCheck(player.Key);
+            }
+        }
+
+        /// <summary>
+        /// Unloads this instance.
+        /// </summary>
+        public void Unload()
+        {
+            Unload(GetType());
+        }
+
+        /// <summary>
+        /// Gets the user's registration date.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>The user's registration date as a DateTime object.</returns>
+        private async Task<DateTime> GetUserRegistrationDate(string user)
         {
             // See if the user already exists
-            string dateStr = string.Empty;
+            _regDateDb.RetrieveAllUsers();
             DateTime registeredDate;
-            if (_regDateDb.UsersWithDates.TryGetValue(user, out dateStr))
+            if (_regDateDb.UsersWithDates.TryGetValue(user, out registeredDate))
             {
-                if (DateTime.TryParse(dateStr, out registeredDate))
-                {
-                    
-                } 
+                return registeredDate;
             }
             else
             {
-                dateStr = await GetUserRegistrationDateFromQl(user);
-                
-                if (!string.IsNullOrEmpty(dateStr))
-                {
-                    _regDateDb.AddUserToDb(user, dateStr);
-                }
+                // User doesn't exist in our db, retrieve from QL.
+                registeredDate = await GetUserRegistrationDateFromQl(user);
+                _regDateDb.AddUserToDb(user, registeredDate);
             }
-         }
-        
+            return registeredDate;
+        }
+
+        /// <summary>
+        /// Runs the user date check on a given player.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        private async Task RunUserDateCheck(string user)
+        {
+            DateTime date = await GetUserRegistrationDate(user);
+            VerifyUserDate(user, date);
+        }
+
+        /// <summary>
+        /// Verifies the user's registration date and kicks the user if the requirement is not met.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="regDate">The user's registration date.</param>
+        private void VerifyUserDate(string user, DateTime regDate)
+        {
+            DateTime now = DateTime.Now;
+            if ((now - regDate).TotalDays < MinimumDaysRequired)
+            {
+                Debug.WriteLine("User {0} has created account within the last {1} days. Date created: {2}. Kicking...",
+                    user, MinimumDaysRequired, regDate);
+                _ssb.QlCommands.QlCmdKickban(user);
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the server limit of^2 {2}^7 days ^3*",
+                        user, regDate.ToString("d"), MinimumDaysRequired));
+            }
+        }
     }
 }

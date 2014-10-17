@@ -21,7 +21,7 @@ namespace SSB.Database
         /// </summary>
         public RegistrationDates()
         {
-            UsersWithDates = new Dictionary<string, string>();
+            UsersWithDates = new Dictionary<string, DateTime>();
             VerifyRegistrationDb();
             RetrieveAllUsers();
         }
@@ -32,15 +32,14 @@ namespace SSB.Database
         /// <value>
         ///     All users with registration dates.
         /// </value>
-        public Dictionary<string, string> UsersWithDates { get; set; }
+        public Dictionary<string, DateTime> UsersWithDates { get; set; }
 
         /// <summary>
-        /// Adds the user to the database.
+        ///     Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="registrationDate">The user's QL account registration date.</param>
-
-        public void AddUserToDb(string user, string registrationDate)
+        public void AddUserToDb(string user, DateTime registrationDate)
         {
             if (VerifyRegistrationDb())
             {
@@ -137,7 +136,8 @@ namespace SSB.Database
                                 {
                                     while (reader.Read())
                                     {
-                                        UsersWithDates[(string)reader["user"]] = (string)reader["acctdate"];
+                                        UsersWithDates[(string)reader["user"]] =
+                                            (DateTime)reader["acctdate"];
                                     }
                                 }
                             }
@@ -225,8 +225,9 @@ namespace SSB.Database
                                     "User: {0} does not exist in the registration database.", user));
                                 return false;
                             }
-                            Debug.WriteLine(string.Format("User: {0} already exists in the registration database.",
-                                user));
+                            Debug.WriteLine(
+                                string.Format("User: {0} already exists in the registration database.",
+                                    user));
                             return true;
                         }
                     }

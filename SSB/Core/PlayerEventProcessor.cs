@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using SSB.Model;
-using SSB.Modules;
 
 namespace SSB.Core
 {
@@ -84,6 +82,5 @@ namespace SSB.Core
                         player));
             }
         }
-
     }
 }
