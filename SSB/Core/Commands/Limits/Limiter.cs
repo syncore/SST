@@ -11,10 +11,9 @@ namespace SSB.Core.Commands.Limits
         ///     Initializes a new instance of the <see cref="Limiter" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="users">The users database.</param>
-        public Limiter(SynServerBot ssb, Users users)
+        public Limiter(SynServerBot ssb)
         {
-            EloLimit = new EloLimit(ssb, users);
+            EloLimit = new EloLimit(ssb);
             AccountDateLimit = new AccountDateLimit(ssb);
         }
 

@@ -21,11 +21,10 @@ namespace SSB.Core.Commands
         ///     Initializes a new instance of the <see cref="AddUserCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="users">The users database.</param>
-        public AddUserCmd(SynServerBot ssb, Users users)
+        public AddUserCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = users;
+            _users = new Users();
         }
 
         /// <summary>

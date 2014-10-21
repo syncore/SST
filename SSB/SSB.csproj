@@ -68,6 +68,7 @@
     <Compile Include="Config\CoreConfig.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\AccessCmd.cs" />
+    <Compile Include="Core\Commands\KickBanCmd.cs" />
     <Compile Include="Core\Commands\Limits\AccountDateLimit.cs" />
     <Compile Include="Core\Commands\AddUserCmd.cs" />
     <Compile Include="Core\Commands\DelUserCmd.cs" />

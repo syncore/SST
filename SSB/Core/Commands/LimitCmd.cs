@@ -27,12 +27,11 @@ namespace SSB.Core.Commands
         ///     Initializes a new instance of the <see cref="LimitCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="users">The users database.</param>
         /// <param name="limiter">The command limiter manager.</param>
-        public LimitCmd(SynServerBot ssb, Users users, Limiter limiter)
+        public LimitCmd(SynServerBot ssb, Limiter limiter)
         {
             _ssb = ssb;
-            _users = users;
+            _users = new Users();
             _limiter = limiter;
             _validLimiters = new List<string> {AccountDateLimitArg, EloLimitArg};
             HasAsyncExecution = true;

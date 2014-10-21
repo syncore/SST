@@ -22,11 +22,10 @@ namespace SSB.Core.Commands.Limits
         ///     Initializes a new instance of the <see cref="EloLimit" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="users">The users database.</param>
-        public EloLimit(SynServerBot ssb, Users users)
+        public EloLimit(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = users;
+            _users = new Users();
         }
 
         /// <summary>

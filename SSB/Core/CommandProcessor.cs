@@ -28,14 +28,15 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _users = new Users();
-            Limiter = new Limiter(_ssb, _users);
+            Limiter = new Limiter(_ssb);
             _commands = new Dictionary<string, IBotCommand>
             {
-                {"access", new AccessCmd(_ssb, _users)},
-                {"adduser", new AddUserCmd(_ssb, _users)},
-                {"deluser", new DelUserCmd(_ssb, _users)},
+                {"access", new AccessCmd(_ssb)},
+                {"adduser", new AddUserCmd(_ssb)},
+                {"deluser", new DelUserCmd(_ssb)},
                 {"help", new HelpCmd(_ssb)},
-                {"limit", new LimitCmd(_ssb, _users, Limiter)}
+                {"limit", new LimitCmd(_ssb, Limiter)},
+                {"kickban", new KickBanCmd(_ssb)}
             };
         }
 
