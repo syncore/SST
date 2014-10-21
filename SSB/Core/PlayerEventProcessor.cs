@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace SSB.Core
 {
@@ -58,9 +57,9 @@ namespace SSB.Core
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
 
             // Check to see if chat message is a valid command
-            if (_ssb.BotCommands.AllBotCommands.Any(msgContent.StartsWith))
+            if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
             {
-                _ssb.BotCommands.ProcessBotCommand(msgFrom, msgContent);
+                var s = _ssb.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
         }
 

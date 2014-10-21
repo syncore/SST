@@ -55,11 +55,11 @@ namespace SSB.Core
                 if (gtnum == 0)
                 {
                     // Special case for FFA
-                    gametype = (QlGameTypes) 999;
+                    gametype = (QlGameTypes)999;
                 }
                 else
                 {
-                    gametype = (QlGameTypes) gtnum;
+                    gametype = (QlGameTypes)gtnum;
                 }
             }
             Debug.WriteLine("This server's gametype is: " + gametype);
@@ -135,18 +135,18 @@ namespace SSB.Core
                 await
                     qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
                 // Elo limiter kick, if active
-                if (_ssb.ModuleManager.IsModuleActive(_ssb.ModuleManager.ModNameEloLimiter))
+                if (_ssb.CommandProcessor.Limiter.EloLimit.IsLimitActive)
                 {
                     foreach (string player in eloNeedsUpdating)
                     {
-                        _ssb.ModuleManager.ModEloLimiter.CheckPlayerEloRequirement(player);
+                        _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
                     }
                 }
             }
             // Account date kick, if active
-            if (_ssb.ModuleManager.IsModuleActive(_ssb.ModuleManager.ModNameAccountDate))
+            if (_ssb.CommandProcessor.Limiter.AccountDateLimit.IsLimitActive)
             {
-                await _ssb.ModuleManager.ModAccountDate.RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+                await _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
             }
         }
 

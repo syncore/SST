@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using SSB.Modules;
 using SSB.Ui;
 using SSB.Util;
 
@@ -24,12 +23,11 @@ namespace SSB.Core
             GuiControls = new GuiControls();
             ServerInfo = new ServerInfo();
             QlCommands = new QlCommands(this);
-            ModuleManager = new ModuleManager(this);
             Parser = new Parser();
             QlWindowUtils = new QlWindowUtils();
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
             ServerEventProcessor = new ServerEventProcessor(this);
-            BotCommands = new BotCommands(this);
+            CommandProcessor = new CommandProcessor(this);
 
             // Start reading the console
             StartConsoleReadThread();
@@ -38,20 +36,14 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the bot commands.
-        /// </summary>
-        /// <value>
-        ///     The bot commands.
-        /// </value>
-        public BotCommands BotCommands { get; private set; }
-
-        /// <summary>
         ///     Gets or sets the name of the account that is running the bot.
         /// </summary>
         /// <value>
         ///     The name of the account that is running the bot.
         /// </value>
         public string BotName { get; set; }
+
+        public CommandProcessor CommandProcessor { get; private set; }
 
         /// <summary>
         ///     Gets the console text processor.
@@ -76,14 +68,6 @@ namespace SSB.Core
         ///     The GUI options.
         /// </value>
         public GuiOptions GuiOptions { get; private set; }
-
-        /// <summary>
-        ///     Gets the module manager.
-        /// </summary>
-        /// <value>
-        ///     The module manager.
-        /// </value>
-        public ModuleManager ModuleManager { get; private set; }
 
         /// <summary>
         ///     Gets the Parser.

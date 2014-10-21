@@ -63,15 +63,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\BotCommands.cs" />
     <Compile Include="Config\ConfigHandler.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\CoreConfig.cs" />
+    <Compile Include="Core\CommandProcessor.cs" />
+    <Compile Include="Core\Commands\AccessCmd.cs" />
+    <Compile Include="Core\Commands\Limits\AccountDateLimit.cs" />
+    <Compile Include="Core\Commands\AddUserCmd.cs" />
+    <Compile Include="Core\Commands\DelUserCmd.cs" />
+    <Compile Include="Core\Commands\Limits\EloLimit.cs" />
+    <Compile Include="Core\Commands\HelpCmd.cs" />
+    <Compile Include="Core\Commands\LimitCmd.cs" />
+    <Compile Include="Core\Commands\Limits\Limiter.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Enum\DbResult.cs" />
     <Compile Include="Enum\QlGameTypes.cs" />
+    <Compile Include="Interfaces\IBotCommand.cs" />
+    <Compile Include="Interfaces\ILimit.cs" />
     <Compile Include="Interfaces\ISsbModule.cs" />
+    <Compile Include="Model\CmdArgs.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />
     <Compile Include="Model\QlRanks\Duel.cs" />
@@ -80,9 +91,6 @@
     <Compile Include="Model\QlRanks\QlRanks.cs" />
     <Compile Include="Model\QlRanks\QlRanksPlayer.cs" />
     <Compile Include="Model\QlRanks\Tdm.cs" />
-    <Compile Include="Modules\AccountDate.cs" />
-    <Compile Include="Modules\EloLimiter.cs" />
-    <Compile Include="Modules\ModuleManager.cs" />
     <Compile Include="Util\EloCache.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
