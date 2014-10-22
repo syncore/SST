@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using SSB.Enum;
-using SSB.Interfaces;
 using SSB.Util;
 
 namespace SSB.Core
@@ -10,7 +10,7 @@ namespace SSB.Core
     /// <summary>
     ///     Class responsible for sending various commands to QL.
     /// </summary>
-    public class QlCommands : IQlCommands
+    public class QlCommands
     {
         private readonly SynServerBot _ssb;
 
@@ -58,12 +58,12 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         /// <remarks>Our version takes the player name as an argument and converts it into the
         /// playerID required for the actual QL command.</remarks>
-        public void CustCmdKickban(string player)
+        public async Task CustCmdKickban(string player)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            string id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
             if (!String.IsNullOrEmpty(id))
             {
-                SendToQl(string.Format("kickban {0}", id), false);
+                await SendToQlAsync(string.Format("kickban {0}", id), false);
             }
             else
             {
@@ -80,23 +80,23 @@ namespace SSB.Core
         /// <remarks>
         /// Our version takes the player name as an argument and converts it into the playerID required for the actual QL command.
         /// </remarks>
-        public void CustCmdPutPlayer(string player, Team team)
+        public async Task CustCmdPutPlayer(string player, Team team)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            string id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
             if (!String.IsNullOrEmpty(id))
             {
                 switch (team)
                 {
                     case Team.Blue:
-                        SendToQl(string.Format("put {0} b", id), false);
+                        await SendToQlAsync(string.Format("put {0} b", id), false);
                         break;
 
                     case Team.Red:
-                        SendToQl(string.Format("put {0} r", id), false);
+                        await SendToQlAsync(string.Format("put {0} r", id), false);
                         break;
 
                     case Team.Spec:
-                        SendToQl(string.Format("put {0} s", id), false);
+                        await SendToQlAsync(string.Format("put {0} s", id), false);
                         break;
                 }
             }
@@ -112,40 +112,53 @@ namespace SSB.Core
         /// </summary>
         public void QlCmdClear()
         {
-            SendToQl("clear", false);
+            SendQlCommand("clear", false);
         }
 
         /// <summary>
         ///     Sends the 'configstrings' command to QL.
         /// </summary>
-        public void QlCmdConfigStrings()
+        public async Task QlCmdConfigStrings()
         {
-            SendToQl("configstrings", true);
+            await SendToQlAsync("configstrings", true);
         }
 
         /// <summary>
         ///     Sends the 'players' command to QL.
         /// </summary>
-        public void QlCmdPlayers()
+        public async Task QlCmdPlayers()
         {
-            SendToQl("players", true);
+            await SendToQlAsync("players", true);
         }
 
         /// <summary>
         ///     Sends the 'say' command to QL.
         /// </summary>
         /// <param name="text">The text to say.</param>
-        public void QlCmdSay(string text)
+        /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
+        public async Task QlCmdSay(string text)
         {
-            SendToQl(string.Format("say {0}", text), false);
+            await Task.Delay(500);
+            Action<string> say = DoSay;
+            say(text);
         }
 
         /// <summary>
         ///     Sends the 'serverinfo' command to QL.
         /// </summary>
-        public void QlCmdServerInfo()
+        public async Task QlCmdServerInfo()
         {
-            SendToQl("serverinfo", true);
+            await SendToQlAsync("serverinfo", true);
+        }
+
+        /// <summary>
+        /// Send a synchronous command, typically for retrieving cvars.
+        /// </summary>
+        /// <param name="toSend">The command (cvar) to send.</param>
+        /// <param name="delay">if set to <c>true</c> send with a delay.</param>
+        public void SendCvarReq(string toSend, bool delay)
+        {
+            SendQlCommand(toSend, delay);
         }
 
         /// <summary>
@@ -157,7 +170,28 @@ namespace SSB.Core
         ///     Some commands that return significant amounts of text (i.e. serverinfo) have to have some time to be
         ///     received, so a delay is necessary.
         /// </remarks>
-        public void SendToQl(string toSend, bool delay)
+        public async Task SendToQlAsync(string toSend, bool delay)
+        {
+            await Task.Delay(500);
+            Action<string, bool> sendQl = SendQlCommand;
+            sendQl(toSend, delay);
+        }
+
+        /// <summary>
+        /// Sends the 'say' command to QL.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        private void DoSay(string text)
+        {
+            SendQlCommand(string.Format("say {0}", text), false);
+        }
+
+        /// <summary>
+        /// Sends the QL command.
+        /// </summary>
+        /// <param name="toSend">To send.</param>
+        /// <param name="delay">if set to <c>true</c> [delay].</param>
+        private void SendQlCommand(string toSend, bool delay)
         {
             IntPtr iText =
                 _ssb.QlWindowUtils.GetQuakeLiveConsoleInputArea(_ssb.QlWindowUtils.GetQuakeLiveConsoleWindow());

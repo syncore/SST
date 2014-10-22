@@ -22,16 +22,7 @@ namespace SSB.Core.Commands.Admin
         public UnpauseCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            HasAsyncExecution = false;
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -59,28 +50,18 @@ namespace SSB.Core.Commands.Admin
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public Task DisplayArgLengthError(CmdArgs c)
         {
-        }
-
-        /// <summary>
-        ///     Executes the specified command.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        public void Exec(CmdArgs c)
-        {
-            _ssb.QlCommands.SendToQl("unpause", false);
+            throw new NotImplementedException();
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task ExecAsync(CmdArgs c)
+        public async Task ExecAsync(CmdArgs c)
         {
-            throw new NotImplementedException();
+            await _ssb.QlCommands.SendToQlAsync("unpause", false);
         }
     }
 }

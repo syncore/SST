@@ -22,16 +22,7 @@ namespace SSB.Core.Commands.Owner
         public StopServerCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            HasAsyncExecution = true;
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -59,21 +50,11 @@ namespace SSB.Core.Commands.Owner
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} delay - delay is in seconds.",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
-        }
-
-        /// <summary>
-        /// Executes the specified command.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public void Exec(CmdArgs c)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -86,23 +67,27 @@ namespace SSB.Core.Commands.Owner
             bool delayIsNum = (int.TryParse(c.Args[1], out delay));
             if (delayIsNum)
             {
-                _ssb.QlCommands.QlCmdSay(string.Format("^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!", delay));
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
+                            delay));
                 await Task.Delay(delay * 1000);
                 Action doShutdown = DoShutdown;
                 doShutdown();
             }
             else
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
             }
         }
 
         /// <summary>
-        /// Does the shutdown.
+        ///     Does the shutdown.
         /// </summary>
-        private void DoShutdown()
+        private async void DoShutdown()
         {
-            _ssb.QlCommands.SendToQl("stopserver", false);
+            await _ssb.QlCommands.SendToQlAsync("stopserver", false);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SSB.Enum;
 using SSB.Model;
 
 namespace SSB.Core
@@ -18,27 +17,19 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Gets or sets the state of the current game.
-        /// </summary>
-        /// <value>
-        /// The state of the current game.
-        /// </value>
-        public QlGameStates CurrentGameState { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the type of the current game.
-        /// </summary>
-        /// <value>
-        ///     The type of the current game.
-        /// </value>
-        public QlGameTypes CurrentGameType { get; set; }
-
-        /// <summary>
         ///     Gets the current players.
         /// </summary>
         /// <value>
         ///     The current players.
         /// </value>
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the current server identifier.
+        /// </summary>
+        /// <value>
+        /// The current server identifier.
+        /// </value>
+        public string CurrentServerId { get; set; }
     }
 }

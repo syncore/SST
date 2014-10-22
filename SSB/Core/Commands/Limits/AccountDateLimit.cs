@@ -37,20 +37,20 @@ namespace SSB.Core.Commands.Limits
         }
 
         /// <summary>
-        ///     Gets or sets the minimum days that an account must be registered.
-        /// </summary>
-        /// <value>
-        ///     The minimum days that an account must be registered.
-        /// </value>
-        public int MinimumDaysRequired { get; set; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether the account date limit is active.
         /// </summary>
         /// <value>
         ///     <c>true</c> if the account date limit is active; otherwise, <c>false</c>.
         /// </value>
         public bool IsLimitActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the minimum days that an account must be registered.
+        /// </summary>
+        /// <value>
+        ///     The minimum days that an account must be registered.
+        /// </value>
+        public int MinimumDaysRequired { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -67,9 +67,9 @@ namespace SSB.Core.Commands.Limits
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
                 CommandProcessor.BotCommandPrefix, c.CmdName, LimitCmd.AccountDateLimitArg));
         }
@@ -82,26 +82,26 @@ namespace SSB.Core.Commands.Limits
         {
             if (c.Args.Length < _minLimitArgs)
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
                 return;
             }
 
             // Disable account date limiter
             if (c.Args[2].Equals("off"))
             {
-                DisableAccountDateLimiter();
+                await DisableAccountDateLimiter();
                 return;
             }
             int days;
             bool isValidNum = ((int.TryParse(c.Args[2], out days) && days > 0));
             if ((!isValidNum))
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
                 return;
             }
             IsLimitActive = true;
             MinimumDaysRequired = days;
-            _ssb.QlCommands.QlCmdSay(
+            await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^2[SUCCESS]^7 Account date limit ^2ON.^7 Players with accounts registered in the last^1 {0}^7 days may not play.",
                     days));
@@ -192,10 +192,10 @@ namespace SSB.Core.Commands.Limits
         /// <summary>
         ///     Disables the account date limiter.
         /// </summary>
-        private void DisableAccountDateLimiter()
+        private async Task DisableAccountDateLimiter()
         {
             IsLimitActive = false;
-            _ssb.QlCommands.QlCmdSay(
+            await _ssb.QlCommands.QlCmdSay(
                 "^2[SUCCESS]^7 Account date limit ^1OFF^7. Players who registered on any date can play.");
         }
 
@@ -226,7 +226,7 @@ namespace SSB.Core.Commands.Limits
         private async Task RunUserDateCheck(string user)
         {
             DateTime date = await GetUserRegistrationDate(user);
-            VerifyUserDate(user, date);
+            await VerifyUserDate(user, date);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace SSB.Core.Commands.Limits
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="regDate">The user's registration date.</param>
-        private void VerifyUserDate(string user, DateTime regDate)
+        private async Task VerifyUserDate(string user, DateTime regDate)
         {
             DateTime now = DateTime.Now;
             if ((now - regDate).TotalDays < MinimumDaysRequired)
@@ -242,8 +242,8 @@ namespace SSB.Core.Commands.Limits
                 Debug.WriteLine(
                     "User {0} has created account within the last {1} days. Date created: {2}. Kicking...",
                     user, MinimumDaysRequired, regDate);
-                _ssb.QlCommands.CustCmdKickban(user);
-                _ssb.QlCommands.QlCmdSay(
+                await _ssb.QlCommands.CustCmdKickban(user);
+                await _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2}^7 days",
                         user, regDate.ToString("d"), MinimumDaysRequired));

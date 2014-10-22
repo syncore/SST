@@ -27,15 +27,8 @@ namespace SSB.Core.Commands.Limits
         {
             _ssb = ssb;
             _users = new Users();
-        }
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether the elo limit is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLimitActive { get; set; }
+        }
 
         /// <summary>
         ///     Gets or sets the maximum required Elo.
@@ -54,12 +47,79 @@ namespace SSB.Core.Commands.Limits
         public int MinimumRequiredElo { get; set; }
 
         /// <summary>
-        /// Gets the minimum arguments.
+        ///     Gets or sets a value indicating whether the elo limit is active.
         /// </summary>
         /// <value>
-        /// The minimum arguments.
+        ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
         /// </value>
-        public int MinLimitArgs { get { return _minLimitArgs; } }
+        public bool IsLimitActive { get; set; }
+
+        /// <summary>
+        ///     Gets the minimum arguments.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments.
+        /// </value>
+        public int MinLimitArgs
+        {
+            get { return _minLimitArgs; }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of the game for the server.
+        /// </summary>
+        /// <value>
+        /// The type of the game.
+        /// </value>
+        public QlGameTypes GameType { get; set; }
+
+        /// <summary>
+        ///     Displays the argument length error.
+        /// </summary>
+        /// <param name="c">The command args</param>
+        public async Task DisplayArgLengthError(CmdArgs c)
+        {
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <minimumelo> [maximumelo] ^7 - minimumelo must be >0 & maximumelo must be >600",
+                CommandProcessor.BotCommandPrefix, c.CmdName, LimitCmd.EloLimitArg));
+        }
+
+        /// <summary>
+        ///     Evaluates the elo limit command.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        public async Task EvalLimitCmdAsync(CmdArgs c)
+        {
+            if (c.Args.Length < _minLimitArgs)
+            {
+                await DisplayArgLengthError(c);
+                return;
+            }
+
+            if (!CouldGetGameType().Result)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 Unable to process gametype information. Try again.");
+                return;
+            }
+            // Disable elo limiter
+            if (c.Args[2].Equals("off"))
+            {
+                await DisableEloLimiter();
+                return;
+            }
+            switch (c.Args.Length)
+            {
+                    // Only the minimum elo is specified...
+                case 3:
+                    await HandleMinEloSpecified(c);
+                    break;
+                    // Minimum and maximum elo range is specified...
+                case 4:
+                    await HandleEloRangeSpecified(c);
+                    break;
+            }
+        }
 
         /// <summary>
         ///     Removes players from server who do not meet the specified Elo requirements immediately after enabling the elo
@@ -70,8 +130,8 @@ namespace SSB.Core.Commands.Limits
             var qlrHelper = new QlRanksHelper();
             // First make sure that the elo is correct and fetch if not
             List<string> playersToUpdate = (from player in _ssb.ServerInfo.CurrentPlayers
-                                            where qlrHelper.PlayerHasInvalidEloData(player.Value)
-                                            select player.Key).ToList();
+                where qlrHelper.PlayerHasInvalidEloData(player.Value)
+                select player.Key).ToList();
             if (playersToUpdate.Any())
             {
                 QlRanks qlr =
@@ -79,7 +139,7 @@ namespace SSB.Core.Commands.Limits
                         qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, playersToUpdate);
                 if (qlr == null)
                 {
-                    _ssb.QlCommands.QlCmdSay(
+                    await _ssb.QlCommands.QlCmdSay(
                         "^1[ERROR]^7 Unable to retrieve QlRanks data. Elo limit might not be enforced.");
                 }
             }
@@ -93,7 +153,7 @@ namespace SSB.Core.Commands.Limits
                         player.Key));
                     break;
                 }
-                KickPlayerIfEloNotMet(player.Key);
+                await KickPlayerIfEloNotMet(player.Key);
             }
         }
 
@@ -101,81 +161,46 @@ namespace SSB.Core.Commands.Limits
         ///     Checks to see if the player meets the elo requirement on connect.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void CheckPlayerEloRequirement(string player)
+        public async Task CheckPlayerEloRequirement(string player)
         {
             long playerElo = GetEloTypeToCompare(player);
             // Likely invalid, skip.
             if (playerElo == 0) return;
-            KickPlayerIfEloNotMet(player);
-        }
-
-        /// <summary>
-        ///     Displays the argument length error.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        public void DisplayArgLengthError(CmdArgs c)
-        {
-            _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <minimumelo> [maximumelo] ^7 - minimumelo must be >0 & maximumelo must be >600",
-                CommandProcessor.BotCommandPrefix, c.CmdName, LimitCmd.EloLimitArg));
-        }
-
-        /// <summary>
-        ///     Evaluates the elo limit command.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task EvalLimitCmdAsync(CmdArgs c)
-        {
-            if (c.Args.Length < _minLimitArgs)
-            {
-                DisplayArgLengthError(c);
-                return;
-            }
-
-            if (!CouldGetServerType())
-            {
-                _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 Unable to process gametype information. Try again.");
-                return;
-            }
-            // Disable elo limiter
-            if (c.Args[2].Equals("off"))
-            {
-                DisableEloLimiter();
-                return;
-            }
-            switch (c.Args.Length)
-            {
-                // Only the minimum elo is specified...
-                case 3:
-                    await HandleMinEloSpecified(c);
-                    break;
-                // Minimum and maximum elo range is specified...
-                case 4:
-                    await HandleEloRangeSpecified(c);
-                    break;
-            }
+            await KickPlayerIfEloNotMet(player);
         }
 
         /// <summary>
         ///     Determines whether the current type of server could be obtained.
         /// </summary>
         /// <returns><c>true</c>if the server type could be obtained, otherwise <c>false</c>.</returns>
-        private bool CouldGetServerType()
+        private async Task<bool> CouldGetGameType()
         {
-            _ssb.QlCommands.SendToQl("g_gametype", true);
-            return _ssb.ServerInfo.CurrentGameType != QlGameTypes.Unspecified;
+            var serverId = _ssb.ServerInfo.CurrentServerId;
+            if (string.IsNullOrEmpty(serverId))
+            {
+                Debug.WriteLine("ELOLIMITER: Server id is empty. Now trying to request serverinfo...");
+                await _ssb.QlCommands.QlCmdServerInfo();
+                return false;
+            }
+            var qlApiQuery = new QlRemoteInfoRetriever();
+            var gametype = await qlApiQuery.GetGameType(serverId);
+            if (gametype != QlGameTypes.Unspecified)
+            {
+                GameType = gametype;
+            }
+            return gametype != QlGameTypes.Unspecified;
         }
 
         /// <summary>
         ///     Disables the elo limiter.
         /// </summary>
-        private void DisableEloLimiter()
+        private async Task DisableEloLimiter()
         {
             IsLimitActive = false;
-            _ssb.QlCommands.QlCmdSay(
+            await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^2[SUCCESS]^7 {0} Elo limit ^1disabled^7. Players with any {0} Elo can now play on this server.",
-                    _ssb.ServerInfo.CurrentGameType.ToString().ToUpper()));
+                    ((GameType != QlGameTypes.Unspecified) ? GameType.ToString().ToUpper() : "")));
         }
 
         /// <summary>
@@ -188,7 +213,7 @@ namespace SSB.Core.Commands.Limits
             PlayerInfo pi;
             if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pi)) return 0;
             long elo = 0;
-            switch (_ssb.ServerInfo.CurrentGameType)
+            switch (GameType)
             {
                 case QlGameTypes.Ca:
                     elo = _ssb.ServerInfo.CurrentPlayers[player].EloData.CaElo;
@@ -225,16 +250,16 @@ namespace SSB.Core.Commands.Limits
             bool maxAcceptable = ((int.TryParse(c.Args[3], out max) && max > 600));
             if ((!minAcceptable || !maxAcceptable))
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
                 return;
             }
             IsLimitActive = true;
             MinimumRequiredElo = min;
             MaximumRequiredElo = max;
-            _ssb.QlCommands.QlCmdSay(
+            await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^2[SUCCESS]: ^2{0}^7 Elo limit ^2ON.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server.",
-                    _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min, max
+                    GameType.ToString().ToUpper(), min, max
                     ));
             await BatchRemoveEloPlayers();
         }
@@ -249,15 +274,15 @@ namespace SSB.Core.Commands.Limits
             bool minAcceptable = ((int.TryParse(c.Args[2], out min) && min > 0));
             if ((!minAcceptable))
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
                 return;
             }
             IsLimitActive = true;
             MinimumRequiredElo = min;
-            _ssb.QlCommands.QlCmdSay(
+            await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^2[SUCCESS]: ^2{0}^7 Elo limit ^2ON.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server.",
-                    _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), min));
+                    GameType.ToString().ToUpper(), min));
             await BatchRemoveEloPlayers();
         }
 
@@ -265,7 +290,7 @@ namespace SSB.Core.Commands.Limits
         ///     Kicks the player if player does not meet the server's elo requirements.
         /// </summary>
         /// <param name="player">The player.</param>
-        private void KickPlayerIfEloNotMet(string player)
+        private async Task KickPlayerIfEloNotMet(string player)
         {
             bool hasMaxElo = MaximumRequiredElo != 0;
             // Elo limits don't apply to SuperUsers or higher
@@ -279,24 +304,24 @@ namespace SSB.Core.Commands.Limits
             if (playerElo < MinimumRequiredElo)
             {
                 Debug.WriteLine("{0}'s {1} Elo is less than min ({2})...Kicking.", player,
-                    _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), MinimumRequiredElo);
-                _ssb.QlCommands.CustCmdKickban(player);
-                _ssb.QlCommands.QlCmdSay(
+                    GameType.ToString().ToUpper(), MinimumRequiredElo);
+                await _ssb.QlCommands.CustCmdKickban(player);
+                await _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
-                        player, _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), playerElo,
+                        player,GameType.ToString().ToUpper(), playerElo,
                         MinimumRequiredElo, hasMaxElo ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""));
                 return;
             }
             if (!hasMaxElo) return;
             if (playerElo <= MaximumRequiredElo) return;
             Debug.WriteLine("{0}'s {1} Elo is greater than max ({2})...Kicking.", player,
-                _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), MaximumRequiredElo);
-            _ssb.QlCommands.CustCmdKickban(player);
-            _ssb.QlCommands.QlCmdSay(
+                GameType.ToString().ToUpper(), MaximumRequiredElo);
+            await _ssb.QlCommands.CustCmdKickban(player);
+            await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} Max:^1 {4}",
-                    player, _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), playerElo,
+                    player, GameType.ToString().ToUpper(), playerElo,
                     MinimumRequiredElo, MaximumRequiredElo));
         }
     }

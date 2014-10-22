@@ -46,7 +46,7 @@ namespace SSB.Core
         /// </summary>
         /// <param name="player">The player whose id needs to be retrieved.</param>
         /// <returns>The player</returns>
-        public string GetPlayerId(string player)
+        public async Task<string> GetPlayerId(string player)
         {
             PlayerInfo pinfo;
             string id = string.Empty;
@@ -58,7 +58,7 @@ namespace SSB.Core
             else
             {
                 // Player doesn't exist, request players from server
-                _ssb.QlCommands.QlCmdPlayers();
+                await _ssb.QlCommands.QlCmdPlayers();
                 // Try again
                 if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo)) return id;
                 Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
@@ -83,18 +83,20 @@ namespace SSB.Core
             foreach (T p in playersText)
             {
                 string text = p.ToString();
-                string player = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
+                string playerNameOnly = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
+                string playerAndClan = text.Substring(text.IndexOf(" ", StringComparison.Ordinal)).Trim();
                 string id = text.Substring(0, 2).Trim();
-                Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n", player, id));
-                _ssb.ServerInfo.CurrentPlayers[player] = new PlayerInfo(player, id);
-                if (qlranksHelper.DoesCachedEloExist(player))
+                Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n", playerNameOnly, id));
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, playerAndClan, id);
+
+                if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
                 {
-                    qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, player);
+                    qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
                 }
                 else
                 {
-                    qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, player);
-                    eloNeedsUpdating.Add(player);
+                    qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                    eloNeedsUpdating.Add(playerNameOnly);
                 }
             }
             // Clear
@@ -110,7 +112,7 @@ namespace SSB.Core
                 {
                     foreach (string player in eloNeedsUpdating)
                     {
-                        _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
+                        await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
                     }
                 }
             }
@@ -169,67 +171,11 @@ namespace SSB.Core
         {
             string serverId = ConsoleTextProcessor.Strip(text.Replace("sv_gtid", ""));
             //string serverId = ConsoleTextProcessor.Strip(text.Replace("sv_adXmitDelay", ""));
+            _ssb.ServerInfo.CurrentServerId = serverId;
             Debug.WriteLine("Found server id: " + serverId);
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
-        }
-
-        /// <summary>
-        /// Handles the state of the game running on this server.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns>The gamestate as a <see cref="QlGameStates"/> enum.</returns>
-        public QlGameStates HandleGameState(string text)
-        {
-            var gamestate = QlGameStates.Unspecified;
-            string state = ConsoleTextProcessor.GetCvarValue(text);
-            switch (state)
-            {
-                case "PRE_GAME":
-                    gamestate = QlGameStates.Warmup;
-                    break;
-
-                case "COUNT_DOWN":
-                    gamestate = QlGameStates.Countdown;
-                    break;
-
-                case "IN_PROGRESS":
-                    gamestate = QlGameStates.InProgress;
-                    break;
-            }
-            SetGameState(gamestate);
-            Debug.WriteLine("Got gamestate: " + gamestate);
-            return gamestate;
-        }
-
-        /// <summary>
-        ///     Handles the type of game running on this server.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns>The gametype as a <see cref="QlGameTypes" /> enum.</returns>
-        public QlGameTypes HandleGameType(string text)
-        {
-            var gametype = QlGameTypes.Unspecified;
-            string gt = ConsoleTextProcessor.GetCvarValue(text);
-            int gtnum;
-            bool isNum = (int.TryParse(gt, out gtnum));
-            if (isNum)
-            {
-                if (gtnum == 0)
-                {
-                    // Special case for FFA
-                    gametype = (QlGameTypes)999;
-                }
-                else
-                {
-                    gametype = (QlGameTypes)gtnum;
-                }
-            }
-            Debug.WriteLine("This server's gametype is: " + gametype);
-            //Set
-            SetGameType(gametype);
-            return gametype;
         }
 
         /// <summary>
@@ -264,24 +210,6 @@ namespace SSB.Core
                 default:
                     return Team.None;
             }
-        }
-
-        /// <summary>
-        /// Sets the state of the game.
-        /// </summary>
-        /// <param name="gamestate">The gamestate.</param>
-        private void SetGameState(QlGameStates gamestate)
-        {
-            _ssb.ServerInfo.CurrentGameState = gamestate;
-        }
-
-        /// <summary>
-        /// Sets the type of game.
-        /// </summary>
-        /// <param name="gametype">The gametype.</param>
-        private void SetGameType(QlGameTypes gametype)
-        {
-            _ssb.ServerInfo.CurrentGameType = gametype;
         }
     }
 }

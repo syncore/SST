@@ -91,6 +91,7 @@
     <Compile Include="Core\Commands\Admin\PauseCmd.cs" />
     <Compile Include="Core\Commands\Owner\StopServerCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnbanCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\RefreshCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
@@ -111,6 +112,8 @@
     <Compile Include="Model\QlRanks\QlRanks.cs" />
     <Compile Include="Model\QlRanks\QlRanksPlayer.cs" />
     <Compile Include="Model\QlRanks\Tdm.cs" />
+    <Compile Include="Model\QuakeLiveApi\Player.cs" />
+    <Compile Include="Model\QuakeLiveApi\Server.cs" />
     <Compile Include="Util\EloCache.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
@@ -124,7 +127,6 @@
     </Compile>
     <Compile Include="Ui\GuiControls.cs" />
     <Compile Include="Ui\GuiOptions.cs" />
-    <Compile Include="Interfaces\IQlCommands.cs" />
     <Compile Include="Util\Parser.cs" />
     <Compile Include="Core\PlayerEventProcessor.cs" />
     <Compile Include="Model\PlayerInfo.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Core\QlCommands.cs" />
     <Compile Include="Util\QlRanksEloRetriever.cs" />
     <Compile Include="Util\QlRanksHelper.cs" />
+    <Compile Include="Util\QlRemoteInfoRetriever.cs" />
     <Compile Include="Util\QLWindowUtils.cs" />
     <Compile Include="Core\ServerEventProcessor.cs" />
     <Compile Include="Core\SynServerBot.cs" />

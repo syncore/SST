@@ -9,31 +9,45 @@ namespace SSB.Model
     public class PlayerInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerInfo"/> class.
+        /// Initializes a new instance of the <see cref="PlayerInfo" /> class.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="shortName">The player's name only, excluding clan tag.</param>
         /// <param name="team">The team.</param>
         /// <param name="id">The identifier.</param>
-        /// <remarks>This constructor is to only be used with 'configstrings' command.</remarks>
-        public PlayerInfo(string name, Team team, string id)
+        /// <remarks>
+        /// This constructor is to only be used with 'configstrings' command.
+        /// </remarks>
+        public PlayerInfo(string shortName, Team team, string id)
         {
-            Name = name;
+            ShortName = shortName;
             Team = team;
             Id = id;
         }
 
         // players cmd ctor
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerInfo"/> class.
+        /// Initializes a new instance of the <see cref="PlayerInfo" /> class.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="shortName">The player's name only, excluding clan tag.</param>
+        /// <param name="fullName">The full name including clan tag, if any.</param>
         /// <param name="id">The identifier.</param>
-        /// <remarks>This constructor is to only be used with 'players' command.</remarks>
-        public PlayerInfo(string name, string id)
+        /// <remarks>
+        /// This constructor is to only be used with 'players' command.
+        /// </remarks>
+        public PlayerInfo(string shortName, string fullName, string id)
         {
-            Name = name;
+            ShortName = shortName;
+            ClanTagAndName = fullName;
             Id = id;
         }
+
+        /// <summary>
+        /// Gets or sets the full player name including the clan tag.
+        /// </summary>
+        /// <value>
+        /// The full player name including the clan tag.
+        /// </value>
+        public string ClanTagAndName { get; set; }
 
         /// <summary>
         /// Gets or sets the QLRanks elo data.
@@ -52,12 +66,12 @@ namespace SSB.Model
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the player name.
+        /// Gets or sets the player name, excluding the clan tag.
         /// </summary>
         /// <value>
-        /// The player name.
+        /// The player's name, excluding the clan tag.
         /// </value>
-        public string Name { get; set; }
+        public string ShortName { get; set; }
 
         /// <summary>
         /// Gets or sets the team.

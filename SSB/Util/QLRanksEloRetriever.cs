@@ -29,8 +29,8 @@ namespace SSB.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            //string url = "http://www.qlranks.com/api.aspx?nick=" + players;
-            string url = "http://10.0.0.7/api.aspx?nick=" + players;
+            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            //string url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try
             {

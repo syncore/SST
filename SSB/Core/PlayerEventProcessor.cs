@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SSB.Core
 {
@@ -23,39 +24,38 @@ namespace SSB.Core
         ///     Handles the player connection.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void HandleIncomingPlayerConnection(string player)
+        public async Task HandleIncomingPlayerConnection(string player)
         {
             Debug.WriteLine("Detected incoming connection for " + player);
             // Now update the current players from server. This will also take care of
             // adding the player to our internal list and getting the player's elo data.
-            _ssb.QlCommands.QlCmdPlayers();
+            await _ssb.QlCommands.QlCmdPlayers();
         }
 
         /// <summary>
         ///     Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void HandleOutgoingPlayerConnection(string player)
+        public async Task HandleOutgoingPlayerConnection(string player)
         {
             // Remove player from our internal list
             RemovePlayer(player);
             // Now update the current players from server
-            _ssb.QlCommands.QlCmdPlayers();
+            await _ssb.QlCommands.QlCmdPlayers();
             Debug.WriteLine("Detected outgoing connection for " + player);
         }
 
         /// <summary>
-        ///     Handles the player chat message.
+        /// Handles the player chat message.
         /// </summary>
         /// <param name="text">The text.</param>
-        public void HandlePlayerChatMessage(string text)
+        /// <param name="msgFrom">The user who sent the message.</param>
+        public void HandlePlayerChatMessage(string text, string msgFrom)
         {
             string msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
-            string msgFrom = text.Substring(0, text.IndexOf(": ", StringComparison.Ordinal));
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
-
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
             {

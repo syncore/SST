@@ -102,7 +102,7 @@ namespace SSB.Core
         /// </summary>
         /// <param name="msg">The text of the incoming message.</param>
         /// <param name="length">The length of the incoming message.</param>
-        public void ProcessLastLineOfConsole(string msg, int length)
+        public async Task ProcessLastLineOfConsole(string msg, int length)
         {
             if (_oldLastLineLength == length)
             {
@@ -122,7 +122,7 @@ namespace SSB.Core
                 return;
             }
 
-            DetectSingleLineEvent(msg);
+            await DetectSingleLineEvent(msg);
         }
 
         /// <summary>
@@ -205,14 +205,14 @@ namespace SSB.Core
         ///     This method basically handles one-liners whereas <see cref="DetectMultiLineEvent" />
         ///     handles the events that occur within larger blocks of text.
         /// </remarks>
-        private void DetectSingleLineEvent(string text)
+        private async Task DetectSingleLineEvent(string text)
         {
             // 'player connected' detected
             if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
             {
                 Match m = _ssb.Parser.EvPlayerConnected.Match(text);
                 string incomingPlayer = m.Value.Replace(" connected", "");
-                _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
+                await _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
                 return;
             }
             // 'player disconnected' detected or 'player was kicked' detected
@@ -230,21 +230,7 @@ namespace SSB.Core
                     m = _ssb.Parser.EvPlayerKicked.Match(text);
                     outgoingPlayer = m.Value.Replace(" was kicked", "");
                 }
-                _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
-                return;
-            }
-            // gamestate
-            if (_ssb.Parser.CvarServerGameState.IsMatch(text))
-            {
-                Match m = _ssb.Parser.CvarServerGameState.Match(text);
-                _ssb.ServerEventProcessor.HandleGameState(m.Value);
-                return;
-            }
-            // gametype
-            if (_ssb.Parser.CvarServerGameType.IsMatch(text))
-            {
-                Match m = _ssb.Parser.CvarServerGameType.Match(text);
-                _ssb.ServerEventProcessor.HandleGameType(m.Value);
+                await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
                 return;
             }
             // bot account name
@@ -257,9 +243,10 @@ namespace SSB.Core
 
             // Chat message detected
             // First make sure player is detected in our internal list, if not then do nothing.
-            if (_ssb.ServerInfo.CurrentPlayers.Keys.Any(p => text.StartsWith(p + ":")))
+            // Use the full clan tag (if any) and name for the comparison.
+            foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => text.StartsWith(player.Value.ClanTagAndName + ":")))
             {
-                _playerEventProcessor.HandlePlayerChatMessage(text);
+                _playerEventProcessor.HandlePlayerChatMessage(text, player.Key);
             }
 
             // TODO: other one-liners such as votes
@@ -279,7 +266,7 @@ namespace SSB.Core
                     break;
 
                 case QlCommandType.Players:
-                    Task g =
+                    var g =
                         _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
                     break;
 

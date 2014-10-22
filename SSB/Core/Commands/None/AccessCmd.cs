@@ -28,14 +28,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; set; }
-
-        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -60,34 +52,27 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        public void DisplayArgLengthError(CmdArgs c)
+        /// <param name="c"></param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Task DisplayArgLengthError(CmdArgs c)
         {
+            throw new NotImplementedException();
         }
 
         /// <summary>
-        ///     Uses the specified command.
+        ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The command args</param>
+        /// <param name="c">The c.</param>
         /// <remarks>
         ///     c.Args[1] if specified: user to check
         /// </remarks>
-        public void Exec(CmdArgs c)
+        public async Task ExecAsync(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(c.Args.Length > 1
+            await _ssb.QlCommands.QlCmdSay(c.Args.Length > 1
                 ? string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.Args[1],
                     _users.GetUserLevel(c.Args[1]))
                 : string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.FromUser,
                     _users.GetUserLevel(c.FromUser)));
-        }
-
-        /// <summary>
-        /// Executes the specified command asynchronously.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task ExecAsync(CmdArgs c)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace SSB.Interfaces
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        void DisplayArgLengthError(CmdArgs c);
+        Task DisplayArgLengthError(CmdArgs c);
 
         /// <summary>
         ///     Executes the specified limiting command asynchronously.

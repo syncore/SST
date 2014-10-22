@@ -24,22 +24,24 @@ namespace SSB.Util
         }
 
         /// <summary>
-        ///     Evaluates whether cached Elo information already exists for a player.
+        /// Evaluates whether cached Elo information already exists for a player.
         /// </summary>
-        /// <param name="player">The player.</param>
-        /// <returns><c>true</c> if cached Elo info already exists for a player, otherwise <c>false</c>.</returns>
-        public bool DoesCachedEloExist(string player)
+        /// <param name="shortPlayerName">Short name of the player (not including clan tag).</param>
+        /// <returns>
+        ///   <c>true</c> if cached Elo info already exists for a player, otherwise <c>false</c>.
+        /// </returns>
+        public bool DoesCachedEloExist(string shortPlayerName)
         {
             EloData cache;
             bool exists = false;
-            if (!EloCache.CachedEloData.TryGetValue(player, out cache))
+            if (!EloCache.CachedEloData.TryGetValue(shortPlayerName, out cache))
             {
-                EloCache.CachedEloData.Add(player, new EloData());
+                EloCache.CachedEloData.Add(shortPlayerName, new EloData());
                 return false;
             }
-            if (EloCache.CachedEloData[player].CaElo != 0 && EloCache.CachedEloData[player].CtfElo != 0 &&
-                EloCache.CachedEloData[player].DuelElo != 0 &&
-                EloCache.CachedEloData[player].FfaElo != 0 && EloCache.CachedEloData[player].TdmElo != 0)
+            if (EloCache.CachedEloData[shortPlayerName].CaElo != 0 && EloCache.CachedEloData[shortPlayerName].CtfElo != 0 &&
+                EloCache.CachedEloData[shortPlayerName].DuelElo != 0 &&
+                EloCache.CachedEloData[shortPlayerName].FfaElo != 0 && EloCache.CachedEloData[shortPlayerName].TdmElo != 0)
             {
                 exists = true;
             }
@@ -57,7 +59,7 @@ namespace SSB.Util
             if (pinfo.EloData.CaElo == 0 && pinfo.EloData.CtfElo == 0 && pinfo.EloData.DuelElo == 0 &&
                 pinfo.EloData.FfaElo == 0 && pinfo.EloData.TdmElo == 0)
             {
-                Debug.WriteLine(string.Format("Player: {0} has invalid elo data.", pinfo.Name));
+                Debug.WriteLine(string.Format("Player: {0} has invalid elo data.", pinfo.ShortName));
                 invalid = true;
             }
             return invalid;
@@ -89,16 +91,16 @@ namespace SSB.Util
         /// Sets the cached elo data.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
-        /// <param name="player">The player.</param>
-        public void SetCachedEloData(Dictionary<string, PlayerInfo> currentPlayers, string player)
+        /// <param name="shortPlayerName">Short name of the player (excluding clan tag).</param>
+        public void SetCachedEloData(Dictionary<string, PlayerInfo> currentPlayers, string shortPlayerName)
         {
-            if (!DoesCachedEloExist(player)) return;
-            currentPlayers[player].EloData = EloCache.CachedEloData[player];
+            if (!DoesCachedEloExist(shortPlayerName)) return;
+            currentPlayers[shortPlayerName].EloData = EloCache.CachedEloData[shortPlayerName];
             Debug.WriteLine(
                 "Using the cached elo data that already exists for {0}. Data - CA: {1} - CTF: {2} - DUEL: {3} - FFA: {4} -- TDM: {5}",
-                player, EloCache.CachedEloData[player].CaElo, EloCache.CachedEloData[player].CtfElo,
-                EloCache.CachedEloData[player].DuelElo, EloCache.CachedEloData[player].FfaElo,
-                EloCache.CachedEloData[player].TdmElo);
+                shortPlayerName, EloCache.CachedEloData[shortPlayerName].CaElo, EloCache.CachedEloData[shortPlayerName].CtfElo,
+                EloCache.CachedEloData[shortPlayerName].DuelElo, EloCache.CachedEloData[shortPlayerName].FfaElo,
+                EloCache.CachedEloData[shortPlayerName].TdmElo);
         }
 
         /// <summary>
@@ -108,6 +110,7 @@ namespace SSB.Util
         /// <param name="qlr">The QlRanks object.</param>
         private void SetQlRanksInfo(Dictionary<string, PlayerInfo> currentPlayers, QlRanks qlr)
         {
+            
             foreach (var player in currentPlayers)
             {
                 // closure

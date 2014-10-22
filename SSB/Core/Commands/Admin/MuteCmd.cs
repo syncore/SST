@@ -23,16 +23,7 @@ namespace SSB.Core.Commands.Admin
         public MuteCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            HasAsyncExecution = false;
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -61,48 +52,30 @@ namespace SSB.Core.Commands.Admin
         /// </summary>
         /// <param name="c"></param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name",
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
-        }
-
-        /// <summary>
-        ///     Executes the specified command.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        public void Exec(CmdArgs c)
-        {
-            DoMute(c.Args[1]);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task ExecAsync(CmdArgs c)
+        public async Task ExecAsync(CmdArgs c)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Sends the 'mute' command to QL.
-        /// </summary>
-        /// <param name="player">The player to mute.</param>
-        private void DoMute(string player)
-        {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            string id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
             if (!String.IsNullOrEmpty(id))
             {
-                _ssb.QlCommands.SendToQl(string.Format("mute {0}", id), false);
+                await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
+                Debug.WriteLine("MUTE: Got player id {0} for player: {1}", id, c.Args[1]);
             }
             else
             {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
                 Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
-                    player));
+                    c.Args[1]));
             }
         }
     }

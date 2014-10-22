@@ -54,6 +54,7 @@ namespace SSB.Core
                 {"unlock", new UnlockCmd(_ssb)},
                 {"unmute", new UnmuteCmd(_ssb)},
                 {"unpause", new UnpauseCmd(_ssb)},
+                {"refresh", new RefreshCmd(_ssb)},
                 {"shutdown", new ShutdownCmd(_ssb)},
                 {"stopserver", new StopServerCmd(_ssb)},
                 {"yes", new VoteYesCmd(_ssb)},
@@ -88,25 +89,20 @@ namespace SSB.Core
             {
                 return;
             }
-            if (!UserHasReqLevel(fromUser, _commands[cmdName].UserLevel))
+            var user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;
+            if (!UserHasReqLevel(user, _commands[cmdName].UserLevel))
             {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, fromUser);
+            var c = new CmdArgs(args, cmdName, user);
             if (args.Length < _commands[cmdName].MinArgs)
             {
-                _commands[cmdName].DisplayArgLengthError(c);
+                await _commands[cmdName].DisplayArgLengthError(c);
                 return;
             }
             // Execute
-            if (_commands[cmdName].HasAsyncExecution)
-            {
-                await _commands[cmdName].ExecAsync(c);
-            }
-            else
-            {
-                _commands[cmdName].Exec(c);
-            }
+            await _commands[cmdName].ExecAsync(c);
         }
 
         /// <summary>
@@ -118,12 +114,7 @@ namespace SSB.Core
         private bool UserHasReqLevel(string user, UserLevel requiredLevel)
         {
             _users.RetrieveAllUsers();
-            if (_users.GetUserLevel(user) >= requiredLevel)
-            {
-                return true;
-            }
-            _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
-            return false;
+            return _users.GetUserLevel(user) >= requiredLevel;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Limits;
 using SSB.Enum;
@@ -30,17 +29,8 @@ namespace SSB.Core.Commands.Admin
         {
             _ssb = ssb;
             _limiter = limiter;
-            _validLimiters = new List<string> { AccountDateLimitArg, EloLimitArg };
-            HasAsyncExecution = true;
+            _validLimiters = new List<string> {AccountDateLimitArg, EloLimitArg};
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -68,21 +58,11 @@ namespace SSB.Core.Commands.Admin
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2}",
                 CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validLimiters)));
-        }
-
-        /// <summary>
-        ///     Uses the specified command.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public void Exec(CmdArgs c)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

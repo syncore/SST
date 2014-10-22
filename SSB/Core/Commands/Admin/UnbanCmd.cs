@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -22,16 +21,7 @@ namespace SSB.Core.Commands.Admin
         public UnbanCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            HasAsyncExecution = false;
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -60,23 +50,11 @@ namespace SSB.Core.Commands.Admin
         /// </summary>
         /// <param name="c"></param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name",
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
-        }
-
-        /// <summary>
-        ///     Executes the specified command.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        public void Exec(CmdArgs c)
-        {
-            _ssb.QlCommands.SendToQl(string.Format("unban {0}", c.Args[1]), false);
-            _ssb.QlCommands.QlCmdSay(
-                string.Format("^3[UNKICKBAN]^7 Removing player:^3 {0}^7 from the QL banlist if ban exists.",
-                    c.Args[1]));
         }
 
         /// <summary>
@@ -85,9 +63,12 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         /// <returns></returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task ExecAsync(CmdArgs c)
+        public async Task ExecAsync(CmdArgs c)
         {
-            throw new NotImplementedException();
+            await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", c.Args[1]), false);
+            await _ssb.QlCommands.QlCmdSay(
+                string.Format("^3[UNKICKBAN]^7 Removing player:^3 {0}^7 from the QL banlist if ban exists.",
+                    c.Args[1]));
         }
     }
 }

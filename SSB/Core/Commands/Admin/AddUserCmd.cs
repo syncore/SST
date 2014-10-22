@@ -28,14 +28,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasAsyncExecution { get; set; }
-
-        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -61,32 +53,32 @@ namespace SSB.Core.Commands.Admin
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name accesslevel#^7 - access levels #s are: 1(user), 2(superuser), 3(admin)",
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name access#^7 - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
         }
 
         /// <summary>
-        ///     Uses the specified command.
+        ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The command args</param>
+        /// <param name="c">The c.</param>
         /// <remarks>
         ///     c.Args[1]: userToAdd, c.Args[2]: accessLevel
         /// </remarks>
-        public void Exec(CmdArgs c)
+        public async Task ExecAsync(CmdArgs c)
         {
             // TODO: define this in terms of the enum instead of hardcoding values
             if (!c.Args[2].Equals("1") && !c.Args[2].Equals("2") && !c.Args[2].Equals("3"))
             {
-                DisplayArgLengthError(c);
+                await DisplayArgLengthError(c);
                 return;
             }
             // TODO: define this in terms of the enum instead of hardcoding values
             if ((c.Args[2].Equals("3")) && ((_users.GetUserLevel(c.FromUser) != UserLevel.Owner)))
             {
-                _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 Only owners can add admins."));
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 Only owners can add admins."));
                 return;
             }
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -94,28 +86,17 @@ namespace SSB.Core.Commands.Admin
                 date);
             if (result == DbResult.Success)
             {
-                _ssb.QlCommands.QlCmdSay(
+                await _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the^2 [{1}] ^7group.", c.Args[1],
                         (UserLevel) Convert.ToInt32(c.Args[2])));
             }
             else
             {
-                _ssb.QlCommands.QlCmdSay(
+                await _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^1[ERROR]^7 Unable to add user^1 {0}^7 to the^1 [{1}] ^7group. Code:^1 {2}",
                         c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), result));
             }
-        }
-
-        /// <summary>
-        ///     Executes the specified command asynchronously.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task ExecAsync(CmdArgs c)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -58,9 +58,9 @@ namespace SSB.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void getPlayersButton_Click(object sender, EventArgs e)
+        private async void getPlayersButton_Click(object sender, EventArgs e)
         {
-            _ssb.QlCommands.QlCmdPlayers();
+            await _ssb.QlCommands.QlCmdPlayers();
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace SSB.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void sendButton_Click(object sender, EventArgs e)
+        private async void sendButton_Click(object sender, EventArgs e)
         {
             bool delay;
             if (commandTextBox.Text.Equals("players", StringComparison.InvariantCultureIgnoreCase))
@@ -87,7 +87,7 @@ namespace SSB.Ui
             {
                 delay = false;
             }
-            _ssb.QlCommands.SendToQl(commandTextBox.Text, delay);
+            await _ssb.QlCommands.SendToQlAsync(commandTextBox.Text, delay);
             commandTextBox.Focus();
         }
 
@@ -96,9 +96,9 @@ namespace SSB.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void ServerIdButton_Click(object sender, EventArgs e)
+        private async void ServerIdButton_Click(object sender, EventArgs e)
         {
-            _ssb.QlCommands.SendToQl("serverinfo", true);
+            await _ssb.QlCommands.SendToQlAsync("serverinfo", true);
         }
 
         /// <summary>

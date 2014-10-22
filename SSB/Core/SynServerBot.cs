@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using SSB.Enum;
 using SSB.Ui;
 using SSB.Util;
 
@@ -134,13 +136,14 @@ namespace SSB.Core
         {
             // First and foremost, clear the console and get the player listing.
             QlCommands.ClearQlWinConsole();
-            QlCommands.QlCmdPlayers();
+            // Synchronous since init
+            var q = QlCommands.QlCmdPlayers();
             // Name of account running the bot.
-            QlCommands.SendToQl("name", false);
-            // Server's gametype.
-            QlCommands.SendToQl("g_gametype", true);
+            QlCommands.SendCvarReq("name", false);
+            // Server's id
+            QlCommands.SendCvarReq("serverinfo", true);
         }
-
+        
         /// <summary>
         ///     Reads the QL console window.
         /// </summary>
@@ -173,7 +176,7 @@ namespace SSB.Core
                     if (secondtoLastNewLine < n.Length)
                     {
                         //Issue where window was just cleared & first char is cut off
-                        ConsoleTextProcessor.ProcessLastLineOfConsole(
+                        var c = ConsoleTextProcessor.ProcessLastLineOfConsole(
                             secondtoLastNewLine == -1
                                 ? n.Substring(0)
                                 : n.Substring((secondtoLastNewLine + 2)), textLength);

@@ -4,22 +4,22 @@ using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands.Owner
+namespace SSB.Core.Commands.SuperUser
 {
     /// <summary>
-    ///     Command: Shut down Quake Live (and SSB).
+    ///     Command: Refresh server information.
     /// </summary>
-    public class ShutdownCmd : IBotCommand
+    public class RefreshCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
         private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.Owner;
+        private UserLevel _userLevel = UserLevel.SuperUser;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ShutdownCmd" /> class.
+        ///     Initializes a new instance of the <see cref="RefreshCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public ShutdownCmd(SynServerBot ssb)
+        public RefreshCmd(SynServerBot ssb)
         {
             _ssb = ssb;
         }
@@ -59,9 +59,10 @@ namespace SSB.Core.Commands.Owner
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
+        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
-            await _ssb.QlCommands.SendToQlAsync("quit", false);
+            await _ssb.QlCommands.SendToQlAsync("serverinfo", true);
         }
     }
 }
