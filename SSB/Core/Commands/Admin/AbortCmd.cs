@@ -4,22 +4,25 @@ using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands
+namespace SSB.Core.Commands.Admin
 {
     /// <summary>
-    ///     Command: Help command
+    /// Command: Abort a match and return to warmup.
     /// </summary>
-    public class HelpCmd : IBotCommand
+    public class AbortCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-
         private int _minArgs = 0;
+        private UserLevel _userLevel = UserLevel.Admin;
 
-        private UserLevel _userLevel = UserLevel.None;
-
-        public HelpCmd(SynServerBot ssb)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbortCmd"/> class.
+        /// </summary>
+        /// <param name="ssb">The main class.</param>
+        public AbortCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+            HasAsyncExecution = false;
         }
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace SSB.Core.Commands
         /// <value>
         /// <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
         /// </value>
-        public bool HasAsyncExecution { get; set; }
+        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         /// Gets the minimum arguments.
@@ -36,44 +39,38 @@ namespace SSB.Core.Commands
         /// <value>
         /// The minimum arguments.
         /// </value>
-        public int MinArgs
-        {
-            get { return _minArgs; }
-        }
+        public int MinArgs { get { return _minArgs; } }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
         /// <value>
-        ///     The user level.
+        /// The user level.
         /// </value>
-        public UserLevel UserLevel
-        {
-            get { return _userLevel; }
-        }
+        public UserLevel UserLevel { get { return _userLevel; } }
 
         /// <summary>
         /// Displays the argument length error.
         /// </summary>
-        /// <param name="c">The command args</param>
+        /// <param name="c"></param>
         public void DisplayArgLengthError(CmdArgs c)
         {
         }
 
         /// <summary>
-        /// Uses the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The command args</param>
         public void Exec(CmdArgs c)
         {
-            //TODO: implement
-            _ssb.QlCommands.QlCmdSay("^7The ^2!help ^7command will go here.");
+            _ssb.QlCommands.SendToQl("abort", false);
         }
 
         /// <summary>
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
+        /// <returns></returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Task ExecAsync(CmdArgs c)
         {

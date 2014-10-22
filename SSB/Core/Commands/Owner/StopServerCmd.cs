@@ -1,39 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Limits;
-using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands
+namespace SSB.Core.Commands.Owner
 {
     /// <summary>
-    ///     Command: Limit various player options (elo, account registration date, etc).
+    ///     Command: Stop the current server.
     /// </summary>
-    public class LimitCmd : IBotCommand
+    public class StopServerCmd : IBotCommand
     {
-        public const string AccountDateLimitArg = "accountdate";
-        public const string EloLimitArg = "elo";
-        private readonly Limiter _limiter;
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
-        private readonly List<string> _validLimiters;
         private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private UserLevel _userLevel = UserLevel.Owner;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LimitCmd" /> class.
+        ///     Initializes a new instance of the <see cref="StopServerCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="limiter">The command limiter manager.</param>
-        public LimitCmd(SynServerBot ssb, Limiter limiter)
+        public StopServerCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
-            _limiter = limiter;
-            _validLimiters = new List<string> {AccountDateLimitArg, EloLimitArg};
             HasAsyncExecution = true;
         }
 
@@ -43,7 +31,7 @@ namespace SSB.Core.Commands
         /// <value>
         ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
         /// </value>
-        public bool HasAsyncExecution { get; set; }
+        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -70,16 +58,16 @@ namespace SSB.Core.Commands
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c">The command args</param>
+        /// <param name="c"></param>
         public void DisplayArgLengthError(CmdArgs c)
         {
             _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2}",
-                CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validLimiters)));
+                "^1[ERROR]^3 Usage: {0}{1} delay - delay is in seconds.",
+                CommandProcessor.BotCommandPrefix, c.CmdName));
         }
 
         /// <summary>
-        ///     Uses the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The command args</param>
         /// <exception cref="System.NotImplementedException"></exception>
@@ -92,19 +80,29 @@ namespace SSB.Core.Commands
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
-            switch (c.Args[1])
+            int delay;
+            bool delayIsNum = (int.TryParse(c.Args[1], out delay));
+            if (delayIsNum)
             {
-                case EloLimitArg:
-                    await _limiter.EloLimit.EvalLimitCmdAsync(c);
-                    break;
-
-                case AccountDateLimitArg:
-                    await _limiter.AccountDateLimit.EvalLimitCmdAsync(c);
-                    break;
+                _ssb.QlCommands.QlCmdSay(string.Format("^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!", delay));
+                await Task.Delay(delay * 1000);
+                Action doShutdown = DoShutdown;
+                doShutdown();
             }
+            else
+            {
+                DisplayArgLengthError(c);
+            }
+        }
+
+        /// <summary>
+        /// Does the shutdown.
+        /// </summary>
+        private void DoShutdown()
+        {
+            _ssb.QlCommands.SendToQl("stopserver", false);
         }
     }
 }

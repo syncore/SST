@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using SSB.Core.Commands.Admin;
 using SSB.Database;
 using SSB.Interfaces;
 using SSB.Model;
@@ -241,7 +242,7 @@ namespace SSB.Core.Commands.Limits
                 Debug.WriteLine(
                     "User {0} has created account within the last {1} days. Date created: {2}. Kicking...",
                     user, MinimumDaysRequired, regDate);
-                _ssb.QlCommands.QlCmdKickban(user);
+                _ssb.QlCommands.CustCmdKickban(user);
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2}^7 days",

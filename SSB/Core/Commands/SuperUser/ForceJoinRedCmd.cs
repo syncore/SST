@@ -1,39 +1,37 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands
+namespace SSB.Core.Commands.SuperUser
 {
     /// <summary>
-    ///     Command: Check user account access level.
+    ///     Command: Custom wrapper for QL's 'put # r' command
     /// </summary>
-    public class AccessCmd : IBotCommand
+    public class ForceJoinRedCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
-        private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.None;
+        private int _minArgs = 2;
+        private UserLevel _userLevel = UserLevel.SuperUser;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AccessCmd" /> class.
+        ///     Initializes a new instance of the <see cref="ForceJoinRedCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public AccessCmd(SynServerBot ssb)
+        public ForceJoinRedCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            HasAsyncExecution = false;
         }
 
         /// <summary>
-        /// Gets a value indicating whether the command is to be executed asynchronously or not.
+        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
         /// </summary>
         /// <value>
-        /// <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
+        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
         /// </value>
-        public bool HasAsyncExecution { get; set; }
+        public bool HasAsyncExecution { get; private set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -60,30 +58,28 @@ namespace SSB.Core.Commands
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
+        /// <param name="c"></param>
         public void DisplayArgLengthError(CmdArgs c)
         {
+            _ssb.QlCommands.QlCmdSay(string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name",
+                CommandProcessor.BotCommandPrefix, c.CmdName));
         }
 
         /// <summary>
-        ///     Uses the specified command.
+        ///     Executes the specified command.
         /// </summary>
         /// <param name="c">The command args</param>
-        /// <remarks>
-        ///     c.Args[1] if specified: user to check
-        /// </remarks>
         public void Exec(CmdArgs c)
         {
-            _ssb.QlCommands.QlCmdSay(c.Args.Length > 1
-                ? string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.Args[1],
-                    _users.GetUserLevel(c.Args[1]))
-                : string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.FromUser,
-                    _users.GetUserLevel(c.FromUser)));
+            _ssb.QlCommands.CustCmdPutPlayer(c.Args[1], Team.Red);
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
+        /// <returns></returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Task ExecAsync(CmdArgs c)
         {

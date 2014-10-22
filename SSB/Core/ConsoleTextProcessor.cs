@@ -233,11 +233,18 @@ namespace SSB.Core
                 _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
                 return;
             }
+            // gamestate
+            if (_ssb.Parser.CvarServerGameState.IsMatch(text))
+            {
+                Match m = _ssb.Parser.CvarServerGameState.Match(text);
+                _ssb.ServerEventProcessor.HandleGameState(m.Value);
+                return;
+            }
             // gametype
             if (_ssb.Parser.CvarServerGameType.IsMatch(text))
             {
                 Match m = _ssb.Parser.CvarServerGameType.Match(text);
-                _ssb.ServerEventProcessor.GetGameType(m.Value);
+                _ssb.ServerEventProcessor.HandleGameType(m.Value);
                 return;
             }
             // bot account name

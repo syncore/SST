@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSB.Core.Commands;
+using SSB.Core.Commands.Admin;
 using SSB.Core.Commands.Limits;
+using SSB.Core.Commands.None;
+using SSB.Core.Commands.Owner;
+using SSB.Core.Commands.SuperUser;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -18,7 +21,6 @@ namespace SSB.Core
         private readonly Dictionary<string, IBotCommand> _commands;
         private readonly SynServerBot _ssb;
         private readonly Users _users;
-        private string NoPermission = "^1[ERROR]^7 You do not have permission to use that command.";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
@@ -31,12 +33,30 @@ namespace SSB.Core
             Limiter = new Limiter(_ssb);
             _commands = new Dictionary<string, IBotCommand>
             {
+                {"abort", new AbortCmd(_ssb)},
                 {"access", new AccessCmd(_ssb)},
                 {"adduser", new AddUserCmd(_ssb)},
+                {"allready", new AllReadyCmd(_ssb)},
+                {"blue", new ForceJoinBlueCmd(_ssb)},
                 {"deluser", new DelUserCmd(_ssb)},
+                {"deop", new DeOpCmd(_ssb)},
                 {"help", new HelpCmd(_ssb)},
                 {"limit", new LimitCmd(_ssb, Limiter)},
-                {"kickban", new KickBanCmd(_ssb)}
+                {"lock", new LockCmd(_ssb)},
+                {"op", new OpCmd(_ssb)},
+                {"mute", new MuteCmd(_ssb)},
+                {"no", new VoteNoCmd(_ssb)},
+                {"kickban", new KickBanCmd(_ssb)},
+                {"pause", new PauseCmd(_ssb)},
+                {"red", new ForceJoinRedCmd(_ssb)},
+                {"spec", new ForceJoinSpecCmd(_ssb)},
+                {"unban", new UnbanCmd(_ssb)},
+                {"unlock", new UnlockCmd(_ssb)},
+                {"unmute", new UnmuteCmd(_ssb)},
+                {"unpause", new UnpauseCmd(_ssb)},
+                {"shutdown", new ShutdownCmd(_ssb)},
+                {"stopserver", new StopServerCmd(_ssb)},
+                {"yes", new VoteYesCmd(_ssb)},
             };
         }
 
@@ -55,7 +75,7 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             IBotCommand ic;
@@ -102,7 +122,7 @@ namespace SSB.Core
             {
                 return true;
             }
-            _ssb.QlCommands.QlCmdSay(NoPermission);
+            _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
             return false;
         }
     }

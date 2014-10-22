@@ -9,10 +9,21 @@ namespace SSB.Core
     /// </summary>
     public class ServerInfo
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerInfo"/> class.
+        /// </summary>
         public ServerInfo()
         {
             CurrentPlayers = new Dictionary<string, PlayerInfo>();
         }
+
+        /// <summary>
+        /// Gets or sets the state of the current game.
+        /// </summary>
+        /// <value>
+        /// The state of the current game.
+        /// </value>
+        public QlGameStates CurrentGameState { get; set; }
 
         /// <summary>
         ///     Gets or sets the type of the current game.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SSB.Core.Commands.Admin;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -161,7 +162,7 @@ namespace SSB.Core.Commands.Limits
         /// <returns><c>true</c>if the server type could be obtained, otherwise <c>false</c>.</returns>
         private bool CouldGetServerType()
         {
-            _ssb.QlCommands.QlCvarG_gametype();
+            _ssb.QlCommands.SendToQl("g_gametype", true);
             return _ssb.ServerInfo.CurrentGameType != QlGameTypes.Unspecified;
         }
 
@@ -279,7 +280,7 @@ namespace SSB.Core.Commands.Limits
             {
                 Debug.WriteLine("{0}'s {1} Elo is less than min ({2})...Kicking.", player,
                     _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), MinimumRequiredElo);
-                _ssb.QlCommands.QlCmdKickban(player);
+                _ssb.QlCommands.CustCmdKickban(player);
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
@@ -291,7 +292,7 @@ namespace SSB.Core.Commands.Limits
             if (playerElo <= MaximumRequiredElo) return;
             Debug.WriteLine("{0}'s {1} Elo is greater than max ({2})...Kicking.", player,
                 _ssb.ServerInfo.CurrentGameType.ToString().ToUpper(), MaximumRequiredElo);
-            _ssb.QlCommands.QlCmdKickban(player);
+            _ssb.QlCommands.CustCmdKickban(player);
             _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} Max:^1 {4}",

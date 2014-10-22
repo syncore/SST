@@ -5,7 +5,7 @@ using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands
+namespace SSB.Core.Commands.Admin
 {
     /// <summary>
     ///     Command: Add a user to the bot's internal user database.

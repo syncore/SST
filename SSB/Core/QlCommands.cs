@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Util;
 
@@ -20,6 +21,131 @@ namespace SSB.Core
         public QlCommands(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Clear both the QL WinConsole and the in-game console.
+        /// </summary>
+        public void ClearBothQlConsoles()
+        {
+            // Windows console window
+            ClearQlWinConsole();
+            // In-game console window
+            QlCmdClear();
+        }
+
+        /// <summary>
+        ///     Clears the Ql windows console.
+        /// </summary>
+        public void ClearQlWinConsole()
+        {
+            IntPtr consoleWindow = _ssb.QlWindowUtils.GetQuakeLiveConsoleWindow();
+            if (consoleWindow != IntPtr.Zero)
+            {
+                IntPtr child = Win32Api.FindWindowEx(consoleWindow, IntPtr.Zero, "Button", "clear");
+                Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
+                Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
+            }
+            else
+            {
+                Debug.WriteLine("Unable to find 'clear' button.");
+            }
+        }
+
+        /// <summary>
+        ///     Sends the 'kickban' command to QL.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <remarks>Our version takes the player name as an argument and converts it into the
+        /// playerID required for the actual QL command.</remarks>
+        public void CustCmdKickban(string player)
+        {
+            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            if (!String.IsNullOrEmpty(id))
+            {
+                SendToQl(string.Format("kickban {0}", id), false);
+            }
+            else
+            {
+                Debug.WriteLine(string.Format("Unable to kick player {0} because ID could not be retrieved.",
+                    player));
+            }
+        }
+
+        /// <summary>
+        /// Sends the 'put' command to QL.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="team">The team.</param>
+        /// <remarks>
+        /// Our version takes the player name as an argument and converts it into the playerID required for the actual QL command.
+        /// </remarks>
+        public void CustCmdPutPlayer(string player, Team team)
+        {
+            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            if (!String.IsNullOrEmpty(id))
+            {
+                switch (team)
+                {
+                    case Team.Blue:
+                        SendToQl(string.Format("put {0} b", id), false);
+                        break;
+
+                    case Team.Red:
+                        SendToQl(string.Format("put {0} r", id), false);
+                        break;
+
+                    case Team.Spec:
+                        SendToQl(string.Format("put {0} s", id), false);
+                        break;
+                }
+            }
+            else
+            {
+                Debug.WriteLine(string.Format("Unable to force join player {0} because ID could not be retrieved.",
+                    player));
+            }
+        }
+
+        /// <summary>
+        ///     Sends the 'clear' command to QL.
+        /// </summary>
+        public void QlCmdClear()
+        {
+            SendToQl("clear", false);
+        }
+
+        /// <summary>
+        ///     Sends the 'configstrings' command to QL.
+        /// </summary>
+        public void QlCmdConfigStrings()
+        {
+            SendToQl("configstrings", true);
+        }
+
+        /// <summary>
+        ///     Sends the 'players' command to QL.
+        /// </summary>
+        public void QlCmdPlayers()
+        {
+            SendToQl("players", true);
+        }
+
+        /// <summary>
+        ///     Sends the 'say' command to QL.
+        /// </summary>
+        /// <param name="text">The text to say.</param>
+        public void QlCmdSay(string text)
+        {
+            SendToQl(string.Format("say {0}", text), false);
+        }
+
+        /// <summary>
+        ///     Sends the 'serverinfo' command to QL.
+        /// </summary>
+        public void QlCmdServerInfo()
+        {
+            SendToQl("serverinfo", true);
         }
 
         /// <summary>
@@ -55,110 +181,6 @@ namespace SSB.Core
                 // Creates a new event handler that will never be set, and then waits the full timeout period
                 new ManualResetEvent(false).WaitOne(10);
             }
-        }
-
-        /// <summary>
-        ///     Clear both the QL WinConsole and the in-game console.
-        /// </summary>
-        public void ClearBothQlConsoles()
-        {
-            // Windows console window
-            ClearQlWinConsole();
-            // In-game console window
-            QlCmdClear();
-        }
-
-        /// <summary>
-        ///     Clears the Ql windows console.
-        /// </summary>
-        public void ClearQlWinConsole()
-        {
-            IntPtr consoleWindow = _ssb.QlWindowUtils.GetQuakeLiveConsoleWindow();
-            if (consoleWindow != IntPtr.Zero)
-            {
-                IntPtr child = Win32Api.FindWindowEx(consoleWindow, IntPtr.Zero, "Button", "clear");
-                Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
-                Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
-            }
-            else
-            {
-                Debug.WriteLine("Unable to find 'clear' button.");
-            }
-        }
-
-        /// <summary>
-        ///     Sends the 'clear' command to QL.
-        /// </summary>
-        public void QlCmdClear()
-        {
-            SendToQl("clear", false);
-        }
-
-        /// <summary>
-        ///     Sends the 'configstrings' command to QL.
-        /// </summary>
-        public void QlCmdConfigStrings()
-        {
-            SendToQl("configstrings", true);
-        }
-
-        /// <summary>
-        ///     Sends the 'kickban' command to QL.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        public void QlCmdKickban(string player)
-        {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player);
-            if (!String.IsNullOrEmpty(id))
-            {
-                SendToQl(string.Format("kickban {0}", id), false);
-            }
-            else
-            {
-                Debug.WriteLine(string.Format("Unable to kick player {0} because ID could not be retrieved.",
-                    player));
-            }
-        }
-
-        /// <summary>
-        ///     Sends the 'players' command to QL.
-        /// </summary>
-        public void QlCmdPlayers()
-        {
-            SendToQl("players", true);
-        }
-
-        /// <summary>
-        ///     Sends the 'say' command to QL.
-        /// </summary>
-        /// <param name="text">The text to say.</param>
-        public void QlCmdSay(string text)
-        {
-            SendToQl(string.Format("say {0}", text), false);
-        }
-
-        /// <summary>
-        ///     Sends the 'serverinfo' command to QL.
-        /// </summary>
-        public void QlCmdServerInfo()
-        {
-            SendToQl("serverinfo", true);
-        }
-
-        /// <summary>
-        ///     Sends a request for the 'g_gametype' cvar to QL.
-        /// </summary>
-        public void QlCvarG_gametype()
-        {
-            SendToQl("g_gametype", true);
-        }
-
-        /// <summary>
-        ///     Sends a request for the 'name' cvar to QL.
-        /// </summary>
-        public void QlCvarName()
-        {
-            SendToQl("name", false);
         }
     }
 }

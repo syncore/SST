@@ -21,6 +21,7 @@ namespace SSB.Util
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
             CvarBotAccountName = new cvarBotAccountName();
+            CvarServerGameState = new cvarServerGameState();
             CvarServerPublicId = new cvarServerPublicId();
             CvarServerGameType = new cvarServerGameType();
             EvMapLoaded = new evMapLoaded();
@@ -57,6 +58,14 @@ namespace SSB.Util
         /// Regex for cvar name after issuing 'name'
         /// </value>
         public Regex CvarBotAccountName { get; private set; }
+
+        /// <summary>
+        /// Regex for finding g_gameState after issuing 'g_gameState'
+        /// </summary>
+        /// <value>
+        /// Regex for cvar g_gameState after issuing 'g_gameState'
+        /// </value>
+        public Regex CvarServerGameState { get; private set; }
 
         /// <summary>
         /// Regex for finding g_gametype after issuing 'g_gametype'

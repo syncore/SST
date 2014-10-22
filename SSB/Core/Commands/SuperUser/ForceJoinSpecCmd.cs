@@ -1,52 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
-namespace SSB.Core.Commands
+namespace SSB.Core.Commands.SuperUser
 {
-    public class KickBanCmd : IBotCommand
+    /// <summary>
+    ///     Command: Custom wrapper for QL's 'put # s' command
+    /// </summary>
+    public class ForceJoinSpecCmd : IBotCommand
     {
-        private int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private int _minArgs = 2;
+        private UserLevel _userLevel = UserLevel.SuperUser;
 
-        public KickBanCmd(SynServerBot ssb)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ForceJoinSpecCmd" /> class.
+        /// </summary>
+        /// <param name="ssb">The main class.</param>
+        public ForceJoinSpecCmd(SynServerBot ssb)
         {
             _ssb = ssb;
             HasAsyncExecution = false;
         }
 
         /// <summary>
-        /// Gets a value indicating whether the command is to be executed asynchronously or not.
+        ///     Gets a value indicating whether the command is to be executed asynchronously or not.
         /// </summary>
         /// <value>
-        /// <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
+        ///     <c>true</c> the command is to be executed asynchronously; otherwise, <c>false</c>.
         /// </value>
         public bool HasAsyncExecution { get; private set; }
+
         /// <summary>
-        /// Gets the minimum arguments.
+        ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
-        /// The minimum arguments.
+        ///     The minimum arguments.
         /// </value>
-        public int MinArgs { get { return _minArgs; } }
+        public int MinArgs
+        {
+            get { return _minArgs; }
+        }
+
         /// <summary>
-        /// Gets the user level.
+        ///     Gets the user level.
         /// </summary>
         /// <value>
-        /// The user level.
+        ///     The user level.
         /// </value>
-        public UserLevel UserLevel { get { return _userLevel; } }
+        public UserLevel UserLevel
+        {
+            get { return _userLevel; }
+        }
+
         /// <summary>
-        /// Displays the argument length error.
+        ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void DisplayArgLengthError(CmdArgs c)
         {
             _ssb.QlCommands.QlCmdSay(string.Format(
@@ -55,17 +67,16 @@ namespace SSB.Core.Commands
         }
 
         /// <summary>
-        /// Executes the specified command.
+        ///     Executes the specified command.
         /// </summary>
         /// <param name="c">The command args</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void Exec(CmdArgs c)
         {
-            throw new NotImplementedException();
+            _ssb.QlCommands.CustCmdPutPlayer(c.Args[1], Team.Spec);
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
         /// <returns></returns>

@@ -40,35 +40,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the type of game running on this server.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns>The gametype as a <see cref="QlGameTypes" /> enum.</returns>
-        public QlGameTypes GetGameType(string text)
-        {
-            var gametype = QlGameTypes.Unspecified;
-            string gt = ConsoleTextProcessor.GetCvarValue(text);
-            int gtnum;
-            bool isNum = (int.TryParse(gt, out gtnum));
-            if (isNum)
-            {
-                if (gtnum == 0)
-                {
-                    // Special case for FFA
-                    gametype = (QlGameTypes)999;
-                }
-                else
-                {
-                    gametype = (QlGameTypes)gtnum;
-                }
-            }
-            Debug.WriteLine("This server's gametype is: " + gametype);
-            //Set
-            _ssb.ServerInfo.CurrentGameType = gametype;
-            return gametype;
-        }
-
-        /// <summary>
         ///     Retrieves a given player's player id (clientnum) from our internal list or
         ///     queries the server with the 'players' command and returns the id if the player is
         ///     not detected.
@@ -205,6 +176,63 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Handles the state of the game running on this server.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The gamestate as a <see cref="QlGameStates"/> enum.</returns>
+        public QlGameStates HandleGameState(string text)
+        {
+            var gamestate = QlGameStates.Unspecified;
+            string state = ConsoleTextProcessor.GetCvarValue(text);
+            switch (state)
+            {
+                case "PRE_GAME":
+                    gamestate = QlGameStates.Warmup;
+                    break;
+
+                case "COUNT_DOWN":
+                    gamestate = QlGameStates.Countdown;
+                    break;
+
+                case "IN_PROGRESS":
+                    gamestate = QlGameStates.InProgress;
+                    break;
+            }
+            SetGameState(gamestate);
+            Debug.WriteLine("Got gamestate: " + gamestate);
+            return gamestate;
+        }
+
+        /// <summary>
+        ///     Handles the type of game running on this server.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The gametype as a <see cref="QlGameTypes" /> enum.</returns>
+        public QlGameTypes HandleGameType(string text)
+        {
+            var gametype = QlGameTypes.Unspecified;
+            string gt = ConsoleTextProcessor.GetCvarValue(text);
+            int gtnum;
+            bool isNum = (int.TryParse(gt, out gtnum));
+            if (isNum)
+            {
+                if (gtnum == 0)
+                {
+                    // Special case for FFA
+                    gametype = (QlGameTypes)999;
+                }
+                else
+                {
+                    gametype = (QlGameTypes)gtnum;
+                }
+            }
+            Debug.WriteLine("This server's gametype is: " + gametype);
+            //Set
+            SetGameType(gametype);
+            return gametype;
+        }
+
+        /// <summary>
         ///     Handles the map load or change.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -236,6 +264,24 @@ namespace SSB.Core
                 default:
                     return Team.None;
             }
+        }
+
+        /// <summary>
+        /// Sets the state of the game.
+        /// </summary>
+        /// <param name="gamestate">The gamestate.</param>
+        private void SetGameState(QlGameStates gamestate)
+        {
+            _ssb.ServerInfo.CurrentGameState = gamestate;
+        }
+
+        /// <summary>
+        /// Sets the type of game.
+        /// </summary>
+        /// <param name="gametype">The gametype.</param>
+        private void SetGameType(QlGameTypes gametype)
+        {
+            _ssb.ServerInfo.CurrentGameType = gametype;
         }
     }
 }

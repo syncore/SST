@@ -136,9 +136,9 @@ namespace SSB.Core
             QlCommands.ClearQlWinConsole();
             QlCommands.QlCmdPlayers();
             // Name of account running the bot.
-            QlCommands.QlCvarName();
+            QlCommands.SendToQl("name", false);
             // Server's gametype.
-            QlCommands.QlCvarG_gametype();
+            QlCommands.SendToQl("g_gametype", true);
         }
 
         /// <summary>

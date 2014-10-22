@@ -111,6 +111,14 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
+            // g_gameState - Find g_gameState after issuing 'g_gameState'
+            expr = new RegexCompilationInfo(@"(""g_gameState""\sis:""\w+"")",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarServerGameState",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+
             // name - Find name after issuing 'name'
             expr = new RegexCompilationInfo(@"(""name""\sis:""\w+"")",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarBotAccountName",
