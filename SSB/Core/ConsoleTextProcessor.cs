@@ -27,6 +27,8 @@ namespace SSB.Core
             _playerEventProcessor = new PlayerEventProcessor(_ssb);
         }
 
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
+
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -136,7 +138,7 @@ namespace SSB.Core
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
                 return;
             }
             // If appending to textbox, must clear first
@@ -166,7 +168,7 @@ namespace SSB.Core
                     ProcessCommand(cmd, text);
                 }
             }
-                // 'players' command has been detected; extract the player names and ids from it.
+            // 'players' command has been detected; extract the player names and ids from it.
             else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
             {
                 var cmd = QlCommandType.Players;
@@ -178,7 +180,7 @@ namespace SSB.Core
                 }
                 ProcessCommand(cmd, playersToParse);
             }
-                // 'serverinfo' command has been detected; extract the server id from it.
+            // 'serverinfo' command has been detected; extract the server id from it.
             else if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfo;
@@ -186,7 +188,7 @@ namespace SSB.Core
                 text = m.Value;
                 ProcessCommand(cmd, text);
             }
-                // map load or map change detected; handle it.
+            // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
@@ -215,8 +217,8 @@ namespace SSB.Core
                 await _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
                 return;
             }
-            // 'player disconnected' detected or 'player was kicked' detected
-            if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text))
+            // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
+            if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text) || _ssb.Parser.EvPlayerRageQuit.IsMatch(text))
             {
                 Match m;
                 string outgoingPlayer = string.Empty;
@@ -229,6 +231,11 @@ namespace SSB.Core
                 {
                     m = _ssb.Parser.EvPlayerKicked.Match(text);
                     outgoingPlayer = m.Value.Replace(" was kicked", "");
+                }
+                else if (_ssb.Parser.EvPlayerRageQuit.IsMatch(text))
+                {
+                    m = _ssb.Parser.EvPlayerRageQuit.Match(text);
+                    outgoingPlayer = m.Value.Replace(" ragequits", "");
                 }
                 await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
                 return;
@@ -262,7 +269,7 @@ namespace SSB.Core
             switch (cmdType)
             {
                 case QlCommandType.ConfigStrings:
-                    _ssb.ServerEventProcessor.GetPlayersAndTeamsFromCfgString(text as string);
+                    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
                     break;
 
                 case QlCommandType.Players:
@@ -279,7 +286,5 @@ namespace SSB.Core
                     break;
             }
         }
-
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
 }

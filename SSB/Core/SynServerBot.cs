@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using SSB.Enum;
 using SSB.Ui;
 using SSB.Util;
 
@@ -119,7 +117,7 @@ namespace SSB.Core
             if (_isReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             _isReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
@@ -136,6 +134,8 @@ namespace SSB.Core
         {
             // First and foremost, clear the console and get the player listing.
             QlCommands.ClearQlWinConsole();
+            // Re-focus the window
+            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
             // Synchronous since init
             var q = QlCommands.QlCmdPlayers();
             // Name of account running the bot.
@@ -143,7 +143,7 @@ namespace SSB.Core
             // Server's id
             QlCommands.SendCvarReq("serverinfo", true);
         }
-        
+
         /// <summary>
         ///     Reads the QL console window.
         /// </summary>

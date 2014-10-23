@@ -60,23 +60,34 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // event: player connection ("player has connected")
-            expr = new RegexCompilationInfo(@"\w+\s+(connected)",
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^\w+\s+(connected)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerConnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             // event: player disconnection ("player has disconnected")
-            expr = new RegexCompilationInfo(@"\w+\s+(disconnected)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerDisconnected",
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^\w+\s+(disconnected)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "evPlayerDisconnected",
                 "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             // event: player kicked ("player was kicked")
-            expr = new RegexCompilationInfo(@"\w+\s+(was kicked)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerKicked", "SSB.External.Parser",
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^\w+\s+(was kicked)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "evPlayerKicked", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
+
+            // event: player ragequits ("player ragequits")
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^\w+\s+(ragequits)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "evPlayerRageQuit", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
 
             // event: map loaded
             expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",

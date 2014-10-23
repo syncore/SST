@@ -36,7 +36,7 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     The maximum required Elo.
         /// </value>
-        public int MaximumRequiredElo { get; set; }
+        public static int MaximumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets or sets the minimum required Elo.
@@ -44,7 +44,7 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     The minimum required Elo.
         /// </value>
-        public int MinimumRequiredElo { get; set; }
+        public static int MinimumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the elo limit is active.
@@ -52,7 +52,7 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsLimitActive { get; set; }
+        public static bool IsLimitActive { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.

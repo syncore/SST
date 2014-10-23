@@ -29,7 +29,7 @@ namespace SSB.Core
             Debug.WriteLine("Detected incoming connection for " + player);
             // Now update the current players from server. This will also take care of
             // adding the player to our internal list and getting the player's elo data.
-            await _ssb.QlCommands.QlCmdPlayers();
+            await _ssb.QlCommands.QlCmdPlayersOnConnect();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Handles the player chat message.
+        ///     Handles the player chat message.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <param name="msgFrom">The user who sent the message.</param>
@@ -59,16 +59,17 @@ namespace SSB.Core
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
             {
-                var s = _ssb.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
+                Task s = _ssb.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
         }
 
         /// <summary>
-        ///     Removes the player from the current in-game players.
+        ///     Removes the player from the current in-game players and remove team information.
         /// </summary>
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
         {
+            // Remove from players
             if (_ssb.ServerInfo.CurrentPlayers.Remove(player))
             {
                 Debug.WriteLine(string.Format("Removed {0} from the current in-game players.", player));
@@ -78,6 +79,18 @@ namespace SSB.Core
                 Debug.WriteLine(
                     string.Format(
                         "Unable to remove {0} from the current in-game players. Player was not in list of current in-game players.",
+                        player));
+            }
+            // Remove from teams
+            if (_ssb.ServerInfo.CurrentTeamInfo.Remove(player))
+            {
+                Debug.WriteLine(string.Format("Removed {0}'s team information from team info.", player));
+            }
+            else
+            {
+                Debug.WriteLine(
+                    string.Format(
+                        "Unable to remove {0}'s team information from team info. Player was not found in team info.",
                         player));
             }
         }

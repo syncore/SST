@@ -77,8 +77,6 @@ namespace SSB.Core.Commands.Admin
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Removed user^2 {0} ^7from the^2 [{1}] ^7group.",
                         c.Args[1], todelUserLevel));
-                //Refresh
-                _users.RetrieveAllUsers();
             }
             else
             {

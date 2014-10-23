@@ -32,6 +32,8 @@ namespace SSB.Core
             ClearQlWinConsole();
             // In-game console window
             QlCmdClear();
+            // Re-focus the window
+            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
         }
 
         /// <summary>
@@ -56,8 +58,10 @@ namespace SSB.Core
         ///     Sends the 'kickban' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
-        /// <remarks>Our version takes the player name as an argument and converts it into the
-        /// playerID required for the actual QL command.</remarks>
+        /// <remarks>
+        ///     Our version takes the player name as an argument and converts it into the
+        ///     playerID required for the actual QL command.
+        /// </remarks>
         public async Task CustCmdKickban(string player)
         {
             string id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
@@ -73,12 +77,13 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the 'put' command to QL.
+        ///     Sends the 'put' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>
         /// <remarks>
-        /// Our version takes the player name as an argument and converts it into the playerID required for the actual QL command.
+        ///     Our version takes the player name as an argument and converts it into the playerID required for the actual QL
+        ///     command.
         /// </remarks>
         public async Task CustCmdPutPlayer(string player, Team team)
         {
@@ -102,8 +107,9 @@ namespace SSB.Core
             }
             else
             {
-                Debug.WriteLine(string.Format("Unable to force join player {0} because ID could not be retrieved.",
-                    player));
+                Debug.WriteLine(
+                    string.Format("Unable to force join player {0} because ID could not be retrieved.",
+                        player));
             }
         }
 
@@ -132,6 +138,15 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Sends the 'players' command to QL when a player connects.
+        /// </summary>
+        /// <remarks>This command will execute after a specified delay in seconds.</remarks>
+        public async Task QlCmdPlayersOnConnect()
+        {
+            await SendToQlDelayedAsync("players", true, 15);
+        }
+
+        /// <summary>
         ///     Sends the 'say' command to QL.
         /// </summary>
         /// <param name="text">The text to say.</param>
@@ -152,7 +167,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Send a synchronous command, typically for retrieving cvars.
+        ///     Send a synchronous command, typically for retrieving cvars.
         /// </summary>
         /// <param name="toSend">The command (cvar) to send.</param>
         /// <param name="delay">if set to <c>true</c> send with a delay.</param>
@@ -178,7 +193,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the 'say' command to QL.
+        ///     Sends the 'say' command to QL.
         /// </summary>
         /// <param name="text">The text.</param>
         private void DoSay(string text)
@@ -187,7 +202,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the QL command.
+        ///     Sends the QL command.
         /// </summary>
         /// <param name="toSend">To send.</param>
         /// <param name="delay">if set to <c>true</c> [delay].</param>
@@ -215,6 +230,23 @@ namespace SSB.Core
                 // Creates a new event handler that will never be set, and then waits the full timeout period
                 new ManualResetEvent(false).WaitOne(10);
             }
+        }
+
+        /// <summary>
+        ///     Asynchronously sends the given text to the QL console after a specified time delay.
+        /// </summary>
+        /// <param name="toSend">The text to send.</param>
+        /// <param name="delay">if set to <c>true</c> [delay].</param>
+        /// <param name="runCmdInSeconds">The number of seconds to wait before sending the given text..</param>
+        /// <remarks>
+        ///     This is primarily used for the 'players' command since the player info is not immediately available
+        ///     when a player connects, we wait a certain number of seconds before requesting it.
+        /// </remarks>
+        private async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
+        {
+            await Task.Delay(runCmdInSeconds*1000);
+            Action<string, bool> sendQl = SendQlCommand;
+            sendQl(toSend, delay);
         }
     }
 }

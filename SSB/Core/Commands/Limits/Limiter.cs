@@ -32,5 +32,7 @@ namespace SSB.Core.Commands.Limits
         ///     The elo limiter.
         /// </value>
         public EloLimit EloLimit { get; private set; }
+
+
     }
 }

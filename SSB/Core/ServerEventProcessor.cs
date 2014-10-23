@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SSB.Core.Commands.Limits;
 using SSB.Enum;
 using SSB.Model;
 using SSB.Util;
@@ -84,10 +85,12 @@ namespace SSB.Core
             {
                 string text = p.ToString();
                 string playerNameOnly = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
-                string playerAndClan = text.Substring(text.IndexOf(" ", StringComparison.Ordinal)).Trim();
+                string playerAndClan = text.Substring(NthIndexOf(text, " ", 2)).Trim();
                 string id = text.Substring(0, 2).Trim();
-                Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n", playerNameOnly, id));
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, playerAndClan, id);
+                Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n",
+                    playerNameOnly, id));
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, playerAndClan,
+                    id);
 
                 if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
                 {
@@ -107,59 +110,22 @@ namespace SSB.Core
             {
                 await
                     qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
-                // Elo limiter kick, if active
-                if (_ssb.CommandProcessor.Limiter.EloLimit.IsLimitActive)
+            }
+            // Elo limiter kick, if active
+            if (EloLimit.IsLimitActive)
+            {
+                foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList())
                 {
-                    foreach (string player in eloNeedsUpdating)
-                    {
-                        await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
-                    }
+                    await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
             // Account date kick, if active
-            if (_ssb.CommandProcessor.Limiter.AccountDateLimit.IsLimitActive)
+            if (AccountDateLimit.IsLimitActive)
             {
-                await _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+                await
+                    _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(
+                        _ssb.ServerInfo.CurrentPlayers);
             }
-        }
-
-        /// <summary>
-        ///     Gets the players and teams from the 'configstrings' command.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns></returns>
-        public bool GetPlayersAndTeamsFromCfgString(string text)
-        {
-            int teamNum = 0;
-            bool success = false;
-            Match playerNameOnlyMatch = _ssb.Parser.CsPlayerNameOnly.Match(text);
-            Match teamOnlyMatch = _ssb.Parser.CsPlayerTeamOnly.Match(text);
-            if (playerNameOnlyMatch.Success && teamOnlyMatch.Success)
-            {
-                try
-                {
-                    teamNum = Convert.ToInt32(teamOnlyMatch.Value.Replace("\\t\\", ""));
-                }
-                catch (FormatException e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                Team team = DetermineTeam(teamNum);
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnlyMatch.Value] =
-                    new PlayerInfo(playerNameOnlyMatch.Value,
-                        team,
-                        string.Empty);
-                Debug.WriteLine("Name, Team: {0}, {1}", playerNameOnlyMatch.Value, team);
-                success = true;
-            }
-            else
-            {
-                success = false;
-            }
-
-            // Clear
-            _ssb.QlCommands.ClearBothQlConsoles();
-            return success;
         }
 
         /// <summary>
@@ -176,6 +142,38 @@ namespace SSB.Core
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
+        }
+
+        /// <summary>
+        ///     Gets the players' team info from the 'configstrings' command.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if successful, otherwise <c>false</c>.</returns>
+        public bool GetTeamInfoFromCfgString(string text)
+        {
+            int teamNum = 0;
+            bool success = false;
+            Match playerNameOnlyMatch = _ssb.Parser.CsPlayerNameOnly.Match(text);
+            Match teamOnlyMatch = _ssb.Parser.CsPlayerTeamOnly.Match(text);
+            if (playerNameOnlyMatch.Success && teamOnlyMatch.Success)
+            {
+                try
+                {
+                    teamNum = Convert.ToInt32(teamOnlyMatch.Value.Replace("\\t\\", ""));
+                }
+                catch (FormatException e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                Team team = DetermineTeam(teamNum);
+                _ssb.ServerInfo.CurrentTeamInfo[playerNameOnlyMatch.Value] =
+                    new TeamInfo(playerNameOnlyMatch.Value, team);
+                Debug.WriteLine("Name, Team: {0}, {1}", playerNameOnlyMatch.Value, team);
+                success = true;
+            }
+            // Clear
+            _ssb.QlCommands.ClearBothQlConsoles();
+            return success;
         }
 
         /// <summary>
@@ -210,6 +208,28 @@ namespace SSB.Core
                 default:
                     return Team.None;
             }
+        }
+
+        /// <summary>
+        ///     Find the n-th occurrence of a substring s.
+        /// </summary>
+        /// <param name="input">The input string</param>
+        /// <param name="value">The value to find</param>
+        /// <param name="n">The n-th occurrence.</param>
+        /// <returns>The position of the n-th occurrence of the value.</returns>
+        /// <remarks>
+        ///     Taken from Alexander PRokofyev's answer at:
+        ///     http://stackoverflow.com/a/187394
+        /// </remarks>
+        private int NthIndexOf(string input, string value, int n)
+        {
+            Match m = Regex.Match(input, "((" + value + ").*?){" + n + "}");
+
+            if (m.Success)
+            {
+                return m.Groups[2].Captures[n - 1].Index;
+            }
+            return -1;
         }
     }
 }

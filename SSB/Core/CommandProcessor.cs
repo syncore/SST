@@ -35,12 +35,14 @@ namespace SSB.Core
             {
                 {"abort", new AbortCmd(_ssb)},
                 {"access", new AccessCmd(_ssb)},
+                {"date", new AccountDateCmd(_ssb)},
                 {"adduser", new AddUserCmd(_ssb)},
                 {"allready", new AllReadyCmd(_ssb)},
                 {"blue", new ForceJoinBlueCmd(_ssb)},
                 {"deluser", new DelUserCmd(_ssb)},
                 {"deop", new DeOpCmd(_ssb)},
                 {"help", new HelpCmd(_ssb)},
+                {"invite", new InviteCmd(_ssb)},
                 {"limit", new LimitCmd(_ssb, Limiter)},
                 {"lock", new LockCmd(_ssb)},
                 {"op", new OpCmd(_ssb)},
@@ -76,7 +78,7 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = { ' ' };
+            char[] sep = {' '};
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             IBotCommand ic;
@@ -89,7 +91,7 @@ namespace SSB.Core
             {
                 return;
             }
-            var user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;
+            string user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;
             if (!UserHasReqLevel(user, _commands[cmdName].UserLevel))
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
@@ -113,7 +115,6 @@ namespace SSB.Core
         /// <returns><c>true</c> if the user has the required access level, otherwise <c>false</c>.</returns>
         private bool UserHasReqLevel(string user, UserLevel requiredLevel)
         {
-            _users.RetrieveAllUsers();
             return _users.GetUserLevel(user) >= requiredLevel;
         }
     }

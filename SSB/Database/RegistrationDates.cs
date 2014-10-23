@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -21,18 +20,8 @@ namespace SSB.Database
         /// </summary>
         public RegistrationDates()
         {
-            UsersWithDates = new Dictionary<string, DateTime>();
             VerifyRegistrationDb();
-            RetrieveAllUsers();
         }
-
-        /// <summary>
-        ///     Gets or sets all users with registration dates.
-        /// </summary>
-        /// <value>
-        ///     All users with registration dates.
-        /// </value>
-        public Dictionary<string, DateTime> UsersWithDates { get; set; }
 
         /// <summary>
         ///     Adds the user to the database.
@@ -61,7 +50,6 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@user", user);
                             cmd.Parameters.AddWithValue("@acctdate", registrationDate);
                             cmd.ExecuteNonQuery();
-                            UsersWithDates.Add(user, registrationDate);
                         }
                     }
                 }
@@ -100,7 +88,6 @@ namespace SSB.Database
                             {
                                 Debug.WriteLine(string.Format(
                                     "Deleted user: {0} from registration database.", user));
-                                UsersWithDates.Remove(user);
                             }
                         }
                     }
@@ -113,10 +100,13 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Retrieves all users from database and populates UsersWithDates dictionary.
+        ///     Gets the user's registration date from the database if it exists.
         /// </summary>
-        public void RetrieveAllUsers()
+        /// <param name="user">The user.</param>
+        /// <returns>The user's registration date as a string.</returns>
+        public DateTime GetRegistrationDate(string user)
         {
+            var date = new DateTime();
             if (VerifyRegistrationDb())
             {
                 try
@@ -127,18 +117,24 @@ namespace SSB.Database
 
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
-                            cmd.CommandText = "SELECT * FROM regdates";
+                            cmd.CommandText = "SELECT * FROM regdates WHERE user = @user";
                             cmd.Prepare();
-
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
-                                if (reader.HasRows)
+                                if (!reader.HasRows)
                                 {
-                                    while (reader.Read())
-                                    {
-                                        UsersWithDates[(string)reader["user"]] =
-                                            (DateTime)reader["acctdate"];
-                                    }
+                                    Debug.WriteLine(string.Format(
+                                        "User: {0} does not exist in the registration database.", user));
+                                    return date;
+                                }
+                                while (reader.Read())
+                                {
+                                    date = (DateTime) reader["acctdate"];
+                                    Debug.WriteLine(
+                                        "Got registration date {0} for User: {1} from internal database.",
+                                        date, user);
+                                    return date;
                                 }
                             }
                         }
@@ -146,9 +142,10 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Unable to retrieve all users from database: " + ex.Message);
+                    Debug.WriteLine("Problem checking if user exists in registration database: " + ex.Message);
                 }
             }
+            return date;
         }
 
         /// <summary>

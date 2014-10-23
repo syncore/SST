@@ -20,6 +20,7 @@ namespace SSB.Util
             EvPlayerConnected = new evPlayerConnected();
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
+            EvPlayerRageQuit = new evPlayerRageQuit();
             CvarBotAccountName = new cvarBotAccountName();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
@@ -97,6 +98,14 @@ namespace SSB.Util
         /// </value>
         public Regex EvPlayerKicked { get; private set; }
 
+        /// <summary>
+        /// Regex for detecting when a player has ragequit.
+        /// </summary>
+        /// <value>
+        /// Regex for player has ragequit event.
+        /// </value>
+        public Regex EvPlayerRageQuit { get; private set; }
+        
         /// <summary>
         ///     Regex for finding player's name and id after issuing 'players' command.
         /// </summary>

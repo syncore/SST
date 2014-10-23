@@ -5,7 +5,7 @@ using System.Text;
 namespace SSB.Util
 {
     /// <summary>
-    /// Class that handles various functions from the Windows API
+    ///     Class that handles various functions from the Windows API
     /// </summary>
     internal static class Win32Api
     {
@@ -23,7 +23,8 @@ namespace SSB.Util
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass,
+            string lpszWindow);
 
         // get text
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -32,5 +33,9 @@ namespace SSB.Util
         // length
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        // focus window
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
     }
 }
