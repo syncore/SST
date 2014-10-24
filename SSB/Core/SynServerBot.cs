@@ -181,6 +181,20 @@ namespace SSB.Core
                                 ? n.Substring(0)
                                 : n.Substring((secondtoLastNewLine + 2)), textLength);
                     }
+
+                    // Detect when buffer is about to be full, in order to auto-clear.
+                    // Win Edit controls can have a max of 30,000 characters, see:
+                    // "Limits of Edit Controls" - http://msdn.microsoft.com/en-us/library/ms997530.aspx
+                    // More info: Q3 source (win_syscon.c), Conbuf_AppendText method
+                    int begin, end;
+                    Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
+                    if ((begin >= 28000) && (end >= 28000))
+                    {
+                        Debug.WriteLine("[==*==*==*//////Console text buffer is almost met. AUTOMATICALLY CLEARING\\\\\\\\==*==*==*]");
+                        // Auto-clear
+                        QlCommands.ClearQlWinConsole();
+                    }
+
                 }
             }
             else

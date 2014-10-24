@@ -268,9 +268,9 @@ namespace SSB.Core
         {
             switch (cmdType)
             {
-                case QlCommandType.ConfigStrings:
-                    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
-                    break;
+                //case QlCommandType.ConfigStrings:
+                //    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
+                //    break;
 
                 case QlCommandType.Players:
                     var g =

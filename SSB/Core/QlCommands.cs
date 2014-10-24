@@ -32,8 +32,6 @@ namespace SSB.Core
             ClearQlWinConsole();
             // In-game console window
             QlCmdClear();
-            // Re-focus the window
-            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
         }
 
         /// <summary>
@@ -52,6 +50,8 @@ namespace SSB.Core
             {
                 Debug.WriteLine("Unable to find 'clear' button.");
             }
+            // Re-focus the window
+            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
         }
 
         /// <summary>
