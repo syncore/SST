@@ -7,6 +7,7 @@ using System.IO;
 using SSB.Config;
 using SSB.Enum;
 using SSB.Interfaces;
+using SSB.Model;
 using SSB.Util;
 
 namespace SSB.Database
@@ -14,7 +15,7 @@ namespace SSB.Database
     /// <summary>
     ///     Class responsible for user database operations.
     /// </summary>
-    public class Users : IConfiguration
+    public class Users : CommonSqliteDb, IConfiguration
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.UserDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.UserDatabaseFilePath;
@@ -25,7 +26,7 @@ namespace SSB.Database
         /// </summary>
         public Users()
         {
-            VerifyUserDb();
+            VerifyDb();
             LoadCfg();
             AddOwnersToDb();
         }
@@ -38,13 +39,13 @@ namespace SSB.Database
         /// <param name="addedBy">The user who is performing the addition.</param>
         /// <param name="dateAdded">The date the user was added.</param>
         /// <returns><c>true</c>if successful, otherwise <c>false</c>.</returns>
-        public DbResult AddUserToDb(string user, UserLevel accessLevel, string addedBy, string dateAdded)
+        public UserDbResult AddUserToDb(string user, UserLevel accessLevel, string addedBy, string dateAdded)
         {
-            if (VerifyUserDb())
+            if (VerifyDb())
             {
                 if (DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    return DbResult.UserAlreadyExists;
+                    return UserDbResult.UserAlreadyExists;
                 }
                 try
                 {
@@ -62,17 +63,17 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
                             cmd.Parameters.AddWithValue("@dateadded", dateAdded);
                             cmd.ExecuteNonQuery();
-                            return DbResult.Success;
+                            return UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Problem adding user to database: " + ex.Message);
-                    return DbResult.InternalError;
+                    return UserDbResult.InternalError;
                 }
             }
-            return DbResult.Unspecified;
+            return UserDbResult.Unspecified;
         }
 
         /// <summary>
@@ -93,13 +94,13 @@ namespace SSB.Database
         /// <param name="addedBy">The admin who originally added the user to be deleted.</param>
         /// <param name="addedByLevel">The access level of the admin who originally added the user to be deleted.</param>
         /// <returns><c>true</c> if the user was successfully deleted, <c>false</c> if unsuccessful.</returns>
-        public DbResult DeleteUserFromDb(string user, string addedBy, UserLevel addedByLevel)
+        public UserDbResult DeleteUserFromDb(string user, string addedBy, UserLevel addedByLevel)
         {
-            if (VerifyUserDb())
+            if (VerifyDb())
             {
                 if (!DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    return DbResult.UserDoesntExist;
+                    return UserDbResult.UserDoesntExist;
                 }
                 try
                 {
@@ -121,22 +122,22 @@ namespace SSB.Database
                             {
                                 Debug.WriteLine(string.Format(
                                     "Deleted user: {0} from the user database.", user));
-                                return DbResult.Success;
+                                return UserDbResult.Success;
                             }
                             Debug.WriteLine(
                                 "User: {0} exists in the database but cannot be deleted because user was not added by {1}",
                                 user, addedBy);
-                            return DbResult.UserNotAddedBySender;
+                            return UserDbResult.UserNotAddedBySender;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Problem deleting user from database: " + ex.Message);
-                    return DbResult.InternalError;
+                    return UserDbResult.InternalError;
                 }
             }
-            return DbResult.Unspecified;
+            return UserDbResult.Unspecified;
         }
 
         /// <summary>
@@ -147,7 +148,7 @@ namespace SSB.Database
         public UserLevel GetUserLevel(string user)
         {
             UserLevel level = UserLevel.None;
-            if (VerifyUserDb())
+            if (VerifyDb())
             {
                 try
                 {
@@ -221,23 +222,11 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Adds the owners (from the config file on the disk) to the database.
-        /// </summary>
-        private void AddOwnersToDb()
-        {
-            string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            foreach (string owner in _owners)
-            {
-                AddUserToDb(owner, UserLevel.Owner, "AUTO", date);
-            }
-        }
-
-        /// <summary>
         ///     Creates the user database.
         /// </summary>
-        private void CreateUserDb()
+        protected override void CreateDb()
         {
-            if (UserDbExists()) return;
+            if (DbExists()) return;
 
             SQLiteConnection.CreateFile(_sqlDbPath);
 
@@ -259,16 +248,25 @@ namespace SSB.Database
             catch (Exception ex)
             {
                 Debug.WriteLine("Problem creating user database: " + ex.Message);
-                DeleteUserDb();
+                DeleteDb();
             }
+        }
+
+        /// <summary>
+        ///     Checks whether the user database exists.
+        /// </summary>
+        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        protected override bool DbExists()
+        {
+            return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
         ///     Deletes the user database.
         /// </summary>
-        private void DeleteUserDb()
+        protected override void DeleteDb()
         {
-            if (!UserDbExists()) return;
+            if (!DbExists()) return;
 
             try
             {
@@ -285,7 +283,7 @@ namespace SSB.Database
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
-        private bool DoesUserExistInDb(string user)
+        protected override bool DoesUserExistInDb(string user)
         {
             try
             {
@@ -321,22 +319,13 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Checks whether the user database exists.
-        /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
-        private bool UserDbExists()
-        {
-            return (File.Exists(_sqlDbPath));
-        }
-
-        /// <summary>
         ///     Verifies the user database.
         /// </summary>
-        private bool VerifyUserDb()
+        protected override sealed bool VerifyDb()
         {
-            if (!UserDbExists())
+            if (!DbExists())
             {
-                CreateUserDb();
+                CreateDb();
                 return true;
             }
 
@@ -356,10 +345,22 @@ namespace SSB.Database
                             return true;
                         }
                         Debug.WriteLine("Users table not found in DB... Creating DB...");
-                        CreateUserDb();
+                        CreateDb();
                         return false;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Adds the owners (from the config file on the disk) to the database.
+        /// </summary>
+        private void AddOwnersToDb()
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            foreach (string owner in _owners)
+            {
+                AddUserToDb(owner, UserLevel.Owner, "AUTO", date);
             }
         }
     }

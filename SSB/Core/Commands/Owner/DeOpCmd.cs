@@ -62,8 +62,6 @@ namespace SSB.Core.Commands.Owner
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public async Task ExecAsync(CmdArgs c)
         {
             string id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
@@ -75,7 +73,7 @@ namespace SSB.Core.Commands.Owner
             else
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
-                
+
                 Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
                     c.Args[1]));
             }

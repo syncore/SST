@@ -72,6 +72,7 @@
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
+    <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
     <Compile Include="Core\Commands\Owner\DeOpCmd.cs" />
@@ -99,13 +100,14 @@
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
-    <Compile Include="Enum\DbResult.cs" />
+    <Compile Include="Database\SeenDates.cs" />
+    <Compile Include="Enum\UserDbResult.cs" />
     <Compile Include="Enum\QlGameStates.cs" />
     <Compile Include="Enum\QlGameTypes.cs" />
     <Compile Include="Interfaces\IBotCommand.cs" />
     <Compile Include="Interfaces\ILimit.cs" />
-    <Compile Include="Interfaces\ISsbModule.cs" />
     <Compile Include="Model\CmdArgs.cs" />
+    <Compile Include="Model\CommonSqliteDb.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />
     <Compile Include="Model\QlRanks\Duel.cs" />

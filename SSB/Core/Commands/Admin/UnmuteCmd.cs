@@ -51,7 +51,6 @@ namespace SSB.Core.Commands.Admin
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(

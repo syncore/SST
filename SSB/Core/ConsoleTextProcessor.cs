@@ -274,7 +274,7 @@ namespace SSB.Core
 
                 case QlCommandType.Players:
                     var g =
-                        _ssb.ServerEventProcessor.GetPlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
+                        _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
                     break;
 
                 case QlCommandType.ServerInfo:

@@ -31,7 +31,7 @@ namespace SSB
             if (qlw.QuakeLiveConsoleWindowExists())
             {
                 _qlIsRunning = false;
-                _qlProcessDetectionTimer = new Timer(5500);
+                _qlProcessDetectionTimer = new Timer(10500);
                 _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
                 _qlProcessDetectionTimer.Enabled = true;
                 Application.Run(new Gui(ssb));

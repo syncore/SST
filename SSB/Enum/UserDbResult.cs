@@ -1,9 +1,9 @@
 ﻿namespace SSB.Enum
 {
     /// <summary>
-    ///     An enumeration that specifies the different types of database results.
+    ///     An enumeration that specifies the different types of User database results.
     /// </summary>
-    public enum DbResult
+    public enum UserDbResult
     {
         Unspecified,
         Success,

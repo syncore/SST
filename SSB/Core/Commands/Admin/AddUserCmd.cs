@@ -82,9 +82,9 @@ namespace SSB.Core.Commands.Admin
                 return;
             }
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            DbResult result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
+            UserDbResult result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
                 date);
-            if (result == DbResult.Success)
+            if (result == UserDbResult.Success)
             {
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the^2 [{1}] ^7group.", c.Args[1],

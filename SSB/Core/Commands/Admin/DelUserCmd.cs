@@ -71,8 +71,8 @@ namespace SSB.Core.Commands.Admin
         public async Task ExecAsync(CmdArgs c)
         {
             UserLevel todelUserLevel = _users.GetUserLevel(c.Args[1]);
-            DbResult result = _users.DeleteUserFromDb(c.Args[1], c.FromUser, _users.GetUserLevel(c.FromUser));
-            if (result == DbResult.Success)
+            UserDbResult result = _users.DeleteUserFromDb(c.Args[1], c.FromUser, _users.GetUserLevel(c.FromUser));
+            if (result == UserDbResult.Success)
             {
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Removed user^2 {0} ^7from the^2 [{1}] ^7group.",

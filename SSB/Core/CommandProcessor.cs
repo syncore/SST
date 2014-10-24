@@ -57,6 +57,7 @@ namespace SSB.Core
                 {"unmute", new UnmuteCmd(_ssb)},
                 {"unpause", new UnpauseCmd(_ssb)},
                 {"refresh", new RefreshCmd(_ssb)},
+                {"seen", new SeenCmd(_ssb)},
                 {"shutdown", new ShutdownCmd(_ssb)},
                 {"stopserver", new StopServerCmd(_ssb)},
                 {"yes", new VoteYesCmd(_ssb)},

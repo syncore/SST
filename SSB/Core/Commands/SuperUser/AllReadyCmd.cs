@@ -50,16 +50,18 @@ namespace SSB.Core.Commands.SuperUser
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
+        /// <remarks>
+        ///     Not implemented because the cmd in this class requires no args.
+        /// </remarks>
         public Task DisplayArgLengthError(CmdArgs c)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
             await _ssb.QlCommands.SendToQlAsync("allready", false);

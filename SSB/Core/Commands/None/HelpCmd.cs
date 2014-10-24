@@ -48,9 +48,12 @@ namespace SSB.Core.Commands.None
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
+        /// <remarks>
+        ///     Not implemented because the cmd in this class requires no args.
+        /// </remarks>
         public Task DisplayArgLengthError(CmdArgs c)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         /// <summary>

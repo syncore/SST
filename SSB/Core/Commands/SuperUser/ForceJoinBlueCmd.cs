@@ -61,7 +61,6 @@ namespace SSB.Core.Commands.SuperUser
         /// </summary>
         /// <param name="c">The c.</param>
         /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public async Task ExecAsync(CmdArgs c)
         {
             await _ssb.QlCommands.CustCmdPutPlayer(c.Args[1], Team.Blue);

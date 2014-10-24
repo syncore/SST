@@ -9,8 +9,9 @@ namespace SSB.Util
     /// </summary>
     public static class Filepaths
     {
-        private const string AccountDateDatabaseFile = "modacctdate.db";
+        private const string AccountDateDatabaseFile = "acctdate.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
+        private const string SeenDateDatabaseFile = "seendate.db";
         private const string UserDatabaseFile = "ssbusers.db";
 
         private static readonly string DataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -21,6 +22,9 @@ namespace SSB.Util
 
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
 
+        private static readonly string _seenDateDatabaseFilePath = Path.Combine(DataDirectory,
+            SeenDateDatabaseFile);
+        
         private static readonly string _userDatabaseFilePath = Path.Combine(DataDirectory, UserDatabaseFile);
 
 
@@ -44,6 +48,17 @@ namespace SSB.Util
         public static string ConfigurationFilePath
         {
             get { return _configurationFilePath; }
+        }
+
+        /// <summary>
+        /// Gets the seen date database file path.
+        /// </summary>
+        /// <value>
+        /// The seen date database file path.
+        /// </value>
+        public static string SeenDateDatabaseFilePath
+        {
+            get { return _seenDateDatabaseFilePath; }
         }
 
         /// <summary>

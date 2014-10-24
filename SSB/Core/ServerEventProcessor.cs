@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Limits;
+using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
 using SSB.Util;
@@ -17,6 +18,7 @@ namespace SSB.Core
     public class ServerEventProcessor
     {
         private readonly SynServerBot _ssb;
+        private readonly SeenDates _seenDb;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServerEventProcessor" /> class.
@@ -25,6 +27,7 @@ namespace SSB.Core
         public ServerEventProcessor(SynServerBot ssb)
         {
             _ssb = ssb;
+            _seenDb = new SeenDates();
         }
 
         /// <summary>
@@ -72,12 +75,11 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the players and ids from players command.
+        ///     Handles the player information from the 'players' command and performs various actions based on the data.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
-        /// <returns></returns>
-        public async Task GetPlayersAndIdsFromPlayersCmd<T>(IEnumerable<T> playersText)
+        public async Task HandlePlayersAndIdsFromPlayersCmd<T>(IEnumerable<T> playersText)
         {
             var eloNeedsUpdating = new List<string>();
             var qlranksHelper = new QlRanksHelper();
@@ -101,10 +103,11 @@ namespace SSB.Core
                     qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
                     eloNeedsUpdating.Add(playerNameOnly);
                 }
+                // Store user's last seen date
+                _seenDb.UpdateLastSeenDate(playerNameOnly, DateTime.Now);
             }
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
-
             // Get the QLRanks info for these players
             if (eloNeedsUpdating.Any())
             {
@@ -112,20 +115,9 @@ namespace SSB.Core
                     qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
             }
             // Elo limiter kick, if active
-            if (EloLimit.IsLimitActive)
-            {
-                foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList())
-                {
-                    await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player.Key);
-                }
-            }
+            await CheckEloAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
             // Account date kick, if active
-            if (AccountDateLimit.IsLimitActive)
-            {
-                await
-                    _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(
-                        _ssb.ServerInfo.CurrentPlayers);
-            }
+            await CheckAccountDateAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
         }
 
         /// <summary>
@@ -185,6 +177,36 @@ namespace SSB.Core
             Debug.WriteLine("Detected map load (pak info): " + text);
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
+        }
+
+        /// <summary>
+        /// Checks the player's account registration date against date limit, if date limit is active.
+        /// </summary>
+        /// <param name="players">The players.</param>
+        /// <returns></returns>
+        private async Task CheckAccountDateAgainstLimit(Dictionary<string, PlayerInfo> players)
+        {
+            if (AccountDateLimit.IsLimitActive)
+            {
+                await
+                    _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(
+                        players);
+            }
+        }
+
+        /// <summary>
+        /// Checks the player Elo against Elo limit, if Elo limiter is active.
+        /// </summary>
+        /// <param name="players">The players.</param>
+        private async Task CheckEloAgainstLimit(Dictionary<string, PlayerInfo> players)
+        {
+            if (EloLimit.IsLimitActive)
+            {
+                foreach (var player in players.ToList())
+                {
+                    await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player.Key);
+                }
+            }
         }
 
         /// <summary>

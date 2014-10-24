@@ -50,9 +50,12 @@ namespace SSB.Core.Commands.Owner
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
+        /// <remarks>
+        ///     Not implemented because the cmd in this class requires no args.
+        /// </remarks>
         public Task DisplayArgLengthError(CmdArgs c)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         /// <summary>
