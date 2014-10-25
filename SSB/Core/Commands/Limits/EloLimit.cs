@@ -210,8 +210,7 @@ namespace SSB.Core.Commands.Limits
         /// <returns>The elo value to use based on the server's current gametype.</returns>
         private long GetEloTypeToCompare(string player)
         {
-            PlayerInfo pi;
-            if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pi)) return 0;
+            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return 0;
             long elo = 0;
             switch (GameType)
             {

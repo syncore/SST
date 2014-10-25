@@ -5,6 +5,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -70,8 +71,7 @@ namespace SSB.Core.Commands.None
         /// </remarks>
         public async Task ExecAsync(CmdArgs c)
         {
-            PlayerInfo pinfo;
-            if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(c.Args[1], out pinfo))
+            if (Tools.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(

@@ -72,6 +72,7 @@
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
+    <Compile Include="Core\Commands\None\EloCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Enum\UserLevel.cs" />
     <Compile Include="Database\Users.cs" />
     <Compile Include="Util\RestApiQuery.cs" />
+    <Compile Include="Util\Tools.cs" />
     <Compile Include="Util\Win32Api.cs" />
     <EmbeddedResource Include="Ui\GUI.resx">
       <DependentUpon>Gui.cs</DependentUpon>

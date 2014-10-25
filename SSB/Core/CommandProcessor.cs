@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Commands.Limits;
@@ -9,6 +11,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -19,6 +22,7 @@ namespace SSB.Core
     {
         public const string BotCommandPrefix = "!";
         private readonly Dictionary<string, IBotCommand> _commands;
+        private readonly Dictionary<string, DateTime> _playerCommandTime;
         private readonly SynServerBot _ssb;
         private readonly Users _users;
 
@@ -31,6 +35,7 @@ namespace SSB.Core
             _ssb = ssb;
             _users = new Users();
             Limiter = new Limiter(_ssb);
+            _playerCommandTime = new Dictionary<string, DateTime>();
             _commands = new Dictionary<string, IBotCommand>
             {
                 {"abort", new AbortCmd(_ssb)},
@@ -41,6 +46,7 @@ namespace SSB.Core
                 {"blue", new ForceJoinBlueCmd(_ssb)},
                 {"deluser", new DelUserCmd(_ssb)},
                 {"deop", new DeOpCmd(_ssb)},
+                {"elo", new EloCmd(_ssb)},
                 {"help", new HelpCmd(_ssb)},
                 {"invite", new InviteCmd(_ssb)},
                 {"limit", new LimitCmd(_ssb, Limiter)},
@@ -79,16 +85,21 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
-            IBotCommand ic;
-
+            if (!SufficientTimeElapsed(fromUser))
+            {
+                Debug.WriteLine("Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
+                    fromUser, CommandProcessor.BotCommandPrefix, cmdName);
+                return;
+            }
+            _playerCommandTime[fromUser] = DateTime.Now;
             if (msg.Equals(BotCommandPrefix))
             {
                 return;
             }
-            if (!_commands.TryGetValue(cmdName, out ic))
+            if (!Tools.KeyExists(cmdName, _commands))
             {
                 return;
             }
@@ -106,6 +117,25 @@ namespace SSB.Core
             }
             // Execute
             await _commands[cmdName].ExecAsync(c);
+        }
+
+        /// <summary>
+        ///     Checks whether sufficient time has elapsed since the user last issued a command.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
+        private bool SufficientTimeElapsed(string user)
+        {
+            if (!Tools.KeyExists(user, _playerCommandTime))
+            {
+                return true;
+            }
+            // 6.5 seconds between commands
+            if (_playerCommandTime[user].AddSeconds(6.5) < DateTime.Now)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

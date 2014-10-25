@@ -45,13 +45,13 @@ namespace SSB.Core
                 IntPtr child = Win32Api.FindWindowEx(consoleWindow, IntPtr.Zero, "Button", "clear");
                 Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
                 Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
+                // Re-focus the window
+                Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
             }
             else
             {
                 Debug.WriteLine("Unable to find 'clear' button.");
             }
-            // Re-focus the window
-            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
         }
 
         /// <summary>

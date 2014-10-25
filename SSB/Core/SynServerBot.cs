@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using SSB.Ui;
 using SSB.Util;
 
@@ -70,6 +71,18 @@ namespace SSB.Core
         public GuiOptions GuiOptions { get; private set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is reading the console.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is reading console; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsReadingConsole
+        {
+            get { return _isReadingConsole; }
+            set { _isReadingConsole = value; }
+        }
+
+        /// <summary>
         ///     Gets the Parser.
         /// </summary>
         /// <value>
@@ -114,17 +127,19 @@ namespace SSB.Core
         /// </summary>
         public void StartConsoleReadThread()
         {
-            if (_isReadingConsole) return;
+            if (IsReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
-            _isReadingConsole = true;
+            IsReadingConsole = true;
             var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
         public void StopConsoleReadThread()
         {
-            _isReadingConsole = false;
+            IsReadingConsole = false;
             Debug.WriteLine("...stopping QL console read thread.");
+            MessageBox.Show("Stopped reading Quake Live events, because Quake Live is not detected.",
+                "Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         /// <summary>
@@ -154,7 +169,7 @@ namespace SSB.Core
                 QlWindowUtils.GetQuakeLiveConsoleInputArea(consoleWindow));
             if (cText != IntPtr.Zero)
             {
-                while (_isReadingConsole)
+                while (IsReadingConsole)
                 {
                     int textLength = Win32Api.SendMessage(cText, Win32Api.WM_GETTEXTLENGTH, IntPtr.Zero,
                         IntPtr.Zero);
@@ -188,13 +203,12 @@ namespace SSB.Core
                     // More info: Q3 source (win_syscon.c), Conbuf_AppendText method
                     int begin, end;
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
-                    if ((begin >= 28000) && (end >= 28000))
+                    if ((begin >= 29000) && (end >= 29000))
                     {
                         Debug.WriteLine("[==*==*==*//////Console text buffer is almost met. AUTOMATICALLY CLEARING\\\\\\\\==*==*==*]");
                         // Auto-clear
                         QlCommands.ClearQlWinConsole();
                     }
-
                 }
             }
             else

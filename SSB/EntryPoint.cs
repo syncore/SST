@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Timers;
 using System.Windows.Forms;
 using SSB.Core;
@@ -11,6 +12,7 @@ namespace SSB
     internal static class EntryPoint
     {
         private static bool _qlIsRunning;
+        private static SynServerBot _ssb;
         private static Timer _qlProcessDetectionTimer;
 
         /// <summary>
@@ -25,16 +27,16 @@ namespace SSB
             // Create necessary directories
             Filepaths.CreateDataDirectory();
             // Main class
-            var ssb = new SynServerBot();
+            _ssb = new SynServerBot();
 
             var qlw = new QlWindowUtils();
             if (qlw.QuakeLiveConsoleWindowExists())
             {
                 _qlIsRunning = false;
-                _qlProcessDetectionTimer = new Timer(10500);
+                _qlProcessDetectionTimer = new Timer(15000);
                 _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
                 _qlProcessDetectionTimer.Enabled = true;
-                Application.Run(new Gui(ssb));
+                Application.Run(new Gui(_ssb));
             }
             else
             {
@@ -55,11 +57,20 @@ namespace SSB
             if (_qlIsRunning && !active)
             {
                 // QuakeLive not found, quit SSB.
-                Application.Exit();
+                //Application.Exit();
+                if (_ssb.IsReadingConsole)
+                {
+                    Debug.WriteLine("Quake Live not found...Stopping console read thread.");
+                    _ssb.StopConsoleReadThread();
+                }
             }
             else if (active)
             {
                 _qlIsRunning = true;
+                if (!_ssb.IsReadingConsole)
+                {
+                    _ssb.StartConsoleReadThread();
+                }
             }
         }
     }

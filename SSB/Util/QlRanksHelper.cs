@@ -32,9 +32,8 @@ namespace SSB.Util
         /// </returns>
         public bool DoesCachedEloExist(string shortPlayerName)
         {
-            EloData cache;
             bool exists = false;
-            if (!EloCache.CachedEloData.TryGetValue(shortPlayerName, out cache))
+            if (!Tools.KeyExists(shortPlayerName, EloCache.CachedEloData))
             {
                 EloCache.CachedEloData.Add(shortPlayerName, new EloData());
                 return false;
@@ -84,7 +83,6 @@ namespace SSB.Util
                 Debug.WriteLine("QLRANKS: Error: object was null which indicates a problem with retrieval...");
             }
             return d;
-
         }
 
         /// <summary>
@@ -110,7 +108,6 @@ namespace SSB.Util
         /// <param name="qlr">The QlRanks object.</param>
         private void SetQlRanksInfo(Dictionary<string, PlayerInfo> currentPlayers, QlRanks qlr)
         {
-            
             foreach (var player in currentPlayers)
             {
                 // closure

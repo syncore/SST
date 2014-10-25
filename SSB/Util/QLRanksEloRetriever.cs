@@ -13,12 +13,33 @@ namespace SSB.Util
     public class QlRanksEloRetriever
     {
         /// <summary>
-        ///     Asynchronously performs the QLRanks data retrieval.
+        ///     Asynchronously performs the QLRanks data retrieval for multiple players.
         /// </summary>
         /// <returns>QlRanks object</returns>
         public async Task<QlRanks> DoQlRanksRetrievalAsync<T>(IEnumerable<T> players)
         {
             QlRanks q = await GetQlRanksObjectAsync(players);
+            return q;
+        }
+
+        /// <summary>
+        ///     Asynchronously performs the QLRanks data retrieval for a single player.
+        /// </summary>
+        /// <returns>QlRanks object</returns>
+        /// <remarks>This can also handle comma-separated lists of players if need be.</remarks>
+        public async Task<QlRanks> DoQlRanksRetrievalAsync(string player)
+        {
+            QlRanks q;
+            // So this can handle lists as well...
+            if (player.Contains(","))
+            {
+                List<string> pList = player.Trim().Split(',').ToList();
+                q = await GetQlRanksObjectAsync(pList);
+            }
+            else
+            {
+                q = await GetEloDataFromQlRanksApiAsync(player);
+            }
             return q;
         }
 
@@ -29,8 +50,8 @@ namespace SSB.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
-            //string url = "http://10.0.0.7/api.aspx?nick=" + players;
+            //string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            string url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try
             {

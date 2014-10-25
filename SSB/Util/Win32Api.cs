@@ -40,7 +40,8 @@ namespace SSB.Util
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint Msg, out int wParam, out int lParam);
         
-        // focus window
+        // focus window (also, in testing environment, if viewlog "1" then you will have annoying
+        //loss of window focus while playing -- doesn't apply to real game environment where viewlog is cheat protected)
         [DllImport("user32.dll", SetLastError = true)]
         public static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
     }
