@@ -114,6 +114,56 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Disables in-game console printing.
+        /// <remarks>
+        /// With this set (con_noprint 1) no text will be shown in the in-game console. This
+        /// is the preferred mode when developer mode is enabled. Note, text will ALWAYS be appended
+        /// to the winconsole, regardless of this setting.
+        /// </remarks>
+        /// </summary>
+        public void DisableConsolePrinting()
+        {
+            SendQlCommand("con_noprint 1", false);
+            QlCmdClear();
+            Debug.WriteLine("Disabling in-game console printing...");
+        }
+
+        /// <summary>
+        /// Disables the developer mode.
+        /// </summary>
+        public void DisableDeveloperMode()
+        {
+            SendQlCommand("developer 0", false);
+            QlCmdClear();
+            Debug.WriteLine("Disabling developer mode...");
+        }
+
+        /// <summary>
+        /// Enables in-game console printing.
+        /// </summary>
+        /// <remarks>
+        /// With this set (con_noprint 0), text will be shown on the in-game console.
+        /// Note: this might be annoying when attempting to play with developer mode on since
+        /// there will be multiple 'tinfo' messages.
+        /// </remarks>
+        public void EnableConsolePrinting()
+        {
+            SendQlCommand("con_noprint 0", false);
+            QlCmdClear();
+            Debug.WriteLine("Enabling in-game console printing...");
+        }
+
+        /// <summary>
+        /// Enables the developer mode.
+        /// </summary>
+        public void EnableDeveloperMode()
+        {
+            SendQlCommand("developer 1", false);
+            QlCmdClear();
+            Debug.WriteLine("Enabling developer mode...");
+        }
+
+        /// <summary>
         ///     Sends the 'clear' command to QL.
         /// </summary>
         public void QlCmdClear()
@@ -244,7 +294,7 @@ namespace SSB.Core
         /// </remarks>
         private async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }

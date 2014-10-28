@@ -87,7 +87,7 @@ namespace SSB.Core
             {
                 string text = p.ToString();
                 string playerNameOnly = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
-                string playerAndClan = text.Substring(NthIndexOf(text, " ", 2)).Trim();
+                string playerAndClan = text.Substring(Tools.NthIndexOf(text, " ", 2)).Trim();
                 string id = text.Substring(0, 2).Trim();
                 Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n",
                     playerNameOnly, id));
@@ -232,26 +232,6 @@ namespace SSB.Core
             }
         }
 
-        /// <summary>
-        ///     Find the n-th occurrence of a substring s.
-        /// </summary>
-        /// <param name="input">The input string</param>
-        /// <param name="value">The value to find</param>
-        /// <param name="n">The n-th occurrence.</param>
-        /// <returns>The position of the n-th occurrence of the value.</returns>
-        /// <remarks>
-        ///     Taken from Alexander PRokofyev's answer at:
-        ///     http://stackoverflow.com/a/187394
-        /// </remarks>
-        private int NthIndexOf(string input, string value, int n)
-        {
-            Match m = Regex.Match(input, "((" + value + ").*?){" + n + "}");
-
-            if (m.Success)
-            {
-                return m.Groups[2].Captures[n - 1].Index;
-            }
-            return -1;
-        }
+        
     }
 }

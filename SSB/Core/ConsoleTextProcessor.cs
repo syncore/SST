@@ -106,6 +106,11 @@ namespace SSB.Core
         /// <param name="length">The length of the incoming message.</param>
         public async Task ProcessLastLineOfConsole(string msg, int length)
         {
+            // Not interested in blank lines (this is especially true with developer mode enabled)
+            if (msg.Equals("\r\n"))
+            {
+                return;
+            }
             if (_oldLastLineLength == length)
             {
                 Debug.WriteLine(
@@ -113,8 +118,11 @@ namespace SSB.Core
                     _oldLastLineLength, length);
                 return;
             }
+            
+            //Debug.WriteLine(string.Format("Received single console line: {0}",
+            //    msg.Replace(Environment.NewLine,"")));
             Debug.WriteLine(string.Format("Received single console line: {0}",
-                msg.Replace(Environment.NewLine, "")));
+                msg));
             _oldLastLineLength = length;
 
             // See if it's something we've issued
