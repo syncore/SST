@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using SSB.Ui;
@@ -15,7 +14,7 @@ namespace SSB.Core
     public class SynServerBot
     {
         private volatile bool _isReadingConsole;
-        static readonly Regex NewLineRegex = new Regex(Environment.NewLine, RegexOptions.Compiled);
+        private volatile int _oldLength;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
@@ -186,54 +185,14 @@ namespace SSB.Core
                     string received = entireBuffer.ToString();
                     ConsoleTextProcessor.ProcessEntireConsoleText(received, textLength);
 
-                    // Only last line of text within entire console window
-                    string entireText = entireBuffer.ToString();
-                    int absoluteLastNewLine = entireText.LastIndexOf("\r\n", StringComparison.Ordinal);
-                    int secondtoLastNewLine;
-                    if (absoluteLastNewLine == -1) continue;
-                    bool isServerCmd = (entireText.LastIndexOf("serverCommand", absoluteLastNewLine - 1, StringComparison.Ordinal) > 0);
-                    
-                    if (absoluteLastNewLine > 0)
+                    int lengthDifference = Math.Abs(textLength - _oldLength);
+                    if (received.Length > lengthDifference)
                     {
-                        // It's a server command (which appends a new line after the actual text and in the immediately next line
-                        if (isServerCmd)
-                        {
-                            secondtoLastNewLine = entireText.LastIndexOf("serverCommand", absoluteLastNewLine - 1,
-                                StringComparison.Ordinal);
-                        }
-                        else
-                        {
-                            secondtoLastNewLine = entireText.LastIndexOf("\r\n", absoluteLastNewLine - 1, StringComparison.Ordinal);
-                        }
-                    }
-                    else
-                    {
-                        secondtoLastNewLine = -1;
-                    }
-                    
-                    if (secondtoLastNewLine < entireText.Length)
-                    {
-                        if (secondtoLastNewLine == -1)
-                        {
-                            var c = ConsoleTextProcessor.ProcessLastLineOfConsole(entireText.Substring(0), textLength);
-                        }
-                        else
-                        {
-                            if (isServerCmd)
-                            {
-                                // ServerCommands have annoying double new line characters. Replace one of them.
-                                var c =
-                                    ConsoleTextProcessor.ProcessLastLineOfConsole(NewLineRegex.Replace(
-                                        entireText.Substring(secondtoLastNewLine + 0),"", 1), textLength);
-                            }
-                            else
-                            {
-                                var c =
-                                    ConsoleTextProcessor.ProcessLastLineOfConsole(
-                                        entireText.Substring(secondtoLastNewLine + 2), textLength);
-                            }
-                        }
-
+                        // Standardize QL's annoying string formatting
+                        var diffBuilder = new StringBuilder(received.Substring(_oldLength, lengthDifference));
+                        diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
+                        diffBuilder.Replace("\r\n\"\r\n", "\r\n");
+                        var c = ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
                     }
 
                     // Detect when buffer is about to be full, in order to auto-clear.
@@ -242,12 +201,13 @@ namespace SSB.Core
                     // More info: Q3 source (win_syscon.c), Conbuf_AppendText method
                     int begin, end;
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
-                    if ((begin >= 29000) && (end >= 29000))
+                    if ((begin >= 29300) && (end >= 29300))
                     {
                         Debug.WriteLine("[Console text buffer is almost met. AUTOMATICALLY CLEARING]");
                         // Auto-clear
                         QlCommands.ClearQlWinConsole();
                     }
+                    _oldLength = textLength;
                 }
             }
             else
@@ -255,5 +215,19 @@ namespace SSB.Core
                 Debug.WriteLine("Couldn't find Quake Live console text area");
             }
         }
+
+        //private void ProcessServerCommand(string line)
+        //{
+        //    if (!line.StartsWith("serverCommand:", StringComparison.InvariantCultureIgnoreCase)) return;
+        //    if (!SeqIdRegex.IsMatch(line)) return;
+        //        Match m = SeqIdRegex.Match(line);
+        //        string seq = m.Value.Replace("serverCommand: ", string.Empty);
+        //        int seqNum;
+        //        bool seqIsNum = (int.TryParse(seq, out seqNum));
+        //    if (!seqIsNum) return;
+        //    if (seqNum <= _lastScSeq) return;
+        //    Debug.WriteLine("Got servercmd seq #: {0}. Last processed was: {1}", seqNum, _lastScSeq);
+        //    _lastScSeq = seqNum;
+        //}
     }
 }

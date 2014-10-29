@@ -16,6 +16,7 @@ namespace SSB.Core
         private readonly PlayerEventProcessor _playerEventProcessor;
         private readonly SynServerBot _ssb;
         private volatile int _oldLastLineLength;
+        private volatile string _oldLastLineText;
         private volatile int _oldWholeConsoleLineLength;
 
         /// <summary>
@@ -100,39 +101,25 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Handles the last line on input received on the QL console.
+        ///     Handles small lines of console text
         /// </summary>
         /// <param name="msg">The text of the incoming message.</param>
-        /// <param name="length">The length of the incoming message.</param>
-        public async Task ProcessLastLineOfConsole(string msg, int length)
+        //public async Task ProcessLastLineOfConsole(string msg, int length)
+        public async Task ProcessShortConsoleLines(string msg)
         {
-            // Not interested in blank lines (this is especially true with developer mode enabled)
-            if (msg.Equals("\r\n"))
-            {
-                return;
-            }
-            if (_oldLastLineLength == length)
-            {
-                Debug.WriteLine(
-                    "single message text length is same: {0} equals {1}...nothing new to add.",
-                    _oldLastLineLength, length);
-                return;
-            }
-            
-            //Debug.WriteLine(string.Format("Received single console line: {0}",
-            //    msg.Replace(Environment.NewLine,"")));
-            Debug.WriteLine(string.Format("Received single console line: {0}",
-                msg));
-            _oldLastLineLength = length;
+            if (msg.Equals(_oldLastLineText)) return;
 
+            Debug.WriteLine(string.Format("Received console text: {0}", msg));
+            _oldLastLineText = msg;
             // See if it's something we've issued
             if (msg.StartsWith("]"))
             {
                 Debug.WriteLine(string.Format("** Detected our own command: {0} **", Strip(msg)));
                 return;
             }
-
-            await DetectSingleLineEvent(msg);
+            // Batch process, as there will sometimes be multiple lines.
+            string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            await DetectConsoleEvent(arr);
         }
 
         /// <summary>
@@ -155,14 +142,90 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Detects various events (such as connections, disconnections, chat messages, etc.)
+        /// that occur as short lines of text within the console.
+        /// </summary>
+        /// <param name="events">The events.</param>
+        private async Task DetectConsoleEvent(string[] events)
+        {
+            // Sometimes the text will include multiple lines. Iterate and process.
+            foreach (var text in events)
+            {
+                // 'player connected' detected
+                //if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
+                //{
+                //    Match m = _ssb.Parser.EvPlayerConnected.Match(text);
+                //    string incomingPlayer = m.Value.Replace(" connected", "");
+                //    await _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
+                //}
+
+                if (_ssb.Parser.CsPlayerInfo.IsMatch(text))
+                {
+                    Match m = _ssb.Parser.CsPlayerInfo.Match(text);
+                    string idText = m.Groups["id"].Value;
+                    int idNum;
+                    if (int.TryParse(idText, out idNum))
+                    {
+                        idNum = (idNum - 29);
+                        Debug.WriteLine("Found a player with id: " + idNum);    
+                    }
+
+                    
+                }
+                
+                
+                // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
+                if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text) || _ssb.Parser.EvPlayerRageQuit.IsMatch(text))
+                {
+                    Match m;
+                    string outgoingPlayer = string.Empty;
+                    if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text))
+                    {
+                        m = _ssb.Parser.EvPlayerDisconnected.Match(text);
+                        outgoingPlayer = m.Value.Replace(" disconnected", "");
+                    }
+                    else if (_ssb.Parser.EvPlayerKicked.IsMatch(text))
+                    {
+                        m = _ssb.Parser.EvPlayerKicked.Match(text);
+                        outgoingPlayer = m.Value.Replace(" was kicked", "");
+                    }
+                    else if (_ssb.Parser.EvPlayerRageQuit.IsMatch(text))
+                    {
+                        m = _ssb.Parser.EvPlayerRageQuit.Match(text);
+                        outgoingPlayer = m.Value.Replace(" ragequits", "");
+                    }
+                    await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+                }
+                // bot account name
+                if (_ssb.Parser.CvarBotAccountName.IsMatch(text))
+                {
+                    Match m = _ssb.Parser.CvarBotAccountName.Match(text);
+                    _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
+                }
+
+                // Chat message detected
+                // First make sure player is detected in our internal list, if not then do nothing.
+                // Use the full clan tag (if any) and name for the comparison.
+
+                // Foreach in closure
+                string text1 = text;
+                foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => text1.StartsWith(player.Value.ClanTagAndName + ":")))
+                {
+                    _playerEventProcessor.HandlePlayerChatMessage(text, player.Key);
+                }
+
+                // TODO: other one-liners such as votes
+            }
+        }
+
+        /// <summary>
         ///     Detects important QL events that occur over multiple lines of the console.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <remarks>
         ///     This method generally detects events contained within
-        ///     large blocks of text related to crucial server information
-        ///     such as player names & ids, server id, and map changes, whereas <see cref="DetectSingleLineEvent" />
-        ///     detects important one-line events.
+        ///     large blocks of text related to crucial server information that we manually request
+        ///     such as player names & ids, server id, and map changes.
         /// </remarks>
         private void DetectMultiLineEvent(string text)
         {
@@ -207,67 +270,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Detects various events (such as connections, disconnections, chat messages, etc.)
-        ///     that occur as single lines of text within the console.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <remarks>
-        ///     This method basically handles one-liners whereas <see cref="DetectMultiLineEvent" />
-        ///     handles the events that occur within larger blocks of text.
-        /// </remarks>
-        private async Task DetectSingleLineEvent(string text)
-        {
-            // 'player connected' detected
-            if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
-            {
-                Match m = _ssb.Parser.EvPlayerConnected.Match(text);
-                string incomingPlayer = m.Value.Replace(" connected", "");
-                await _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
-                return;
-            }
-            // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-            if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text) || _ssb.Parser.EvPlayerRageQuit.IsMatch(text))
-            {
-                Match m;
-                string outgoingPlayer = string.Empty;
-                if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text))
-                {
-                    m = _ssb.Parser.EvPlayerDisconnected.Match(text);
-                    outgoingPlayer = m.Value.Replace(" disconnected", "");
-                }
-                else if (_ssb.Parser.EvPlayerKicked.IsMatch(text))
-                {
-                    m = _ssb.Parser.EvPlayerKicked.Match(text);
-                    outgoingPlayer = m.Value.Replace(" was kicked", "");
-                }
-                else if (_ssb.Parser.EvPlayerRageQuit.IsMatch(text))
-                {
-                    m = _ssb.Parser.EvPlayerRageQuit.Match(text);
-                    outgoingPlayer = m.Value.Replace(" ragequits", "");
-                }
-                await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
-                return;
-            }
-            // bot account name
-            if (_ssb.Parser.CvarBotAccountName.IsMatch(text))
-            {
-                Match m = _ssb.Parser.CvarBotAccountName.Match(text);
-                _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
-                return;
-            }
-
-            // Chat message detected
-            // First make sure player is detected in our internal list, if not then do nothing.
-            // Use the full clan tag (if any) and name for the comparison.
-            foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => text.StartsWith(player.Value.ClanTagAndName + ":")))
-            {
-                _playerEventProcessor.HandlePlayerChatMessage(text, player.Key);
-            }
-
-            // TODO: other one-liners such as votes
-        }
-
-        /// <summary>
         ///     Processes the command.
         /// </summary>
         /// <param name="cmdType">Type of the command.</param>
@@ -278,6 +280,13 @@ namespace SSB.Core
             {
                 //case QlCommandType.ConfigStrings:
                 //    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
+                //    break;
+
+                //case QlCommandType.NewPlayerConnection:
+                //    //print "FuckYou connected
+                //    string x = text as string;
+                //    string player = x.Replace("print \"", "").Replace(" connected", "");
+                //    Debug.WriteLine("*** GOT PLAYER CONNECTION FOR: " + player);
                 //    break;
 
                 case QlCommandType.Players:

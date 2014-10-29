@@ -13,6 +13,7 @@ namespace SSB.Util
         /// </summary>
         public Parser()
         {
+            CsPlayerInfo = new csPlayerInfo();
             CsPlayerAndTeam = new csPlayerandTeam();
             CsPlayerNameOnly = new csPlayerNameOnly();
             CsPlayerTeamOnly = new csPlayerTeamOnly();
@@ -26,6 +27,18 @@ namespace SSB.Util
             EvMapLoaded = new evMapLoaded();
         }
 
+        /// <summary>
+        /// Regex for finding the player info configstring.
+        /// </summary>
+        /// <value>
+        /// Regex for finding the player inf configstring.
+        /// </value>
+        /// <remarks>Named groups:
+        /// 'id' is the two digit number after the 5 in the configstring from which 29 is to be subtracted.
+        /// 'playerinfo' is the rest of the string after the cs 5##
+        /// </remarks>
+        public Regex CsPlayerInfo { get; private set; }
+        
         /// <summary>
         ///     Regex for finding a player's name and team number after issuing 'configstrings' command.
         /// </summary>

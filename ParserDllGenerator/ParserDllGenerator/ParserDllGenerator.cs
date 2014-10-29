@@ -20,6 +20,13 @@ namespace ParserDllGenerator
             RegexCompilationInfo expr;
             var compilationList = new List<RegexCompilationInfo>();
 
+            //configstring playerinfo:
+            // cs 549 "n\JoeJoe\t\3\model\mynx\hmodel\mynx\c1\12\c2\6\hc\100\w\0\l\0\skill\ 5.00\tt\0\tl\0\rp\1\p\0\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\"
+            expr = new RegexCompilationInfo(@"cs 5(?<id>[2-5][0-9]) (?<playerinfo>.*)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "csPlayerInfo", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
             // command: configstrings - Find player and team number (n\Lucy\t\1, where n\Playername\t\team#) after issuing 'configstrings' command
             //###: n\Lucy\t\1\model\lucy\hmodel\lucy\c1\20\c2\15\hc\100\w\0\l\0\skill\5.00\tt\5\tl\0\rp\1\p\0\so\0\pq\0\wp\rl\ws\sg\cn\\su\0\xcn\\c\
             expr = new RegexCompilationInfo(@"(n\\[a-zA-Z]+.(t)\\\d)",
@@ -61,7 +68,7 @@ namespace ParserDllGenerator
 
             // event: player connection ("player has connected")
             // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
-            expr = new RegexCompilationInfo(@"^\w+\s+(connected)",
+            expr = new RegexCompilationInfo(@"print ""(\w+ connected)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerConnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
