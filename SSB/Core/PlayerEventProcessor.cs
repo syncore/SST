@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SSB.Database;
+using SSB.Enum;
+using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -9,6 +14,8 @@ namespace SSB.Core
     /// </summary>
     public class PlayerEventProcessor
     {
+        private readonly QlRanksHelper _qlRanksHelper;
+        private readonly SeenDates _seenDb;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -18,6 +25,8 @@ namespace SSB.Core
         public PlayerEventProcessor(SynServerBot ssb)
         {
             _ssb = ssb;
+            _qlRanksHelper = new QlRanksHelper();
+            _seenDb = new SeenDates();
         }
 
         /// <summary>
@@ -36,12 +45,10 @@ namespace SSB.Core
         ///     Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
-        public async Task HandleOutgoingPlayerConnection(string player)
+        public void HandleOutgoingPlayerConnection(string player)
         {
             // Remove player from our internal list
             RemovePlayer(player);
-            // Now update the current players from server
-            await _ssb.QlCommands.QlCmdPlayers();
             Debug.WriteLine("Detected outgoing connection for " + player);
         }
 
@@ -64,6 +71,134 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Handles the player's configuration string.
+        /// </summary>
+        /// <param name="m">The match.</param>
+        public async Task HandlePlayerConfigString(Match m)
+        {
+            string idMatchText = m.Groups["id"].Value;
+            string playerInfoMatchText = m.Groups["playerinfo"].Value.Replace("\"", "");
+
+            string[] pi = playerInfoMatchText.Split('\\');
+            if (pi.Length == 0)
+            {
+                Debug.WriteLine("Invalid player info array length.");
+                return;
+            }
+            string playername = GetCsValue("n", pi);
+            int status;
+            int tm;
+            int.TryParse(GetCsValue("t", pi), out tm);
+
+            int.TryParse(GetCsValue("rp", pi), out status);
+            var ready = (ReadyStatus)status;
+            var team = (Team)tm;
+            PlayerInfo p;
+            // Player already exists... Update if necessary.
+            if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
+            {
+                //Debug.WriteLine(string.Format("{0} already exists, updating player info if necessary.", playername));
+                if (p.Ready != ready)
+                {
+                    UpdatePlayerReadyStatus(playername, ready);
+                }
+                if (p.Team != team)
+                {
+                    UpdatePlayerTeam(playername, team);
+                }
+            }
+            else
+            {
+                CreateNewPlayerFromConfigString(idMatchText, pi);
+            }
+
+            if (!_qlRanksHelper.ShouldSkipEloUpdate(playername, _ssb.ServerInfo.CurrentPlayers))
+            {
+                await HandleEloUpdate(playername);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the corresponding value associated with a player's configstring.
+        /// </summary>
+        /// <param name="term">The term to find.</param>
+        /// <param name="arr">The array containing the playerinfo.</param>
+        /// <returns>
+        ///     The corresponding value associated with a player's config string. i.e. Using 'n' as the term
+        ///     will return the player's name, using 'cn' as the term will return the clan tag, if any. If not found,
+        ///     then an empty string will be returned.
+        /// </returns>
+        private static string GetCsValue(string term, string[] arr)
+        {
+            string foundVal = string.Empty;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i].Equals(term, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    foundVal = arr[i + 1];
+                }
+            }
+            return foundVal;
+        }
+
+        /// <summary>
+        ///     Creates the new player from the configuration string.
+        /// </summary>
+        /// <param name="idText">The player id as a string.</param>
+        /// <param name="pi">The player info array.</param>
+        private void CreateNewPlayerFromConfigString(string idText, string[] pi)
+        {
+            if (pi.Length <= 1) return;
+            int id;
+            if (!int.TryParse(idText, out id))
+            {
+                Debug.WriteLine("Unable to determine player's id from cs info.");
+                return;
+            }
+            id = (id - 29);
+            int tm;
+            if (!int.TryParse(GetCsValue("t", pi), out tm))
+            {
+                Debug.WriteLine(string.Format("Unable to determine team info for player {0} from cs info.",
+                    GetCsValue("n", pi)));
+                return;
+            }
+            string playername = GetCsValue("n", pi);
+            string clantag = GetCsValue("cn", pi);
+            string subscriber = GetCsValue("su", pi);
+            string fullclanname = GetCsValue("xcn", pi);
+            string country = GetCsValue("c", pi);
+
+            Debug.Write(
+                string.Format(
+                    "[CS]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
+                    pi[1], country, clantag, fullclanname, subscriber));
+            // Create player. Also Set misc details like full clan name, country code, subscription status.
+            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
+                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
+        }
+
+        /// <summary>
+        ///     Handles the QLRanks elo update if necessary.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        private async Task HandleEloUpdate(string player)
+        {
+            PlayerInfo p;
+            if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out p)) return;
+            if (_qlRanksHelper.DoesCachedEloExist(player))
+            {
+                _qlRanksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, player);
+            }
+            else
+            {
+                _qlRanksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, player);
+                await
+                    _qlRanksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, player);
+            }
+        }
+
+        /// <summary>
         ///     Removes the player from the current in-game players and remove team information.
         /// </summary>
         /// <param name="player">The player to remove.</param>
@@ -81,18 +216,23 @@ namespace SSB.Core
                         "Unable to remove {0} from the current in-game players. Player was not in list of current in-game players.",
                         player));
             }
-            // Remove from teams
-            if (_ssb.ServerInfo.CurrentTeamInfo.Remove(player))
-            {
-                Debug.WriteLine(string.Format("Removed {0}'s team information from team info.", player));
-            }
-            else
-            {
-                Debug.WriteLine(
-                    string.Format(
-                        "Unable to remove {0}'s team information from team info. Player was not found in team info.",
-                        player));
-            }
+        }
+
+        /// <summary>
+        ///     Updates the player ready status.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="status">The status.</param>
+        private void UpdatePlayerReadyStatus(string player, ReadyStatus status)
+        {
+            _ssb.ServerInfo.CurrentPlayers[player].Ready = status;
+            Debug.WriteLine("Updated {0}'s player status to: {1}", player, status);
+        }
+
+        private void UpdatePlayerTeam(string player, Team team)
+        {
+            _ssb.ServerInfo.CurrentPlayers[player].Team = team;
+            Debug.WriteLine("Updated {0}'s team to: {1}", player, team);
         }
     }
 }

@@ -14,7 +14,6 @@ namespace SSB.Core
         public ServerInfo()
         {
             CurrentPlayers = new Dictionary<string, PlayerInfo>();
-            CurrentTeamInfo = new Dictionary<string, TeamInfo>();
         }
 
         /// <summary>
@@ -25,8 +24,6 @@ namespace SSB.Core
         /// </value>
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
-        public Dictionary<string, TeamInfo> CurrentTeamInfo { get; private set; }
-        
         /// <summary>
         /// Gets or sets the current server identifier.
         /// </summary>

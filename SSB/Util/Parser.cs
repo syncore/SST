@@ -25,20 +25,11 @@ namespace SSB.Util
             CvarBotAccountName = new cvarBotAccountName();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
+            ScmdPlayerKicked = new scmdPlayerKicked();
+            ScmdPlayerDisconnected = new scmdPlayerDisconnected();
+            ScmdPlayerRageQuits = new scmdPlayerRagequits();
         }
 
-        /// <summary>
-        /// Regex for finding the player info configstring.
-        /// </summary>
-        /// <value>
-        /// Regex for finding the player inf configstring.
-        /// </value>
-        /// <remarks>Named groups:
-        /// 'id' is the two digit number after the 5 in the configstring from which 29 is to be subtracted.
-        /// 'playerinfo' is the rest of the string after the cs 5##
-        /// </remarks>
-        public Regex CsPlayerInfo { get; private set; }
-        
         /// <summary>
         ///     Regex for finding a player's name and team number after issuing 'configstrings' command.
         /// </summary>
@@ -46,6 +37,18 @@ namespace SSB.Util
         ///     Regex for player's name and team number after issuing 'configstrings' command.
         /// </value>
         public Regex CsPlayerAndTeam { get; private set; }
+
+        /// <summary>
+        /// Regex for finding the player info configstring.
+        /// </summary>
+        /// <value>
+        /// Regex for finding the player inf configstring.
+        /// </value>
+        /// <remarks>This contains the following named groups:
+        /// 'id' is the two digit number after the 5 in the configstring from which 29 is to be subtracted.
+        /// 'playerinfo' is the rest of the string after the cs 5##
+        /// </remarks>
+        public Regex CsPlayerInfo { get; private set; }
 
         /// <summary>
         ///     Regex for finding only a player's name after issuing 'configstrings' command.
@@ -118,7 +121,7 @@ namespace SSB.Util
         /// Regex for player has ragequit event.
         /// </value>
         public Regex EvPlayerRageQuit { get; private set; }
-        
+
         /// <summary>
         ///     Regex for finding player's name and id after issuing 'players' command.
         /// </summary>
@@ -126,5 +129,38 @@ namespace SSB.Util
         ///     Regex for player's name and id after issuing 'players' command.
         /// </value>
         public Regex PlPlayerNameAndId { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who has disconnected as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has disconnected as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group, 'player' that has the name of the player who disconnected.
+        /// </remarks>
+        public Regex ScmdPlayerDisconnected { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who was kicked as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who was kicked as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group, 'player' that has the name of the player being kicked.
+        /// </remarks>
+        public Regex ScmdPlayerKicked { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who has ragequit as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has ragequit as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group, 'player' that has the name of the player has ragequit.
+        /// </remarks>
+        public Regex ScmdPlayerRageQuits { get; private set; }
     }
 }

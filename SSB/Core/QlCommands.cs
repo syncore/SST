@@ -64,8 +64,8 @@ namespace SSB.Core
         /// </remarks>
         public async Task CustCmdKickban(string player)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
-            if (!String.IsNullOrEmpty(id))
+            int id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
+            if (id != -1)
             {
                 await SendToQlAsync(string.Format("kickban {0}", id), false);
             }
@@ -87,8 +87,8 @@ namespace SSB.Core
         /// </remarks>
         public async Task CustCmdPutPlayer(string player, Team team)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
-            if (!String.IsNullOrEmpty(id))
+            int id = _ssb.ServerEventProcessor.GetPlayerId(player).Result;
+            if (id != -1)
             {
                 switch (team)
                 {

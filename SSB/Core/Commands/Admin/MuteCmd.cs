@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -64,15 +63,16 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
-            if (!String.IsNullOrEmpty(id))
+            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
+            if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
                 Debug.WriteLine("MUTE: Got player id {0} for player: {1}", id, c.Args[1]);
             }
             else
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
+                await
+                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
                 Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
                     c.Args[1]));
             }

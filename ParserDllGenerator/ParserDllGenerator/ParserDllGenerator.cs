@@ -74,7 +74,7 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // event: player disconnection ("player has disconnected")
-            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing when it's not a servercommand
             expr = new RegexCompilationInfo(@"^\w+\s+(disconnected)",
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "evPlayerDisconnected",
                 "SSB.External.Parser",
@@ -82,7 +82,7 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // event: player kicked ("player was kicked")
-            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing when it's not a servercommand
             expr = new RegexCompilationInfo(@"^\w+\s+(was kicked)",
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "evPlayerKicked", "SSB.External.Parser",
                 true);
@@ -100,6 +100,26 @@ namespace ParserDllGenerator
             expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
             compilationList.Add(expr);
+
+            // servercommand: player was kicked
+            expr = new RegexCompilationInfo(@"print ""(?<player>.+) was kicked",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerKicked", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //servercommand: player disconnected
+            expr = new RegexCompilationInfo(@"print ""(?<player>.+) disconnected",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerDisconnected", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+
+            //servercommand: player ragequits
+            expr = new RegexCompilationInfo(@"print ""(?<player>.+) ragequits",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerRagequits", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
 
             // Specific cvar values:
 

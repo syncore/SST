@@ -50,10 +50,10 @@ namespace SSB.Core
         /// </summary>
         /// <param name="player">The player whose id needs to be retrieved.</param>
         /// <returns>The player</returns>
-        public async Task<string> GetPlayerId(string player)
+        public async Task<int> GetPlayerId(string player)
         {
             PlayerInfo pinfo;
-            string id = string.Empty;
+            int id = -1;
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo))
             {
                 Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
@@ -87,11 +87,20 @@ namespace SSB.Core
             {
                 string text = p.ToString();
                 string playerNameOnly = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1);
-                string playerAndClan = text.Substring(Tools.NthIndexOf(text, " ", 2)).Trim();
-                string id = text.Substring(0, 2).Trim();
+                //string playerAndClan = text.Substring(Tools.NthIndexOf(text, " ", 2)).Trim();
+                int sndspace = (Tools.NthIndexOf(text, " ", 2));
+                int clanLength = ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
+                string clan = text.Substring(sndspace, (clanLength)).Trim();
+                string idText = text.Substring(0, 2).Trim();
+                int id;
+                if (!int.TryParse(idText, out id))
+                {
+                    Debug.WriteLine("Unable to extract player's ID from players.");
+                    return;
+                }
                 Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n",
                     playerNameOnly, id));
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, playerAndClan,
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, clan, Team.None, 
                     id);
 
                 if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
@@ -137,38 +146,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the players' team info from the 'configstrings' command.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if successful, otherwise <c>false</c>.</returns>
-        public bool GetTeamInfoFromCfgString(string text)
-        {
-            int teamNum = 0;
-            bool success = false;
-            Match playerNameOnlyMatch = _ssb.Parser.CsPlayerNameOnly.Match(text);
-            Match teamOnlyMatch = _ssb.Parser.CsPlayerTeamOnly.Match(text);
-            if (playerNameOnlyMatch.Success && teamOnlyMatch.Success)
-            {
-                try
-                {
-                    teamNum = Convert.ToInt32(teamOnlyMatch.Value.Replace("\\t\\", ""));
-                }
-                catch (FormatException e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                Team team = DetermineTeam(teamNum);
-                _ssb.ServerInfo.CurrentTeamInfo[playerNameOnlyMatch.Value] =
-                    new TeamInfo(playerNameOnlyMatch.Value, team);
-                Debug.WriteLine("Name, Team: {0}, {1}", playerNameOnlyMatch.Value, team);
-                success = true;
-            }
-            // Clear
-            _ssb.QlCommands.ClearBothQlConsoles();
-            return success;
-        }
-
-        /// <summary>
         ///     Handles the map load or change.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -209,28 +186,7 @@ namespace SSB.Core
             }
         }
 
-        /// <summary>
-        ///     Determines the team enum value from the team number.
-        /// </summary>
-        /// <param name="teamNum">The team number.</param>
-        /// <returns>An enum value representing the team name from the team number.</returns>
-        private Team DetermineTeam(int teamNum)
-        {
-            switch (teamNum)
-            {
-                case 1:
-                    return Team.Red;
-
-                case 2:
-                    return Team.Blue;
-
-                case 3:
-                    return Team.Spec;
-
-                default:
-                    return Team.None;
-            }
-        }
+        
 
         
     }

@@ -151,56 +151,43 @@ namespace SSB.Core
             // Sometimes the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
-                // 'player connected' detected
-                //if (_ssb.Parser.EvPlayerConnected.IsMatch(text))
-                //{
-                //    Match m = _ssb.Parser.EvPlayerConnected.Match(text);
-                //    string incomingPlayer = m.Value.Replace(" connected", "");
-                //    await _playerEventProcessor.HandleIncomingPlayerConnection(incomingPlayer);
-                //}
-
+                // player configstring info detected
                 if (_ssb.Parser.CsPlayerInfo.IsMatch(text))
                 {
                     Match m = _ssb.Parser.CsPlayerInfo.Match(text);
-                    string idText = m.Groups["id"].Value;
-                    int idNum;
-                    if (int.TryParse(idText, out idNum))
-                    {
-                        idNum = (idNum - 29);
-                        Debug.WriteLine("Found a player with id: " + idNum);    
-                    }
-
-                    
+                    await _playerEventProcessor.HandlePlayerConfigString(m);
+                    continue;
                 }
                 
-                
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text) || _ssb.Parser.EvPlayerKicked.IsMatch(text) || _ssb.Parser.EvPlayerRageQuit.IsMatch(text))
+                if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) || _ssb.Parser.ScmdPlayerKicked.IsMatch(text) || _ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
                 {
                     Match m;
                     string outgoingPlayer = string.Empty;
-                    if (_ssb.Parser.EvPlayerDisconnected.IsMatch(text))
+                    if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text))
                     {
-                        m = _ssb.Parser.EvPlayerDisconnected.Match(text);
-                        outgoingPlayer = m.Value.Replace(" disconnected", "");
+                        m = _ssb.Parser.ScmdPlayerDisconnected.Match(text);
+                        outgoingPlayer = m.Groups["player"].Value;
                     }
-                    else if (_ssb.Parser.EvPlayerKicked.IsMatch(text))
+                    else if (_ssb.Parser.ScmdPlayerKicked.IsMatch(text))
                     {
-                        m = _ssb.Parser.EvPlayerKicked.Match(text);
-                        outgoingPlayer = m.Value.Replace(" was kicked", "");
+                        m = _ssb.Parser.ScmdPlayerKicked.Match(text);
+                        outgoingPlayer = m.Groups["player"].Value;
                     }
-                    else if (_ssb.Parser.EvPlayerRageQuit.IsMatch(text))
+                    else if (_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
                     {
-                        m = _ssb.Parser.EvPlayerRageQuit.Match(text);
-                        outgoingPlayer = m.Value.Replace(" ragequits", "");
+                        m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
+                        outgoingPlayer = m.Groups["player"].Value;
                     }
-                    await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+                    _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+                    continue;
                 }
                 // bot account name
                 if (_ssb.Parser.CvarBotAccountName.IsMatch(text))
                 {
                     Match m = _ssb.Parser.CvarBotAccountName.Match(text);
                     _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
+                    continue;
                 }
 
                 // Chat message detected
@@ -280,13 +267,6 @@ namespace SSB.Core
             {
                 //case QlCommandType.ConfigStrings:
                 //    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
-                //    break;
-
-                //case QlCommandType.NewPlayerConnection:
-                //    //print "FuckYou connected
-                //    string x = text as string;
-                //    string player = x.Replace("print \"", "").Replace(" connected", "");
-                //    Debug.WriteLine("*** GOT PLAYER CONNECTION FOR: " + player);
                 //    break;
 
                 case QlCommandType.Players:

@@ -64,8 +64,8 @@ namespace SSB.Core.Commands.Owner
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            string id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
-            if (!String.IsNullOrEmpty(id))
+            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
+            if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
                 Debug.WriteLine("OP: Got player id {0} for player: {1}", id, c.Args[1]);
