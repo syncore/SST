@@ -101,6 +101,12 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
             compilationList.Add(expr);
 
+            // servercommand: player connected
+            expr = new RegexCompilationInfo(@"print ""(?<player>.+) connected",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerConnected", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
             // servercommand: player was kicked
             expr = new RegexCompilationInfo(@"print ""(?<player>.+) was kicked",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerKicked", "SSB.External.Parser",

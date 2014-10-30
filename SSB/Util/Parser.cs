@@ -25,6 +25,7 @@ namespace SSB.Util
             CvarBotAccountName = new cvarBotAccountName();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
+            ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
@@ -131,6 +132,17 @@ namespace SSB.Util
         public Regex PlPlayerNameAndId { get; private set; }
 
         /// <summary>
+        /// Regex for finding a player who has connected as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has connected as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group, 'player' that has the name of the player who has connected.
+        /// </remarks>
+        public Regex ScmdPlayerConnected { get; private set; }
+
+        /// <summary>
         /// Regex for finding a player who has disconnected as issued in a servercommand.
         /// </summary>
         /// <value>
@@ -159,7 +171,7 @@ namespace SSB.Util
         /// Regex for finding a player who has ragequit as issued in a servercommand.
         /// </value>
         /// <remarks>
-        /// This contains a named group, 'player' that has the name of the player has ragequit.
+        /// This contains a named group, 'player' that has the name of the player who has ragequit.
         /// </remarks>
         public Regex ScmdPlayerRageQuits { get; private set; }
     }

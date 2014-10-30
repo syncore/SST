@@ -118,6 +118,7 @@ namespace SSB.Core
                 return;
             }
             // Batch process, as there will sometimes be multiple lines.
+            // TODO: Fix this. This is terrible and very buggy
             string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             await DetectConsoleEvent(arr);
         }
@@ -151,6 +152,14 @@ namespace SSB.Core
             // Sometimes the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
+                // 'player connected' detected.
+                if (_ssb.Parser.ScmdPlayerConnected.IsMatch(text))
+                {
+                    Match m = _ssb.Parser.ScmdPlayerConnected.Match(text);
+                    _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
+                    continue;
+                }
+                
                 // player configstring info detected
                 if (_ssb.Parser.CsPlayerInfo.IsMatch(text))
                 {

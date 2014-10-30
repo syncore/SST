@@ -56,6 +56,7 @@ namespace SSB.Util
         public bool PlayerHasInvalidEloData(PlayerInfo pinfo)
         {
             bool invalid = false;
+            if (pinfo.EloData == null) return true;
             if (pinfo.EloData.CaElo == 0 && pinfo.EloData.CtfElo == 0 && pinfo.EloData.DuelElo == 0 &&
                 pinfo.EloData.FfaElo == 0 && pinfo.EloData.TdmElo == 0)
             {

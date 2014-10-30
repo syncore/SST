@@ -33,12 +33,10 @@ namespace SSB.Core
         ///     Handles the player connection.
         /// </summary>
         /// <param name="player">The player.</param>
-        public async Task HandleIncomingPlayerConnection(string player)
+        public void HandleIncomingPlayerConnection(string player)
         {
+            _seenDb.UpdateLastSeenDate(player, DateTime.Now);
             Debug.WriteLine("Detected incoming connection for " + player);
-            // Now update the current players from server. This will also take care of
-            // adding the player to our internal list and getting the player's elo data.
-            await _ssb.QlCommands.QlCmdPlayersOnConnect();
         }
 
         /// <summary>
@@ -168,14 +166,14 @@ namespace SSB.Core
             string subscriber = GetCsValue("su", pi);
             string fullclanname = GetCsValue("xcn", pi);
             string country = GetCsValue("c", pi);
-
-            Debug.Write(
-                string.Format(
-                    "[CS]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
-                    pi[1], country, clantag, fullclanname, subscriber));
+            
             // Create player. Also Set misc details like full clan name, country code, subscription status.
             _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
                 id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
+            Debug.Write(
+                string.Format(
+                    "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
+                   playername, country, clantag, fullclanname, subscriber));
         }
 
         /// <summary>
