@@ -117,6 +117,17 @@ namespace SSB.Core.Commands.Limits
         }
 
         /// <summary>
+        ///     Runs the user date check on a given player.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public async Task RunUserDateCheck(string user)
+        {
+            var qlDateChecker = new QlAccountDateChecker();
+            DateTime date = await qlDateChecker.GetUserRegistrationDate(user);
+            await VerifyUserDate(user, date);
+        }
+
+        /// <summary>
         ///     Disables the account date limiter.
         /// </summary>
         private async Task DisableAccountDateLimiter()
@@ -124,17 +135,6 @@ namespace SSB.Core.Commands.Limits
             IsLimitActive = false;
             await _ssb.QlCommands.QlCmdSay(
                 "^2[SUCCESS]^7 Account date limit ^1OFF^7. Players who registered on any date can play.");
-        }
-
-        /// <summary>
-        ///     Runs the user date check on a given player.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        private async Task RunUserDateCheck(string user)
-        {
-            var qlDateChecker = new QlAccountDateChecker();
-            DateTime date = await qlDateChecker.GetUserRegistrationDate(user);
-            await VerifyUserDate(user, date);
         }
 
         /// <summary>

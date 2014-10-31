@@ -27,8 +27,15 @@ namespace SSB.Core.Commands.Limits
         {
             _ssb = ssb;
             _users = new Users();
-
         }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the elo limit is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
+        /// </value>
+        public static bool IsLimitActive { get; set; }
 
         /// <summary>
         ///     Gets or sets the maximum required Elo.
@@ -47,12 +54,12 @@ namespace SSB.Core.Commands.Limits
         public static int MinimumRequiredElo { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the elo limit is active.
+        ///     Gets or sets the type of the game for the server.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
+        ///     The type of the game.
         /// </value>
-        public static bool IsLimitActive { get; set; }
+        public QlGameTypes GameType { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -64,14 +71,6 @@ namespace SSB.Core.Commands.Limits
         {
             get { return _minLimitArgs; }
         }
-
-        /// <summary>
-        /// Gets or sets the type of the game for the server.
-        /// </summary>
-        /// <value>
-        /// The type of the game.
-        /// </value>
-        public QlGameTypes GameType { get; set; }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -175,20 +174,15 @@ namespace SSB.Core.Commands.Limits
         /// <returns><c>true</c>if the server type could be obtained, otherwise <c>false</c>.</returns>
         private async Task<bool> CouldGetGameType()
         {
-            var serverId = _ssb.ServerInfo.CurrentServerId;
-            if (string.IsNullOrEmpty(serverId))
+            QlGameTypes gameType = _ssb.ServerInfo.CurrentServerGameType;
+            if (gameType == QlGameTypes.Unspecified)
             {
-                Debug.WriteLine("ELOLIMITER: Server id is empty. Now trying to request serverinfo...");
+                Debug.WriteLine("ELOLIMITER: Server's gametype is unspecified. Now trying to retrieve.");
                 await _ssb.QlCommands.QlCmdServerInfo();
                 return false;
             }
-            var qlApiQuery = new QlRemoteInfoRetriever();
-            var gametype = await qlApiQuery.GetGameType(serverId);
-            if (gametype != QlGameTypes.Unspecified)
-            {
-                GameType = gametype;
-            }
-            return gametype != QlGameTypes.Unspecified;
+            GameType = gameType;
+            return gameType != QlGameTypes.Unspecified;
         }
 
         /// <summary>
@@ -308,7 +302,7 @@ namespace SSB.Core.Commands.Limits
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
-                        player,GameType.ToString().ToUpper(), playerElo,
+                        player, GameType.ToString().ToUpper(), playerElo,
                         MinimumRequiredElo, hasMaxElo ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""));
                 return;
             }

@@ -85,13 +85,14 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = { ' ' };
+            char[] sep = {' '};
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             if (!SufficientTimeElapsed(fromUser))
             {
-                Debug.WriteLine("Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
-                    fromUser, CommandProcessor.BotCommandPrefix, cmdName);
+                Debug.WriteLine(
+                    "Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
+                    fromUser, BotCommandPrefix, cmdName);
                 return;
             }
             _playerCommandTime[fromUser] = DateTime.Now;

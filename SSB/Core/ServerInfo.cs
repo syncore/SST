@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SSB.Enum;
 using SSB.Model;
 
 namespace SSB.Core
@@ -23,6 +24,14 @@ namespace SSB.Core
         ///     The current players.
         /// </value>
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of game for the current server.
+        /// </summary>
+        /// <value>
+        /// The type of game for the current server.
+        /// </value>
+        public QlGameTypes CurrentServerGameType { get; set; }
 
         /// <summary>
         /// Gets or sets the current server identifier.

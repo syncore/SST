@@ -142,7 +142,7 @@ namespace ParserDllGenerator
             .......
             */
             // offline test: @"\S\w.adXmitDelay\s+\d+";
-            expr = new RegexCompilationInfo(@"\S\w.gtid\s+\d+",
+            expr = new RegexCompilationInfo(@"sv_gtid (?<serverid>.+)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarServerPublicId",
                 "SSB.External.Parser",
                 true);
@@ -155,6 +155,12 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
+            // g_gametype - extract gametype from serverinfo command
+            expr = new RegexCompilationInfo(@"g_gametype (?<gametype>.+)",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarGameType",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
 
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSB.Ui;
 using SSB.Util;
@@ -72,10 +73,10 @@ namespace SSB.Core
         public GuiOptions GuiOptions { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is reading the console.
+        ///     Gets or sets a value indicating whether this instance is reading the console.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this instance is reading console; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is reading console; otherwise, <c>false</c>.
         /// </value>
         public bool IsReadingConsole
         {
@@ -131,7 +132,7 @@ namespace SSB.Core
             if (IsReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
         }
 
@@ -153,7 +154,7 @@ namespace SSB.Core
             // Re-focus the window
             Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
             // Initially get the player listing when we start. Synchronous since init.
-            var q = QlCommands.QlCmdPlayers();
+            Task q = QlCommands.QlCmdPlayers();
             // Get name of account running the bot.
             QlCommands.SendCvarReq("name", false);
             // Get the server's id
@@ -192,7 +193,7 @@ namespace SSB.Core
                         var diffBuilder = new StringBuilder(received.Substring(_oldLength, lengthDifference));
                         diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
                         diffBuilder.Replace("\r\n\"\r\n", "\r\n");
-                        var c = ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
+                        Task c = ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
                     }
 
                     // Detect when buffer is about to be full, in order to auto-clear.
@@ -215,19 +216,5 @@ namespace SSB.Core
                 Debug.WriteLine("Couldn't find Quake Live console text area");
             }
         }
-
-        //private void ProcessServerCommand(string line)
-        //{
-        //    if (!line.StartsWith("serverCommand:", StringComparison.InvariantCultureIgnoreCase)) return;
-        //    if (!SeqIdRegex.IsMatch(line)) return;
-        //        Match m = SeqIdRegex.Match(line);
-        //        string seq = m.Value.Replace("serverCommand: ", string.Empty);
-        //        int seqNum;
-        //        bool seqIsNum = (int.TryParse(seq, out seqNum));
-        //    if (!seqIsNum) return;
-        //    if (seqNum <= _lastScSeq) return;
-        //    Debug.WriteLine("Got servercmd seq #: {0}. Last processed was: {1}", seqNum, _lastScSeq);
-        //    _lastScSeq = seqNum;
-        //}
     }
 }

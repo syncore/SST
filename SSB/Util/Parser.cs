@@ -23,6 +23,7 @@ namespace SSB.Util
             EvPlayerKicked = new evPlayerKicked();
             EvPlayerRageQuit = new evPlayerRageQuit();
             CvarBotAccountName = new cvarBotAccountName();
+            CvarGameType = new cvarGameType();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
             ScmdPlayerConnected = new scmdPlayerConnected();
@@ -76,11 +77,25 @@ namespace SSB.Util
         public Regex CvarBotAccountName { get; private set; }
 
         /// <summary>
+        /// Regex for finding the g_gametype cvar value after issuing 'serverinfo'
+        /// </summary>
+        /// <value>
+        /// Regex for cvar g_gametype after issuing 'serverinfo' command.
+        /// </value>
+        /// <remarks>
+        /// Contains a named group 'gametype' that has the gametype #.
+        /// </remarks>
+        public Regex CvarGameType { get; private set; }
+
+        /// <summary>
         ///     Regex for finding sv_gtid cvar value after issuing 'serverinfo' command.
         /// </summary>
         /// <value>
         ///     Regex for cvar sv_gtid after issuing 'serverinfo' command.
         /// </value>
+        /// <remarks>
+        /// Contains a named group 'serverid' that has the serverid.
+        /// </remarks>
         public Regex CvarServerPublicId { get; private set; }
 
         /// <summary>

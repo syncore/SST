@@ -156,18 +156,18 @@ namespace SSB.Core
                 if (_ssb.Parser.ScmdPlayerConnected.IsMatch(text))
                 {
                     Match m = _ssb.Parser.ScmdPlayerConnected.Match(text);
-                    _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
+                    await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
                     continue;
                 }
-                
+
                 // player configstring info detected
                 if (_ssb.Parser.CsPlayerInfo.IsMatch(text))
                 {
                     Match m = _ssb.Parser.CsPlayerInfo.Match(text);
-                    await _playerEventProcessor.HandlePlayerConfigString(m);
+                    _playerEventProcessor.HandlePlayerConfigString(m);
                     continue;
                 }
-                
+
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
                 if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) || _ssb.Parser.ScmdPlayerKicked.IsMatch(text) || _ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
                 {
@@ -247,13 +247,23 @@ namespace SSB.Core
                 }
                 ProcessCommand(cmd, playersToParse);
             }
-            // 'serverinfo' command has been detected; extract the server id from it.
-            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
+            // 'serverinfo' command has been detected; extract the relevant information from it.
+            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text) || _ssb.Parser.CvarGameType.IsMatch(text))
             {
-                var cmd = QlCommandType.ServerInfo;
-                Match m = _ssb.Parser.CvarServerPublicId.Match(text);
-                text = m.Value;
-                ProcessCommand(cmd, text);
+                QlCommandType cmd;
+                Match m;
+                if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
+                {
+                    cmd = QlCommandType.ServerInfoServerId;
+                    m = _ssb.Parser.CvarServerPublicId.Match(text);
+                    ProcessCommand(cmd, m.Groups["serverid"].Value);
+                }
+                if (_ssb.Parser.CvarGameType.IsMatch(text))
+                {
+                    cmd = QlCommandType.ServerInfoServerGametype;
+                    m = _ssb.Parser.CvarGameType.Match(text);
+                    ProcessCommand(cmd, m.Groups["gametype"].Value);
+                }
             }
             // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
@@ -283,8 +293,12 @@ namespace SSB.Core
                         _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
                     break;
 
-                case QlCommandType.ServerInfo:
-                    _ssb.ServerEventProcessor.GetServerId(text as string);
+                case QlCommandType.ServerInfoServerId:
+                    _ssb.ServerEventProcessor.SetServerId(text as string);
+                    break;
+
+                case QlCommandType.ServerInfoServerGametype:
+                    _ssb.ServerEventProcessor.SetServerGameType(text as string);
                     break;
 
                 case QlCommandType.InitInfo:

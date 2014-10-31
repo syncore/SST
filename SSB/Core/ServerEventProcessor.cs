@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Limits;
 using SSB.Database;
@@ -17,8 +16,8 @@ namespace SSB.Core
     /// </summary>
     public class ServerEventProcessor
     {
-        private readonly SynServerBot _ssb;
         private readonly SeenDates _seenDb;
+        private readonly SynServerBot _ssb;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServerEventProcessor" /> class.
@@ -44,13 +43,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Retrieves a given player's player id (clientnum) from our internal list or
-        ///     queries the server with the 'players' command and returns the id if the player is
-        ///     not detected.
+        ///     Attempts to retrieve a given player's player id (clientnum) from our internal
+        ///     player list.
         /// </summary>
         /// <param name="player">The player whose id needs to be retrieved.</param>
         /// <returns>The player</returns>
-        public async Task<int> GetPlayerId(string player)
+        public int GetPlayerId(string player)
         {
             PlayerInfo pinfo;
             int id = -1;
@@ -59,19 +57,18 @@ namespace SSB.Core
                 Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
                 id = pinfo.Id;
             }
-            else
-            {
-                // Player doesn't exist, request players from server
-                await _ssb.QlCommands.QlCmdPlayers();
-                // Try again
-                if (!_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo)) return id;
-                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
-                id = pinfo.Id;
-                // Only clear if we've had to use 'players' command
-                _ssb.QlCommands.ClearBothQlConsoles();
-            }
-
             return id;
+        }
+
+        /// <summary>
+        ///     Handles the map load or change.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public void HandleMapLoad(string text)
+        {
+            Debug.WriteLine("Detected map load (pak info): " + text);
+            // Clear
+            _ssb.QlCommands.ClearBothQlConsoles();
         }
 
         /// <summary>
@@ -100,7 +97,8 @@ namespace SSB.Core
                 }
                 Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n",
                     playerNameOnly, id));
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, clan, Team.None, 
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, clan,
+                    Team.None,
                     id);
 
                 if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
@@ -130,34 +128,47 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the server identifier (public_id)
+        ///     Sets the current server's gametype.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The current server's gametype as a <see cref="QlGameTypes" />enum value.</returns>
+        public QlGameTypes SetServerGameType(string text)
+        {
+            string gtText = text.Trim();
+            int gt;
+            var gameType = QlGameTypes.Unspecified;
+            if (int.TryParse(gtText, out gt))
+            {
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
+                gameType = (QlGameTypes) gt;
+                Debug.WriteLine("*** Found server gametype: " + gameType);
+            }
+            else
+            {
+                Debug.WriteLine(
+                    "Received a SetServerGameType event but was unable to convert the returned string into a QlGameTypes value.");
+            }
+
+            return gameType;
+        }
+
+        /// <summary>
+        ///     Sets the server identifier (public_id)
         /// </summary>
         /// <param name="text">The text from which to receive the server id.</param>
         /// <returns>The server's id (public_id) as a string.</returns>
-        public string GetServerId(string text)
+        public string SetServerId(string text)
         {
-            string serverId = ConsoleTextProcessor.Strip(text.Replace("sv_gtid", ""));
-            //string serverId = ConsoleTextProcessor.Strip(text.Replace("sv_adXmitDelay", ""));
+            string serverId = text.Trim();
             _ssb.ServerInfo.CurrentServerId = serverId;
-            Debug.WriteLine("Found server id: " + serverId);
+            Debug.WriteLine("**** Found server id: " + serverId);
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
         }
 
         /// <summary>
-        ///     Handles the map load or change.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        public void HandleMapLoad(string text)
-        {
-            Debug.WriteLine("Detected map load (pak info): " + text);
-            // Clear
-            _ssb.QlCommands.ClearBothQlConsoles();
-        }
-
-        /// <summary>
-        /// Checks the player's account registration date against date limit, if date limit is active.
+        ///     Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>
         /// <param name="players">The players.</param>
         /// <returns></returns>
@@ -172,7 +183,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Checks the player Elo against Elo limit, if Elo limiter is active.
+        ///     Checks the player Elo against Elo limit, if Elo limiter is active.
         /// </summary>
         /// <param name="players">The players.</param>
         private async Task CheckEloAgainstLimit(Dictionary<string, PlayerInfo> players)
@@ -185,9 +196,5 @@ namespace SSB.Core
                 }
             }
         }
-
-        
-
-        
     }
 }

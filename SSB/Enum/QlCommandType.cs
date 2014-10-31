@@ -6,7 +6,8 @@
     public enum QlCommandType
     {
         Ignored,
-        //NewPlayerConnection,
+        ServerInfoServerId,
+        ServerInfoServerGametype,
         ConfigStrings,
         Players,
         ServerInfo,

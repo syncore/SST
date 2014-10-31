@@ -63,7 +63,7 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]).Result;
+            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
             if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("unmute {0}", id), false);

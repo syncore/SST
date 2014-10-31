@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SSB.Core.Commands.Limits;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -33,9 +34,25 @@ namespace SSB.Core
         ///     Handles the player connection.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void HandleIncomingPlayerConnection(string player)
+        public async Task HandleIncomingPlayerConnection(string player)
         {
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
+            // Probably need a check for dictionary key
+            if (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))
+            {
+                await HandleEloUpdate(player);
+            }
+            // Elo limiter kick, if active
+            if (EloLimit.IsLimitActive)
+            {
+                await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
+            }
+            // Account date kick, if active
+            if (AccountDateLimit.IsLimitActive)
+            {
+                await _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(player);
+            }
+
             Debug.WriteLine("Detected incoming connection for " + player);
         }
 
@@ -72,7 +89,7 @@ namespace SSB.Core
         ///     Handles the player's configuration string.
         /// </summary>
         /// <param name="m">The match.</param>
-        public async Task HandlePlayerConfigString(Match m)
+        public void HandlePlayerConfigString(Match m)
         {
             string idMatchText = m.Groups["id"].Value;
             string playerInfoMatchText = m.Groups["playerinfo"].Value.Replace("\"", "");
@@ -89,8 +106,8 @@ namespace SSB.Core
             int.TryParse(GetCsValue("t", pi), out tm);
 
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus)status;
-            var team = (Team)tm;
+            var ready = (ReadyStatus) status;
+            var team = (Team) tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -108,11 +125,6 @@ namespace SSB.Core
             else
             {
                 CreateNewPlayerFromConfigString(idMatchText, pi);
-            }
-
-            if (!_qlRanksHelper.ShouldSkipEloUpdate(playername, _ssb.ServerInfo.CurrentPlayers))
-            {
-                await HandleEloUpdate(playername);
             }
         }
 
@@ -166,14 +178,14 @@ namespace SSB.Core
             string subscriber = GetCsValue("su", pi);
             string fullclanname = GetCsValue("xcn", pi);
             string country = GetCsValue("c", pi);
-            
+
             // Create player. Also Set misc details like full clan name, country code, subscription status.
-            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
-                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
+            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
+                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
             Debug.Write(
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
-                   playername, country, clantag, fullclanname, subscriber));
+                    playername, country, clantag, fullclanname, subscriber));
         }
 
         /// <summary>
