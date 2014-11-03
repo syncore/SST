@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Limits;
+using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -139,8 +139,8 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
-                gameType = (QlGameTypes) gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
+                gameType = (QlGameTypes)gt;
                 Debug.WriteLine("*** Found server gametype: " + gameType);
             }
             else
@@ -174,10 +174,10 @@ namespace SSB.Core
         /// <returns></returns>
         private async Task CheckAccountDateAgainstLimit(Dictionary<string, PlayerInfo> players)
         {
-            if (AccountDateLimit.IsLimitActive)
+            if (AccountDateLimit.IsModuleActive)
             {
                 await
-                    _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(
+                    _ssb.CommandProcessor.Mod.AccountDateLimit.RunUserDateCheck(
                         players);
             }
         }
@@ -188,11 +188,11 @@ namespace SSB.Core
         /// <param name="players">The players.</param>
         private async Task CheckEloAgainstLimit(Dictionary<string, PlayerInfo> players)
         {
-            if (EloLimit.IsLimitActive)
+            if (EloLimit.IsModuleActive)
             {
                 foreach (var player in players.ToList())
                 {
-                    await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player.Key);
+                    await _ssb.CommandProcessor.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
         }

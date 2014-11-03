@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Limits;
+using SSB.Core.Commands.Modules;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -8,28 +8,29 @@ using SSB.Model;
 namespace SSB.Core.Commands.Admin
 {
     /// <summary>
-    ///     Command: Limit various player options (elo, account registration date, etc).
+    ///     Command: Class for persisted modules
     /// </summary>
-    public class LimitCmd : IBotCommand
+    public class ModuleCmd : IBotCommand
     {
         public const string AccountDateLimitArg = "accountdate";
         public const string EloLimitArg = "elo";
-        private readonly Limiter _limiter;
+        public const string AutoVoteArg = "autovote";
+        private readonly Module _module;
         private readonly SynServerBot _ssb;
-        private readonly List<string> _validLimiters;
+        private readonly List<string> _validModules;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LimitCmd" /> class.
+        ///     Initializes a new instance of the <see cref="ModuleCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        /// <param name="limiter">The command limiter manager.</param>
-        public LimitCmd(SynServerBot ssb, Limiter limiter)
+        /// <param name="module">The module manager.</param>
+        public ModuleCmd(SynServerBot ssb, Module module)
         {
             _ssb = ssb;
-            _limiter = limiter;
-            _validLimiters = new List<string> {AccountDateLimitArg, EloLimitArg};
+            _module = module;
+            _validModules = new List<string> { AccountDateLimitArg, EloLimitArg };
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace SSB.Core.Commands.Admin
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2}",
-                CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validLimiters)));
+                CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validModules)));
         }
 
         /// <summary>
@@ -73,12 +74,16 @@ namespace SSB.Core.Commands.Admin
         {
             switch (c.Args[1])
             {
+                case AutoVoteArg:
+                    await _module.AutoVoter.EvalModuleCmdAsync(c);
+                    break;
+                
                 case EloLimitArg:
-                    await _limiter.EloLimit.EvalLimitCmdAsync(c);
+                    await _module.EloLimit.EvalModuleCmdAsync(c);
                     break;
 
                 case AccountDateLimitArg:
-                    await _limiter.AccountDateLimit.EvalLimitCmdAsync(c);
+                    await _module.AccountDateLimit.EvalModuleCmdAsync(c);
                     break;
             }
         }

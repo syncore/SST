@@ -11,13 +11,16 @@ using SSB.Model;
 using SSB.Model.QlRanks;
 using SSB.Util;
 
-namespace SSB.Core.Commands.Limits
+namespace SSB.Core.Commands.Modules
 {
-    public class EloLimit : ILimit
+    /// <summary>
+    /// Module: Elo limiter. Kick player if player does not meet elo requirements.
+    /// </summary>
+    public class EloLimit : IModule
     {
         private readonly SynServerBot _ssb;
         private readonly Users _users;
-        private int _minLimitArgs = 3;
+        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EloLimit" /> class.
@@ -35,7 +38,7 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     <c>true</c> if the elo limit is active; otherwise, <c>false</c>.
         /// </value>
-        public static bool IsLimitActive { get; set; }
+        public static bool IsModuleActive { get; set; }
 
         /// <summary>
         ///     Gets or sets the maximum required Elo.
@@ -67,9 +70,9 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     The minimum arguments.
         /// </value>
-        public int MinLimitArgs
+        public int MinModuleArgs
         {
-            get { return _minLimitArgs; }
+            get { return _minModuleArgs; }
         }
 
         /// <summary>
@@ -80,16 +83,16 @@ namespace SSB.Core.Commands.Limits
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <minimumelo> [maximumelo] ^7 - minimumelo must be >0 & maximumelo must be >600",
-                CommandProcessor.BotCommandPrefix, c.CmdName, LimitCmd.EloLimitArg));
+                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.EloLimitArg));
         }
 
         /// <summary>
         ///     Evaluates the elo limit command.
         /// </summary>
         /// <param name="c">The c.</param>
-        public async Task EvalLimitCmdAsync(CmdArgs c)
+        public async Task EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minLimitArgs)
+            if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
                 return;
@@ -190,7 +193,7 @@ namespace SSB.Core.Commands.Limits
         /// </summary>
         private async Task DisableEloLimiter()
         {
-            IsLimitActive = false;
+            IsModuleActive = false;
             await _ssb.QlCommands.QlCmdSay(
                 string.Format(
                     "^2[SUCCESS]^7 {0} Elo limit ^1disabled^7. Players with any {0} Elo can now play on this server.",
@@ -246,7 +249,7 @@ namespace SSB.Core.Commands.Limits
                 await DisplayArgLengthError(c);
                 return;
             }
-            IsLimitActive = true;
+            IsModuleActive = true;
             MinimumRequiredElo = min;
             MaximumRequiredElo = max;
             await _ssb.QlCommands.QlCmdSay(
@@ -270,7 +273,7 @@ namespace SSB.Core.Commands.Limits
                 await DisplayArgLengthError(c);
                 return;
             }
-            IsLimitActive = true;
+            IsModuleActive = true;
             MinimumRequiredElo = min;
             await _ssb.QlCommands.QlCmdSay(
                 string.Format(

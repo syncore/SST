@@ -105,7 +105,7 @@ namespace SSB.Core
         /// </summary>
         /// <param name="msg">The text of the incoming message.</param>
         //public async Task ProcessLastLineOfConsole(string msg, int length)
-        public async Task ProcessShortConsoleLines(string msg)
+        public void ProcessShortConsoleLines(string msg)
         {
             if (msg.Equals(_oldLastLineText)) return;
 
@@ -120,7 +120,7 @@ namespace SSB.Core
             // Batch process, as there will sometimes be multiple lines.
             // TODO: Fix this. This is terrible and very buggy
             string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            await DetectConsoleEvent(arr);
+            DetectConsoleEvent(arr);
         }
 
         /// <summary>
@@ -143,74 +143,38 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether the text matches that of a request for the bot's name and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the text matches that of a request for the bot's name, otherwise <c>false</c>.</returns>
+        private bool BotNameDetected(string text)
+        {
+            if (!_ssb.Parser.CvarBotAccountName.IsMatch(text)) return false;
+            var m = _ssb.Parser.CvarBotAccountName.Match(text);
+            _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
+            return true;
+        }
+
+        /// <summary>
         /// Detects various events (such as connections, disconnections, chat messages, etc.)
         /// that occur as short lines of text within the console.
         /// </summary>
         /// <param name="events">The events.</param>
-        private async Task DetectConsoleEvent(string[] events)
+        private void DetectConsoleEvent(string[] events)
         {
             // Sometimes the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
                 // 'player connected' detected.
-                if (_ssb.Parser.ScmdPlayerConnected.IsMatch(text))
-                {
-                    Match m = _ssb.Parser.ScmdPlayerConnected.Match(text);
-                    await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
-                    continue;
-                }
-
+                if (IncomingPlayerDetected(text).Result) continue;
                 // player configstring info detected
-                if (_ssb.Parser.CsPlayerInfo.IsMatch(text))
-                {
-                    Match m = _ssb.Parser.CsPlayerInfo.Match(text);
-                    _playerEventProcessor.HandlePlayerConfigString(m);
-                    continue;
-                }
-
+                if (PlayerConfigStringDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) || _ssb.Parser.ScmdPlayerKicked.IsMatch(text) || _ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
-                {
-                    Match m;
-                    string outgoingPlayer = string.Empty;
-                    if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text))
-                    {
-                        m = _ssb.Parser.ScmdPlayerDisconnected.Match(text);
-                        outgoingPlayer = m.Groups["player"].Value;
-                    }
-                    else if (_ssb.Parser.ScmdPlayerKicked.IsMatch(text))
-                    {
-                        m = _ssb.Parser.ScmdPlayerKicked.Match(text);
-                        outgoingPlayer = m.Groups["player"].Value;
-                    }
-                    else if (_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
-                    {
-                        m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
-                        outgoingPlayer = m.Groups["player"].Value;
-                    }
-                    _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
-                    continue;
-                }
+                if (OutgoingPlayerDetected(text)) continue;
                 // bot account name
-                if (_ssb.Parser.CvarBotAccountName.IsMatch(text))
-                {
-                    Match m = _ssb.Parser.CvarBotAccountName.Match(text);
-                    _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
-                    continue;
-                }
-
-                // Chat message detected
-                // First make sure player is detected in our internal list, if not then do nothing.
-                // Use the full clan tag (if any) and name for the comparison.
-
-                // Foreach in closure
-                string text1 = text;
-                foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => text1.StartsWith(player.Value.ClanTagAndName + ":")))
-                {
-                    _playerEventProcessor.HandlePlayerChatMessage(text, player.Key);
-                }
-
-                // TODO: other one-liners such as votes
+                if (BotNameDetected(text)) continue;
+                // chat message
+                if (ChatMessageDetected(text)) continue;
             }
         }
 
@@ -273,6 +237,79 @@ namespace SSB.Core
                 text = m.Value;
                 ProcessCommand(cmd, text);
             }
+        }
+
+        /// <summary>
+        /// Detects the player chat message.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <remarks>First, make sure the player is detected in the internal list of the server's current players,
+        /// if not, then do nothing. Use the full clan tag (if any) and name for the determination.</remarks>
+        private bool ChatMessageDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdChatMessage.IsMatch(text)) return false;
+            var m = _ssb.Parser.ScmdChatMessage.Match(text);
+            _playerEventProcessor.HandlePlayerChatMessage(m.Groups["fullplayerandmsg"].Value);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of an incoming player and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a player connection was detected and handled, otherwise <c>false</c>.</returns>
+        private async Task<bool> IncomingPlayerDetected(string text)
+        {
+            // 'player connected' detected.
+            if (!_ssb.Parser.ScmdPlayerConnected.IsMatch(text)) return false;
+            var m = _ssb.Parser.ScmdPlayerConnected.Match(text);
+            await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of an outgoing player and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
+        /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
+        private bool OutgoingPlayerDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
+                !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) && !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
+                return false;
+            Match m;
+            string outgoingPlayer = string.Empty;
+            if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text))
+            {
+                m = _ssb.Parser.ScmdPlayerDisconnected.Match(text);
+                outgoingPlayer = m.Groups["player"].Value;
+            }
+            else if (_ssb.Parser.ScmdPlayerKicked.IsMatch(text))
+            {
+                m = _ssb.Parser.ScmdPlayerKicked.Match(text);
+                outgoingPlayer = m.Groups["player"].Value;
+            }
+            else if (_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
+            {
+                m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
+                outgoingPlayer = m.Groups["player"].Value;
+            }
+            _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of a player's config string and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
+        private bool PlayerConfigStringDetected(string text)
+        {
+            if (!_ssb.Parser.CsPlayerInfo.IsMatch(text)) return false;
+            var m = _ssb.Parser.CsPlayerInfo.Match(text);
+            _playerEventProcessor.HandlePlayerConfigString(m);
+            return true;
         }
 
         /// <summary>

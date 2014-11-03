@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Limits;
+using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -43,14 +43,14 @@ namespace SSB.Core
                 await HandleEloUpdate(player);
             }
             // Elo limiter kick, if active
-            if (EloLimit.IsLimitActive)
+            if (EloLimit.IsModuleActive)
             {
-                await _ssb.CommandProcessor.Limiter.EloLimit.CheckPlayerEloRequirement(player);
+                await _ssb.CommandProcessor.Mod.EloLimit.CheckPlayerEloRequirement(player);
             }
             // Account date kick, if active
-            if (AccountDateLimit.IsLimitActive)
+            if (AccountDateLimit.IsModuleActive)
             {
-                await _ssb.CommandProcessor.Limiter.AccountDateLimit.RunUserDateCheck(player);
+                await _ssb.CommandProcessor.Mod.AccountDateLimit.RunUserDateCheck(player);
             }
 
             Debug.WriteLine("Detected incoming connection for " + player);
@@ -71,12 +71,12 @@ namespace SSB.Core
         ///     Handles the player chat message.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <param name="msgFrom">The user who sent the message.</param>
-        public void HandlePlayerChatMessage(string text, string msgFrom)
+        public void HandlePlayerChatMessage(string text)
         {
             string msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
+            string msgFrom = text.Substring(0, text.LastIndexOf('\u0019'));
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
@@ -104,7 +104,6 @@ namespace SSB.Core
             int status;
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
-
             int.TryParse(GetCsValue("rp", pi), out status);
             var ready = (ReadyStatus) status;
             var team = (Team) tm;
@@ -209,7 +208,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Removes the player from the current in-game players and remove team information.
+        ///     Removes the player from the current in-game players.
         /// </summary>
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
@@ -229,7 +228,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Updates the player ready status.
+        ///     Updates the player's ready status.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="status">The status.</param>
@@ -239,6 +238,11 @@ namespace SSB.Core
             Debug.WriteLine("Updated {0}'s player status to: {1}", player, status);
         }
 
+        /// <summary>
+        /// Updates the player's team.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="team">The team.</param>
         private void UpdatePlayerTeam(string player, Team team)
         {
             _ssb.ServerInfo.CurrentPlayers[player].Team = team;

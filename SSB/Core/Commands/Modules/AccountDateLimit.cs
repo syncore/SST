@@ -8,15 +8,15 @@ using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
 
-namespace SSB.Core.Commands.Limits
+namespace SSB.Core.Commands.Modules
 {
     /// <summary>
-    ///     Class that handles account date limiting.
+    ///     Module: Account date limiter. Kick player if player does not meet account registration date requirements.
     /// </summary>
-    public class AccountDateLimit : ILimit
+    public class AccountDateLimit : IModule
     {
         private readonly SynServerBot _ssb;
-        private int _minLimitArgs = 3;
+        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccountDateLimit" /> class.
@@ -33,7 +33,7 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     <c>true</c> if the account date limit is active; otherwise, <c>false</c>.
         /// </value>
-        public static bool IsLimitActive { get; set; }
+        public static bool IsModuleActive { get; set; }
 
         /// <summary>
         ///     Gets or sets the minimum days that an account must be registered.
@@ -49,9 +49,9 @@ namespace SSB.Core.Commands.Limits
         /// <value>
         ///     The minimum arguments.
         /// </value>
-        public int MinLimitArgs
+        public int MinModuleArgs
         {
-            get { return _minLimitArgs; }
+            get { return _minModuleArgs; }
         }
 
         /// <summary>
@@ -62,16 +62,16 @@ namespace SSB.Core.Commands.Limits
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
-                CommandProcessor.BotCommandPrefix, c.CmdName, LimitCmd.AccountDateLimitArg));
+                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.AccountDateLimitArg));
         }
 
         /// <summary>
         ///     Evaluates the account date limit command.
         /// </summary>
         /// <param name="c">The c.</param>
-        public async Task EvalLimitCmdAsync(CmdArgs c)
+        public async Task EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minLimitArgs)
+            if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
                 return;
@@ -90,7 +90,7 @@ namespace SSB.Core.Commands.Limits
                 await DisplayArgLengthError(c);
                 return;
             }
-            IsLimitActive = true;
+            IsModuleActive = true;
             MinimumDaysRequired = days;
             await _ssb.QlCommands.QlCmdSay(
                 string.Format(
@@ -132,7 +132,7 @@ namespace SSB.Core.Commands.Limits
         /// </summary>
         private async Task DisableAccountDateLimiter()
         {
-            IsLimitActive = false;
+            IsModuleActive = false;
             await _ssb.QlCommands.QlCmdSay(
                 "^2[SUCCESS]^7 Account date limit ^1OFF^7. Players who registered on any date can play.");
         }

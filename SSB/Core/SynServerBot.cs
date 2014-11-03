@@ -193,7 +193,7 @@ namespace SSB.Core
                         var diffBuilder = new StringBuilder(received.Substring(_oldLength, lengthDifference));
                         diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
                         diffBuilder.Replace("\r\n\"\r\n", "\r\n");
-                        Task c = ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
+                        ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
                     }
 
                     // Detect when buffer is about to be full, in order to auto-clear.

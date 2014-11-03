@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
-using SSB.Core.Commands.Limits;
+using SSB.Core.Commands.Modules;
 using SSB.Core.Commands.None;
 using SSB.Core.Commands.Owner;
 using SSB.Core.Commands.SuperUser;
@@ -34,7 +34,7 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _users = new Users();
-            Limiter = new Limiter(_ssb);
+            Mod = new Module(_ssb);
             _playerCommandTime = new Dictionary<string, DateTime>();
             _commands = new Dictionary<string, IBotCommand>
             {
@@ -49,7 +49,7 @@ namespace SSB.Core
                 {"elo", new EloCmd(_ssb)},
                 {"help", new HelpCmd(_ssb)},
                 {"invite", new InviteCmd(_ssb)},
-                {"limit", new LimitCmd(_ssb, Limiter)},
+                {"mod", new ModuleCmd(_ssb, Mod)},
                 {"lock", new LockCmd(_ssb)},
                 {"op", new OpCmd(_ssb)},
                 {"mute", new MuteCmd(_ssb)},
@@ -71,12 +71,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the limiter.
+        ///     Gets the Module.
         /// </summary>
         /// <value>
-        ///     The limiter.
+        ///     The module.
         /// </value>
-        public Limiter Limiter { get; private set; }
+        public Module Mod { get; private set; }
 
         /// <summary>
         ///     Processes the bot command.
@@ -127,7 +127,7 @@ namespace SSB.Core
         /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
         private bool SufficientTimeElapsed(string user)
         {
-            if (!Tools.KeyExists(user, _playerCommandTime))
+            if (!Tools.KeyExists(user, _playerCommandTime) || _users.GetUserLevel(user) >= UserLevel.Admin)
             {
                 return true;
             }

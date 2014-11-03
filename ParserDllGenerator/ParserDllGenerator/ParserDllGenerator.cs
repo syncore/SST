@@ -66,13 +66,6 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
-            // event: player connection ("player has connected")
-            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
-            expr = new RegexCompilationInfo(@"print ""(\w+ connected)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evPlayerConnected", "SSB.External.Parser",
-                true);
-            compilationList.Add(expr);
-
             // event: player disconnection ("player has disconnected")
             // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing when it's not a servercommand
             expr = new RegexCompilationInfo(@"^\w+\s+(disconnected)",
@@ -101,31 +94,62 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
             compilationList.Add(expr);
 
+            // servercommand: chat message - named group 'fullplayerandmsg' contains clan tag + playername + msg
+            // note: there is a unicode character 19 between the end of the player name and the colon
+            // serverCommand: 4 : chat "00 player: hello" - would match: player\u0019: hello
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : chat ""\d+ (?<fullplayerandmsg>.+)""",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdChatMessage", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
             // servercommand: player connected
-            expr = new RegexCompilationInfo(@"print ""(?<player>.+) connected",
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) connected",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerConnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
             
             // servercommand: player was kicked
-            expr = new RegexCompilationInfo(@"print ""(?<player>.+) was kicked",
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) was kicked",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerKicked", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             //servercommand: player disconnected
-            expr = new RegexCompilationInfo(@"print ""(?<player>.+) disconnected",
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) disconnected",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerDisconnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
 
             //servercommand: player ragequits
-            expr = new RegexCompilationInfo(@"print ""(?<player>.+) ragequits",
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) ragequits",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerRagequits", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
+            //servercommand: vote called - player who called vote (includes clantag and player name)
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<clanandplayer>.+) called a vote",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledTagAndPlayer", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
+            //servercommand: vote called - details
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 9 ""(?<votetype>.+) ""*(?<votearg>.*?)""*""",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledDetails", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //servercommand: vote called - number of yes votes
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 10 ""(?<yesvotes>\d+)""",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteNumYesVotes", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
+            //servercommand: vote called - number of no votes
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 11 ""(?<novotes>\d+)""",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteNumNoVotes", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
 
             // Specific cvar values:
 

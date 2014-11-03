@@ -4,9 +4,9 @@ using SSB.Model;
 namespace SSB.Interfaces
 {
     /// <summary>
-    ///     Interface for limiting bot commands.
+    ///     Interface for module commands.
     /// </summary>
-    internal interface ILimit
+    internal interface IModule
     {
         /// <summary>
         ///     Gets the minimum arguments.
@@ -14,7 +14,7 @@ namespace SSB.Interfaces
         /// <value>
         ///     The minimum arguments.
         /// </value>
-        int MinLimitArgs { get; }
+        int MinModuleArgs { get; }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -22,9 +22,9 @@ namespace SSB.Interfaces
         Task DisplayArgLengthError(CmdArgs c);
 
         /// <summary>
-        ///     Executes the specified limiting command asynchronously.
+        ///     Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        Task EvalLimitCmdAsync(CmdArgs c);
+        Task EvalModuleCmdAsync(CmdArgs c);
     }
 }
