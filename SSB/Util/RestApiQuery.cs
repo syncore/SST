@@ -26,7 +26,6 @@ namespace SSB.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="url">The API's URL.</param>
         /// <remarks>The API of interest is either the QuakeLive API or the QLRanks API.</remarks>
-        /// <returns></returns>
         public async Task<T> QueryRestApiAsync<T>(string url)
         {
             _httpClientHandler = new HttpClientHandler();

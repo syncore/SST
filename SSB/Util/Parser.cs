@@ -34,6 +34,7 @@ namespace SSB.Util
             ScmdVoteNumYesVotes = new scmdVoteNumYesVotes();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdChatMessage = new scmdChatMessage();
+            ScmdVoteFinalResult = new scmdVoteFinalResult();
         }
 
         /// <summary>
@@ -254,5 +255,16 @@ namespace SSB.Util
         ///     as a string with the quotation marks already removed.
         /// </remarks>
         public Regex ScmdVoteNumYesVotes { get; private set; }
+
+        /// <summary>
+        /// Regex for matching the final result of a vote.
+        /// </summary>
+        /// <value>
+        /// Regex for matching the final result of a vote.
+        /// </value>
+        /// <remarks>
+        /// Contains a named group 'result' which is either passed or failed.
+        /// </remarks>
+        public Regex ScmdVoteFinalResult { get; private set; }
     }
 }

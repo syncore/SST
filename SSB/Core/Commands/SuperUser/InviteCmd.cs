@@ -60,7 +60,6 @@ namespace SSB.Core.Commands.SuperUser
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
             await _ssb.QlCommands.SendToQlAsync(string.Format("invite {0}", c.Args[1]), false);

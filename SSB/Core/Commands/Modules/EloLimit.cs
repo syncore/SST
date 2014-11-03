@@ -14,10 +14,11 @@ using SSB.Util;
 namespace SSB.Core.Commands.Modules
 {
     /// <summary>
-    /// Module: Elo limiter. Kick player if player does not meet elo requirements.
+    ///     Module: Elo limiter. Kick player if player does not meet elo requirements.
     /// </summary>
     public class EloLimit : IModule
     {
+        public const string NameModule = "elo";
         private readonly SynServerBot _ssb;
         private readonly Users _users;
         private int _minModuleArgs = 3;
@@ -65,6 +66,21 @@ namespace SSB.Core.Commands.Modules
         public QlGameTypes GameType { get; set; }
 
         /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        ///     Used to query activity status for a list of modules. Be sure to set
+        ///     a public static bool property IsModuleActive for outside access in other parts of app.
+        /// </remarks>
+        public bool Active
+        {
+            get { return IsModuleActive; }
+        }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -73,6 +89,17 @@ namespace SSB.Core.Commands.Modules
         public int MinModuleArgs
         {
             get { return _minModuleArgs; }
+        }
+
+        /// <summary>
+        ///     Gets the name of the module.
+        /// </summary>
+        /// <value>
+        ///     The name of the module.
+        /// </value>
+        public string ModuleName
+        {
+            get { return NameModule; }
         }
 
         /// <summary>

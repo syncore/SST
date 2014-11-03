@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enum;
@@ -15,6 +14,7 @@ namespace SSB.Core
     {
         private readonly PlayerEventProcessor _playerEventProcessor;
         private readonly SynServerBot _ssb;
+        private readonly VoteHandler _voteHandler;
         private volatile int _oldLastLineLength;
         private volatile string _oldLastLineText;
         private volatile int _oldWholeConsoleLineLength;
@@ -26,6 +26,7 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _playerEventProcessor = new PlayerEventProcessor(_ssb);
+            _voteHandler = new VoteHandler(_ssb);
         }
 
         private delegate void ProcessEntireConsoleTextCb(string text, int length);
@@ -156,13 +157,27 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Detects the player chat message.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <remarks>First, make sure the player is detected in the internal list of the server's current players,
+        /// if not, then do nothing. Use the full clan tag (if any) and name for the determination.</remarks>
+        private bool ChatMessageDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdChatMessage.IsMatch(text)) return false;
+            var m = _ssb.Parser.ScmdChatMessage.Match(text);
+            _playerEventProcessor.HandlePlayerChatMessage(m.Groups["fullplayerandmsg"].Value);
+            return true;
+        }
+
+        /// <summary>
         /// Detects various events (such as connections, disconnections, chat messages, etc.)
         /// that occur as short lines of text within the console.
         /// </summary>
         /// <param name="events">The events.</param>
         private void DetectConsoleEvent(string[] events)
         {
-            // Sometimes the text will include multiple lines. Iterate and process.
+            // Most of time the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
                 // 'player connected' detected.
@@ -173,6 +188,12 @@ namespace SSB.Core
                 if (OutgoingPlayerDetected(text)) continue;
                 // bot account name
                 if (BotNameDetected(text)) continue;
+                // vote start
+                if (VoteStartDetected(text)) continue;
+                // vote details
+                if (VoteDetailsDetected(text)) continue;
+                // vote end
+                if (VoteEndDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text)) continue;
             }
@@ -185,7 +206,7 @@ namespace SSB.Core
         /// <remarks>
         ///     This method generally detects events contained within
         ///     large blocks of text related to crucial server information that we manually request
-        ///     such as player names & ids, server id, and map changes.
+        ///     such as player names & ids via 'players' cmd, 'configstrings' cmd, 'serverinfo' cmd, map changes.
         /// </remarks>
         private void DetectMultiLineEvent(string text)
         {
@@ -237,20 +258,6 @@ namespace SSB.Core
                 text = m.Value;
                 ProcessCommand(cmd, text);
             }
-        }
-
-        /// <summary>
-        /// Detects the player chat message.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <remarks>First, make sure the player is detected in the internal list of the server's current players,
-        /// if not, then do nothing. Use the full clan tag (if any) and name for the determination.</remarks>
-        private bool ChatMessageDetected(string text)
-        {
-            if (!_ssb.Parser.ScmdChatMessage.IsMatch(text)) return false;
-            var m = _ssb.Parser.ScmdChatMessage.Match(text);
-            _playerEventProcessor.HandlePlayerChatMessage(m.Groups["fullplayerandmsg"].Value);
-            return true;
         }
 
         /// <summary>
@@ -342,6 +349,42 @@ namespace SSB.Core
                     _ssb.ServerEventProcessor.HandleMapLoad(text as string);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Determines whether the details of the vote were detected.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        private bool VoteDetailsDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdVoteCalledDetails.IsMatch(text)) return false;
+            _voteHandler.VoteDetails = _ssb.Parser.ScmdVoteCalledDetails.Match(text);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the end result of a vote was detected.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        private bool VoteEndDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdVoteFinalResult.IsMatch(text)) return false;
+            // Only care about the fact that the vote has ended.
+            _voteHandler.HandleVoteEnd();
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the start of a vote was detected.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        private bool VoteStartDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdVoteCalledTagAndPlayer.IsMatch(text)) return false;
+            // Don't care about the player who called the vote, just fact that vote was called.
+            _voteHandler.HandleVoteStart(text);
+            return true;
         }
     }
 }

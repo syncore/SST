@@ -156,7 +156,6 @@ namespace SSB.Core.Commands.None
         ///     Shows the elo retrieval error.
         /// </summary>
         /// <param name="failedUsers">The failed users.</param>
-        /// <returns></returns>
         private async Task ShowEloRetrievalError(string failedUsers)
         {
             await

@@ -15,6 +15,7 @@ namespace SSB.Core.Commands.Modules
     /// </summary>
     public class AutoVoter : IModule
     {
+        public const string NameModule = "autovote";
         private readonly List<AutoVote> _autoVotes;
         private readonly SynServerBot _ssb;
         private readonly List<string> _validCallVotes;
@@ -31,7 +32,7 @@ namespace SSB.Core.Commands.Modules
             _validCallVotes = new List<string>
             {
                 "clientkick",
-                "cointoss",
+                //"cointoss",
                 "fraglimit",
                 "g_gametype",
                 "kick",
@@ -52,6 +53,18 @@ namespace SSB.Core.Commands.Modules
         ///     <c>true</c> if the auto voter module is active; otherwise, <c>false</c>.
         /// </value>
         public static bool IsModuleActive { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        /// Used to query activity status for a list of modules. Be sure to set
+        /// a public static bool property IsModuleActive for outside access in other parts of app.
+        /// </remarks>
+        public bool Active { get { return IsModuleActive; } }
 
         /// <summary>
         ///     Gets the automatic votes.
@@ -76,10 +89,17 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Gets the name of the module.
+        /// </summary>
+        /// <value>
+        /// The name of the module.
+        /// </value>
+        public string ModuleName { get { return NameModule; } }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        /// <returns></returns>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
@@ -108,6 +128,7 @@ namespace SSB.Core.Commands.Modules
                 {
                     _autoVotes.Clear();
                     await _ssb.QlCommands.QlCmdSay("^2[SUCCESS]^7 Cleared list of votes to automatically pass or reject.");
+                    IsModuleActive = false;
                 }
                 else if (c.Args[2].Equals("list"))
                 {
@@ -156,7 +177,8 @@ namespace SSB.Core.Commands.Modules
                             (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), fullVote, av.AddedBy));
                 return;
             }
-            _autoVotes.Add(new AutoVote(fullVote, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            IsModuleActive = true;
+            _autoVotes.Add(new AutoVote(fullVote, true, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Any vote matching: ^3{0}^7 will automatically {1}.",
@@ -181,7 +203,8 @@ namespace SSB.Core.Commands.Modules
                             (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), c.Args[3], av.AddedBy));
                 return;
             }
-            _autoVotes.Add(new AutoVote(c.Args[3], (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            IsModuleActive = true;
+            _autoVotes.Add(new AutoVote(c.Args[3], false, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Any vote matching: ^3{0}^7 will automatically {1}.",
@@ -213,7 +236,6 @@ namespace SSB.Core.Commands.Modules
         ///     Displays an error indicating that the vote doesnt exist error.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
         private async Task DisplayVoteDoesntExistError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
@@ -232,7 +254,7 @@ namespace SSB.Core.Commands.Modules
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
-                            "^1[ERROR]^3 {0} isn't valid. In console type /callvote to see valid types.",
+                            "^1[ERROR]^3 {0} isn't valid or applicable. In console: /callvote to see valid types.",
                             c.Args[3]));
                 return;
             }
@@ -269,6 +291,11 @@ namespace SSB.Core.Commands.Modules
                 return;
             }
             await RemoveAutoVote(voteNum);
+            // Disable if there is no rules specified
+            if (_autoVotes.Count == 0)
+            {
+                IsModuleActive = false;
+            }
         }
 
         /// <summary>

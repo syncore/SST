@@ -61,6 +61,21 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Gets the player name from the player identifier.
+        /// </summary>
+        /// <param name="id">The player identifier.</param>
+        /// <returns>The player name as a string if the id matches the id parameter, otherwise a blank string.</returns>
+        public string GetPlayerNameFromId(int id)
+        {
+            string name = string.Empty;
+            foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => player.Value.Id.Equals(id)))
+            {
+                name = player.Value.ShortName;
+            }
+            return name;
+        }
+
+        /// <summary>
         ///     Handles the map load or change.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -139,8 +154,8 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
-                gameType = (QlGameTypes)gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
+                gameType = (QlGameTypes) gt;
                 Debug.WriteLine("*** Found server gametype: " + gameType);
             }
             else
@@ -171,7 +186,6 @@ namespace SSB.Core
         ///     Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>
         /// <param name="players">The players.</param>
-        /// <returns></returns>
         private async Task CheckAccountDateAgainstLimit(Dictionary<string, PlayerInfo> players)
         {
             if (AccountDateLimit.IsModuleActive)

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Modules;
 using SSB.Enum;
@@ -12,12 +14,14 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class ModuleCmd : IBotCommand
     {
-        public const string AccountDateLimitArg = "accountdate";
-        public const string EloLimitArg = "elo";
-        public const string AutoVoteArg = "autovote";
+        public const string AccountDateLimitArg = AccountDateLimit.NameModule;
+        public const string AutoVoteArg = AutoVoter.NameModule;
+        public const string EloLimitArg = EloLimit.NameModule;
+        private const string ActiveModuleArg = "active";
         private readonly Module _module;
+        private readonly List<IModule> _moduleList;
         private readonly SynServerBot _ssb;
-        private readonly List<string> _validModules;
+        private readonly List<string> _validModuleNames;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
 
@@ -30,7 +34,8 @@ namespace SSB.Core.Commands.Admin
         {
             _ssb = ssb;
             _module = module;
-            _validModules = new List<string> { AccountDateLimitArg, EloLimitArg };
+            _validModuleNames = new List<string> { AccountDateLimitArg, AutoVoteArg, EloLimitArg };
+            _moduleList = new List<IModule> { _module.AccountDateLimit, _module.AutoVoter, _module.EloLimit };
         }
 
         /// <summary>
@@ -62,8 +67,9 @@ namespace SSB.Core.Commands.Admin
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2}",
-                CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validModules)));
+                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2} - {0}{3} to see active.",
+                CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validModuleNames),
+                ActiveModuleArg));
         }
 
         /// <summary>
@@ -74,10 +80,14 @@ namespace SSB.Core.Commands.Admin
         {
             switch (c.Args[1])
             {
+                case ActiveModuleArg:
+                    await DisplayActiveModules(c);
+                    break;
+
                 case AutoVoteArg:
                     await _module.AutoVoter.EvalModuleCmdAsync(c);
                     break;
-                
+
                 case EloLimitArg:
                     await _module.EloLimit.EvalModuleCmdAsync(c);
                     break;
@@ -86,6 +96,30 @@ namespace SSB.Core.Commands.Admin
                     await _module.AccountDateLimit.EvalModuleCmdAsync(c);
                     break;
             }
+        }
+
+        /// <summary>
+        ///     Displays the active modules.
+        /// </summary>
+        private async Task DisplayActiveModules(CmdArgs c)
+        {
+            if (!_moduleList.Any(mod => mod.Active))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(string.Format(
+                        "^7No modules are active at this type. Use ^3{0}{1}^7 to activate module(s).",
+                        CommandProcessor.BotCommandPrefix, c.CmdName));
+                return;
+            }
+
+            var sb = new StringBuilder();
+            foreach (IModule mod in _moduleList.Where(mod => mod.Active))
+            {
+                sb.Append(string.Join("^7^2, ", mod.ModuleName));
+            }
+            await
+                _ssb.QlCommands.QlCmdSay(string.Format("^2[ACTIVE MODULES]^7 {0}",
+                    sb.ToString().TrimEnd(',', ' ')));
         }
     }
 }

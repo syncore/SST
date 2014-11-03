@@ -71,7 +71,6 @@ namespace SSB.Util
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playersToUpdate">The players to update.</param>
-        /// <returns></returns>
         public async Task<QlRanks> RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers, List<string> playersToUpdate)
         {
             if (playersToUpdate.Count == 0) return null;
@@ -94,7 +93,6 @@ namespace SSB.Util
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playerToUpdate">The player to update.</param>
-        /// <returns></returns>
         public async Task<QlRanks> RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers, string playerToUpdate)
         {
             if (string.IsNullOrEmpty(playerToUpdate)) return null;

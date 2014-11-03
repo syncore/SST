@@ -151,6 +151,12 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: vote called - vote result
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""Vote (?<result>passed|failed)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteFinalResult", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
             // Specific cvar values:
 
             // serverinfo cmd - Find sv_gtid after issuing 'serverinfo' command

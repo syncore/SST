@@ -15,6 +15,7 @@ namespace SSB.Core.Commands.Modules
     /// </summary>
     public class AccountDateLimit : IModule
     {
+        public const string NameModule = "accountdate";
         private readonly SynServerBot _ssb;
         private int _minModuleArgs = 3;
 
@@ -44,6 +45,18 @@ namespace SSB.Core.Commands.Modules
         public static int MinimumDaysRequired { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        /// Used to query activity status for a list of modules. Be sure to set
+        /// a public static bool property IsModuleActive for outside access in other parts of app.
+        /// </remarks>
+        public bool Active { get { return IsModuleActive; } }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -53,6 +66,14 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _minModuleArgs; }
         }
+
+        /// <summary>
+        /// Gets the name of the module.
+        /// </summary>
+        /// <value>
+        /// The name of the module.
+        /// </value>
+        public string ModuleName { get { return NameModule; } }
 
         /// <summary>
         ///     Displays the argument length error.

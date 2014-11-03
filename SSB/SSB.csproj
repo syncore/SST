@@ -101,6 +101,7 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\ServerInfo.cs" />
+    <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />
     <Compile Include="Enum\IntendedVoteResult.cs" />
