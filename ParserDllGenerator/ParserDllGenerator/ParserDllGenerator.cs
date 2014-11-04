@@ -192,6 +192,14 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
+            // Misc regex (util, etc)
+            expr = new RegexCompilationInfo(@"\^[0-9]",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "utilCaretColor",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];
             var assemName =

@@ -67,7 +67,7 @@ namespace SSB.Core.Commands.Admin
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2} - {0}{3} to see active.",
+                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2} - ^5{0}{3}^7 to see list of currently active modules.",
                 CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validModuleNames),
                 ActiveModuleArg));
         }
@@ -107,7 +107,7 @@ namespace SSB.Core.Commands.Admin
             {
                 await
                     _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^7No modules are active at this type. Use ^3{0}{1}^7 to activate module(s).",
+                        "^7[MOD]^1 No modules are active at this time. Use: ^3{0}{1}^7 to activate module(s).",
                         CommandProcessor.BotCommandPrefix, c.CmdName));
                 return;
             }

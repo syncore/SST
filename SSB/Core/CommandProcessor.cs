@@ -66,6 +66,7 @@ namespace SSB.Core
                 {"seen", new SeenCmd(_ssb)},
                 {"shutdown", new ShutdownCmd(_ssb)},
                 {"stopserver", new StopServerCmd(_ssb)},
+                {"testtext", new TestLongTextCmd(_ssb)},
                 {"yes", new VoteYesCmd(_ssb)},
             };
         }
@@ -102,6 +103,13 @@ namespace SSB.Core
             }
             if (!Tools.KeyExists(cmdName, _commands))
             {
+                return;
+            }
+            if (!Tools.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
+            {
+                await _ssb.QlCommands.QlCmdSay(
+                    string.Format("^1[ERROR]^3 {0},^7 please give the bot time to sync your user info and then retry your {1} request.",
+                    fromUser, cmdName));
                 return;
             }
             string user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SSB.Enum;
@@ -12,6 +13,8 @@ namespace SSB.Core
     /// </summary>
     public class QlCommands
     {
+        private const int DefaultCommandDelayMsec = 500;
+        private const int MaxChatlineLength = 134;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -114,12 +117,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Disables in-game console printing.
-        /// <remarks>
-        /// With this set (con_noprint 1) no text will be shown in the in-game console. This
-        /// is the preferred mode when developer mode is enabled. Note, text will ALWAYS be appended
-        /// to the winconsole, regardless of this setting.
-        /// </remarks>
+        ///     Disables in-game console printing.
+        ///     <remarks>
+        ///         With this set (con_noprint 1) no text will be shown in the in-game console. This
+        ///         is the preferred mode when developer mode is enabled. Note, text will ALWAYS be appended
+        ///         to the winconsole, regardless of this setting.
+        ///     </remarks>
         /// </summary>
         public void DisableConsolePrinting()
         {
@@ -129,7 +132,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Disables the developer mode.
+        ///     Disables the developer mode.
         /// </summary>
         public void DisableDeveloperMode()
         {
@@ -139,12 +142,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Enables in-game console printing.
+        ///     Enables in-game console printing.
         /// </summary>
         /// <remarks>
-        /// With this set (con_noprint 0), text will be shown on the in-game console.
-        /// Note: this might be annoying when attempting to play with developer mode on since
-        /// there will be multiple 'tinfo' messages.
+        ///     With this set (con_noprint 0), text will be shown on the in-game console.
+        ///     Note: this might be annoying when attempting to play with developer mode on since
+        ///     there will be multiple 'tinfo' messages.
         /// </remarks>
         public void EnableConsolePrinting()
         {
@@ -154,7 +157,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Enables the developer mode.
+        ///     Enables the developer mode.
         /// </summary>
         public void EnableDeveloperMode()
         {
@@ -197,15 +200,75 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Sends the 'say' command to QL.
+        ///     Sends the 'say' command to QL. If too much text is received then issue 'say' command
+        ///     over multiple lines.
         /// </summary>
         /// <param name="text">The text to say.</param>
         /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
         public async Task QlCmdSay(string text)
         {
-            await Task.Delay(500);
-            Action<string> say = DoSay;
-            say(text);
+            // Text to send might be too long, so send over multiple lines.
+            // Line length of between 98 & 115 chars is probably optimal for
+            // lower resolutions based on guestimate. however, QL actually supports
+            // sending up to 135 characters at a time
+            if ((text.Length) > MaxChatlineLength)
+            {
+                // .5 ensures we always round up to next int, no matter size
+                // ReSharper disable once PossibleLossOfFraction
+                double l = ((text.Length/MaxChatlineLength) + .5);
+                double linesRoundUp = Math.Ceiling(l);
+                try
+                {
+                    int numLines = Convert.ToInt32(linesRoundUp);
+                    var multiLine = new string[numLines];
+                    int startPos = 0;
+                    string lastColor = string.Empty;
+                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
+                        text.Length, numLines);
+                    for (int i = 0; i <= multiLine.Length - 1; i++)
+                    {
+                        if (i != 0)
+                        {
+                            // Keep the text colors consistent across multiple lines of text.
+                            if (_ssb.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
+                            {
+                                MatchCollection m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
+                                lastColor = m[m.Count - 1].Value;
+                            }
+                            if (multiLine[i - 1].EndsWith("^"))
+                            {
+                                lastColor = "^";
+                            }
+                        }
+                        if (i == multiLine.Length - 1)
+                        {
+                            // last iteration; string length cannot be specified
+                            multiLine[i] = string.Format("{0}{1}", lastColor, text.Substring(startPos));
+                        }
+                        else
+                        {
+                            multiLine[i] = string.Format("{0}{1}", lastColor,
+                                text.Substring(startPos, MaxChatlineLength));
+                        }
+
+                        // Double the usual delay when sending multiple lines.
+                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        Action<string> say = DoSay;
+                        say(multiLine[i]);
+                        startPos += MaxChatlineLength;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                }
+            }
+            else
+            {
+                await Task.Delay(DefaultCommandDelayMsec);
+                Action<string> say = DoSay;
+                say(text);
+            }
         }
 
         /// <summary>
@@ -237,7 +300,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task SendToQlAsync(string toSend, bool delay)
         {
-            await Task.Delay(500);
+            await Task.Delay(DefaultCommandDelayMsec);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }
@@ -265,18 +328,16 @@ namespace SSB.Core
                 Debug.WriteLine("Couldn't find Quake Live input text area");
                 return;
             }
-            foreach (char c in toSend)
-            {
-                Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(c), IntPtr.Zero);
-            }
+
+            // Set the console's edit box text to what we need to send.
+            Win32Api.SendMessage(iText, Win32Api.WM_SETTEXT, IntPtr.Zero, toSend);
 
             // Simulate the pressing of 'ENTER' key to send message.
             Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
 
-            // Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
+            // Tiny delay Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
             if (delay)
             {
-                //Thread.Sleep(1);
                 // Creates a new event handler that will never be set, and then waits the full timeout period
                 new ManualResetEvent(false).WaitOne(10);
             }
@@ -294,7 +355,7 @@ namespace SSB.Core
         /// </remarks>
         private async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }

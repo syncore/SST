@@ -35,6 +35,7 @@ namespace SSB.Util
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdChatMessage = new scmdChatMessage();
             ScmdVoteFinalResult = new scmdVoteFinalResult();
+            UtilCaretColor = new utilCaretColor();
         }
 
         /// <summary>
@@ -233,6 +234,17 @@ namespace SSB.Util
         public Regex ScmdVoteCalledTagAndPlayer { get; private set; }
 
         /// <summary>
+        /// Regex for matching the final result of a vote.
+        /// </summary>
+        /// <value>
+        /// Regex for matching the final result of a vote.
+        /// </value>
+        /// <remarks>
+        /// Contains a named group 'result' which is either passed or failed.
+        /// </remarks>
+        public Regex ScmdVoteFinalResult { get; private set; }
+
+        /// <summary>
         ///     Regex for getting the number of players who have voted no to the current vote.
         /// </summary>
         /// <value>
@@ -257,14 +269,11 @@ namespace SSB.Util
         public Regex ScmdVoteNumYesVotes { get; private set; }
 
         /// <summary>
-        /// Regex for matching the final result of a vote.
+        /// Regex for matching the caret and color of a player name and/or chat message.
         /// </summary>
         /// <value>
-        /// Regex for matching the final result of a vote.
+        /// Regex for matching the caret and color of a player name and/or chat message.
         /// </value>
-        /// <remarks>
-        /// Contains a named group 'result' which is either passed or failed.
-        /// </remarks>
-        public Regex ScmdVoteFinalResult { get; private set; }
+        public Regex UtilCaretColor { get; private set; }
     }
 }

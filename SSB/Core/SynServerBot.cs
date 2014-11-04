@@ -153,6 +153,8 @@ namespace SSB.Core
             QlCommands.ClearQlWinConsole();
             // Re-focus the window
             Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
+            // Disable developer mode if it's already set, so we can get accurate player listing.
+            QlCommands.DisableDeveloperMode();
             // Initially get the player listing when we start. Synchronous since init.
             Task q = QlCommands.QlCmdPlayers();
             // Get name of account running the bot.
