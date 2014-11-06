@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Timers;
 using SSB.Enum;
 using SSB.Model;
@@ -60,6 +61,16 @@ namespace SSB.Core
         /// The vote timer.
         /// </value>
         public Timer VoteTimer { get; set; }
+
+        /// <summary>
+        /// Gets the team.
+        /// </summary>
+        /// <param name="t">The Team enum.</param>
+        /// <returns>A list of <see cref="PlayerInfo"/>objects for a given Team enum.</returns>
+        public List<PlayerInfo> GetTeam(Team t)
+        {
+            return CurrentPlayers.Where(player => player.Value.Team.Equals(t)).Select(player => player.Value).ToList();
+        }
 
         /// <summary>
         /// Starts the vote timer and sets the <see cref="VoteInProgress"/> boolean to true.

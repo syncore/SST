@@ -210,15 +210,11 @@ namespace SSB.Core
         /// </remarks>
         private void DetectMultiLineEvent(string text)
         {
-            // 'configstrings' command has been detected; get the players and team #s from it.
-            if (_ssb.Parser.CsPlayerAndTeam.IsMatch(text))
+            // 'configstrings' command has been detected; get the player information from it.
+            if (_ssb.Parser.CfgStringPlayerInfo.IsMatch(text))
             {
                 var cmd = QlCommandType.ConfigStrings;
-                foreach (Match m in _ssb.Parser.CsPlayerAndTeam.Matches(text))
-                {
-                    text = m.Value;
-                    ProcessCommand(cmd, text);
-                }
+                ProcessCommand(cmd, _ssb.Parser.CfgStringPlayerInfo.Matches(text));
             }
             // 'players' command has been detected; extract the player names and ids from it.
             else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
@@ -313,40 +309,41 @@ namespace SSB.Core
         /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
         private bool PlayerConfigStringDetected(string text)
         {
-            if (!_ssb.Parser.CsPlayerInfo.IsMatch(text)) return false;
-            var m = _ssb.Parser.CsPlayerInfo.Match(text);
+            if (!_ssb.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
+            var m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
             _playerEventProcessor.HandlePlayerConfigString(m);
             return true;
         }
 
         /// <summary>
-        ///     Processes the command.
+        /// Processes the command.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="cmdType">Type of the command.</param>
-        /// <param name="text">The text.</param>
-        private void ProcessCommand<T>(QlCommandType cmdType, T text)
+        /// <param name="t">The text or other data to act upon.</param>
+        private void ProcessCommand<T>(QlCommandType cmdType, T t)
         {
             switch (cmdType)
             {
-                //case QlCommandType.ConfigStrings:
-                //    _ssb.ServerEventProcessor.GetTeamInfoFromCfgString(text as string);
-                //    break;
+                case QlCommandType.ConfigStrings:
+                    _ssb.ServerEventProcessor.GetPlayerInfoFromCfgString(t as MatchCollection);
+                    break;
 
                 case QlCommandType.Players:
                     var g =
-                        _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(text as IEnumerable<string>);
+                        _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);
                     break;
 
                 case QlCommandType.ServerInfoServerId:
-                    _ssb.ServerEventProcessor.SetServerId(text as string);
+                    _ssb.ServerEventProcessor.SetServerId(t as string);
                     break;
 
                 case QlCommandType.ServerInfoServerGametype:
-                    _ssb.ServerEventProcessor.SetServerGameType(text as string);
+                    _ssb.ServerEventProcessor.SetServerGameType(t as string);
                     break;
 
                 case QlCommandType.InitInfo:
-                    _ssb.ServerEventProcessor.HandleMapLoad(text as string);
+                    _ssb.ServerEventProcessor.HandleMapLoad(t as string);
                     break;
             }
         }

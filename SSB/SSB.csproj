@@ -76,6 +76,7 @@
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
     <Compile Include="Core\Commands\None\EloCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
+    <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
     <Compile Include="Core\Commands\Owner\DeOpCmd.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\ServerInfo.cs" />
+    <Compile Include="Core\TeamBalancer.cs" />
     <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />

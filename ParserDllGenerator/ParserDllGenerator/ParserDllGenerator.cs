@@ -20,31 +20,18 @@ namespace ParserDllGenerator
             RegexCompilationInfo expr;
             var compilationList = new List<RegexCompilationInfo>();
 
-            //configstring playerinfo:
-            // cs 549 "n\JoeJoe\t\3\model\mynx\hmodel\mynx\c1\12\c2\6\hc\100\w\0\l\0\skill\ 5.00\tt\0\tl\0\rp\1\p\0\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\"
-            expr = new RegexCompilationInfo(@"cs 5(?<id>[2-5][0-9]) (?<playerinfo>.*)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "csPlayerInfo", "SSB.External.Parser",
+            // command: configstrings - Find player id and player info (team, clantag, full clan, subscriber, etc.)
+            // named group 'id' returns the two digit number after the 5, i.e. for 533 it will return 33. Must subtract
+            // 29 from this number to get the equivalent player id that can be retrieved from 'players' command.
+            // named group 'playerinfo' returns the entire player info string, i.e.:
+            // n\syncore\t\3\model\sarge\hmodel\sarge\c1\13\c2\16\hc\100\w\0\l\0\tt\0\tl\0\rp\0\p\3\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\
+            expr = new RegexCompilationInfo(@"5(?<id>[2-5][0-9]): (?<playerinfo>.*)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant,
+                "cfgStringPlayerInfo", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
             
-            // command: configstrings - Find player and team number (n\Lucy\t\1, where n\Playername\t\team#) after issuing 'configstrings' command
-            //###: n\Lucy\t\1\model\lucy\hmodel\lucy\c1\20\c2\15\hc\100\w\0\l\0\skill\5.00\tt\5\tl\0\rp\1\p\0\so\0\pq\0\wp\rl\ws\sg\cn\\su\0\xcn\\c\
-            expr = new RegexCompilationInfo(@"(n\\[a-zA-Z]+.(t)\\\d)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "csPlayerandTeam", "SSB.External.Parser",
-                true);
-            compilationList.Add(expr);
-
-            // command: configstrings - Find player name only after issuing 'configstrings' command
-            expr = new RegexCompilationInfo(@"([a-zA-Z])\w+",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "csPlayerNameOnly", "SSB.External.Parser",
-                true);
-            compilationList.Add(expr);
-
-            // command: configstrings - Find player team only after issuing 'configstrings' command
-            expr = new RegexCompilationInfo(@"\\t\\\d",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "csPlayerTeamOnly", "SSB.External.Parser",
-                true);
-            compilationList.Add(expr);
+            
 
             // command: players - Find name and player id after issuing 'players' command
             // This requires the multiline (RegexOptions.Multiline) option
@@ -92,6 +79,13 @@ namespace ParserDllGenerator
             // event: map loaded
             expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
+            compilationList.Add(expr);
+
+            //servercommand: player's configstring
+            // serverCommand: ## : cs 549 "n\JoeJoe\t\3\model\mynx\hmodel\mynx\c1\12\c2\6\hc\100\w\0\l\0\skill\ 5.00\tt\0\tl\0\rp\1\p\0\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\"
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5(?<id>[2-5][0-9]) (?<playerinfo>.*)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerConfigString", "SSB.External.Parser",
+                true);
             compilationList.Add(expr);
 
             // servercommand: chat message - named group 'fullplayerandmsg' contains clan tag + playername + msg

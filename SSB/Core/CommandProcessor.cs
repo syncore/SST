@@ -58,6 +58,7 @@ namespace SSB.Core
                 {"pause", new PauseCmd(_ssb)},
                 {"red", new ForceJoinRedCmd(_ssb)},
                 {"spec", new ForceJoinSpecCmd(_ssb)},
+                {"suggest", new SuggestTeamsCmd(_ssb)},
                 {"unban", new UnbanCmd(_ssb)},
                 {"unlock", new UnlockCmd(_ssb)},
                 {"unmute", new UnmuteCmd(_ssb)},

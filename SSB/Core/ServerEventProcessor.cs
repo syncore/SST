@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Modules;
 using SSB.Database;
@@ -140,6 +141,11 @@ namespace SSB.Core
             await CheckEloAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
             // Account date kick, if active
             await CheckAccountDateAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        public async Task GetPlayerInfoFromCfgString(MatchCollection m)
+        {
+            
         }
 
         /// <summary>

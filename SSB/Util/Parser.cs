@@ -13,10 +13,7 @@ namespace SSB.Util
         /// </summary>
         public Parser()
         {
-            CsPlayerInfo = new csPlayerInfo();
-            CsPlayerAndTeam = new csPlayerandTeam();
-            CsPlayerNameOnly = new csPlayerNameOnly();
-            CsPlayerTeamOnly = new csPlayerTeamOnly();
+            CfgStringPlayerInfo = new cfgStringPlayerInfo();
             PlPlayerNameAndId = new plPlayerNameAndId();
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
@@ -25,6 +22,7 @@ namespace SSB.Util
             CvarGameType = new cvarGameType();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
+            ScmdPlayerConfigString = new scmdPlayerConfigString();
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
@@ -39,47 +37,24 @@ namespace SSB.Util
         }
 
         /// <summary>
-        ///     Regex for finding a player's name and team number after issuing 'configstrings' command.
+        ///     Regex for matching the player info returned by the 'configstrings' command.
         /// </summary>
         /// <value>
-        ///     Regex for player's name and team number after issuing 'configstrings' command.
-        /// </value>
-        public Regex CsPlayerAndTeam { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding the player info configstring.
-        /// </summary>
-        /// <value>
-        ///     Regex for finding the player inf configstring.
+        ///     Regex for matching the player info returned by the 'configstrings' command.
         /// </value>
         /// <remarks>
-        ///     This contains the following named groups:
-        ///     'id' is the two digit number after the 5 in the configstring from which 29 is to be subtracted.
-        ///     'playerinfo' is the rest of the string after the cs 5##
+        ///     Named group 'id' returns the two digit number after the 5, i.e. for 533 it will return 33. Must subtract
+        ///     29 from this number to get the equivalent player id that can be retrieved from 'players' command.
+        ///     Named group 'playerinfo' returns the entire player info string, i.e.:
+        ///     n\syncore\t\3\model\sarge\hmodel\sarge\c1\13\c2\16\hc\100\w\0\l\0\tt\0\tl\0\rp\0\p\3\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\
         /// </remarks>
-        public Regex CsPlayerInfo { get; private set; }
+        public Regex CfgStringPlayerInfo { get; private set; }
 
         /// <summary>
-        ///     Regex for finding only a player's name after issuing 'configstrings' command.
+        ///     Regex for matching the name cvar (name of the account running SSB).
         /// </summary>
         /// <value>
-        ///     Regex for player's name after issuing 'configstrings' command.
-        /// </value>
-        public Regex CsPlayerNameOnly { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding a player's team number after issuing 'configstrings' command.
-        /// </summary>
-        /// <value>
-        ///     Regex for player's team number after issuing 'configstrings' command.
-        /// </value>
-        public Regex CsPlayerTeamOnly { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding name cvar value after issuing 'name'
-        /// </summary>
-        /// <value>
-        ///     Regex for cvar name after issuing 'name'
+        ///     Regex for matching the name cvar (name of the account running SSB).
         /// </value>
         public Regex CvarBotAccountName { get; private set; }
 
@@ -160,6 +135,23 @@ namespace SSB.Util
         public Regex ScmdChatMessage { get; private set; }
 
         /// <summary>
+        ///     Regex for matching the player info presented as a server command.
+        /// </summary>
+        /// <value>
+        ///     Regex for matching the player info presented as a server command.
+        /// </value>
+        /// <remarks>
+        ///     This is slightly different from <see cref="CfgStringPlayerInfo" /> as this version
+        ///     is the one that is automatically returned as a serverCommand. However, it returns the same info as the cfgString
+        ///     version.
+        ///     Named group 'id' returns the two digit number after the 5, i.e. for 533 it will return 33. Must subtract
+        ///     29 from this number to get the equivalent player id that can be retrieved from 'players' command.
+        ///     Named group 'playerinfo' returns the entire player info string, i.e.:
+        ///     n\syncore\t\3\model\sarge\hmodel\sarge\c1\13\c2\16\hc\100\w\0\l\0\tt\0\tl\0\rp\0\p\3\so\0\pq\0\wp\hmg\ws\sg\cn\\su\0\xcn\\c\
+        /// </remarks>
+        public Regex ScmdPlayerConfigString { get; private set; }
+
+        /// <summary>
         ///     Regex for finding a player who has connected as issued in a servercommand.
         /// </summary>
         /// <value>
@@ -234,13 +226,13 @@ namespace SSB.Util
         public Regex ScmdVoteCalledTagAndPlayer { get; private set; }
 
         /// <summary>
-        /// Regex for matching the final result of a vote.
+        ///     Regex for matching the final result of a vote.
         /// </summary>
         /// <value>
-        /// Regex for matching the final result of a vote.
+        ///     Regex for matching the final result of a vote.
         /// </value>
         /// <remarks>
-        /// Contains a named group 'result' which is either passed or failed.
+        ///     Contains a named group 'result' which is either passed or failed.
         /// </remarks>
         public Regex ScmdVoteFinalResult { get; private set; }
 
@@ -269,10 +261,10 @@ namespace SSB.Util
         public Regex ScmdVoteNumYesVotes { get; private set; }
 
         /// <summary>
-        /// Regex for matching the caret and color of a player name and/or chat message.
+        ///     Regex for matching the caret and color of a player name and/or chat message.
         /// </summary>
         /// <value>
-        /// Regex for matching the caret and color of a player name and/or chat message.
+        ///     Regex for matching the caret and color of a player name and/or chat message.
         /// </value>
         public Regex UtilCaretColor { get; private set; }
     }
