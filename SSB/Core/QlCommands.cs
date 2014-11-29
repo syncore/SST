@@ -209,8 +209,8 @@ namespace SSB.Core
         {
             // Text to send might be too long, so send over multiple lines.
             // Line length of between 98 & 115 chars is probably optimal for
-            // lower resolutions based on guestimate. however, QL actually supports
-            // sending up to 135 characters at a time
+            // lower resolutions based on guestimate. However, QL actually supports
+            // sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
                 // .5 ensures we always round up to next int, no matter size

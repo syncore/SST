@@ -25,6 +25,38 @@ namespace SSB.Core
         private readonly Dictionary<string, DateTime> _playerCommandTime;
         private readonly SynServerBot _ssb;
         private readonly Users _users;
+        public const string CmdAbort = "abort";
+        public const string CmdAccess = "access";
+        public const string CmdAccountDate = "date";
+        public const string CmdAddUser = "adduser";
+        public const string CmdAllReady = "allready";
+        public const string CmdForceJoinBlue = "blue";
+        public const string CmdDelUser = "deluser";
+        public const string CmdDeOp = "deop";
+        public const string CmdElo = "elo";
+        public const string CmdHelp = "help";
+        public const string CmdInvite = "invite";
+        public const string CmdModule = "module";
+        public const string CmdLock = "lock";
+        public const string CmdOp = "op";
+        public const string CmdMute = "mute";
+        public const string CmdVoteNo = "no";
+        public const string CmdKickBan = "kickban";
+        public const string CmdPause = "pause";
+        public const string CmdForceJoinRed = "red";
+        public const string CmdSuggestTeams = "suggest";
+        public const string CmdUnban = "unban";
+        public const string CmdUnlock = "unlock";
+        public const string CmdUnmute = "unmute";
+        public const string CmdUnpause = "unpause";
+        public const string CmdRefresh = "refresh";
+        public const string CmdSeen = "seen";
+        public const string CmdShutdown = "shutdown";
+        public const string CmdForceJoinSpec = "spec";
+        public const string CmdStopServer = "stopserver";
+        public const string CmdVoteYes = "yes";
+        public const string CmdAcceptTeamSuggestion = "accept";
+        public const string CmdRejectTeamSuggestion = "reject";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
@@ -38,37 +70,36 @@ namespace SSB.Core
             _playerCommandTime = new Dictionary<string, DateTime>();
             _commands = new Dictionary<string, IBotCommand>
             {
-                {"abort", new AbortCmd(_ssb)},
-                {"access", new AccessCmd(_ssb)},
-                {"date", new AccountDateCmd(_ssb)},
-                {"adduser", new AddUserCmd(_ssb)},
-                {"allready", new AllReadyCmd(_ssb)},
-                {"blue", new ForceJoinBlueCmd(_ssb)},
-                {"deluser", new DelUserCmd(_ssb)},
-                {"deop", new DeOpCmd(_ssb)},
-                {"elo", new EloCmd(_ssb)},
-                {"help", new HelpCmd(_ssb)},
-                {"invite", new InviteCmd(_ssb)},
-                {"mod", new ModuleCmd(_ssb, Mod)},
-                {"lock", new LockCmd(_ssb)},
-                {"op", new OpCmd(_ssb)},
-                {"mute", new MuteCmd(_ssb)},
-                {"no", new VoteNoCmd(_ssb)},
-                {"kickban", new KickBanCmd(_ssb)},
-                {"pause", new PauseCmd(_ssb)},
-                {"red", new ForceJoinRedCmd(_ssb)},
-                {"spec", new ForceJoinSpecCmd(_ssb)},
-                {"suggest", new SuggestTeamsCmd(_ssb)},
-                {"unban", new UnbanCmd(_ssb)},
-                {"unlock", new UnlockCmd(_ssb)},
-                {"unmute", new UnmuteCmd(_ssb)},
-                {"unpause", new UnpauseCmd(_ssb)},
-                {"refresh", new RefreshCmd(_ssb)},
-                {"seen", new SeenCmd(_ssb)},
-                {"shutdown", new ShutdownCmd(_ssb)},
-                {"stopserver", new StopServerCmd(_ssb)},
-                {"testtext", new TestLongTextCmd(_ssb)},
-                {"yes", new VoteYesCmd(_ssb)},
+                {CmdAbort, new AbortCmd(_ssb)},
+                {CmdAccess, new AccessCmd(_ssb)},
+                {CmdAccountDate, new AccountDateCmd(_ssb)},
+                {CmdAddUser, new AddUserCmd(_ssb)},
+                {CmdAllReady, new AllReadyCmd(_ssb)},
+                {CmdForceJoinBlue, new ForceJoinBlueCmd(_ssb)},
+                {CmdDelUser, new DelUserCmd(_ssb)},
+                {CmdDeOp, new DeOpCmd(_ssb)},
+                {CmdElo, new EloCmd(_ssb)},
+                {CmdHelp, new HelpCmd(_ssb)},
+                {CmdInvite, new InviteCmd(_ssb)},
+                {CmdModule, new ModuleCmd(_ssb, Mod)},
+                {CmdLock, new LockCmd(_ssb)},
+                {CmdOp, new OpCmd(_ssb)},
+                {CmdMute, new MuteCmd(_ssb)},
+                {CmdVoteNo, new VoteNoCmd(_ssb)},
+                {CmdKickBan, new KickBanCmd(_ssb)},
+                {CmdPause, new PauseCmd(_ssb)},
+                {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
+                {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
+                {CmdSuggestTeams, new SuggestTeamsCmd(_ssb)},
+                {CmdUnban, new UnbanCmd(_ssb)},
+                {CmdUnlock, new UnlockCmd(_ssb)},
+                {CmdUnmute, new UnmuteCmd(_ssb)},
+                {CmdUnpause, new UnpauseCmd(_ssb)},
+                {CmdRefresh, new RefreshCmd(_ssb)},
+                {CmdSeen, new SeenCmd(_ssb)},
+                {CmdShutdown, new ShutdownCmd(_ssb)},
+                {CmdStopServer, new StopServerCmd(_ssb)},
+                {CmdVoteYes, new VoteYesCmd(_ssb)},
             };
         }
 
@@ -87,7 +118,7 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             if (!SufficientTimeElapsed(fromUser))

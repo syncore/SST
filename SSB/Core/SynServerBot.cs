@@ -31,6 +31,8 @@ namespace SSB.Core
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
             ServerEventProcessor = new ServerEventProcessor(this);
             CommandProcessor = new CommandProcessor(this);
+            VoteManager = new VoteManager();
+
 
             // Start reading the console
             StartConsoleReadThread();
@@ -46,6 +48,20 @@ namespace SSB.Core
         /// </value>
         public string BotName { get; set; }
 
+        /// <summary>
+        /// Gets the vote manager.
+        /// </summary>
+        /// <value>
+        /// The vote manager.
+        /// </value>
+        public VoteManager VoteManager { get; private set; }
+        
+        /// <summary>
+        /// Gets the command processor.
+        /// </summary>
+        /// <value>
+        /// The command processor.
+        /// </value>
         public CommandProcessor CommandProcessor { get; private set; }
 
         /// <summary>

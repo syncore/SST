@@ -72,9 +72,11 @@
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
+    <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
     <Compile Include="Core\Commands\None\EloCmd.cs" />
+    <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
@@ -105,10 +107,12 @@
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
     <Compile Include="Core\VoteHandler.cs" />
+    <Compile Include="Core\VoteManager.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />
     <Compile Include="Enum\IntendedVoteResult.cs" />
     <Compile Include="Enum\ReadyStatus.cs" />
+    <Compile Include="Enum\TeamBalanceVote.cs" />
     <Compile Include="Enum\UserDbResult.cs" />
     <Compile Include="Enum\QlGameStates.cs" />
     <Compile Include="Enum\QlGameTypes.cs" />

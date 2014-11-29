@@ -53,7 +53,7 @@ namespace SSB.Core
         /// </summary>
         public void HandleVoteEnd()
         {
-            _ssb.ServerInfo.StopVoteTimer();
+            _ssb.VoteManager.StopQlVoteTimer();
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         public void HandleVoteStart(string text)
         {
-            _ssb.ServerInfo.StartVoteTimer();
+            _ssb.VoteManager.StartQlVoteTimer();
         }
 
         /// <summary>

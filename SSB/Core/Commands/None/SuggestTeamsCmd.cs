@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
+using Timer = System.Timers.Timer;
 
 namespace SSB.Core.Commands.None
 {
@@ -22,6 +24,7 @@ namespace SSB.Core.Commands.None
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
         private int _minArgs = 0;
+        private readonly Timer _suggestionTimer;
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace SSB.Core.Commands.None
             _teamBalancer = new TeamBalancer();
             _balancedRedTeam = new List<PlayerInfo>();
             _balancedBlueTeam = new List<PlayerInfo>();
+            _suggestionTimer = new Timer();
         }
 
         /// <summary>
@@ -105,6 +109,15 @@ namespace SSB.Core.Commands.None
                         "^1[ERROR]^3 There must be at least 4 total players for the team suggestion!");
                 return;
             }
+
+            if (_ssb.VoteManager.IsTeamSuggestionVotePending)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 A team balance vote is already pending!");
+                return;
+            }
+            
             try
             {
                 // Verify all player elo data prior to making any suggestions.
@@ -120,6 +133,60 @@ namespace SSB.Core.Commands.None
             _balancedRedTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType, Team.Red);
             _balancedBlueTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType, Team.Blue);
             await DisplayBalanceResults(_balancedRedTeam, _balancedBlueTeam, _ssb.ServerInfo.CurrentServerGameType);
+            await StartTeamSuggestionVote();
+        }
+
+        /// <summary>
+        /// Starts the team suggestion vote and associated timer.
+        /// </summary>
+        private async Task StartTeamSuggestionVote()
+        {
+            double interval = 20000;
+            
+            await _ssb.QlCommands.QlCmdSay(string.Format("^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept the team suggestion, ^1{0}{3}^7 to reject the suggestion.",
+                (interval/1000), CommandProcessor.BotCommandPrefix, CommandProcessor.CmdAcceptTeamSuggestion, CommandProcessor.CmdRejectTeamSuggestion));
+            _suggestionTimer.Interval = interval;
+            _suggestionTimer.Elapsed += TeamSuggestionTimerElapsed;
+            _suggestionTimer.AutoReset = false;
+            _suggestionTimer.Start();
+            _ssb.VoteManager.IsTeamSuggestionVotePending = true;
+        }
+
+        /// <summary>
+        /// Method called when the teams suggestion vote timer has elapsed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            // Do balance if enough votes
+            await _ssb.QlCommands.QlCmdSay(string.Format("^2[TEAMBALANCE]^7 Vote results -- Yes: ^2{0}^7 -- No: ^1{1}^7 -- {2}",
+                _ssb.VoteManager.TeamSuggestionYesVoteCount, _ssb.VoteManager.TeamSuggestionNoVoteCount,
+                ((_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount) ? ("Teams will be balanced.") : "Teams will remain unchanged.")));
+
+            if (_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount)
+            {
+                await MovePlayersToBalancedTeams();
+            }
+            
+            // Reset votes
+            _ssb.VoteManager.ResetTeamSuggestionVote();
+        }
+
+        /// <summary>
+        /// Moves the players to the suggested teams.
+        /// </summary>
+        private async Task MovePlayersToBalancedTeams()
+        {
+            await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
+            foreach (var player in _balancedBlueTeam)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Blue);
+            }
+            foreach (var player in _balancedRedTeam)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Red);
+            }
         }
 
         /// <summary>
@@ -156,15 +223,6 @@ namespace SSB.Core.Commands.None
             await
                 _ssb.QlCommands.QlCmdSay(string.Format(
                     "^5[BLUE]: {0}", blue.ToString().TrimEnd(',', ' ')));
-            //await
-            //    _ssb.QlCommands.QlCmdSay(string.Format(
-            //        "^1[RED]: {0} | Total Elo: ^2{1}^7 | Avg Elo Per Player: ^2{2}", red.ToString().TrimEnd(',', ' '),
-            //        redTeamElo, redTeamAvgElo));
-
-            //await
-            //    _ssb.QlCommands.QlCmdSay(string.Format(
-            //        "^5[BLUE]: {0} | Total Elo: ^2{1}^7 | Avg Elo Per Player: ^2{2}", blue.ToString().TrimEnd(',', ' '),
-            //        blueTeamElo, blueTeamAvgElo));
         }
 
         /// <summary>
