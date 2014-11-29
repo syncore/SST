@@ -100,6 +100,8 @@ namespace SSB.Core
                 {CmdShutdown, new ShutdownCmd(_ssb)},
                 {CmdStopServer, new StopServerCmd(_ssb)},
                 {CmdVoteYes, new VoteYesCmd(_ssb)},
+                {CmdAcceptTeamSuggestion, new AcceptTeamSuggestCmd(_ssb)},
+                {CmdRejectTeamSuggestion, new RejectTeamSuggestCmd(_ssb)},
             };
         }
 
