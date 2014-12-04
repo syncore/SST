@@ -325,10 +325,6 @@ namespace SSB.Core
         {
             switch (cmdType)
             {
-                case QlCommandType.ConfigStrings:
-                    _ssb.ServerEventProcessor.GetPlayerInfoFromCfgString(t as MatchCollection);
-                    break;
-
                 case QlCommandType.Players:
                     var g =
                         _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);

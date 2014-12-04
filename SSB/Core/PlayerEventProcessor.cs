@@ -37,8 +37,9 @@ namespace SSB.Core
         public async Task HandleIncomingPlayerConnection(string player)
         {
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
-            // Probably need a check for dictionary key
-            if (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))
+            
+            if ((Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
+                (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))))
             {
                 await HandleEloUpdate(player);
             }
@@ -52,6 +53,9 @@ namespace SSB.Core
             {
                 await _ssb.CommandProcessor.Mod.AccountDateLimit.RunUserDateCheck(player);
             }
+            // Check for time-bans
+            var autoBanner = new PlayerAutoBanner(_ssb);
+            await autoBanner.CheckForBans(player);
 
             Debug.WriteLine("Detected incoming connection for " + player);
         }

@@ -166,8 +166,7 @@ namespace SSB.Core.Commands.Modules
         private async Task VerifyUserDate(string user, DateTime regDate)
         {
             if (regDate == default(DateTime)) return;
-            DateTime now = DateTime.Now;
-            if ((now - regDate).TotalDays < MinimumDaysRequired)
+            if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
                 Debug.WriteLine(
                     "User {0} has created account within the last {1} days. Date created: {2}. Kicking...",

@@ -67,7 +67,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task CustCmdKickban(string player)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            int id = _ssb.ServerEventProcessor.GetPlayerId(player.ToLowerInvariant());
             if (id != -1)
             {
                 await SendToQlAsync(string.Format("kickban {0}", id), false);

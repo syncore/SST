@@ -21,11 +21,8 @@ namespace SSB.Core
     public class CommandProcessor
     {
         public const string BotCommandPrefix = "!";
-        private readonly Dictionary<string, IBotCommand> _commands;
-        private readonly Dictionary<string, DateTime> _playerCommandTime;
-        private readonly SynServerBot _ssb;
-        private readonly Users _users;
         public const string CmdAbort = "abort";
+        public const string CmdAcceptTeamSuggestion = "accept";
         public const string CmdAccess = "access";
         public const string CmdAccountDate = "date";
         public const string CmdAddUser = "adduser";
@@ -50,13 +47,19 @@ namespace SSB.Core
         public const string CmdUnmute = "unmute";
         public const string CmdUnpause = "unpause";
         public const string CmdRefresh = "refresh";
+        public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdSeen = "seen";
         public const string CmdShutdown = "shutdown";
         public const string CmdForceJoinSpec = "spec";
         public const string CmdStopServer = "stopserver";
+        public const string CmdTimeBan = "timeban";
         public const string CmdVoteYes = "yes";
-        public const string CmdAcceptTeamSuggestion = "accept";
-        public const string CmdRejectTeamSuggestion = "reject";
+        private readonly Dictionary<string, IBotCommand> _commands;
+        private readonly Dictionary<string, DateTime> _playerCommandTime;
+        private readonly SynServerBot _ssb;
+        private readonly Users _users;
+        
+        
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
@@ -91,6 +94,7 @@ namespace SSB.Core
                 {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
                 {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
                 {CmdSuggestTeams, new SuggestTeamsCmd(_ssb)},
+                {CmdTimeBan, new TimeBanCmd(_ssb)},
                 {CmdUnban, new UnbanCmd(_ssb)},
                 {CmdUnlock, new UnlockCmd(_ssb)},
                 {CmdUnmute, new UnmuteCmd(_ssb)},

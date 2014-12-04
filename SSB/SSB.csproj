@@ -68,7 +68,7 @@
     <Compile Include="Config\CoreConfig.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
-    <Compile Include="Core\Commands\Admin\TestLongTextCmd.cs" />
+    <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
@@ -104,10 +104,12 @@
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
+    <Compile Include="Core\PlayerAutoBanner.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
     <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Core\VoteManager.cs" />
+    <Compile Include="Database\Bans.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />
     <Compile Include="Enum\IntendedVoteResult.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Interfaces\IBotCommand.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Model\AutoVote.cs" />
+    <Compile Include="Model\BanInfo.cs" />
     <Compile Include="Model\CmdArgs.cs" />
     <Compile Include="Model\CommonSqliteDb.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />

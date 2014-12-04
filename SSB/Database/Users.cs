@@ -166,12 +166,12 @@ namespace SSB.Database
                                 if (!reader.HasRows)
                                 {
                                     Debug.WriteLine(string.Format(
-                                        "User: {0} does not exist in the user database.", user));
+                                        "UserDb.GetUserLevel: User: {0} does not exist in the user database.", user));
                                     return UserLevel.None;
                                 }
                                 while (reader.Read())
                                 {
-                                    Debug.WriteLine("Got user level for: {0}, level: {1}", user, (UserLevel)reader["accesslevel"]);
+                                    Debug.WriteLine("UserDb.GetUserLevel: Got user level for: {0}, level: {1}", user, (UserLevel)reader["accesslevel"]);
                                     level = (UserLevel)reader["accesslevel"];
                                     return level;
                                 }
