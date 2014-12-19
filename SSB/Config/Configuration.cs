@@ -1,4 +1,7 @@
-﻿namespace SSB.Config
+﻿using SSB.Config.Core;
+using SSB.Config.Modules;
+
+namespace SSB.Config
 {
     /// <summary>
     ///     Model class representing the SSB configuration file.
@@ -6,11 +9,44 @@
     public class Configuration
     {
         /// <summary>
+        ///     Gets or sets the account date options.
+        /// </summary>
+        /// <value>
+        ///     The account date options.
+        /// </value>
+        public AccountDateOptions AccountDateOptions { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the automatic voter options.
+        /// </summary>
+        /// <value>
+        ///     The automatic voter options.
+        /// </value>
+        public AutoVoterOptions AutoVoterOptions { get; set; }
+
+        /// <summary>
         ///     Gets or sets the core configuration options.
         /// </summary>
         /// <value>
         ///     The core configuration options.
         /// </value>
-        public CoreConfig core { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public CoreOptions CoreOptions { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the elo limit options.
+        /// </summary>
+        /// <value>
+        ///     The elo limit options.
+        /// </value>
+        public EloLimitOptions EloLimitOptions { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the motd options.
+        /// </summary>
+        /// <value>
+        ///     The motd options.
+        /// </value>
+        public MotdOptions MotdOptions { get; set; }
     }
 }

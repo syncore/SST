@@ -119,11 +119,6 @@ namespace SSB.Util
         {
             if (!DoesCachedEloExist(shortPlayerName)) return;
             currentPlayers[shortPlayerName].EloData = EloCache.CachedEloData[shortPlayerName];
-            //Debug.WriteLine(
-            //    "Using the cached elo data that already exists for {0}. Data - CA: {1} - CTF: {2} - DUEL: {3} - FFA: {4} -- TDM: {5}",
-            //    shortPlayerName, EloCache.CachedEloData[shortPlayerName].CaElo, EloCache.CachedEloData[shortPlayerName].CtfElo,
-            //    EloCache.CachedEloData[shortPlayerName].DuelElo, EloCache.CachedEloData[shortPlayerName].FfaElo,
-            //    EloCache.CachedEloData[shortPlayerName].TdmElo);
         }
 
         /// <summary>
@@ -148,31 +143,31 @@ namespace SSB.Util
         /// <param name="qlr">The QlRanks object.</param>
         private void SetQlRanksInfo(Dictionary<string, PlayerInfo> currentPlayers, QlRanks qlr)
         {
-            foreach (var player in currentPlayers)
+            foreach (var p in qlr.players)
             {
-                // closure
-                KeyValuePair<string, PlayerInfo> player1 = player;
-                foreach (
-                    QlRanksPlayer qp in
-                        qlr.players.Where(
-                            qp => qp.nick.Equals(player1.Key, StringComparison.InvariantCultureIgnoreCase)))
+                // closure; compiler compliance
+                var player = p;
+                foreach (var c in currentPlayers.Keys.Where(c => player.nick.Equals(c, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    currentPlayers[player.Key].EloData.CaElo = qp.ca.elo;
-                    currentPlayers[player.Key].EloData.CtfElo = qp.ctf.elo;
-                    currentPlayers[player.Key].EloData.DuelElo = qp.duel.elo;
-                    currentPlayers[player.Key].EloData.FfaElo = qp.ffa.elo;
-                    currentPlayers[player.Key].EloData.TdmElo = qp.tdm.elo;
+                    if (currentPlayers[c].EloData == null)
+                    {
+                        currentPlayers[c].EloData = new EloData();
+                    }
+
+                    currentPlayers[c].EloData.CaElo = p.ca.elo;
+                    currentPlayers[c].EloData.CtfElo = p.ctf.elo;
+                    currentPlayers[c].EloData.DuelElo = p.duel.elo;
+                    currentPlayers[c].EloData.FfaElo = p.ffa.elo;
+                    currentPlayers[c].EloData.TdmElo = p.tdm.elo;
                     Debug.WriteLine(
                         "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
-                        player.Key, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo, qp.tdm.elo);
-                    if (!DoesCachedEloExist(player.Key))
-                    {
-                        EloCache.CachedEloData[player.Key].CaElo = qp.ca.elo;
-                        EloCache.CachedEloData[player.Key].CtfElo = qp.ctf.elo;
-                        EloCache.CachedEloData[player.Key].DuelElo = qp.duel.elo;
-                        EloCache.CachedEloData[player.Key].FfaElo = qp.ffa.elo;
-                        EloCache.CachedEloData[player.Key].TdmElo = qp.tdm.elo;
-                    }
+                        c, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo, p.tdm.elo);
+                    if (DoesCachedEloExist(c)) continue;
+                    EloCache.CachedEloData[c].CaElo = p.ca.elo;
+                    EloCache.CachedEloData[c].CtfElo = p.ctf.elo;
+                    EloCache.CachedEloData[c].DuelElo = p.duel.elo;
+                    EloCache.CachedEloData[c].FfaElo = p.ffa.elo;
+                    EloCache.CachedEloData[c].TdmElo = p.tdm.elo;
                 }
             }
         }
@@ -190,6 +185,11 @@ namespace SSB.Util
                         qlr.players.Where(
                             qp => qp.nick.Equals(currentPlayer, StringComparison.InvariantCultureIgnoreCase)))
             {
+                if (currentPlayers[currentPlayer].EloData == null)
+                {
+                 currentPlayers[currentPlayer].EloData = new EloData();
+                }
+                
                 currentPlayers[currentPlayer].EloData.CaElo = qp.ca.elo;
                 currentPlayers[currentPlayer].EloData.CtfElo = qp.ctf.elo;
                 currentPlayers[currentPlayer].EloData.DuelElo = qp.duel.elo;
@@ -198,14 +198,12 @@ namespace SSB.Util
                 Debug.WriteLine(
                     "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
                     currentPlayer, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo, qp.tdm.elo);
-                if (!DoesCachedEloExist(currentPlayer))
-                {
-                    EloCache.CachedEloData[currentPlayer].CaElo = qp.ca.elo;
-                    EloCache.CachedEloData[currentPlayer].CtfElo = qp.ctf.elo;
-                    EloCache.CachedEloData[currentPlayer].DuelElo = qp.duel.elo;
-                    EloCache.CachedEloData[currentPlayer].FfaElo = qp.ffa.elo;
-                    EloCache.CachedEloData[currentPlayer].TdmElo = qp.tdm.elo;
-                }
+                if (DoesCachedEloExist(currentPlayer)) continue;
+                EloCache.CachedEloData[currentPlayer].CaElo = qp.ca.elo;
+                EloCache.CachedEloData[currentPlayer].CtfElo = qp.ctf.elo;
+                EloCache.CachedEloData[currentPlayer].DuelElo = qp.duel.elo;
+                EloCache.CachedEloData[currentPlayer].FfaElo = qp.ffa.elo;
+                EloCache.CachedEloData[currentPlayer].TdmElo = qp.tdm.elo;
             }
         }
     }

@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -37,21 +36,21 @@ namespace SSB.Core
         public async Task HandleIncomingPlayerConnection(string player)
         {
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
-            
+
             if ((Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
-                (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))))
+                 (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))))
             {
                 await HandleEloUpdate(player);
             }
             // Elo limiter kick, if active
-            if (EloLimit.IsModuleActive)
+            if (_ssb.Mod.EloLimit.Active)
             {
-                await _ssb.CommandProcessor.Mod.EloLimit.CheckPlayerEloRequirement(player);
+                await _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player);
             }
             // Account date kick, if active
-            if (AccountDateLimit.IsModuleActive)
+            if (_ssb.Mod.AccountDateLimit.Active)
             {
-                await _ssb.CommandProcessor.Mod.AccountDateLimit.RunUserDateCheck(player);
+                await _ssb.Mod.AccountDateLimit.RunUserDateCheck(player);
             }
             // Check for time-bans
             var autoBanner = new PlayerAutoBanner(_ssb);
@@ -80,11 +79,31 @@ namespace SSB.Core
             string msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
-            string msgFrom = text.Substring(0, text.LastIndexOf('\u0019'));
+
+            string name = text.Substring(0, text.LastIndexOf('\u0019'));
+            string msgFrom;
+
+            if (name.LastIndexOf(" ", StringComparison.Ordinal) != -1)
+            {
+                // Has clan tag; get name only
+                msgFrom = name.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1,
+                    text.LastIndexOf('\u0019')).ToLowerInvariant();
+            }
+            else
+            {
+                // No clan tag; get name only
+                msgFrom = name;
+            }
+
+            //string msgFrom = text.Substring(0, text.LastIndexOf('\u0019'));
+            //string msgFrom = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1,
+            //    text.LastIndexOf('\u0019')).ToLowerInvariant();
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
             {
+                // Synchronous
+                // ReSharper disable once UnusedVariable
                 Task s = _ssb.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
         }
@@ -243,7 +262,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Updates the player's team.
+        ///     Updates the player's team.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>

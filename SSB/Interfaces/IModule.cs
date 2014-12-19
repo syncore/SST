@@ -9,16 +9,12 @@ namespace SSB.Interfaces
     internal interface IModule
     {
         /// <summary>
-        /// Gets a value indicating whether this <see cref="IModule"/> is active.
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if active; otherwise, <c>false</c>.
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>
-        /// Used to query activity status for a list of modules. Be sure to set
-        /// a public static bool property IsModuleActive for outside access in other parts of app.
-        /// </remarks>
-        bool Active { get; }
+        bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -29,10 +25,10 @@ namespace SSB.Interfaces
         int MinModuleArgs { get; }
 
         /// <summary>
-        /// Gets the name of the module.
+        ///     Gets the name of the module.
         /// </summary>
         /// <value>
-        /// The name of the module.
+        ///     The name of the module.
         /// </value>
         string ModuleName { get; }
 
@@ -46,5 +42,19 @@ namespace SSB.Interfaces
         /// </summary>
         /// <param name="c">The c.</param>
         Task EvalModuleCmdAsync(CmdArgs c);
+
+        /// <summary>
+        /// Loads the configuration.
+        /// </summary>
+        void LoadConfig();
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        /// <param name="active">
+        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
+        ///     updating the configuration.
+        /// </param>
+        void UpdateConfig(bool active);
     }
 }

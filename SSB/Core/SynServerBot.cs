@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SSB.Core.Commands.Modules;
 using SSB.Ui;
 using SSB.Util;
 
@@ -30,14 +31,16 @@ namespace SSB.Core
             QlWindowUtils = new QlWindowUtils();
             ConsoleTextProcessor = new ConsoleTextProcessor(this);
             ServerEventProcessor = new ServerEventProcessor(this);
-            CommandProcessor = new CommandProcessor(this);
             VoteManager = new VoteManager();
-
 
             // Start reading the console
             StartConsoleReadThread();
             // Set the important details of the server
             InitServerInformation();
+            // Hook up modules
+            Mod = new ModuleManager(this);
+            // Start to listen for commands
+            CommandProcessor = new CommandProcessor(this);
         }
 
         /// <summary>
@@ -48,14 +51,6 @@ namespace SSB.Core
         /// </value>
         public string BotName { get; set; }
 
-        /// <summary>
-        /// Gets the vote manager.
-        /// </summary>
-        /// <value>
-        /// The vote manager.
-        /// </value>
-        public VoteManager VoteManager { get; private set; }
-        
         /// <summary>
         /// Gets the command processor.
         /// </summary>
@@ -101,6 +96,14 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Gets the module manager.
+        /// </summary>
+        /// <value>
+        /// The module manager.
+        /// </value>
+        public ModuleManager Mod { get; private set; }
+
+        /// <summary>
         ///     Gets the Parser.
         /// </summary>
         /// <value>
@@ -141,6 +144,14 @@ namespace SSB.Core
         public ServerInfo ServerInfo { get; private set; }
 
         /// <summary>
+        /// Gets the vote manager.
+        /// </summary>
+        /// <value>
+        /// The vote manager.
+        /// </value>
+        public VoteManager VoteManager { get; private set; }
+
+        /// <summary>
         ///     Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
@@ -148,7 +159,7 @@ namespace SSB.Core
             if (IsReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
@@ -171,7 +182,8 @@ namespace SSB.Core
             Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
             // Disable developer mode if it's already set, so we can get accurate player listing.
             QlCommands.DisableDeveloperMode();
-            // Initially get the player listing when we start. Synchronous since init.
+            // Initially get the player listing when we start. Synchronous since initilization.
+            // ReSharper disable once UnusedVariable
             Task q = QlCommands.QlCmdPlayers();
             // Get name of account running the bot.
             QlCommands.SendCvarReq("name", false);

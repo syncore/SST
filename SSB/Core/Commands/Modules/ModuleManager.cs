@@ -3,17 +3,19 @@
     /// <summary>
     ///     Class for limting commands.
     /// </summary>
-    public class Module
+    public class ModuleManager
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Module" /> class.
+        ///     Initializes a new instance of the <see cref="ModuleManager" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public Module(SynServerBot ssb)
+        public ModuleManager(SynServerBot ssb)
         {
-            EloLimit = new EloLimit(ssb);
-            AccountDateLimit = new AccountDateLimit(ssb);
-            AutoVoter = new AutoVoter(ssb);
+            SynServerBot s = ssb;
+            EloLimit = new EloLimit(s);
+            AccountDateLimit = new AccountDateLimit(s);
+            AutoVoter = new AutoVoter(s);
+            Motd = new Motd(s);
         }
 
         /// <summary>
@@ -25,10 +27,10 @@
         public AccountDateLimit AccountDateLimit { get; private set; }
 
         /// <summary>
-        /// Gets the automatic voter.
+        ///     Gets the automatic voter.
         /// </summary>
         /// <value>
-        /// The automatic voter.
+        ///     The automatic voter.
         /// </value>
         public AutoVoter AutoVoter { get; private set; }
 
@@ -39,5 +41,13 @@
         ///     The elo limiter.
         /// </value>
         public EloLimit EloLimit { get; private set; }
+
+        /// <summary>
+        ///     Gets the motd.
+        /// </summary>
+        /// <value>
+        ///     The motd.
+        /// </value>
+        public Motd Motd { get; private set; }
     }
 }

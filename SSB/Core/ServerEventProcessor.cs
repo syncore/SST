@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -98,7 +97,8 @@ namespace SSB.Core
             foreach (T p in playersText)
             {
                 string text = p.ToString();
-                string playerNameOnly = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant();
+                string playerNameOnly =
+                    text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant();
                 int sndspace = (Tools.NthIndexOf(text, " ", 2));
                 int clanLength = ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
                 string clan = text.Substring(sndspace, (clanLength)).Trim();
@@ -190,10 +190,10 @@ namespace SSB.Core
         /// <param name="players">The players.</param>
         private async Task CheckAccountDateAgainstLimit(Dictionary<string, PlayerInfo> players)
         {
-            if (AccountDateLimit.IsModuleActive)
+            if (_ssb.Mod.AccountDateLimit.Active)
             {
                 await
-                    _ssb.CommandProcessor.Mod.AccountDateLimit.RunUserDateCheck(
+                    _ssb.Mod.AccountDateLimit.RunUserDateCheck(
                         players);
             }
         }
@@ -204,11 +204,11 @@ namespace SSB.Core
         /// <param name="players">The players.</param>
         private async Task CheckEloAgainstLimit(Dictionary<string, PlayerInfo> players)
         {
-            if (EloLimit.IsModuleActive)
+            if (_ssb.Mod.EloLimit.Active)
             {
                 foreach (var player in players.ToList())
                 {
-                    await _ssb.CommandProcessor.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
+                    await _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
         }

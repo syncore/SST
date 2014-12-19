@@ -243,13 +243,15 @@ namespace SSB.Core.Commands.None
 
             foreach (var player in teamRed)
             {
-                red.Append(string.Format("^1{0} [{1}]^7, ", player.ShortName,
-                    player.EloData.GetEloFromGameType(gametype)));
+                //red.Append(string.Format("^1{0} [{1}]^7, ", player.ShortName,
+                    //player.EloData.GetEloFromGameType(gametype)));
+                red.Append(string.Format("^1{0}^7, ", player.ShortName));
             }
             foreach (var player in teamBlue)
             {
-                blue.Append(string.Format("^5{0} [{1}]^7, ", player.ShortName,
-                    player.EloData.GetEloFromGameType(gametype)));
+                //blue.Append(string.Format("^5{0} [{1}]^7, ", player.ShortName,
+                    //player.EloData.GetEloFromGameType(gametype)));
+                blue.Append(string.Format("^1{0}^7, ", player.ShortName));
             }
 
             await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:");

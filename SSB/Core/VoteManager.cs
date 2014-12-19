@@ -42,7 +42,7 @@ namespace SSB.Core
         /// <value>
         /// The vote timer.
         /// </value>
-        public Timer QlVoteTimer { get; set; }
+        public Timer QlVoteTimer { get; private set; }
 
         /// <summary>
         /// Gets or sets the team suggestion yes vote count.

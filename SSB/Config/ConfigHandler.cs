@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
+using SSB.Config.Core;
+using SSB.Config.Modules;
+using SSB.Model;
 using SSB.Util;
 
 namespace SSB.Config
@@ -13,12 +16,14 @@ namespace SSB.Config
     public class ConfigHandler
     {
         /// <summary>
-        ///     Core cfg item: Gets or sets SSB's owner(s).
+        ///     Initializes a new instance of the <see cref="ConfigHandler" /> class.
         /// </summary>
-        /// <value>
-        ///     SSB's owner(s).
-        /// </value>
-        public HashSet<string> Owners { get; set; }
+        public ConfigHandler()
+        {
+            Config = new Configuration();
+        }
+
+        public Configuration Config { get; set; }
 
         /// <summary>
         ///     Reads the configuration.
@@ -36,8 +41,7 @@ namespace SSB.Config
                     var serializer = new JsonSerializer();
                     var cfg = serializer.Deserialize<Configuration>(jsonTextReader);
 
-                    // Core SSB options
-                    Owners = cfg.core.owners;
+                    Config = cfg;
                 }
             }
             catch (Exception ex)
@@ -54,15 +58,40 @@ namespace SSB.Config
         {
             // Load these fail-safe defaults and save as the new configuration
             var owners = new HashSet<string> { "syncore" };
-            var coreOptions = new CoreConfig
+            var acctDateOptions = new AccountDateOptions
+            {
+                isActive = false,
+                minimumDaysRequired = 0
+            };
+            var autoVoterOptions = new AutoVoterOptions
+            {
+                isActive = false,
+                autoVotes = new List<AutoVote>()
+            };
+            var coreOptions = new CoreOptions
             {
                 owners = owners
             };
-            var config = new Configuration
+            var eloLimitOptions = new EloLimitOptions
             {
-                core = coreOptions
+                isActive = false,
+                maximumRequiredElo = 0,
+                minimumRequiredElo = 0,
             };
-            string json = JsonConvert.SerializeObject(config);
+            var motdOptions = new MotdOptions
+            {
+                isActive = false,
+                message = string.Empty,
+                repeatInterval = 0
+            };
+
+            Config.AccountDateOptions = acctDateOptions;
+            Config.AutoVoterOptions = autoVoterOptions;
+            Config.CoreOptions = coreOptions;
+            Config.EloLimitOptions = eloLimitOptions;
+            Config.MotdOptions = motdOptions;
+
+            string json = JsonConvert.SerializeObject(Config);
             using (FileStream fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {
@@ -76,7 +105,7 @@ namespace SSB.Config
         /// </summary>
         public void ValidateConfiguration()
         {
-            // Nothing here yet.
+            // Nothing here; now validation is handled from the class that calls the cfg handler via LoadConfig() on as-needed basis.
         }
 
         /// <summary>
@@ -84,15 +113,7 @@ namespace SSB.Config
         /// </summary>
         public void WriteConfiguration()
         {
-            var coreOptions = new CoreConfig
-            {
-                owners = Owners
-            };
-            var config = new Configuration
-            {
-                core = coreOptions
-            };
-            string json = JsonConvert.SerializeObject(config);
+            string json = JsonConvert.SerializeObject(Config);
             using (FileStream fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {

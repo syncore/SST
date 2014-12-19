@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -37,13 +36,12 @@ namespace SSB.Core
         /// </value>
         public Match VoteDetails
         {
-            get
-            {
-                return _voteDetails;
-            }
+            get { return _voteDetails; }
             set
             {
                 _voteDetails = value;
+                // Synchronous
+                // ReSharper disable once UnusedVariable
                 Task v = VoteDetailsSet(value);
             }
         }
@@ -77,13 +75,13 @@ namespace SSB.Core
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^1[ATTEMPTED ADMIN KICK]^7 {0} is an admin and cannot be kicked.",
-                    (int.TryParse(admin, out id) ? "User with id " + id : admin)));
+                        (int.TryParse(admin, out id) ? "User with id " + id : admin)));
             Debug.WriteLine(string.Format("Denied admin kick of {0}",
                 (int.TryParse(admin, out id) ? "id: " + id + "who is an admin" : admin)));
         }
 
         /// <summary>
-        /// Evaluates the current vote with the auto-voter module if active.
+        ///     Evaluates the current vote with the auto-voter module if active.
         /// </summary>
         /// <param name="details">The vote details.</param>
         private async Task EvalVoteWithAutoVote(Match details)
@@ -92,19 +90,22 @@ namespace SSB.Core
             string votearg = details.Groups["votearg"].Value;
             string fullVote = string.Format("{0} {1}", votetype, votearg);
             // Some votes by their nature if called properly (i.e. shuffle) will not have args.
-            // But sometimes people might try to get clever and call shuffle with joke args (seen it done before),
+            // But sometimes people might try to get clever and call shuffle with joke args (seen it done before)
             // so might want to handle. But better option is to inform admins to just specify shuffle as a no arg vote rule when adding.
             bool hasArg = !string.IsNullOrEmpty(votearg);
 
             // Vote with args -- match exactly
-            foreach (AutoVote a in _ssb.CommandProcessor.Mod.AutoVoter.AutoVotes.Where
-                (a => a.VoteHasArgs).Where(a => hasArg && a.VoteText.Equals(fullVote, StringComparison.InvariantCultureIgnoreCase)))
+            foreach (AutoVote a in _ssb.Mod.AutoVoter.AutoVotes.Where
+                (a => a.VoteHasArgs)
+                .Where(a => hasArg && a.VoteText.Equals(fullVote, StringComparison.InvariantCultureIgnoreCase))
+                )
             {
                 await PerformAutoVoteAction(a);
             }
             // Generic vote (specified without args in the auto voter module) -- match beginning
-            foreach (AutoVote a in _ssb.CommandProcessor.Mod.AutoVoter.AutoVotes.Where
-                (a => !a.VoteHasArgs).Where(a => a.VoteText.StartsWith(votetype, StringComparison.InvariantCultureIgnoreCase)))
+            foreach (AutoVote a in _ssb.Mod.AutoVoter.AutoVotes.Where
+                (a => !a.VoteHasArgs)
+                .Where(a => a.VoteText.StartsWith(votetype, StringComparison.InvariantCultureIgnoreCase)))
             {
                 await PerformAutoVoteAction(a);
             }
@@ -124,7 +125,7 @@ namespace SSB.Core
             if (!type.Equals("clientkick", StringComparison.InvariantCultureIgnoreCase)) return false;
             int id;
             if (!int.TryParse(votearg, out id)) return false;
-            var user = _ssb.ServerEventProcessor.GetPlayerNameFromId(id);
+            string user = _ssb.ServerEventProcessor.GetPlayerNameFromId(id);
             if (string.IsNullOrEmpty(user)) return false;
             Debug.WriteLine(string.Format("Detected attempted admin kick of {0}", user));
             return _users.GetUserLevel(user) >= UserLevel.Admin;
@@ -147,19 +148,21 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Performs the automatic vote action based on the type of vote.
+        ///     Performs the automatic vote action based on the type of vote.
         /// </summary>
         /// <param name="vote">The vote.</param>
         private async Task PerformAutoVoteAction(AutoVote vote)
         {
-            await _ssb.QlCommands.SendToQlAsync((vote.IntendedResult == IntendedVoteResult.Yes ? "vote yes" : "vote no"), false);
+            await
+                _ssb.QlCommands.SendToQlAsync(
+                    (vote.IntendedResult == IntendedVoteResult.Yes ? "vote yes" : "vote no"), false);
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                    "^7[{0}^7] ^3{1}^7 matches {0}^7 rule set by ^3{2}. {3}",
-                    (vote.IntendedResult == IntendedVoteResult.Yes ? "^2AUTO YES" : "^1AUTO NO"),
-                    vote.VoteText, vote.AddedBy,
-                    (vote.IntendedResult == IntendedVoteResult.Yes ? "^2Passing..." : "^1Rejecting...")));
+                        "^7[{0}^7] ^3{1}^7 matches {0}^7 rule set by ^3{2}. {3}",
+                        (vote.IntendedResult == IntendedVoteResult.Yes ? "^2AUTO YES" : "^1AUTO NO"),
+                        vote.VoteText, vote.AddedBy,
+                        (vote.IntendedResult == IntendedVoteResult.Yes ? "^2Passing..." : "^1Rejecting...")));
         }
 
         /// <summary>
@@ -172,7 +175,7 @@ namespace SSB.Core
             {
                 await DenyAdminKick(details);
             }
-            if (AutoVoter.IsModuleActive)
+            if (_ssb.Mod.AutoVoter.Active)
             {
                 await EvalVoteWithAutoVote(details);
             }

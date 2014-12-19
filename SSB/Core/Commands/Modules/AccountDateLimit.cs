@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SSB.Config;
 using SSB.Core.Commands.Admin;
 using SSB.Interfaces;
 using SSB.Model;
@@ -16,6 +17,7 @@ namespace SSB.Core.Commands.Modules
     public class AccountDateLimit : IModule
     {
         public const string NameModule = "accountdate";
+        private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
         private int _minModuleArgs = 3;
 
@@ -26,15 +28,9 @@ namespace SSB.Core.Commands.Modules
         public AccountDateLimit(SynServerBot ssb)
         {
             _ssb = ssb;
+            _configHandler = new ConfigHandler();
+            LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the account date limit is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if the account date limit is active; otherwise, <c>false</c>.
-        /// </value>
-        public static bool IsModuleActive { get; set; }
 
         /// <summary>
         ///     Gets or sets the minimum days that an account must be registered.
@@ -45,16 +41,12 @@ namespace SSB.Core.Commands.Modules
         public static int MinimumDaysRequired { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="IModule" /> is active.
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if active; otherwise, <c>false</c>.
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>
-        /// Used to query activity status for a list of modules. Be sure to set
-        /// a public static bool property IsModuleActive for outside access in other parts of app.
-        /// </remarks>
-        public bool Active { get { return IsModuleActive; } }
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -68,12 +60,15 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets the name of the module.
+        ///     Gets the name of the module.
         /// </summary>
         /// <value>
-        /// The name of the module.
+        ///     The name of the module.
         /// </value>
-        public string ModuleName { get { return NameModule; } }
+        public string ModuleName
+        {
+            get { return NameModule; }
+        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -111,14 +106,47 @@ namespace SSB.Core.Commands.Modules
                 await DisplayArgLengthError(c);
                 return;
             }
-            IsModuleActive = true;
-            MinimumDaysRequired = days;
-            await _ssb.QlCommands.QlCmdSay(
-                string.Format(
-                    "^2[SUCCESS]^7 Account date limit ^2ON.^7 Players with accounts registered in the last^1 {0}^7 days may not play.",
-                    days));
 
-            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+            await EnableAccountDateLimiter(days);
+        }
+
+        /// <summary>
+        ///     Loads the configuration.
+        /// </summary>
+        public void LoadConfig()
+        {
+            _configHandler.ReadConfiguration();
+            Active = _configHandler.Config.AccountDateOptions.minimumDaysRequired != 0 &&
+                     _configHandler.Config.AccountDateOptions.isActive;
+            MinimumDaysRequired =
+                _configHandler.Config.AccountDateOptions.minimumDaysRequired;
+
+            if (Active)
+            {
+                // ReSharper disable once UnusedVariable
+                // Synchronous; initialization
+                Task i = Init();
+            }
+        }
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        public void UpdateConfig(bool active)
+        {
+            Active = active;
+
+            if (active)
+            {
+                _configHandler.Config.AccountDateOptions.isActive = true;
+                _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
+            }
+            else
+            {
+                _configHandler.Config.AccountDateOptions.SetDefaults();
+            }
+
+            _configHandler.WriteConfiguration();
         }
 
         /// <summary>
@@ -153,9 +181,38 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         private async Task DisableAccountDateLimiter()
         {
-            IsModuleActive = false;
+            UpdateConfig(false);
             await _ssb.QlCommands.QlCmdSay(
                 "^2[SUCCESS]^7 Account date limit ^1OFF^7. Players who registered on any date can play.");
+        }
+
+        /// <summary>
+        ///     Enables the account date limiter.
+        /// </summary>
+        /// <param name="days">The minimum amount of days.</param>
+        private async Task EnableAccountDateLimiter(int days)
+        {
+            MinimumDaysRequired = days;
+            UpdateConfig(true);
+            await _ssb.QlCommands.QlCmdSay(
+                string.Format(
+                    "^2[SUCCESS]^7 Account date limit ^2ON.^7 Players with accounts registered in the last^1 {0}^7 days may not play.",
+                    days));
+
+            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        private async Task Init()
+        {
+            if (MinimumDaysRequired != 0)
+            {
+                await EnableAccountDateLimiter(MinimumDaysRequired);
+                Debug.WriteLine(
+                    "Active flag detected in saved configuration; auto-initializing auto date limit module.");
+            }
         }
 
         /// <summary>

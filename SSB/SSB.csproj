@@ -65,13 +65,18 @@
   <ItemGroup>
     <Compile Include="Config\ConfigHandler.cs" />
     <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Config\CoreConfig.cs" />
+    <Compile Include="Config\Core\CoreOptions.cs" />
+    <Compile Include="Config\Modules\AccountDateOptions.cs" />
+    <Compile Include="Config\Modules\AutoVoterOptions.cs" />
+    <Compile Include="Config\Modules\EloLimitOptions.cs" />
+    <Compile Include="Config\Modules\MotdOptions.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
+    <Compile Include="Core\Commands\Modules\Motd.cs" />
     <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
@@ -92,7 +97,7 @@
     <Compile Include="Core\Commands\Modules\EloLimit.cs" />
     <Compile Include="Core\Commands\None\HelpCmd.cs" />
     <Compile Include="Core\Commands\Admin\ModuleCmd.cs" />
-    <Compile Include="Core\Commands\Modules\Module.cs" />
+    <Compile Include="Core\Commands\Modules\ModuleManager.cs" />
     <Compile Include="Core\Commands\SuperUser\InviteCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\LockCmd.cs" />
     <Compile Include="Core\Commands\Admin\MuteCmd.cs" />
@@ -104,6 +109,7 @@
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
+    <Compile Include="Core\MessageOfTheDay.cs" />
     <Compile Include="Core\PlayerAutoBanner.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />

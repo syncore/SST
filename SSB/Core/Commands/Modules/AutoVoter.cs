@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SSB.Config;
 using SSB.Core.Commands.Admin;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -16,7 +17,7 @@ namespace SSB.Core.Commands.Modules
     public class AutoVoter : IModule
     {
         public const string NameModule = "autovote";
-        private readonly List<AutoVote> _autoVotes;
+        private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
         private readonly List<string> _validCallVotes;
         private int _minModuleArgs = 3;
@@ -28,7 +29,7 @@ namespace SSB.Core.Commands.Modules
         public AutoVoter(SynServerBot ssb)
         {
             _ssb = ssb;
-            _autoVotes = new List<AutoVote>();
+            _configHandler = new ConfigHandler();
             _validCallVotes = new List<string>
             {
                 "clientkick",
@@ -44,15 +45,8 @@ namespace SSB.Core.Commands.Modules
                 "teamsize",
                 "timelimit"
             };
+            LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the auto voter module is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if the auto voter module is active; otherwise, <c>false</c>.
-        /// </value>
-        public static bool IsModuleActive { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -60,11 +54,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///   <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>
-        /// Used to query activity status for a list of modules. Be sure to set
-        /// a public static bool property IsModuleActive for outside access in other parts of app.
-        /// </remarks>
-        public bool Active { get { return IsModuleActive; } }
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the automatic votes.
@@ -72,10 +62,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The automatic votes.
         /// </value>
-        public List<AutoVote> AutoVotes
-        {
-            get { return _autoVotes; }
-        }
+        public List<AutoVote> AutoVotes { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -126,9 +113,9 @@ namespace SSB.Core.Commands.Modules
                 }
                 else if (c.Args[2].Equals("clear"))
                 {
-                    _autoVotes.Clear();
+                    AutoVotes.Clear();
                     await _ssb.QlCommands.QlCmdSay("^2[SUCCESS]^7 Cleared list of votes to automatically pass or reject.");
-                    IsModuleActive = false;
+                    UpdateConfig(false);
                 }
                 else if (c.Args[2].Equals("list"))
                 {
@@ -158,6 +145,39 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Loads the configuration.
+        /// </summary>
+        public void LoadConfig()
+        {
+            _configHandler.ReadConfiguration();
+            Active = _configHandler.Config.AutoVoterOptions.autoVotes.Count != 0 &&
+                _configHandler.Config.AutoVoterOptions.isActive;
+            AutoVotes = _configHandler.Config.AutoVoterOptions.autoVotes;
+        }
+
+        /// <summary>
+        /// Updates the configuration.
+        /// </summary>
+        /// <param name="active">if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
+        /// updating the configuration.</param>
+        public void UpdateConfig(bool active)
+        {
+            Active = active;
+
+            if (active)
+            {
+                _configHandler.Config.AutoVoterOptions.isActive = true;
+                _configHandler.Config.AutoVoterOptions.autoVotes = AutoVotes;
+            }
+            else
+            {
+                _configHandler.Config.AutoVoterOptions.SetDefaults();
+            }
+
+            _configHandler.WriteConfiguration();
+        }
+
+        /// <summary>
         /// Adds the automatic vote with arguments
         /// </summary>
         /// <param name="c">The c.</param>
@@ -168,7 +188,7 @@ namespace SSB.Core.Commands.Modules
         private async Task AddAutoVoteWithArgs(CmdArgs c)
         {
             string fullVote = string.Format("{0} {1}", c.Args[3], c.Args[4]);
-            foreach (var av in _autoVotes.Where(av => av.VoteText.Equals(fullVote,
+            foreach (var av in AutoVotes.Where(av => av.VoteText.Equals(fullVote,
                 StringComparison.InvariantCultureIgnoreCase)))
             {
                 await
@@ -177,8 +197,9 @@ namespace SSB.Core.Commands.Modules
                             (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), fullVote, av.AddedBy));
                 return;
             }
-            IsModuleActive = true;
-            _autoVotes.Add(new AutoVote(fullVote, true, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+
+            AutoVotes.Add(new AutoVote(fullVote, true, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            UpdateConfig(true);
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Any vote matching: ^3{0}^7 will automatically {1}.",
@@ -195,7 +216,7 @@ namespace SSB.Core.Commands.Modules
         /// </remarks>
         private async Task AddNoArgAutoVote(CmdArgs c)
         {
-            foreach (var av in _autoVotes.Where(av => av.VoteText.Equals(c.Args[3], StringComparison.InvariantCultureIgnoreCase)))
+            foreach (var av in AutoVotes.Where(av => av.VoteText.Equals(c.Args[3], StringComparison.InvariantCultureIgnoreCase)))
             {
                 await
                         _ssb.QlCommands.QlCmdSay(
@@ -203,8 +224,9 @@ namespace SSB.Core.Commands.Modules
                             (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), c.Args[3], av.AddedBy));
                 return;
             }
-            IsModuleActive = true;
-            _autoVotes.Add(new AutoVote(c.Args[3], false, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+
+            AutoVotes.Add(new AutoVote(c.Args[3], false, (c.Args[2].Equals("yes") ? IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            UpdateConfig(true);
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^2[SUCCESS]^7 Any vote matching: ^3{0}^7 will automatically {1}.",
@@ -216,7 +238,7 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         private async Task DisableAutoVoter()
         {
-            IsModuleActive = false;
+            UpdateConfig(false);
             await _ssb.QlCommands.QlCmdSay(
                 "^2[SUCCESS]^7 Auto-voter is ^1OFF^7. Votes will not be passed/rejected automatically.");
         }
@@ -285,17 +307,16 @@ namespace SSB.Core.Commands.Modules
                 await DisplayNotNumError(c);
                 return;
             }
-            if (_autoVotes.ElementAtOrDefault(voteNum) == null)
+            if (AutoVotes.ElementAtOrDefault(voteNum) == null)
             {
                 await DisplayVoteDoesntExistError(c);
                 return;
             }
             await RemoveAutoVote(voteNum);
-            // Disable if there is no rules specified
-            if (_autoVotes.Count == 0)
-            {
-                IsModuleActive = false;
-            }
+            // Disable if there are no rules specified
+            bool disable = AutoVotes.Count == 0;
+
+            UpdateConfig(disable);
         }
 
         /// <summary>
@@ -303,7 +324,7 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         private async Task ListAutoVotes(CmdArgs c)
         {
-            if (_autoVotes.Count == 0)
+            if (AutoVotes.Count == 0)
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format("^7No automatic pass/reject votes are set. Use ^2{0}{1} {2} yes vote ^7OR^1 no vote^7 to add.",
                     CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.AutoVoteArg));
@@ -311,19 +332,19 @@ namespace SSB.Core.Commands.Modules
             }
             var yes = new StringBuilder();
             var no = new StringBuilder();
-            if (_autoVotes.Any(av => av.IntendedResult == IntendedVoteResult.Yes))
+            if (AutoVotes.Any(av => av.IntendedResult == IntendedVoteResult.Yes))
             {
-                foreach (AutoVote a in _autoVotes.Where(a => a.IntendedResult == IntendedVoteResult.Yes))
+                foreach (AutoVote a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.Yes))
                 {
-                    yes.Append(string.Format("^7#{0}:^2 {1}^7 ({2}), ", _autoVotes.IndexOf(a), a.VoteText, a.AddedBy));
+                    yes.Append(string.Format("^7#{0}:^2 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText, a.AddedBy));
                 }
                 await _ssb.QlCommands.QlCmdSay("^2[AUTO YES]^7 " + yes.ToString().TrimEnd(',', ' '));
             }
-            if (_autoVotes.Any(av => av.IntendedResult == IntendedVoteResult.No))
+            if (AutoVotes.Any(av => av.IntendedResult == IntendedVoteResult.No))
             {
-                foreach (AutoVote a in _autoVotes.Where(a => a.IntendedResult == IntendedVoteResult.No))
+                foreach (AutoVote a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.No))
                 {
-                    no.Append(string.Format("^7#{0}:^1 {1}^7 ({2}), ", _autoVotes.IndexOf(a), a.VoteText, a.AddedBy));
+                    no.Append(string.Format("^7#{0}:^1 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText, a.AddedBy));
                 }
                 await _ssb.QlCommands.QlCmdSay("^1[AUTO NO]^7 " + no.ToString().TrimEnd(',', ' '));
             }
@@ -336,10 +357,10 @@ namespace SSB.Core.Commands.Modules
         private async Task RemoveAutoVote(int voteNum)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format("^2[SUCCESS]^7 AUTO {0} vote (^3{1}^7) was removed.",
-                (_autoVotes[voteNum].IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"),
-                _autoVotes[voteNum].VoteText
+                (AutoVotes[voteNum].IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"),
+                AutoVotes[voteNum].VoteText
                 ));
-            _autoVotes.RemoveAt(voteNum);
+            AutoVotes.RemoveAt(voteNum);
         }
     }
 }

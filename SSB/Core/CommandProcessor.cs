@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
-using SSB.Core.Commands.Modules;
 using SSB.Core.Commands.None;
 using SSB.Core.Commands.Owner;
 using SSB.Core.Commands.SuperUser;
@@ -27,39 +26,37 @@ namespace SSB.Core
         public const string CmdAccountDate = "date";
         public const string CmdAddUser = "adduser";
         public const string CmdAllReady = "allready";
-        public const string CmdForceJoinBlue = "blue";
         public const string CmdDelUser = "deluser";
         public const string CmdDeOp = "deop";
         public const string CmdElo = "elo";
+        public const string CmdForceJoinBlue = "blue";
+        public const string CmdForceJoinRed = "red";
+        public const string CmdForceJoinSpec = "spec";
         public const string CmdHelp = "help";
         public const string CmdInvite = "invite";
-        public const string CmdModule = "module";
-        public const string CmdLock = "lock";
-        public const string CmdOp = "op";
-        public const string CmdMute = "mute";
-        public const string CmdVoteNo = "no";
         public const string CmdKickBan = "kickban";
+        public const string CmdLock = "lock";
+        public const string CmdModule = "module";
+        public const string CmdMute = "mute";
+        public const string CmdOp = "op";
         public const string CmdPause = "pause";
-        public const string CmdForceJoinRed = "red";
-        public const string CmdSuggestTeams = "suggest";
-        public const string CmdUnban = "unban";
-        public const string CmdUnlock = "unlock";
-        public const string CmdUnmute = "unmute";
-        public const string CmdUnpause = "unpause";
         public const string CmdRefresh = "refresh";
         public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdSeen = "seen";
         public const string CmdShutdown = "shutdown";
-        public const string CmdForceJoinSpec = "spec";
         public const string CmdStopServer = "stopserver";
+        public const string CmdSuggestTeams = "suggest";
         public const string CmdTimeBan = "timeban";
+        public const string CmdUnban = "unban";
+        public const string CmdUnlock = "unlock";
+        public const string CmdUnmute = "unmute";
+        public const string CmdUnpause = "unpause";
+        public const string CmdVoteNo = "no";
         public const string CmdVoteYes = "yes";
         private readonly Dictionary<string, IBotCommand> _commands;
         private readonly Dictionary<string, DateTime> _playerCommandTime;
         private readonly SynServerBot _ssb;
         private readonly Users _users;
-        
-        
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
@@ -69,7 +66,6 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _users = new Users();
-            Mod = new Module(_ssb);
             _playerCommandTime = new Dictionary<string, DateTime>();
             _commands = new Dictionary<string, IBotCommand>
             {
@@ -84,7 +80,7 @@ namespace SSB.Core
                 {CmdElo, new EloCmd(_ssb)},
                 {CmdHelp, new HelpCmd(_ssb)},
                 {CmdInvite, new InviteCmd(_ssb)},
-                {CmdModule, new ModuleCmd(_ssb, Mod)},
+                {CmdModule, new ModuleCmd(_ssb)},
                 {CmdLock, new LockCmd(_ssb)},
                 {CmdOp, new OpCmd(_ssb)},
                 {CmdMute, new MuteCmd(_ssb)},
@@ -108,14 +104,6 @@ namespace SSB.Core
                 {CmdRejectTeamSuggestion, new RejectTeamSuggestCmd(_ssb)},
             };
         }
-
-        /// <summary>
-        ///     Gets the Module.
-        /// </summary>
-        /// <value>
-        ///     The module.
-        /// </value>
-        public Module Mod { get; private set; }
 
         /// <summary>
         ///     Processes the bot command.

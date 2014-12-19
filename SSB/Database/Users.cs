@@ -198,7 +198,7 @@ namespace SSB.Database
             }
             var cfgHandler = new ConfigHandler();
             cfgHandler.ReadConfiguration();
-            _owners = cfgHandler.Owners;
+            _owners = cfgHandler.Config.CoreOptions.owners;
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace SSB.Database
         {
             var cfgHandler = new ConfigHandler();
             cfgHandler.ReadConfiguration();
-            cfgHandler.Owners = _owners;
+            cfgHandler.Config.CoreOptions.owners = _owners;
             cfgHandler.WriteConfiguration();
         }
 
