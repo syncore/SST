@@ -167,8 +167,8 @@ namespace SSB.Core
         {
             IsReadingConsole = false;
             Debug.WriteLine("...stopping QL console read thread.");
-            MessageBox.Show("Stopped reading Quake Live events, because Quake Live is not detected.",
-                "Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(@"Stopped reading Quake Live events, because Quake Live is not detected.",
+                @"Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         /// <summary>
@@ -217,9 +217,11 @@ namespace SSB.Core
                     ConsoleTextProcessor.ProcessEntireConsoleText(received, textLength);
 
                     int lengthDifference = Math.Abs(textLength - _oldLength);
+                    
                     if (received.Length > lengthDifference)
                     {
                         // Standardize QL's annoying string formatting
+                        //TODO: FIX weird case where ArgumentOutofBoundsException occurs because received substring startIndex > string length
                         var diffBuilder = new StringBuilder(received.Substring(_oldLength, lengthDifference));
                         diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
                         diffBuilder.Replace("\r\n\"\r\n", "\r\n");
@@ -229,7 +231,7 @@ namespace SSB.Core
                     // Detect when buffer is about to be full, in order to auto-clear.
                     // Win Edit controls can have a max of 30,000 characters, see:
                     // "Limits of Edit Controls" - http://msdn.microsoft.com/en-us/library/ms997530.aspx
-                    // More info: Q3 source (win_syscon.c), Conbuf_AppendText method
+                    // More info: Q3 source (win_syscon.c), Conbuf_AppendText
                     int begin, end;
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
                     if ((begin >= 29300) && (end >= 29300))

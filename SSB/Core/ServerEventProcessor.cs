@@ -129,19 +129,43 @@ namespace SSB.Core
             }
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
-            // Get the QLRanks info for these players
+            // Get the QLRanks info for these players if required
             if (eloNeedsUpdating.Any())
             {
                 await
                     qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
             }
-            // Elo limiter kick, if active
-            await CheckEloAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
-            // Account date kick, if active
-            await CheckAccountDateAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
-            // Check for time-bans
-            var autoBanner = new PlayerAutoBanner(_ssb);
-            await autoBanner.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
+            // If any players should be kicked (i.e. due to a module setting), then do so
+            await DoRequiredPlayerKicks();
+        }
+
+        /// <summary>
+        ///     Sets the current server's gamestate.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The current server's gamestate as a <see cref="QlGameStates" />enum value.</returns>
+        public QlGameStates SetServerGameState(string text)
+        {
+            string stateText = text.Trim();
+            var gameState = QlGameStates.Unspecified;
+            switch (stateText)
+            {
+                case "PRE_GAME":
+                    gameState = QlGameStates.Warmup;
+                    break;
+
+                case "IN_PROGRESS":
+                    gameState = QlGameStates.InProgress;
+                    break;
+
+                case "COUNT_DOWN":
+                    gameState = QlGameStates.Countdown;
+                    break;
+            }
+            // Set
+            _ssb.ServerInfo.CurrentServerGameState = gameState;
+            Debug.WriteLine("*** Server's gamestate is: " + gameState);
+            return gameState;
         }
 
         /// <summary>
@@ -211,6 +235,20 @@ namespace SSB.Core
                     await _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
+        }
+
+        /// <summary>
+        /// Kicks any of the current players if an active, imposed module requires it.
+        /// </summary>
+        private async Task DoRequiredPlayerKicks()
+        {
+            // Elo limiter kick, if active
+            await CheckEloAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
+            // Account date kick, if active
+            await CheckAccountDateAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
+            // Check for time-bans
+            var autoBanner = new PlayerAutoBanner(_ssb);
+            await autoBanner.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
         }
     }
 }

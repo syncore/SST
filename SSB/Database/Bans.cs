@@ -251,7 +251,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Checks whether the user database exists.
+        ///     Checks whether the ban database exists.
         /// </summary>
         /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
@@ -260,7 +260,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Deletes the registration database.
+        ///     Deletes the ban database.
         /// </summary>
         protected override void DeleteDb()
         {

@@ -29,8 +29,6 @@ namespace SSB.Core
             _voteHandler = new VoteHandler(_ssb);
         }
 
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
-
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -119,8 +117,7 @@ namespace SSB.Core
                 return;
             }
             // Batch process, as there will sometimes be multiple lines.
-            // TODO: Fix this. This is terrible and very buggy
-            string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string[] arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -135,7 +132,7 @@ namespace SSB.Core
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
                 return;
             }
             // If appending to textbox, must clear first
@@ -144,41 +141,43 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of a request for the bot's name and handles it if it does.
+        ///     Determines whether the text matches that of a request for the bot's name and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the text matches that of a request for the bot's name, otherwise <c>false</c>.</returns>
         private bool BotNameDetected(string text)
         {
             if (!_ssb.Parser.CvarBotAccountName.IsMatch(text)) return false;
-            var m = _ssb.Parser.CvarBotAccountName.Match(text);
+            Match m = _ssb.Parser.CvarBotAccountName.Match(text);
             _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
             return true;
         }
 
         /// <summary>
-        /// Detects the player chat message.
+        ///     Detects the player chat message.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <remarks>First, make sure the player is detected in the internal list of the server's current players,
-        /// if not, then do nothing. Use the full clan tag (if any) and name for the determination.</remarks>
+        /// <remarks>
+        ///     First, make sure the player is detected in the internal list of the server's current players,
+        ///     if not, then do nothing. Use the full clan tag (if any) and name for the determination.
+        /// </remarks>
         private bool ChatMessageDetected(string text)
         {
             if (!_ssb.Parser.ScmdChatMessage.IsMatch(text)) return false;
-            var m = _ssb.Parser.ScmdChatMessage.Match(text);
+            Match m = _ssb.Parser.ScmdChatMessage.Match(text);
             _playerEventProcessor.HandlePlayerChatMessage(m.Groups["fullplayerandmsg"].Value);
             return true;
         }
 
         /// <summary>
-        /// Detects various events (such as connections, disconnections, chat messages, etc.)
-        /// that occur as short lines of text within the console.
+        ///     Detects various events (such as connections, disconnections, chat messages, etc.)
+        ///     that occur as short lines of text within the console.
         /// </summary>
         /// <param name="events">The events.</param>
         private void DetectConsoleEvent(string[] events)
         {
             // Most of time the text will include multiple lines. Iterate and process.
-            foreach (var text in events)
+            foreach (string text in events)
             {
                 // 'player connected' detected.
                 if (IncomingPlayerDetected(text).Result) continue;
@@ -194,8 +193,12 @@ namespace SSB.Core
                 if (VoteDetailsDetected(text)) continue;
                 // vote end
                 if (VoteEndDetected(text)) continue;
+                // gamestate change
+                if (GameStateChangeDetected(text)) continue;
                 // chat message
-                if (ChatMessageDetected(text)) continue;
+                if (ChatMessageDetected(text))
+                {
+                }
             }
         }
 
@@ -216,7 +219,7 @@ namespace SSB.Core
                 var cmd = QlCommandType.ConfigStrings;
                 ProcessCommand(cmd, _ssb.Parser.CfgStringPlayerInfo.Matches(text));
             }
-            // 'players' command has been detected; extract the player names and ids from it.
+                // 'players' command has been detected; extract the player names and ids from it.
             else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
             {
                 var cmd = QlCommandType.Players;
@@ -228,8 +231,9 @@ namespace SSB.Core
                 }
                 ProcessCommand(cmd, playersToParse);
             }
-            // 'serverinfo' command has been detected; extract the relevant information from it.
-            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text) || _ssb.Parser.CvarGameType.IsMatch(text))
+                // 'serverinfo' command has been detected; extract the relevant information from it.
+            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text) || _ssb.Parser.CvarGameType.IsMatch(text) ||
+                     _ssb.Parser.CvarGameState.IsMatch(text))
             {
                 QlCommandType cmd;
                 Match m;
@@ -245,8 +249,14 @@ namespace SSB.Core
                     m = _ssb.Parser.CvarGameType.Match(text);
                     ProcessCommand(cmd, m.Groups["gametype"].Value);
                 }
+                if (_ssb.Parser.CvarGameState.IsMatch(text))
+                {
+                    cmd = QlCommandType.ServerInfoServerGamestate;
+                    m = _ssb.Parser.CvarGameState.Match(text);
+                    ProcessCommand(cmd, m.Groups["gamestate"].Value);
+                }
             }
-            // map load or map change detected; handle it.
+                // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
@@ -257,7 +267,29 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of an incoming player and handles it if it does.
+        ///     Determines whether a gamestate change was detected.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a gamestate change was detected, otherwise <c>false</c>.</returns>
+        private bool GameStateChangeDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdGameStateChange.IsMatch(text)) return false;
+            Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
+            if (m.Groups["time"].Value.Equals(@"\time\-1", StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
+                Debug.WriteLine("Gamestate change detected: setting warm-up mode.");
+            }
+            else if (m.Groups["time"].Value.Equals(@"\time\0", StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ssb.ServerInfo.CurrentServerGameState = QlGameStates.InProgress;
+                Debug.WriteLine("Gamestate change detected: setting in-progress mode.");
+            }
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether the text matches that of an incoming player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a player connection was detected and handled, otherwise <c>false</c>.</returns>
@@ -265,13 +297,13 @@ namespace SSB.Core
         {
             // 'player connected' detected.
             if (!_ssb.Parser.ScmdPlayerConnected.IsMatch(text)) return false;
-            var m = _ssb.Parser.ScmdPlayerConnected.Match(text);
+            Match m = _ssb.Parser.ScmdPlayerConnected.Match(text);
             await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
             return true;
         }
 
         /// <summary>
-        /// Determines whether the text matches that of an outgoing player and handles it if it does.
+        ///     Determines whether the text matches that of an outgoing player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
@@ -303,20 +335,20 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of a player's config string and handles it if it does.
+        ///     Determines whether the text matches that of a player's config string and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
         private bool PlayerConfigStringDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
-            var m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
+            Match m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
             _playerEventProcessor.HandlePlayerConfigString(m);
             return true;
         }
 
         /// <summary>
-        /// Processes the command.
+        ///     Processes the command.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="cmdType">Type of the command.</param>
@@ -326,7 +358,9 @@ namespace SSB.Core
             switch (cmdType)
             {
                 case QlCommandType.Players:
-                    var g =
+                    // Synchronous
+                    // ReSharper disable once UnusedVariable
+                    Task g =
                         _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);
                     break;
 
@@ -338,6 +372,10 @@ namespace SSB.Core
                     _ssb.ServerEventProcessor.SetServerGameType(t as string);
                     break;
 
+                case QlCommandType.ServerInfoServerGamestate:
+                    _ssb.ServerEventProcessor.SetServerGameState(t as string);
+                    break;
+
                 case QlCommandType.InitInfo:
                     _ssb.ServerEventProcessor.HandleMapLoad(t as string);
                     break;
@@ -345,10 +383,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the details of the vote were detected.
+        ///     Determines whether the details of the vote were detected.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the details of the vote were detected, otherwise <c>false</c>.</returns>
         private bool VoteDetailsDetected(string text)
         {
             if (!_ssb.Parser.ScmdVoteCalledDetails.IsMatch(text)) return false;
@@ -357,9 +395,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the end result of a vote was detected.
+        ///     Determines whether the end result of a vote was detected.
         /// </summary>
         /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the end result of the vote was detected, otherwise <c>false</c>.</returns>
         private bool VoteEndDetected(string text)
         {
             if (!_ssb.Parser.ScmdVoteFinalResult.IsMatch(text)) return false;
@@ -369,9 +408,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the start of a vote was detected.
+        ///     Determines whether the start of a vote was detected.
         /// </summary>
         /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the state of a vote was detected, otherwise <c>false</c>.</returns>
         private bool VoteStartDetected(string text)
         {
             if (!_ssb.Parser.ScmdVoteCalledTagAndPlayer.IsMatch(text)) return false;
@@ -379,5 +419,7 @@ namespace SSB.Core
             _voteHandler.HandleVoteStart(text);
             return true;
         }
+
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
 }

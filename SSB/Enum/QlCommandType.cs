@@ -8,6 +8,7 @@
         Ignored,
         ServerInfoServerId,
         ServerInfoServerGametype,
+        ServerInfoServerGamestate,
         ConfigStrings,
         Players,
         ServerInfo,

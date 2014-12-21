@@ -151,6 +151,13 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+
+            //servercommand: game is starting/ending
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateChange", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
             // Specific cvar values:
 
             // serverinfo cmd - Find sv_gtid after issuing 'serverinfo' command
@@ -180,8 +187,17 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // g_gametype - extract gametype from serverinfo command
-            expr = new RegexCompilationInfo(@"g_gametype (?<gametype>.+)",
-               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarGameType",
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^g_gametype (?<gametype>.+)",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarGameType",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+            // g_gameState - extract gamestate from serverinfo command
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^g_gameState (?<gamestate>.+)",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarGameState",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);

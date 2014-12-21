@@ -9,7 +9,7 @@ using SSB.Util;
 namespace SSB.Core
 {
     /// <summary>
-    ///     Class responsible for sending various commands to QL.
+    ///     Class responsible for sending various commands to the QL game instance.
     /// </summary>
     public class QlCommands
     {
@@ -335,7 +335,7 @@ namespace SSB.Core
             // Simulate the pressing of 'ENTER' key to send message.
             Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
 
-            // Tiny delay Sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
+            // Tiny delay is sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
             if (delay)
             {
                 // Creates a new event handler that will never be set, and then waits the full timeout period

@@ -20,6 +20,7 @@ namespace SSB.Util
             EvPlayerRageQuit = new evPlayerRageQuit();
             CvarBotAccountName = new cvarBotAccountName();
             CvarGameType = new cvarGameType();
+            CvarGameState = new cvarGameState();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
@@ -33,6 +34,7 @@ namespace SSB.Util
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdChatMessage = new scmdChatMessage();
             ScmdVoteFinalResult = new scmdVoteFinalResult();
+            ScmdGameStateChange = new scmdGameStateChange();
             UtilCaretColor = new utilCaretColor();
         }
 
@@ -57,6 +59,17 @@ namespace SSB.Util
         ///     Regex for matching the name cvar (name of the account running SSB).
         /// </value>
         public Regex CvarBotAccountName { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding the g_gameState cvar value after issuing 'serverinfo'
+        /// </summary>
+        /// <value>
+        ///     Regex for cvar g_gameState after issuing 'serverinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'gamestate' that has the gamestate status.
+        /// </remarks>
+        public Regex CvarGameState { get; private set; }
 
         /// <summary>
         ///     Regex for finding the g_gametype cvar value after issuing 'serverinfo'
@@ -133,6 +146,19 @@ namespace SSB.Util
         ///     serverCommand: 4 : chat "00 player: hello" - would match: player\u0019: hello
         /// </remarks>
         public Regex ScmdChatMessage { get; private set; }
+
+        /// <summary>
+        ///     Regex for detecting gamestate status changes.
+        /// </summary>
+        /// <value>
+        ///     Regex for detecting gamestate status changes.
+        /// </value>
+        /// <remarks>
+        ///     Named group 'time' returns a string: \time\# that indicates a gamestate status change.
+        ///     If \time\-1 then game is in warm-up mode. If \time\large#, then game is leaving warmup mode
+        ///     and entering the countdown. If \time\0 then game is in progress.
+        /// </remarks>
+        public Regex ScmdGameStateChange { get; private set; }
 
         /// <summary>
         ///     Regex for matching the player info presented as a server command.

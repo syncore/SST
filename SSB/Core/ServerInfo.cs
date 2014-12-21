@@ -27,6 +27,14 @@ namespace SSB.Core
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
+        /// Gets or sets the server's current game state.
+        /// </summary>
+        /// <value>
+        /// The server's current gamestate.
+        /// </value>
+        public QlGameStates CurrentServerGameState { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of game for the current server.
         /// </summary>
         /// <value>
