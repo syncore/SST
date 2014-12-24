@@ -15,6 +15,7 @@
             EloLimit = new EloLimit(s);
             AccountDateLimit = new AccountDateLimit(s);
             AutoVoter = new AutoVoter(s);
+            EarlyQuit = new EarlyQuit(s);
             Motd = new Motd(s);
         }
 
@@ -33,6 +34,14 @@
         ///     The automatic voter.
         /// </value>
         public AutoVoter AutoVoter { get; private set; }
+
+        /// <summary>
+        /// Gets the early quit module.
+        /// </summary>
+        /// <value>
+        /// The early quit module.
+        /// </value>
+        public EarlyQuit EarlyQuit { get; private set; }
 
         /// <summary>
         ///     Gets the elo limiter.

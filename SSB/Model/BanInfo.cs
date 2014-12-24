@@ -1,4 +1,5 @@
 ﻿using System;
+using SSB.Enum;
 
 namespace SSB.Model
 {
@@ -7,22 +8,6 @@ namespace SSB.Model
     /// </summary>
     public class BanInfo
     {
-        /// <summary>
-        /// Gets or sets the name of the banned player.
-        /// </summary>
-        /// <value>
-        /// The name of the banned player.
-        /// </value>
-        public string PlayerName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the admin who set the ban.
-        /// </summary>
-        /// <value>
-        /// The name of the admin who set the ban.
-        /// </value>
-        public string BannedBy { get; set; }
-
         /// <summary>
         /// Gets or sets the date and time on which the ban was added.
         /// </summary>
@@ -38,5 +23,29 @@ namespace SSB.Model
         /// The ban expiration date and time.
         /// </value>
         public DateTime BanExpirationDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the admin who set the ban.
+        /// </summary>
+        /// <value>
+        /// The name of the admin who set the ban.
+        /// </value>
+        public string BannedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of ban.
+        /// </summary>
+        /// <value>
+        /// The type of ban.
+        /// </value>
+        public BanType BanType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the banned player.
+        /// </summary>
+        /// <value>
+        /// The name of the banned player.
+        /// </value>
+        public string PlayerName { get; set; }
     }
 }

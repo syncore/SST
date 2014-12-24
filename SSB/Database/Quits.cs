@@ -2,9 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Text;
 using SSB.Enum;
 using SSB.Model;
 using SSB.Util;
@@ -12,31 +10,26 @@ using SSB.Util;
 namespace SSB.Database
 {
     /// <summary>
-    ///     Database class responsible for tracking banned players.
+    ///     Database class responsible for tracking players who leave games early.
     /// </summary>
-    public class Bans : CommonSqliteDb
+    public class Quits : CommonSqliteDb
     {
-        private readonly string _sqlConString = "Data Source=" + Filepaths.BanDatabaseFilePath;
-        private readonly string _sqlDbPath = Filepaths.BanDatabaseFilePath;
+        private readonly string _sqlConString = "Data Source=" + Filepaths.QuitDatabaseFilePath;
+        private readonly string _sqlDbPath = Filepaths.QuitDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Bans" /> class.
+        ///     Initializes a new instance of the <see cref="Quits" /> class.
         /// </summary>
-        public Bans()
+        public Quits()
         {
             VerifyDb();
         }
 
         /// <summary>
-        /// Adds the user to the database.
+        ///     Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="bannedBy">The admin who added the ban.</param>
-        /// <param name="banAddDate">The date and time that the ban was added.</param>
-        /// <param name="banExpirationDate">The date and time that the user's ban will expire.</param>
-        /// <param name="banType">The type of ban.</param>
-        /// <returns></returns>
-        public UserDbResult AddUserToDb(string user, string bannedBy, DateTime banAddDate, DateTime banExpirationDate, BanType banType)
+        public UserDbResult AddUserToDb(string user)
         {
             var result = UserDbResult.Unspecified;
             if (VerifyDb())
@@ -54,23 +47,20 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "INSERT INTO bannedusers(user, bannedBy, banAddDate, banExpirationDate, banType) VALUES(@user, @bannedBy, @banAddDate, @banExpirationDate, @banType)";
+                                "INSERT INTO earlyquitters(user, numQuits) VALUES(@user, @numQuits)";
                             cmd.Parameters.AddWithValue("@user", user);
-                            cmd.Parameters.AddWithValue("@bannedBy", bannedBy);
-                            cmd.Parameters.AddWithValue("@banAddDate", banAddDate);
-                            cmd.Parameters.AddWithValue("@banExpirationDate", banExpirationDate);
-                            cmd.Parameters.AddWithValue("@banType", (long)banType);
+                            cmd.Parameters.AddWithValue("@numQuits", 1);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine("AddUserToBanDb: {0} successfully added to ban DB by: {1} on: {2}. Time-ban expires on: {3}.",
-                                user, bannedBy, banAddDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                                banExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
+                            Debug.WriteLine(
+                                string.Format("AddUserToBanDb: {0} successfully added to early quitter DB",
+                                    user));
                             result = UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to ban database: " + ex.Message);
+                    Debug.WriteLine("Problem adding user to early quitter database: " + ex.Message);
                     result = UserDbResult.InternalError;
                 }
             }
@@ -97,37 +87,37 @@ namespace SSB.Database
 
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
-                            cmd.CommandText = "DELETE FROM bannedusers WHERE user = @user";
+                            cmd.CommandText = "DELETE FROM earlyquitters WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user);
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
                                 Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from ban database.", user));
+                                    "Deleted user: {0} from early quitter database.", user));
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from ban database: " + ex.Message);
+                    Debug.WriteLine("Problem deleting user from early quitter database: " + ex.Message);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the ban information.
+        ///     Gets the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns>The ban information as a QL color-formatted string.</returns>
-        public BanInfo GetBanInfo(string user)
+        /// <returns>The user quit counts</returns>
+        public long GetUserQuitCount(string user)
         {
-            var bInfo = new BanInfo();
+            long quitCount = 0;
             if (VerifyDb())
             {
                 if (!DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    return null;
+                    return 0;
                 }
                 try
                 {
@@ -137,30 +127,21 @@ namespace SSB.Database
 
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
-                            cmd.CommandText = "SELECT * FROM bannedusers WHERE user = @user";
+                            cmd.CommandText = "SELECT * FROM earlyquitters WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user);
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine("GetBanInfo: User does not exist in bans database.");
-                                    return null;
+                                    Debug.WriteLine(
+                                        "GetUserQuitCount: User does not exist in early quitter database.");
+                                    return 0;
                                 }
                                 while (reader.Read())
                                 {
-                                    bInfo.PlayerName = user;
-                                    bInfo.BannedBy = (string)reader["bannedBy"];
-                                    bInfo.BanAddedDate = (DateTime)reader["banAddDate"];
-                                    bInfo.BanExpirationDate = (DateTime)reader["banExpirationDate"];
-                                    switch ((long) reader["banType"])
-                                    {
-                                        case (long)BanType.AddedByAdmin:
-                                            bInfo.BanType = BanType.AddedByAdmin;
-                                            break;
-                                        case (long)BanType.AddedByEarlyQuit:
-                                            bInfo.BanType = BanType.AddedByEarlyQuit;
-                                            break;
-                                    }
+                                    quitCount = (long) reader["numQuits"];
+                                    Debug.WriteLine("GetUserQuitCount: {0} has {1} early quits.", user,
+                                        quitCount);
                                 }
                             }
                         }
@@ -168,34 +149,24 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem getting ban info from ban database: " + ex.Message);
+                    Debug.WriteLine("Problem getting quit count from early quitters database: " + ex.Message);
                 }
             }
-            return bInfo;
+            return quitCount;
         }
 
         /// <summary>
-        /// Determines whether the existing ban is still valid, if it exists, for the specified user.
+        ///     Increments the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns><c>true</c> if the existing ban's expiration date has not passed,
-        /// <c>false</c> is ban has expired or does not exist. </returns>
-        public bool IsExistingBanStillValid(string user)
+        public void IncrementUserQuitCount(string user)
         {
-            var banInfo = GetBanInfo(user);
-            if (banInfo == null) return false;
-            return DateTime.Now <= banInfo.BanExpirationDate;
-        }
-
-        /// <summary>
-        /// Gets all of the banned users.
-        /// </summary>
-        /// <returns>The banned users as a comma-separated string.</returns>
-        public string GetAllBans()
-        {
-            var bans = new StringBuilder();
             if (VerifyDb())
             {
+                if (!DoesUserExistInDb(user.ToLowerInvariant()))
+                {
+                    return;
+                }
                 try
                 {
                     using (var sqlcon = new SQLiteConnection(_sqlConString))
@@ -204,28 +175,45 @@ namespace SSB.Database
 
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
-                            cmd.CommandText = "SELECT * FROM bannedusers";
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            cmd.CommandText =
+                                "UPDATE earlyquitters SET numQuits = @newQuitCount WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@newQuitCount", (GetUserQuitCount(user) + 1));
+                            int total = cmd.ExecuteNonQuery();
+                            if (total > 0)
                             {
-                                if (!reader.HasRows)
-                                {
-                                    Debug.WriteLine("GetAllBans: No banned users found in database");
-                                    return string.Empty;
-                                }
-                                while (reader.Read())
-                                {
-                                    bans.Append(string.Format("{0}, ", reader["user"]));
-                                }
+                                Debug.WriteLine(string.Format(
+                                    "Incremented early quit count for: {0} from early quitter database.", user));
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem checking if user exists in seen database: " + ex.Message);
+                    Debug.WriteLine(
+                        "Problem incrementing user quit count for {0} in early quitters database: {1}", user,
+                        ex.Message);
                 }
             }
-            return bans.ToString().TrimEnd(',', ' ');
+        }
+
+        /// <summary>
+        ///     Initializes the database.
+        /// </summary>
+        public void InitDb()
+        {
+            // Initialize so DB gets created on first run
+            VerifyDb();
+        }
+
+        /// <summary>
+        ///     Checks whether the user already exists in the database.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns><c>true</c> if the user already exists, otherwise <c>false</c>.</returns>
+        public bool UserExistsInDb(string user)
+        {
+            return DoesUserExistInDb(user);
         }
 
         /// <summary>
@@ -243,17 +231,17 @@ namespace SSB.Database
                 {
                     sqlcon.Open();
                     string s =
-                        "CREATE TABLE bannedusers (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, bannedBy TEXT NOT NULL, banAddDate DATETIME, banExpirationDate DATETIME, banType INTEGER)";
+                        "CREATE TABLE earlyquitters (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, numQuits INTEGER)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Bans database created.");
+                        Debug.WriteLine("EarlyQuitter database created.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating bans database: " + ex.Message);
+                Debug.WriteLine("Problem creating early quitter database: " + ex.Message);
                 DeleteDb();
             }
         }
@@ -280,7 +268,7 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete bans database: " + ex.Message);
+                Debug.WriteLine("Unable to delete early quitter database: " + ex.Message);
             }
         }
 
@@ -299,18 +287,18 @@ namespace SSB.Database
 
                     using (var cmd = new SQLiteCommand(sqlcon))
                     {
-                        cmd.CommandText = "SELECT * FROM bannedusers WHERE user = @user";
+                        cmd.CommandText = "SELECT * FROM earlyquitters WHERE user = @user";
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             if (!reader.HasRows)
                             {
                                 Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the bans database.", user));
+                                    "User: {0} does not exist in the early quitter database.", user));
                                 return false;
                             }
                             Debug.WriteLine(
-                                string.Format("User: {0} already exists in the bans database.",
+                                string.Format("User: {0} already exists in the early quitter database.",
                                     user));
                             return true;
                         }
@@ -319,19 +307,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in bans database: " + ex.Message);
+                Debug.WriteLine("Problem checking if user exists in early quitter database: " + ex.Message);
             }
             return false;
-        }
-
-        /// <summary>
-        /// Checks whether the user is already banned.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns><c>true</c> if the user is already banned, otherwise <c>false</c>.</returns>
-        public bool UserAlreadyBanned(string user)
-        {
-            return DoesUserExistInDb(user);
         }
 
         /// <summary>
@@ -352,7 +330,8 @@ namespace SSB.Database
                 using (var cmd = new SQLiteCommand(sqlcon))
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'bannedusers'";
+                    cmd.CommandText =
+                        "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'earlyquitters'";
 
                     using (SQLiteDataReader sdr = cmd.ExecuteReader())
                     {
@@ -360,7 +339,7 @@ namespace SSB.Database
                         {
                             return true;
                         }
-                        Debug.WriteLine("bannedusers table not found in DB... Creating DB...");
+                        Debug.WriteLine("earlyquitters table not found in DB... Creating DB...");
                         CreateDb();
                         return false;
                     }

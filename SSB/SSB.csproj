@@ -68,6 +68,7 @@
     <Compile Include="Config\Core\CoreOptions.cs" />
     <Compile Include="Config\Modules\AccountDateOptions.cs" />
     <Compile Include="Config\Modules\AutoVoterOptions.cs" />
+    <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
     <Compile Include="Config\Modules\EloLimitOptions.cs" />
     <Compile Include="Config\Modules\MotdOptions.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
+    <Compile Include="Core\Commands\Modules\EarlyQuit.cs" />
     <Compile Include="Core\Commands\Modules\Motd.cs" />
     <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
+    <Compile Include="Core\EarlyQuitHandler.cs" />
     <Compile Include="Core\MessageOfTheDay.cs" />
     <Compile Include="Core\PlayerAutoBanner.cs" />
     <Compile Include="Core\ServerInfo.cs" />
@@ -116,8 +119,10 @@
     <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Core\VoteManager.cs" />
     <Compile Include="Database\Bans.cs" />
+    <Compile Include="Database\Quits.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />
+    <Compile Include="Enum\BanType.cs" />
     <Compile Include="Enum\IntendedVoteResult.cs" />
     <Compile Include="Enum\ReadyStatus.cs" />
     <Compile Include="Enum\TeamBalanceVote.cs" />
@@ -141,6 +146,7 @@
     <Compile Include="Model\QuakeLiveApi\Player.cs" />
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
     <Compile Include="Util\EloCache.cs" />
+    <Compile Include="Util\ExpirationDateGenerator.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
     <Compile Include="Enum\QlCommandType.cs" />

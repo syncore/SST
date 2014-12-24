@@ -63,11 +63,16 @@ namespace SSB.Core
         ///     Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void HandleOutgoingPlayerConnection(string player)
+        public async Task HandleOutgoingPlayerConnection(string player)
         {
             // Remove player from our internal list
             RemovePlayer(player);
             Debug.WriteLine("Detected outgoing connection for " + player);
+            // Evaluate player's early quit situation if that module is active
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
+            var eqh = new EarlyQuitHandler(_ssb);
+            await eqh.ProcessEarlyQuit(player);
         }
 
         /// <summary>
@@ -83,6 +88,9 @@ namespace SSB.Core
             string name = text.Substring(0, text.LastIndexOf('\u0019'));
             string msgFrom;
 
+            // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
+            if (name.StartsWith("\u0019[")) return;
+
             if (name.LastIndexOf(" ", StringComparison.Ordinal) != -1)
             {
                 // Has clan tag; get name only
@@ -94,10 +102,7 @@ namespace SSB.Core
                 // No clan tag; get name only
                 msgFrom = name;
             }
-
-            //string msgFrom = text.Substring(0, text.LastIndexOf('\u0019'));
-            //string msgFrom = text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1,
-            //    text.LastIndexOf('\u0019')).ToLowerInvariant();
+            
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
@@ -128,8 +133,8 @@ namespace SSB.Core
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus) status;
-            var team = (Team) tm;
+            var ready = (ReadyStatus)status;
+            var team = (Team)tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -148,6 +153,19 @@ namespace SSB.Core
             {
                 CreateNewPlayerFromConfigString(idMatchText, pi);
             }
+        }
+
+        /// <summary>
+        /// Handles the situation when a player joins the spectators.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task HandlePlayerWentToSpec(string player)
+        {
+            // Evaluate player's early quit situation if that module is active
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
+            var eqh = new EarlyQuitHandler(_ssb);
+            await eqh.ProcessEarlyQuit(player);
         }
 
         /// <summary>
@@ -202,8 +220,8 @@ namespace SSB.Core
             string country = GetCsValue("c", pi);
 
             // Create player. Also Set misc details like full clan name, country code, subscription status.
-            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
-                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
+            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
+                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
             Debug.Write(
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",

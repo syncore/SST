@@ -184,7 +184,9 @@ namespace SSB.Core
                 // player configstring info detected
                 if (PlayerConfigStringDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (OutgoingPlayerDetected(text)) continue;
+                if (OutgoingPlayerDetected(text).Result) continue;
+                // 'player joined the spectators' detected
+                if (PlayerJoinedSpectatorsDetected(text).Result) continue;
                 // bot account name
                 if (BotNameDetected(text)) continue;
                 // vote start
@@ -195,9 +197,12 @@ namespace SSB.Core
                 if (VoteEndDetected(text)) continue;
                 // gamestate change
                 if (GameStateChangeDetected(text)) continue;
+                // intermission (game end) detected
+                if (IntermissionDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text))
                 {
+                    /*nothing*/
                 }
             }
         }
@@ -303,12 +308,29 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Determines whether an intermission (game end) was detected.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if an intermission (game end) was detected, otherwise <c>false</c>.</returns>
+        private bool IntermissionDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdIntermission.IsMatch(text)) return false;
+            Match m = _ssb.Parser.ScmdIntermission.Match(text);
+            if (m.Groups["intermissionvalue"].Value.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
+                Debug.WriteLine("Intermission (game end) detected: setting status back to warm-up mode.");
+            }
+            return true;
+        }
+
+        /// <summary>
         ///     Determines whether the text matches that of an outgoing player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
         /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
-        private bool OutgoingPlayerDetected(string text)
+        private async Task<bool> OutgoingPlayerDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
                 !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) && !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
@@ -330,7 +352,7 @@ namespace SSB.Core
                 m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
-            _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+            await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
             return true;
         }
 
@@ -344,6 +366,19 @@ namespace SSB.Core
             if (!_ssb.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
             Match m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
             _playerEventProcessor.HandlePlayerConfigString(m);
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether the text matches that of a player who has joined the spectators and handle it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a player joined specs was detected and handled, otherwise <c>false</c>.</returns>
+        private async Task<bool> PlayerJoinedSpectatorsDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdPlayerJoinedSpectators.IsMatch(text)) return false;
+            Match m = _ssb.Parser.ScmdPlayerJoinedSpectators.Match(text);
+            await _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
             return true;
         }
 

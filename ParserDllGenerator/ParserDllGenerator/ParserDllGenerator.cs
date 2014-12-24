@@ -114,6 +114,11 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: player joined spectators
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cp ""(?<player>.+) joined the spectators",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerJoinedSpectators", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
 
             //servercommand: player ragequits
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) ragequits",
@@ -142,6 +147,12 @@ namespace ParserDllGenerator
             //servercommand: vote called - number of no votes
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 11 ""(?<novotes>\d+)""",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteNumNoVotes", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //servercommand: intermission (game over) detected
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 14 ""(?<intermissionvalue>.+)""",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdIntermission", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 

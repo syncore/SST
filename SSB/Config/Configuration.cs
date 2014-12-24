@@ -34,6 +34,14 @@ namespace SSB.Config
         public CoreOptions CoreOptions { get; set; }
 
         /// <summary>
+        /// Gets or sets the early quit options.
+        /// </summary>
+        /// <value>
+        /// The early quit options.
+        /// </value>
+        public EarlyQuitOptions EarlyQuitOptions { get; set; }
+
+        /// <summary>
         ///     Gets or sets the elo limit options.
         /// </summary>
         /// <value>

@@ -12,6 +12,7 @@ namespace SSB.Util
         private const string AccountDateDatabaseFile = "acctdate.db";
         private const string BanDatabaseFile = "bannedusers.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
+        private const string QuitDatabaseFile = "earlyquits.db";
         private const string SeenDateDatabaseFile = "seendate.db";
         private const string UserDatabaseFile = "ssbusers.db";
 
@@ -22,6 +23,8 @@ namespace SSB.Util
             AccountDateDatabaseFile);
 
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
+
+        private static readonly string _quitDatabaseFilePath = Path.Combine(DataDirectory, QuitDatabaseFile);
 
         private static readonly string _seenDateDatabaseFilePath = Path.Combine(DataDirectory,
             SeenDateDatabaseFile);
@@ -51,6 +54,17 @@ namespace SSB.Util
         public static string ConfigurationFilePath
         {
             get { return _configurationFilePath; }
+        }
+
+        /// <summary>
+        /// Gets the quit database file path.
+        /// </summary>
+        /// <value>
+        /// The quit database file path.
+        /// </value>
+        public static string QuitDatabaseFilePath
+        {
+            get { return _quitDatabaseFilePath; }
         }
 
         /// <summary>

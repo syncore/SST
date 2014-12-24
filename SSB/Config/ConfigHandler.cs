@@ -72,6 +72,12 @@ namespace SSB.Config
             {
                 owners = owners
             };
+            var earlyQuitOptions = new EarlyQuitOptions
+            {
+                isActive = false,
+                banTime = 0,
+                banTimeScale = string.Empty
+            };
             var eloLimitOptions = new EloLimitOptions
             {
                 isActive = false,
@@ -88,6 +94,7 @@ namespace SSB.Config
             Config.AccountDateOptions = acctDateOptions;
             Config.AutoVoterOptions = autoVoterOptions;
             Config.CoreOptions = coreOptions;
+            Config.EarlyQuitOptions = earlyQuitOptions;
             Config.EloLimitOptions = eloLimitOptions;
             Config.MotdOptions = motdOptions;
 

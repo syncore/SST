@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using SSB.Database;
+using SSB.Enum;
 using SSB.Model;
 
 namespace SSB.Core
@@ -13,8 +14,8 @@ namespace SSB.Core
     /// </summary>
     public class PlayerAutoBanner
     {
-        private readonly SynServerBot _ssb;
         private readonly Bans _banDb;
+        private readonly SynServerBot _ssb;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerAutoBanner"/> class.
@@ -41,20 +42,42 @@ namespace SSB.Core
             if (banInfo.BanExpirationDate == default(DateTime)) return;
             if (DateTime.Now <= banInfo.BanExpirationDate)
             {
+                string reason;
+                switch (banInfo.BanType)
+                {
+                    case BanType.AddedByAdmin:
+                        reason = "banned by an admin.";
+                        break;
+
+                    case BanType.AddedByEarlyQuit:
+                        reason = "too many early quits";
+                        break;
+
+                    default:
+                        reason = "unspecified";
+                        break;
+                }
                 await _ssb.QlCommands.CustCmdKickban(player);
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
-                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7. Ban will expire on: ^2{2}",
+                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7. Ban will expire on: ^2{2}^7. Reason: ^3{3}",
                             player, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                            banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+                            banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo), reason));
             }
             else
             {
+                // If the user was banned for quitting early, then also remove the user from the early quit database
+                // when we clear the expired ban
+                if (banInfo.BanType == BanType.AddedByEarlyQuit)
+                {
+                    var eQuitDb = new Quits();
+                    eQuitDb.DeleteUserFromDb(player);
+                }
                 // Remove the ban from the database. This "on-demand" method of removing the ban is
                 // preferred instead of using some mechanism such as a timer that would check every X time period;
                 // In other words, leave user banned until he tries to reconnect then silently remove the ban. Note:
-                // expired bans are also remoevd when admins try to add, list, or check bans with the timeban command.
+                // expired bans are also removed when admins try to add, list, or check bans with the timeban command.
                 _banDb.DeleteUserFromDb(player);
             }
         }

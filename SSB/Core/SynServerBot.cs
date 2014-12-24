@@ -217,12 +217,26 @@ namespace SSB.Core
                     ConsoleTextProcessor.ProcessEntireConsoleText(received, textLength);
 
                     int lengthDifference = Math.Abs(textLength - _oldLength);
-                    
+
                     if (received.Length > lengthDifference)
                     {
+                        // Bounds checking
+                        int start;
+                        int length;
+
+                        if (_oldLength > received.Length)
+                        {
+                            start = 0;
+                            length = received.Length;
+                        }
+                        else
+                        {
+                            start = _oldLength;
+                            length = lengthDifference;
+                        }
+
                         // Standardize QL's annoying string formatting
-                        //TODO: FIX weird case where ArgumentOutofBoundsException occurs because received substring startIndex > string length
-                        var diffBuilder = new StringBuilder(received.Substring(_oldLength, lengthDifference));
+                        var diffBuilder = new StringBuilder(received.Substring(start, length));
                         diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
                         diffBuilder.Replace("\r\n\"\r\n", "\r\n");
                         ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());

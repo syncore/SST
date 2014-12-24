@@ -27,11 +27,13 @@ namespace SSB.Util
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
+            ScmdPlayerJoinedSpectators = new scmdPlayerJoinedSpectators();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
             ScmdVoteCalledDetails = new scmdVoteCalledDetails();
             ScmdVoteCalledTagAndPlayer = new scmdVoteCalledTagAndPlayer();
             ScmdVoteNumYesVotes = new scmdVoteNumYesVotes();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
+            ScmdIntermission = new scmdIntermission();
             ScmdChatMessage = new scmdChatMessage();
             ScmdVoteFinalResult = new scmdVoteFinalResult();
             ScmdGameStateChange = new scmdGameStateChange();
@@ -161,6 +163,18 @@ namespace SSB.Util
         public Regex ScmdGameStateChange { get; private set; }
 
         /// <summary>
+        /// Regex for detecting when a game enters intermission (game ends).
+        /// </summary>
+        /// <value>
+        /// Regex for detecting when a game enters intermission (game ends).
+        /// </value>
+        /// <remarks>
+        /// This contains a named group 'intermissionvalue', with a value of 1 indicating that the game has entered
+        /// intermission (that is, the game has ended).
+        /// </remarks>
+        public Regex ScmdIntermission { get; private set; }
+
+        /// <summary>
         ///     Regex for matching the player info presented as a server command.
         /// </summary>
         /// <value>
@@ -198,6 +212,17 @@ namespace SSB.Util
         ///     This contains a named group, 'player' that has the name of the player who disconnected.
         /// </remarks>
         public Regex ScmdPlayerDisconnected { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who has joined the spectators as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has joined the spectators as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group 'player' that has the name of the player who joined the spectators.
+        /// </remarks>
+        public Regex ScmdPlayerJoinedSpectators { get; private set; }
 
         /// <summary>
         ///     Regex for finding a player who was kicked as issued in a servercommand.

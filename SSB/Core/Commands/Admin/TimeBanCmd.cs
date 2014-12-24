@@ -6,6 +6,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -14,17 +15,18 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class TimeBanCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
         private readonly Bans _banDb;
+        private readonly SynServerBot _ssb;
         private readonly Users _userDb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Admin;
 
         private readonly string[] _validTimeScales =
         {
             "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
             "month", "months", "year", "years"
         };
+
+        private int _minArgs = 2;
+        private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TimeBanCmd" /> class.
@@ -101,6 +103,90 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Adds the ban.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task AddBan(CmdArgs c)
+        {
+            // !timeban add user # scale
+
+            // Kickban user immediately
+            await _ssb.QlCommands.CustCmdKickban(c.Args[2]);
+
+            if (_banDb.UserAlreadyBanned(c.Args[2]))
+            {
+                // Ban has previously expired; delete it
+                RemoveAnyExpiredBans(c.Args[2]);
+
+                var banInfo = _banDb.GetBanInfo(c.Args[2]);
+                if (banInfo == null) return;
+                await _ssb.QlCommands.QlCmdSay(
+                    string.Format("^5[TIMEBAN]^7 Time-ban already exists for player: ^3{0}^7, who was banned by admin: ^3{1}^7 on ^1{2}^7. Ban will expire on: ^2{3}.^7 Use ^3{4}{5} del {0}^7 to remove ban.",
+                    c.Args[2], banInfo.BannedBy, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                    banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                    CommandProcessor.BotCommandPrefix, c.CmdName));
+                return;
+            }
+
+            // length was already verified to be a double in Eval method
+            var length = double.Parse(c.Args[3]);
+            var scale = c.Args[4];
+            var expirationDate = ExpirationDateGenerator.GenerateExpirationDate(length, scale);
+
+            if (_banDb.AddUserToDb(c.Args[2], c.FromUser, DateTime.Now, expirationDate, BanType.AddedByAdmin) ==
+                UserDbResult.Success)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^2[SUCCESS]^7 Added time-ban for player: ^2{0}^7. Ban will expire in ^2{1}^7 {2} on^2 {3}",
+                            c.Args[2], Math.Truncate(length), scale,
+                            expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+            }
+            else
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 An error occurred while attempting to add a time-ban for player: {0}",
+                c.Args[2]));
+            }
+        }
+
+        /// <summary>
+        /// Checks a specific user's ban information, if it exists.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task CheckBan(CmdArgs c)
+        {
+            RemoveAnyExpiredBans(c.Args[2]);
+
+            var banInfo = _banDb.GetBanInfo(c.Args[2]);
+            await _ssb.QlCommands.QlCmdSay(string.Format("^5[TIMEBAN]^7 {0}",
+                ((banInfo != null) ? (string.Format("Player: ^3{0}^7 was banned by admin:^3 {1}^7 on^2 {2}^7. Ban will expire on:^1 {3}",
+                c.Args[2], banInfo.BannedBy, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo))) : (string.Format("No time-ban exists for player:^3 {0}",
+                c.Args[2])))));
+        }
+
+        /// <summary>
+        /// Deletes the ban.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task DelBan(CmdArgs c)
+        {
+            try
+            {
+                _banDb.DeleteUserFromDb(c.Args[2]);
+                await _ssb.QlCommands.QlCmdSay(string.Format("^2[SUCCESS]^7 Removed time-ban for player {0}", c.Args[2]));
+                return;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Exception encountered while trying to delete user {0} from ban database: {1}", c.Args[2], e.Message);
+            }
+            await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 An error occurred while attempting to remove time ban for player: {0}",
+                c.Args[2]));
+        }
+
+        /// <summary>
         /// Evaluates the ban addition command and executes it if all parameters are correct.
         /// </summary>
         /// <param name="c">The c.</param>
@@ -154,6 +240,24 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Evaluates the ban check command and executes it if all parameters are correct.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task EvalBanCheck(CmdArgs c)
+        {
+            if (c.Args.Length != 3)
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^1[ERROR]^3 Usage: {0}{1} <check> <name> - name is without the clan tag",
+                    CommandProcessor.BotCommandPrefix, c.CmdName));
+            }
+            else
+            {
+                await CheckBan(c);
+            }
+        }
+
+        /// <summary>
         /// Evaluates the ban deletion command and executes it if all paramters are correct.
         /// </summary>
         /// <param name="c">The c.</param>
@@ -179,139 +283,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        /// Evaluates the ban check command and executes it if all parameters are correct.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task EvalBanCheck(CmdArgs c)
-        {
-            if (c.Args.Length != 3)
-            {
-                await _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^1[ERROR]^3 Usage: {0}{1} <check> <name> - name is without the clan tag",
-                    CommandProcessor.BotCommandPrefix, c.CmdName));
-            }
-            else
-            {
-                await CheckBan(c);
-            }
-        }
-
-        /// <summary>
-        /// Adds the ban.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task AddBan(CmdArgs c)
-        {
-            // !timeban add user # scale
-
-            // Kickban user immediately
-            await _ssb.QlCommands.CustCmdKickban(c.Args[2]);
-            
-            if (_banDb.UserAlreadyBanned(c.Args[2]))
-            {
-                // Ban has previously expired; delete it
-                RemoveAnyExpiredBans(c.Args[2]);
-                
-                var banInfo = _banDb.GetBanInfo(c.Args[2]);
-                if (banInfo == null) return;
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^5[TIMEBAN]^7 Time-ban already exists for player: ^3{0}^7, who was banned by admin: ^3{1}^7 on ^1{2}^7. Ban will expire on: ^2{3}.^7 Use ^3{4}{5} del {0}^7 to remove ban.",
-                    c.Args[2], banInfo.BannedBy, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                    banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                    CommandProcessor.BotCommandPrefix, c.CmdName));
-                return;
-            }
-
-            // length was already verified to be a double in Eval method
-            var length = double.Parse(c.Args[3]);
-            var scale = c.Args[4];
-            var expirationDate = new DateTime();
-
-            switch (scale)
-            {
-                case "sec":
-                case "secs":
-                    expirationDate = DateTime.Now.AddSeconds(length);
-                    break;
-                case "min":
-                case "mins":
-                    expirationDate = DateTime.Now.AddMinutes(length);
-                    break;
-                case "hour":
-                case "hours":
-                    expirationDate = DateTime.Now.AddHours(length);
-                    break;
-                case "day":
-                case "days":
-                    expirationDate = DateTime.Now.AddDays(length);
-                    break;
-                case "month":
-                case "months":
-                    // AddMonths(int months) and AddYears(int years) only accept int type; also already checked for
-                    // overflow in Eval method 
-                    int monthAsInt = Convert.ToInt32(length);
-                    expirationDate = DateTime.Now.AddMonths(monthAsInt);
-                    break;
-                case "year":
-                case "years":
-                    int yearAsInt = Convert.ToInt32(length);
-                    expirationDate = DateTime.Now.AddYears(yearAsInt);
-                    break;
-            }
-            if (_banDb.AddUserToDb(c.Args[2], c.FromUser, DateTime.Now, expirationDate) ==
-                UserDbResult.Success)
-            {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
-                            "^2[SUCCESS]^7 Added time-ban for player: ^2{0}^7. Ban will expire in ^2{1}^7 {2} on^2 {3}",
-                            c.Args[2], Math.Truncate(length), scale,
-                            expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
-            }
-            else
-            {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 An error occurred while attempting to add a time-ban for player: {0}",
-                c.Args[2]));
-            }
-        }
-
-        /// <summary>
-        /// Deletes the ban.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task DelBan(CmdArgs c)
-        {
-            try
-            {
-                _banDb.DeleteUserFromDb(c.Args[2]);
-                await _ssb.QlCommands.QlCmdSay(string.Format("^2[SUCCESS]^7 Removed time-ban for player {0}", c.Args[2]));
-                return;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Exception encountered while trying to delete user {0} from ban database: {1}", c.Args[2], e.Message);
-            }
-            await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 An error occurred while attempting to remove time ban for player: {0}",
-                c.Args[2]));
-        }
-
-        /// <summary>
-        /// Checks a specific user's ban information, if it exists.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task CheckBan(CmdArgs c)
-        {
-            RemoveAnyExpiredBans(c.Args[2]);
-            
-            var banInfo = _banDb.GetBanInfo(c.Args[2]);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^5[TIMEBAN]^7 {0}",
-                ((banInfo != null) ? (string.Format("Player: ^3{0}^7 was banned by admin:^3 {1}^7 on^2 {2}^7. Ban will expire on:^1 {3}",
-                c.Args[2], banInfo.BannedBy, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo))) : (string.Format("No time-ban exists for player:^3 {0}",
-                c.Args[2])))));
-        }
-
-        /// <summary>
         /// Lists all of the bans, if they exist.
         /// </summary>
         /// <param name="c">The c.</param>
@@ -330,7 +301,7 @@ namespace SSB.Core.Commands.Admin
                     }
                 }
             }
-            
+
             await _ssb.QlCommands.QlCmdSay(string.Format("^5[TIMEBAN]^7 {0}",
                 ((!string.IsNullOrEmpty(bans)) ? (string.Format("Banned players: ^1{0}^7 - To see ban info: ^3{1}{2} check <player>",
                 bans, CommandProcessor.BotCommandPrefix, c.CmdName)) : "No players are time-banned.")));
@@ -344,6 +315,13 @@ namespace SSB.Core.Commands.Admin
         {
             if (!_banDb.IsExistingBanStillValid(user))
             {
+                var bInfo = _banDb.GetBanInfo(user);
+                if (bInfo != null && bInfo.BanType == BanType.AddedByEarlyQuit)
+                {
+                    var eQuitDb = new Quits();
+                    eQuitDb.DeleteUserFromDb(user);
+                }
+
                 _banDb.DeleteUserFromDb(user);
             }
         }

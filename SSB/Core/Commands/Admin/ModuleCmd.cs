@@ -16,6 +16,7 @@ namespace SSB.Core.Commands.Admin
     {
         public const string AccountDateLimitArg = AccountDateLimit.NameModule;
         public const string AutoVoteArg = AutoVoter.NameModule;
+        public const string EarlyQuitArg = EarlyQuit.NameModule;
         public const string EloLimitArg = EloLimit.NameModule;
         public const string MotdArg = Motd.NameModule;
         private const string ActiveModuleArg = "active";
@@ -32,11 +33,12 @@ namespace SSB.Core.Commands.Admin
         public ModuleCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _validModuleNames = new List<string> { AccountDateLimitArg, AutoVoteArg, EloLimitArg, MotdArg };
+            _validModuleNames = new List<string> { AccountDateLimitArg, AutoVoteArg, EarlyQuitArg, EloLimitArg, MotdArg };
             _moduleList = new List<IModule>
             {
                 _ssb.Mod.AccountDateLimit,
                 _ssb.Mod.AutoVoter,
+                _ssb.Mod.EarlyQuit,
                 _ssb.Mod.EloLimit,
                 _ssb.Mod.Motd
             };
@@ -87,15 +89,15 @@ namespace SSB.Core.Commands.Admin
                 case ActiveModuleArg:
                     await DisplayActiveModules(c);
                     break;
-
                 case AutoVoteArg:
                     await _ssb.Mod.AutoVoter.EvalModuleCmdAsync(c);
                     break;
-
+                case EarlyQuitArg:
+                    await _ssb.Mod.EarlyQuit.EvalModuleCmdAsync(c);
+                    break;
                 case EloLimitArg:
                     await _ssb.Mod.EloLimit.EvalModuleCmdAsync(c);
                     break;
-
                 case AccountDateLimitArg:
                     await _ssb.Mod.AccountDateLimit.EvalModuleCmdAsync(c);
                     break;
