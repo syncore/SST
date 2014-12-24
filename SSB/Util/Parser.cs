@@ -32,11 +32,12 @@ namespace SSB.Util
             ScmdVoteCalledDetails = new scmdVoteCalledDetails();
             ScmdVoteCalledTagAndPlayer = new scmdVoteCalledTagAndPlayer();
             ScmdVoteNumYesVotes = new scmdVoteNumYesVotes();
+            ScmdGameStateChange = new scmdGameStateChange();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdIntermission = new scmdIntermission();
             ScmdChatMessage = new scmdChatMessage();
             ScmdVoteFinalResult = new scmdVoteFinalResult();
-            ScmdGameStateChange = new scmdGameStateChange();
+            ScmdGameStateTimeChange = new scmdGameStateTimeChange();
             UtilCaretColor = new utilCaretColor();
         }
 
@@ -150,27 +151,44 @@ namespace SSB.Util
         public Regex ScmdChatMessage { get; private set; }
 
         /// <summary>
-        ///     Regex for detecting gamestate status changes.
+        ///     Regex for detecting gamestate status changes using configstring data.
         /// </summary>
         /// <value>
-        ///     Regex for detecting gamestate status changes.
+        ///     Regex for detecting gamestate status changes using configstring data.
         /// </value>
         /// <remarks>
-        ///     Named group 'time' returns a string: \time\# that indicates a gamestate status change.
-        ///     If \time\-1 then game is in warm-up mode. If \time\large#, then game is leaving warmup mode
-        ///     and entering the countdown. If \time\0 then game is in progress.
+        ///     Named group 'gamestatus' returns a string: PRE_GAME, COUNT_DOWN, IN_PROGRESS.
+        ///     This scans a configstring beginning with bcs0 0 or cs 0 that contains vital server info
+        ///     that is displayed whenever the map (re)loads and extracts the g_gameState portion from it.
+        ///     This is the more accurate way of detecting gamestate changes, compared to <see cref="ScmdGameStateTimeChange" />
+        ///     and thus it is perferred.
         /// </remarks>
         public Regex ScmdGameStateChange { get; private set; }
 
         /// <summary>
-        /// Regex for detecting when a game enters intermission (game ends).
+        ///     Regex for detecting gamestate status changes using the \time\# information.
         /// </summary>
         /// <value>
-        /// Regex for detecting when a game enters intermission (game ends).
+        ///     Regex for detecting gamestate status changes using the \time\# information.
         /// </value>
         /// <remarks>
-        /// This contains a named group 'intermissionvalue', with a value of 1 indicating that the game has entered
-        /// intermission (that is, the game has ended).
+        ///     Named group 'time' returns a string: \time\# that indicates a gamestate status change.
+        ///     If \time\-1 then game is in warm-up mode. If \time\large#, then game is leaving warmup mode
+        ///     and entering the countdown. If \time\0 then game is in progress. *Note*: this method of detecting
+        ///     gamestate changes is less accurate, and is sometimes not detected on the console, therefore the
+        ///     better way of doing this is using the <see cref="ScmdGameStateChange" /> regex.
+        /// </remarks>
+        public Regex ScmdGameStateTimeChange { get; private set; }
+
+        /// <summary>
+        ///     Regex for detecting when a game enters intermission (game ends).
+        /// </summary>
+        /// <value>
+        ///     Regex for detecting when a game enters intermission (game ends).
+        /// </value>
+        /// <remarks>
+        ///     This contains a named group 'intermissionvalue', with a value of 1 indicating that the game has entered
+        ///     intermission (that is, the game has ended).
         /// </remarks>
         public Regex ScmdIntermission { get; private set; }
 
@@ -214,13 +232,13 @@ namespace SSB.Util
         public Regex ScmdPlayerDisconnected { get; private set; }
 
         /// <summary>
-        /// Regex for finding a player who has joined the spectators as issued in a servercommand.
+        ///     Regex for finding a player who has joined the spectators as issued in a servercommand.
         /// </summary>
         /// <value>
-        /// Regex for finding a player who has joined the spectators as issued in a servercommand.
+        ///     Regex for finding a player who has joined the spectators as issued in a servercommand.
         /// </value>
         /// <remarks>
-        /// This contains a named group 'player' that has the name of the player who joined the spectators.
+        ///     This contains a named group 'player' that has the name of the player who joined the spectators.
         /// </remarks>
         public Regex ScmdPlayerJoinedSpectators { get; private set; }
 

@@ -102,7 +102,7 @@ namespace SSB.Core
                 // No clan tag; get name only
                 msgFrom = name;
             }
-            
+
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))

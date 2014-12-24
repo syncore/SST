@@ -195,14 +195,14 @@ namespace SSB.Core
                 if (VoteDetailsDetected(text)) continue;
                 // vote end
                 if (VoteEndDetected(text)) continue;
-                // gamestate change
-                if (GameStateChangeDetected(text)) continue;
+                // gamestate change (\time\# format)
+                if (GameStateTimeChangeDetected(text)) continue;
                 // intermission (game end) detected
                 if (IntermissionDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text))
                 {
-                    /*nothing*/
+                    /*intentionally empty*/
                 }
             }
         }
@@ -261,6 +261,13 @@ namespace SSB.Core
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
+            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring
+            else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
+            {
+                var cmd = QlCommandType.ServerInfoServerGamestate;
+                Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
+                ProcessCommand(cmd, m.Groups["gamestatus"].Value);
+            }
                 // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
@@ -272,23 +279,32 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Determines whether a gamestate change was detected.
+        ///     Determines whether a gamestate change was detected using the \time\# format.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a gamestate change was detected, otherwise <c>false</c>.</returns>
-        private bool GameStateChangeDetected(string text)
+        /// <returns>
+        ///     <c>true</c> if a gamestate change was detected with the time info, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        ///     Occassionally, this text is not printed or is missed for whatever reason, so the more accurate
+        ///     method of detecting gamestate changes is through the the appropriate conditional in the
+        ///     <see cref="DetectMultiLineEvent" />
+        ///     method which is also performed.
+        /// </remarks>
+        private bool GameStateTimeChangeDetected(string text)
         {
-            if (!_ssb.Parser.ScmdGameStateChange.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
+            if (!_ssb.Parser.ScmdGameStateTimeChange.IsMatch(text)) return false;
+            Match m = _ssb.Parser.ScmdGameStateTimeChange.Match(text);
             if (m.Groups["time"].Value.Equals(@"\time\-1", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
-                Debug.WriteLine("Gamestate change detected: setting warm-up mode.");
+                Debug.WriteLine(@"Gamestate change detected (\time\ info): setting warm-up mode.");
             }
             else if (m.Groups["time"].Value.Equals(@"\time\0", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.InProgress;
-                Debug.WriteLine("Gamestate change detected: setting in-progress mode.");
+                Debug.WriteLine(@"Gamestate change detected (\time\ info): setting in-progress mode.");
             }
             return true;
         }

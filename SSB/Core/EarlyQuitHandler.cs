@@ -58,8 +58,8 @@ namespace SSB.Core
             {
                 _quitsDb.AddUserToDb(player);
             }
-            // Only show this msg if we're not going to ban the user and show the ban msg anyway
-            if (qCount < _maxQuitsAllowed)
+            // Only show the log msg if we're not banning the user this time (ban msg is shown in that case)
+            if (qCount <= _maxQuitsAllowed)
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
@@ -87,7 +87,7 @@ namespace SSB.Core
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^5[EARLYQUIT]^7 ^3{0}^7 has quit too many games early. ^3{0}^7 is now banned until:^1 {1}",
+                        "^5[EARLYQUIT]^7 ^3{0}^7 has quit too many games early and is now banned until:^1 {1}",
                         player, expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
         }
 

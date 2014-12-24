@@ -46,7 +46,7 @@ namespace SSB.Core
                 switch (banInfo.BanType)
                 {
                     case BanType.AddedByAdmin:
-                        reason = "banned by an admin.";
+                        reason = "admin ban.";
                         break;
 
                     case BanType.AddedByEarlyQuit:
@@ -61,7 +61,7 @@ namespace SSB.Core
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
-                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7. Ban will expire on: ^2{2}^7. Reason: ^3{3}",
+                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7; Expires: ^2{2}^7. For: ^3{3}",
                             player, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                             banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo), reason));
             }

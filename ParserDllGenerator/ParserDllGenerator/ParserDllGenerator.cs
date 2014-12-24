@@ -30,8 +30,6 @@ namespace ParserDllGenerator
                 "cfgStringPlayerInfo", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
-            
 
             // command: players - Find name and player id after issuing 'players' command
             // This requires the multiline (RegexOptions.Multiline) option
@@ -75,7 +73,6 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
-
             // event: map loaded
             expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
@@ -95,13 +92,13 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdChatMessage", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
+
             // servercommand: player connected
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) connected",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerConnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
+
             // servercommand: player was kicked
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) was kicked",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerKicked", "SSB.External.Parser",
@@ -131,7 +128,7 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledTagAndPlayer", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
+
             //servercommand: vote called - details
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 9 ""(?<votetype>.+) ""*(?<votearg>.*?)""*""",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledDetails", "SSB.External.Parser",
@@ -143,7 +140,7 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteNumYesVotes", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
+
             //servercommand: vote called - number of no votes
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 11 ""(?<novotes>\d+)""",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteNumNoVotes", "SSB.External.Parser",
@@ -162,10 +159,15 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
-
-            //servercommand: game is starting/ending
-            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
+            //servercommand: gamestate change (more accurate method)
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : (bcs0|cs) 0 (.+g_gameState\\(?<gamestatus>\w+))",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateChange", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+            //servercommand: gamestate changge (\time\# less accurate method)
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateTimeChange", "SSB.External.Parser",
                true);
             compilationList.Add(expr);
 
@@ -219,7 +221,6 @@ namespace ParserDllGenerator
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
-
 
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];

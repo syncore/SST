@@ -157,14 +157,13 @@ namespace SSB.Core
                 case "IN_PROGRESS":
                     gameState = QlGameStates.InProgress;
                     break;
-
-                case "COUNT_DOWN":
-                    gameState = QlGameStates.Countdown;
-                    break;
             }
             // Set
             _ssb.ServerInfo.CurrentServerGameState = gameState;
-            Debug.WriteLine("*** Server's gamestate is: " + gameState);
+            Debug.WriteLine("*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
+                gameState);
+            // Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
+            _ssb.QlCommands.ClearBothQlConsoles();
             return gameState;
         }
 
@@ -180,8 +179,8 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
-                gameType = (QlGameTypes)gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
+                gameType = (QlGameTypes) gt;
                 Debug.WriteLine("*** Found server gametype: " + gameType);
             }
             else
@@ -238,7 +237,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Kicks any of the current players if an active, imposed module requires it.
+        ///     Kicks any of the current players if an active, imposed module requires it.
         /// </summary>
         private async Task DoRequiredPlayerKicks()
         {
