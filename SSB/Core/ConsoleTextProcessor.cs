@@ -222,7 +222,11 @@ namespace SSB.Core
             if (_ssb.Parser.CfgStringPlayerInfo.IsMatch(text))
             {
                 var cmd = QlCommandType.ConfigStrings;
-                ProcessCommand(cmd, _ssb.Parser.CfgStringPlayerInfo.Matches(text));
+                //ProcessCommand(cmd, _ssb.Parser.CfgStringPlayerInfo.Matches(text));
+                foreach (Match m in _ssb.Parser.CfgStringPlayerInfo.Matches(text))
+                {
+                    ProcessCommand(cmd, m);
+                }
             }
                 // 'players' command has been detected; extract the player names and ids from it.
             else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
@@ -415,6 +419,10 @@ namespace SSB.Core
                         _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);
                     break;
 
+                case QlCommandType.ConfigStrings:
+                    _playerEventProcessor.HandlePlayerConfigString(t as Match);
+                    break;
+                
                 case QlCommandType.ServerInfoServerId:
                     _ssb.ServerEventProcessor.SetServerId(t as string);
                     break;

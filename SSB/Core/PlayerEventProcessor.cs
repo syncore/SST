@@ -287,7 +287,7 @@ namespace SSB.Core
         private void UpdatePlayerTeam(string player, Team team)
         {
             _ssb.ServerInfo.CurrentPlayers[player].Team = team;
-            Debug.WriteLine("Updated {0}'s team to: {1}", player, team);
+            Debug.WriteLine("****** Updated {0}'s team to: {1} ******", player, team);
         }
     }
 }

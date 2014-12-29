@@ -3,10 +3,12 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using SSB.Core.Commands.Modules;
 using SSB.Ui;
 using SSB.Util;
+using Timer = System.Timers.Timer;
 
 namespace SSB.Core
 {
@@ -15,6 +17,7 @@ namespace SSB.Core
     /// </summary>
     public class SynServerBot
     {
+        private Timer _initTimer;
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
 
@@ -39,8 +42,10 @@ namespace SSB.Core
             InitServerInformation();
             // Hook up modules
             Mod = new ModuleManager(this);
-            // Start to listen for commands
+            // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
+            // Delay some initilization tasks and complete initilization
+            StartDelayedInit(6.5);
         }
 
         /// <summary>
@@ -82,6 +87,14 @@ namespace SSB.Core
         ///     The GUI options.
         /// </value>
         public GuiOptions GuiOptions { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether initialization has completed.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if initialization has completed; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsInitComplete { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is reading the console.
@@ -194,6 +207,27 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Method that is executed to finalize the delayed initilization tasks.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        private void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            // Synchronous
+            // ReSharper disable once UnusedVariable
+            // Request the configstrings after the current players have already been gathered in order
+            // to get an accurate listing of the teams. This will also take care of any players that might have
+            // been initially missed by the 'players' command.
+            Task c = QlCommands.QlCmdConfigStrings();
+            QlCommands.ClearBothQlConsoles();
+            Debug.WriteLine("Requesting configstrings in delayed initilization step.");
+            // Initialization is fully complete, we can accept user commands now.
+            IsInitComplete = true;
+            _initTimer.Enabled = false;
+            _initTimer = null;
+        }
+
+        /// <summary>
         ///     Reads the QL console window.
         /// </summary>
         private void ReadQlConsole()
@@ -261,6 +295,16 @@ namespace SSB.Core
             {
                 Debug.WriteLine("Couldn't find Quake Live console text area");
             }
+        }
+
+        /// <summary>
+        /// Starts the delayed initialization steps.
+        /// </summary>
+        /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
+        private void StartDelayedInit(double seconds)
+        {
+            _initTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
+            _initTimer.Elapsed += InitTimerOnElapsed;
         }
     }
 }

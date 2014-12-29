@@ -115,6 +115,13 @@ namespace SSB.Core
             char[] sep = { ' ' };
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
+            if (!_ssb.IsInitComplete)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Initilization has not completed yet. Command ignored.");
+                return;
+            }
             if (!SufficientTimeElapsed(fromUser))
             {
                 Debug.WriteLine(
@@ -134,14 +141,14 @@ namespace SSB.Core
             if (!Tools.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
             {
                 await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^1[ERROR]^3 {0},^7 please give the bot time to sync your user info and then retry your {1} request.",
+                    string.Format("^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then retry your {1} request.",
                     fromUser, cmdName));
                 return;
             }
             string user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;
             if (!UserHasReqLevel(user, _commands[cmdName].UserLevel))
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
                 return;
             }
             var c = new CmdArgs(args, cmdName, user);

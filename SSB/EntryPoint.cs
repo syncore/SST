@@ -40,7 +40,7 @@ namespace SSB
             }
             else
             {
-                MessageBox.Show("Unable to locate Quake Live window! Exiting...", "Error",
+                MessageBox.Show(@"Unable to locate Quake Live window! Exiting...", @"Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
@@ -69,7 +69,9 @@ namespace SSB
                 _qlIsRunning = true;
                 if (!_ssb.IsReadingConsole)
                 {
-                    _ssb.StartConsoleReadThread();
+                    //_ssb.StartConsoleReadThread();
+                    MessageBox.Show(@"Quake Live restart detected. If you wish to continue using SSB, please restart it.", @"Restart detected",
+                   MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
