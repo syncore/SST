@@ -21,6 +21,7 @@ namespace SSB.Core
     {
         public const string BotCommandPrefix = "!";
         public const string CmdAbort = "abort";
+        public const string CmdAcc = "acc";
         public const string CmdAcceptTeamSuggestion = "accept";
         public const string CmdAccess = "access";
         public const string CmdAccountDate = "date";
@@ -36,7 +37,7 @@ namespace SSB.Core
         public const string CmdInvite = "invite";
         public const string CmdKickBan = "kickban";
         public const string CmdLock = "lock";
-        public const string CmdModule = "module";
+        public const string CmdModule = "mod";
         public const string CmdMute = "mute";
         public const string CmdOp = "op";
         public const string CmdPause = "pause";
@@ -70,6 +71,7 @@ namespace SSB.Core
             _commands = new Dictionary<string, IBotCommand>
             {
                 {CmdAbort, new AbortCmd(_ssb)},
+                {CmdAcc, new AccCmd(_ssb)},
                 {CmdAccess, new AccessCmd(_ssb)},
                 {CmdAccountDate, new AccountDateCmd(_ssb)},
                 {CmdAddUser, new AddUserCmd(_ssb)},
@@ -112,7 +114,7 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = { ' ' };
+            char[] sep = {' '};
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             if (!_ssb.IsInitComplete)
@@ -141,8 +143,9 @@ namespace SSB.Core
             if (!Tools.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
             {
                 await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then retry your {1} request.",
-                    fromUser, cmdName));
+                    string.Format(
+                        "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then retry your {1} request.",
+                        fromUser, cmdName));
                 return;
             }
             string user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;

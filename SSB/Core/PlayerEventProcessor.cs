@@ -67,12 +67,78 @@ namespace SSB.Core
         {
             // Remove player from our internal list
             RemovePlayer(player);
+            // If player was/is currently being spectated, clear the internal tracker
+            if (_ssb.ServerInfo.PlayerCurrentlyFollowing.Equals(player))
+            {
+                _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
+            }
             Debug.WriteLine("Detected outgoing connection for " + player);
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
             var eqh = new EarlyQuitHandler(_ssb);
             await eqh.ProcessEarlyQuit(player);
+        }
+
+        /// <summary>
+        ///     Handles the player accuracy data.
+        /// </summary>
+        /// <param name="m">The match.</param>
+        public void HandlePlayerAccuracyData(Match m)
+        {
+            string player = _ssb.ServerInfo.PlayerCurrentlyFollowing;
+            if (string.IsNullOrEmpty(player))
+            {
+                Debug.WriteLine(
+                    "Accuracy data detected but is of no use because no player is currently being followed. Ignoring.");
+                return;
+            }
+            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
+            {
+                Debug.WriteLine(
+                    "Player currently being followed is no longer on the server/doesn't exist in internal list. Ignoring.");
+                return;
+            }
+            string extracted = m.Groups["accdata"].Value;
+            string[] accstrings = extracted.Split(' ');
+            if (accstrings.Length < 15)
+            {
+                Debug.WriteLine("Invalid accuracy data array length.");
+                return;
+            }
+            var accs = new int[accstrings.Length];
+            for (int k = 0; k < accstrings.Length; k++)
+            {
+                int n;
+                int.TryParse(accstrings[k], out n);
+                accs[k] = n;
+            }
+            var playerAccInfo = new AccuracyInfo
+            {
+                MachineGun = accs[2],
+                ShotGun = accs[3],
+                GrenadeLauncher = accs[4],
+                RocketLauncher = accs[5],
+                LightningGun = accs[6],
+                RailGun = accs[7],
+                PlasmaGun = accs[8],
+                Bfg = accs[9],
+                GrapplingHook = accs[10],
+                NailGun = accs[11],
+                ProximityMineLauncher = accs[12],
+                ChainGun = accs[13],
+                HeavyMachineGun = accs[14]
+            };
+            // Set
+            _ssb.ServerInfo.CurrentPlayers[player].Acc = playerAccInfo;
+            Debug.WriteLine(
+                "Set accuracy data for currently followed player: {0}. Data: [MG] {1} | [SG] {2}" +
+                " | [GL] {3} | [RL] {4} | [LG] {5} | [RG] {6} | [PG] {7} | [BFG] {8} | [GH] {9} |" +
+                " [NG] {10} | [PRX] {11} | [CG] {12} | [HMG] {13}", player, playerAccInfo.MachineGun,
+                playerAccInfo.ShotGun, playerAccInfo.GrenadeLauncher, playerAccInfo.RocketLauncher,
+                playerAccInfo.LightningGun, playerAccInfo.RailGun, playerAccInfo.PlasmaGun, playerAccInfo.Bfg,
+                playerAccInfo.GrapplingHook, playerAccInfo.NailGun, playerAccInfo.ProximityMineLauncher,
+                playerAccInfo.ChainGun, playerAccInfo.HeavyMachineGun);
         }
 
         /// <summary>
@@ -133,8 +199,8 @@ namespace SSB.Core
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus)status;
-            var team = (Team)tm;
+            var ready = (ReadyStatus) status;
+            var team = (Team) tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -156,7 +222,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Handles the situation when a player joins the spectators.
+        ///     Handles the situation when a player joins the spectators.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task HandlePlayerWentToSpec(string player)
@@ -220,8 +286,8 @@ namespace SSB.Core
             string country = GetCsValue("c", pi);
 
             // Create player. Also Set misc details like full clan name, country code, subscription status.
-            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
-                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
+            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
+                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
             Debug.Write(
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enum;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -122,6 +123,19 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Determines whether the text matches that of an accuracy server command and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the text matches that of accuracy server command info, otherwise <c>false</c>.</returns>
+        private bool AccuracyInfoDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdAccuracy.IsMatch(text)) return false;
+            Match m = _ssb.Parser.ScmdAccuracy.Match(text);
+            _playerEventProcessor.HandlePlayerAccuracyData(m);
+            return true;
+        }
+
+        /// <summary>
         ///     Appends the console text to GUI.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -154,7 +168,31 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Detects the player chat message.
+        ///     Determines whether the text matches that of a bot POV change in spectate mode and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        private bool BotSpectatesPlayerDetected(string text)
+        {
+            if (!_ssb.Parser.CcmdFollowPlayer.IsMatch(text)) return false;
+            Match m = _ssb.Parser.CcmdFollowPlayer.Match(text);
+            string player = m.Groups["player"].Value;
+            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
+            {
+                Debug.WriteLine(
+                    string.Format(
+                        "POV change in spectate mode detected, but player {0} does not exist. Ignoring.",
+                        player));
+                return false;
+            }
+            _ssb.ServerInfo.PlayerCurrentlyFollowing = player;
+            Debug.WriteLine(string.Format("Detected POV change in spectate mode. Currently following: {0}",
+                player));
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether the text matches that of a player chat message and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <remarks>
@@ -187,6 +225,10 @@ namespace SSB.Core
                 if (OutgoingPlayerDetected(text).Result) continue;
                 // 'player joined the spectators' detected
                 if (PlayerJoinedSpectatorsDetected(text).Result) continue;
+                // player accuracy data detected
+                if (AccuracyInfoDetected(text)) continue;
+                // player pov changes using 'follow' command in spec mode detected
+                if (BotSpectatesPlayerDetected(text)) continue;
                 // bot account name
                 if (BotNameDetected(text)) continue;
                 // vote start
@@ -265,7 +307,7 @@ namespace SSB.Core
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
-            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring
+                // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring
             else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfoServerGamestate;
@@ -422,7 +464,7 @@ namespace SSB.Core
                 case QlCommandType.ConfigStrings:
                     _playerEventProcessor.HandlePlayerConfigString(t as Match);
                     break;
-                
+
                 case QlCommandType.ServerInfoServerId:
                     _ssb.ServerEventProcessor.SetServerId(t as string);
                     break;

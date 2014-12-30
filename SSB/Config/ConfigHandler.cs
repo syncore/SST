@@ -57,11 +57,16 @@ namespace SSB.Config
         public void RestoreDefaultConfiguration()
         {
             // Load these fail-safe defaults and save as the new configuration
-            var owners = new HashSet<string> { "syncore" };
+            var owners = new HashSet<string> {"syncore"};
             var acctDateOptions = new AccountDateOptions
             {
                 isActive = false,
                 minimumDaysRequired = 0
+            };
+            var accuracyOptions = new AccuracyOptions
+            {
+                isActive = false,
+                intervalBetweenScans = 0
             };
             var autoVoterOptions = new AutoVoterOptions
             {
@@ -82,7 +87,7 @@ namespace SSB.Config
             {
                 isActive = false,
                 maximumRequiredElo = 0,
-                minimumRequiredElo = 0,
+                minimumRequiredElo = 0
             };
             var motdOptions = new MotdOptions
             {
@@ -92,6 +97,7 @@ namespace SSB.Config
             };
 
             Config.AccountDateOptions = acctDateOptions;
+            Config.AccuracyOptions = accuracyOptions;
             Config.AutoVoterOptions = autoVoterOptions;
             Config.CoreOptions = coreOptions;
             Config.EarlyQuitOptions = earlyQuitOptions;

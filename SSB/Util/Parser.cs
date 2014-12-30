@@ -13,6 +13,7 @@ namespace SSB.Util
         /// </summary>
         public Parser()
         {
+            CcmdFollowPlayer = new ccmdFollowPlayer();
             CfgStringPlayerInfo = new cfgStringPlayerInfo();
             PlPlayerNameAndId = new plPlayerNameAndId();
             EvPlayerDisconnected = new evPlayerDisconnected();
@@ -23,6 +24,7 @@ namespace SSB.Util
             CvarGameState = new cvarGameState();
             CvarServerPublicId = new cvarServerPublicId();
             EvMapLoaded = new evMapLoaded();
+            ScmdAccuracy = new scmdAccuracy();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
@@ -40,6 +42,19 @@ namespace SSB.Util
             ScmdGameStateTimeChange = new scmdGameStateTimeChange();
             UtilCaretColor = new utilCaretColor();
         }
+
+        /// <summary>
+        /// Regex for matching the player currently being followed by the bot in spectate mode after
+        /// issuing the 'follow' command.
+        /// </summary>
+        /// <value>
+        /// Regex for matching the player currently being followed by the bot in spectate mode after
+        /// issuing the 'follow' command.
+        /// </value>
+        /// <remarks>
+        /// Named group 'player' returns the name of the player that the follow command has been issued upon.
+        /// </remarks>
+        public Regex CcmdFollowPlayer { get; private set; }
 
         /// <summary>
         ///     Regex for matching the player info returned by the 'configstrings' command.
@@ -135,6 +150,24 @@ namespace SSB.Util
         ///     Regex for player's name and id after issuing 'players' command.
         /// </value>
         public Regex PlPlayerNameAndId { get; private set; }
+
+        /// <summary>
+        /// Regex for extracting a player's accuracy data when +acc is in effect.
+        /// </summary>
+        /// <value>
+        /// Regex for extracting a player's accuracy data when +acc is in effect.
+        /// </value>
+        /// <remarks>
+        /// Named group 'accdata' returns the 15 numbers that represent weapon accuracies, i.e:
+        /// 0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
+        /// Here, the player would have 21% shotgun accuracy and 17% grenade launcher accuracy.
+        /// In-game, these 15 numbers are presented as follows:
+        /// serverCommand # : acc #1 #2 #3 #4 #5 #6 #7 #8 #9 #10 #11 #12 #13 #14 #15
+        /// #1: empty, #2: empty, #3: machinegun, #4: shotgun, #5: grenadelauncher, #6: rocketlauncher
+        /// #7: lightning gun, #8: railgun, #9: plasma gun, #10: bfg, #11: grappling hook, #12: nailgun,
+        /// #13: proxmity mine launcher, #14: chaingun, #15: heavy machine gun
+        /// </remarks>
+        public Regex ScmdAccuracy { get; private set; }
 
         /// <summary>
         ///     Regex for matching a player's chat message.

@@ -67,15 +67,18 @@
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\Core\CoreOptions.cs" />
     <Compile Include="Config\Modules\AccountDateOptions.cs" />
+    <Compile Include="Config\Modules\AccuracyOptions.cs" />
     <Compile Include="Config\Modules\AutoVoterOptions.cs" />
     <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
     <Compile Include="Config\Modules\EloLimitOptions.cs" />
     <Compile Include="Config\Modules\MotdOptions.cs" />
+    <Compile Include="Core\AccuracyHandler.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
+    <Compile Include="Core\Commands\Modules\Accuracy.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
     <Compile Include="Core\Commands\Modules\EarlyQuit.cs" />
     <Compile Include="Core\Commands\Modules\Motd.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Core\Commands\None\EloCmd.cs" />
     <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
+    <Compile Include="Core\Commands\None\AccCmd.cs" />
     <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
@@ -112,7 +116,7 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\EarlyQuitHandler.cs" />
-    <Compile Include="Core\MessageOfTheDay.cs" />
+    <Compile Include="Core\MotdHandler.cs" />
     <Compile Include="Core\PlayerAutoBanner.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
@@ -131,6 +135,7 @@
     <Compile Include="Enum\QlGameTypes.cs" />
     <Compile Include="Interfaces\IBotCommand.cs" />
     <Compile Include="Interfaces\IModule.cs" />
+    <Compile Include="Model\AccuracyInfo.cs" />
     <Compile Include="Model\AutoVote.cs" />
     <Compile Include="Model\BanInfo.cs" />
     <Compile Include="Model\CmdArgs.cs" />

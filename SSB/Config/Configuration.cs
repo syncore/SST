@@ -17,6 +17,14 @@ namespace SSB.Config
         public AccountDateOptions AccountDateOptions { get; set; }
 
         /// <summary>
+        ///     Gets or sets the accuracy options.
+        /// </summary>
+        /// <value>
+        ///     The accuracy options.
+        /// </value>
+        public AccuracyOptions AccuracyOptions { get; set; }
+
+        /// <summary>
         ///     Gets or sets the automatic voter options.
         /// </summary>
         /// <value>
@@ -34,10 +42,10 @@ namespace SSB.Config
         public CoreOptions CoreOptions { get; set; }
 
         /// <summary>
-        /// Gets or sets the early quit options.
+        ///     Gets or sets the early quit options.
         /// </summary>
         /// <value>
-        /// The early quit options.
+        ///     The early quit options.
         /// </value>
         public EarlyQuitOptions EarlyQuitOptions { get; set; }
 

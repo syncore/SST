@@ -6,15 +6,15 @@ namespace SSB.Core
     /// <summary>
     ///     Class responsible for handling the message of the day set by the motd command.
     /// </summary>
-    public class MessageOfTheDay
+    public class MotdHandler
     {
         private readonly SynServerBot _ssb;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MessageOfTheDay" /> class.
+        ///     Initializes a new instance of the <see cref="MotdHandler" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public MessageOfTheDay(SynServerBot ssb)
+        public MotdHandler(SynServerBot ssb)
         {
             _ssb = ssb;
             MotdTimer = new Timer();
@@ -42,7 +42,7 @@ namespace SSB.Core
         /// <value>
         ///     The repeat time in minutes.
         /// </value>
-        public int RepeatInterval { get; set; }
+        public uint RepeatInterval { get; set; }
 
         /// <summary>
         ///     Starts the motd timer.

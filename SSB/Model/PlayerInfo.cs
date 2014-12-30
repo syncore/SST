@@ -16,7 +16,7 @@ namespace SSB.Model
         /// <param name="team">The team.</param>
         /// <param name="id">The identifier.</param>
         /// <remarks>
-        /// This constructor is to only be used with 'configstrings' command.
+        /// This constructor is typically used with the 'configstrings' command.
         /// </remarks>
         public PlayerInfo(string shortName, string clan, Team team, int id)
         {
@@ -27,13 +27,13 @@ namespace SSB.Model
         }
 
         /// <summary>
-        /// Gets or sets the player's ready status.
+        /// Gets or sets the player's accuracy data.
         /// </summary>
         /// <value>
-        /// The ready status.
+        /// The player's accuracy data.
         /// </value>
-        public ReadyStatus Ready { get; set; }
-        
+        public AccuracyInfo Acc { get; set; }
+
         /// <summary>
         /// Gets or sets the clan tag, if any.
         /// </summary>
@@ -43,20 +43,15 @@ namespace SSB.Model
         public string ClanTag { get; set; }
 
         /// <summary>
-        /// Gets or sets the subscriber status.
+        /// Gets or sets the full player name including the clan tag.
         /// </summary>
         /// <value>
-        /// The subscriber status.
+        /// The full player name including the clan tag.
         /// </value>
-        public string Subscriber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the full name of the clan.
-        /// </summary>
-        /// <value>
-        /// The full name of the clan.
-        /// </value>
-        public string FullClanName { get; set; }
+        public string ClanTagAndName
+        {
+            get { return (ClanTag + ShortName); }
+        }
 
         /// <summary>
         /// Gets or sets the country code.
@@ -67,22 +62,20 @@ namespace SSB.Model
         public string CountryCode { get; set; }
 
         /// <summary>
-        /// Gets or sets the full player name including the clan tag.
-        /// </summary>
-        /// <value>
-        /// The full player name including the clan tag.
-        /// </value>
-        public string ClanTagAndName {
-            get { return (ClanTag + ShortName); }
-        }
-
-        /// <summary>
         /// Gets or sets the QLRanks elo data.
         /// </summary>
         /// <value>
         /// The QLRanks elo data.
         /// </value>
         public EloData EloData { get; set; }
+
+        /// <summary>
+        /// Gets or sets the full name of the clan.
+        /// </summary>
+        /// <value>
+        /// The full name of the clan.
+        /// </value>
+        public string FullClanName { get; set; }
 
         /// <summary>
         /// Gets or sets the player identifier number.
@@ -93,12 +86,28 @@ namespace SSB.Model
         public int Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the player's ready status.
+        /// </summary>
+        /// <value>
+        /// The ready status.
+        /// </value>
+        public ReadyStatus Ready { get; set; }
+
+        /// <summary>
         /// Gets or sets the player name, excluding the clan tag.
         /// </summary>
         /// <value>
         /// The player's name, excluding the clan tag.
         /// </value>
         public string ShortName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the subscriber status.
+        /// </summary>
+        /// <value>
+        /// The subscriber status.
+        /// </value>
+        public string Subscriber { get; set; }
 
         /// <summary>
         /// Gets or sets the team.

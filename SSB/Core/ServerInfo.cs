@@ -51,6 +51,14 @@ namespace SSB.Core
         public string CurrentServerId { get; set; }
 
         /// <summary>
+        /// Gets or sets the player the bot is currently following (spectating), if any.
+        /// </summary>
+        /// <value>
+        /// The player the bot is currently following (spectating), if any.
+        /// </value>
+        public string PlayerCurrentlyFollowing { get; set; }
+
+        /// <summary>
         /// Gets the team.
         /// </summary>
         /// <param name="t">The Team enum.</param>

@@ -20,6 +20,11 @@ namespace ParserDllGenerator
             RegexCompilationInfo expr;
             var compilationList = new List<RegexCompilationInfo>();
 
+            // clientcommand: player currently being followed (spectated) in spec mode
+            expr = new RegexCompilationInfo(@"clientCommand:.* follow (?<player>.+)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "ccmdFollowPlayer", "SSB.External.Parser", true);
+            compilationList.Add(expr);
+
             // command: configstrings - Find player id and player info (team, clantag, full clan, subscriber, etc.)
             // named group 'id' returns the two digit number after the 5, i.e. for 533 it will return 33. Must subtract
             // 29 from this number to get the equivalent player id that can be retrieved from 'players' command.
@@ -76,6 +81,13 @@ namespace ParserDllGenerator
             // event: map loaded
             expr = new RegexCompilationInfo(@"(\d+ files in pk3 files)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
+            compilationList.Add(expr);
+
+            //servercommand: player's accuracy data
+            // example: serverCommand: 579 : acc  0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : acc  (?<accdata>.+)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdAccuracy", "SSB.External.Parser",
+                true);
             compilationList.Add(expr);
 
             //servercommand: player's configstring

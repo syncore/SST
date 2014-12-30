@@ -15,6 +15,7 @@ namespace SSB.Core.Commands.Admin
     public class ModuleCmd : IBotCommand
     {
         public const string AccountDateLimitArg = AccountDateLimit.NameModule;
+        public const string AccuracyArg = Accuracy.NameModule;
         public const string AutoVoteArg = AutoVoter.NameModule;
         public const string EarlyQuitArg = EarlyQuit.NameModule;
         public const string EloLimitArg = EloLimit.NameModule;
@@ -33,10 +34,19 @@ namespace SSB.Core.Commands.Admin
         public ModuleCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _validModuleNames = new List<string> { AccountDateLimitArg, AutoVoteArg, EarlyQuitArg, EloLimitArg, MotdArg };
+            _validModuleNames = new List<string>
+            {
+                AccountDateLimitArg,
+                AccuracyArg,
+                AutoVoteArg,
+                EarlyQuitArg,
+                EloLimitArg,
+                MotdArg
+            };
             _moduleList = new List<IModule>
             {
                 _ssb.Mod.AccountDateLimit,
+                _ssb.Mod.Accuracy,
                 _ssb.Mod.AutoVoter,
                 _ssb.Mod.EarlyQuit,
                 _ssb.Mod.EloLimit,
@@ -89,17 +99,25 @@ namespace SSB.Core.Commands.Admin
                 case ActiveModuleArg:
                     await DisplayActiveModules(c);
                     break;
+
+                case AccountDateLimitArg:
+                    await _ssb.Mod.AccountDateLimit.EvalModuleCmdAsync(c);
+                    break;
+
+                case AccuracyArg:
+                    await _ssb.Mod.Accuracy.EvalModuleCmdAsync(c);
+                    break;
+
                 case AutoVoteArg:
                     await _ssb.Mod.AutoVoter.EvalModuleCmdAsync(c);
                     break;
+
                 case EarlyQuitArg:
                     await _ssb.Mod.EarlyQuit.EvalModuleCmdAsync(c);
                     break;
+
                 case EloLimitArg:
                     await _ssb.Mod.EloLimit.EvalModuleCmdAsync(c);
-                    break;
-                case AccountDateLimitArg:
-                    await _ssb.Mod.AccountDateLimit.EvalModuleCmdAsync(c);
                     break;
 
                 case MotdArg:

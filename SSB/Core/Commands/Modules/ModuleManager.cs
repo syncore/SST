@@ -14,6 +14,7 @@
             SynServerBot s = ssb;
             EloLimit = new EloLimit(s);
             AccountDateLimit = new AccountDateLimit(s);
+            Accuracy = new Accuracy(s);
             AutoVoter = new AutoVoter(s);
             EarlyQuit = new EarlyQuit(s);
             Motd = new Motd(s);
@@ -28,6 +29,14 @@
         public AccountDateLimit AccountDateLimit { get; private set; }
 
         /// <summary>
+        ///     Gets the accuracy scanner.
+        /// </summary>
+        /// <value>
+        ///     The accuracy scanner.
+        /// </value>
+        public Accuracy Accuracy { get; private set; }
+
+        /// <summary>
         ///     Gets the automatic voter.
         /// </summary>
         /// <value>
@@ -36,10 +45,10 @@
         public AutoVoter AutoVoter { get; private set; }
 
         /// <summary>
-        /// Gets the early quit module.
+        ///     Gets the early quit module.
         /// </summary>
         /// <value>
-        /// The early quit module.
+        ///     The early quit module.
         /// </value>
         public EarlyQuit EarlyQuit { get; private set; }
 

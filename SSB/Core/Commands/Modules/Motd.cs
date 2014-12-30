@@ -14,9 +14,9 @@ namespace SSB.Core.Commands.Modules
     public class Motd : IModule
     {
         public const string NameModule = "motd";
-        private const int MinRepeatThresholdStart = 0;
+        private const uint MinRepeatThresholdStart = 0;
         private readonly ConfigHandler _configHandler;
-        private readonly MessageOfTheDay _motd;
+        private readonly MotdHandler _motd;
         private readonly SynServerBot _ssb;
         private int _minModuleArgs = 3;
 
@@ -28,25 +28,9 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _motd = new MessageOfTheDay(_ssb);
+            _motd = new MotdHandler(_ssb);
             LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets or sets the MOTD message to repeat.
-        /// </summary>
-        /// <value>
-        ///     The MOTD message to repeat.
-        /// </value>
-        public string Message { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the message repeat time.
-        /// </summary>
-        /// <value>
-        ///     The message repeat time.
-        /// </value>
-        public int RepeatInterval { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -59,6 +43,14 @@ namespace SSB.Core.Commands.Modules
         ///     a public static bool property IsModuleActive for outside access in other parts of app.
         /// </remarks>
         public bool Active { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the MOTD message to repeat.
+        /// </summary>
+        /// <value>
+        ///     The MOTD message to repeat.
+        /// </value>
+        public string Message { get; set; }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -83,6 +75,14 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets or sets the message repeat time.
+        /// </summary>
+        /// <value>
+        ///     The message repeat time.
+        /// </value>
+        public uint RepeatInterval { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
@@ -90,7 +90,7 @@ namespace SSB.Core.Commands.Modules
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] [on] <mins> ^7 - message set in config file will repeat every X mins",
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <mins> ^7 - message set in config file will repeat every X mins",
                 CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.MotdArg));
         }
 
@@ -106,19 +106,27 @@ namespace SSB.Core.Commands.Modules
                 await DisplayArgLengthError(c);
                 return;
             }
-            if (!c.Args[2].Equals("off") && !c.Args[2].Equals("on"))
-            {
-                await DisplayArgLengthError(c);
-                return;
-            }
             if (c.Args[2].Equals("off"))
             {
                 await DisableMotd();
                 return;
             }
-            if (c.Args.Length != 4)
+            if (c.Args.Length != 3)
             {
                 await DisplayArgLengthError(c);
+                return;
+            }
+            uint minsNum;
+            if (!uint.TryParse(c.Args[2], out minsNum))
+            {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Minutes must be a positive number.}");
+                return;
+            }
+            if (minsNum <= MinRepeatThresholdStart)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minutes must be greater than {0}.",
+                        MinRepeatThresholdStart));
                 return;
             }
             // Active check: prevent another timer class from being instantiated
@@ -130,30 +138,15 @@ namespace SSB.Core.Commands.Modules
                             CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.MotdArg));
                 return;
             }
-            int minsNum;
-            if (!int.TryParse(c.Args[3], out minsNum))
-            {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Minutes must be a number.");
-                return;
-            }
-            if (minsNum <= MinRepeatThresholdStart)
+            _configHandler.ReadConfiguration();
+            if (string.IsNullOrEmpty(_configHandler.Config.MotdOptions.message))
             {
                 await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minutes must be greater than {0}.",
-                        MinRepeatThresholdStart));
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 A message has not been set in the configuration file!");
                 return;
             }
-            if (c.Args[2].Equals("on"))
-            {
-                _configHandler.ReadConfiguration();
-                if (string.IsNullOrEmpty(_configHandler.Config.MotdOptions.message))
-                {
-                    await
-                        _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 A message has not been set in the configuration file!");
-                    return;
-                }
-            }
+
             await SetMotd(c);
         }
 
@@ -234,7 +227,7 @@ namespace SSB.Core.Commands.Modules
             if (string.IsNullOrEmpty(_configHandler.Config.MotdOptions.message)) return;
 
             Message = _configHandler.Config.MotdOptions.message;
-            RepeatInterval = Convert.ToInt32(c.Args[3]);
+            RepeatInterval = Convert.ToUInt32(c.Args[2]);
 
             _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
 
@@ -247,7 +240,7 @@ namespace SSB.Core.Commands.Modules
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^2[SUCCESS]^7 Message of the day in config has been set and will repeat every^2 {0}^7 minutes.",
-                        c.Args[3]));
+                        c.Args[2]));
         }
     }
 }
