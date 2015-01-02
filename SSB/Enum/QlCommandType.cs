@@ -14,6 +14,7 @@
         ServerInfo,
         // Note: InitInfo isn't a bot-issued ommand but occurs automatically in QL
         // when certain things occur - i.e. map loading, vid_restart, etc.
-        InitInfo
+        InitInfo,
+        CvarRequest
     }
 }

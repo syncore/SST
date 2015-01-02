@@ -26,7 +26,7 @@ namespace SSB.Core
         public ConsoleTextProcessor(SynServerBot ssb)
         {
             _ssb = ssb;
-            _playerEventProcessor = new PlayerEventProcessor(_ssb);
+            _playerEventProcessor = new PlayerEventProcessor(ssb);
             _voteHandler = new VoteHandler(_ssb);
         }
 
@@ -104,7 +104,6 @@ namespace SSB.Core
         ///     Handles small lines of console text
         /// </summary>
         /// <param name="msg">The text of the incoming message.</param>
-        //public async Task ProcessLastLineOfConsole(string msg, int length)
         public void ProcessShortConsoleLines(string msg)
         {
             if (msg.Equals(_oldLastLineText)) return;
@@ -161,9 +160,10 @@ namespace SSB.Core
         /// <returns><c>true</c> if the text matches that of a request for the bot's name, otherwise <c>false</c>.</returns>
         private bool BotNameDetected(string text)
         {
-            if (!_ssb.Parser.CvarBotAccountName.IsMatch(text)) return false;
-            Match m = _ssb.Parser.CvarBotAccountName.Match(text);
-            _ssb.ServerEventProcessor.GetBotAccountName(m.Value);
+            if (!_ssb.Parser.CvarNameAndValue.IsMatch(text)) return false;
+            Match m = _ssb.Parser.CvarNameAndValue.Match(text);
+            if (!m.Groups["cvarname"].Value.Equals("name")) return false;
+            _ssb.ServerEventProcessor.GetBotAccountName(m.Groups["cvarvalue"].Value);
             return true;
         }
 
@@ -219,10 +219,12 @@ namespace SSB.Core
             {
                 // 'player connected' detected.
                 if (IncomingPlayerDetected(text).Result) continue;
-                // player configstring info detected
-                if (PlayerConfigStringDetected(text)) continue;
+                // player configstring info detected (configstrings command)
+                if (PlayerConfigStringCsDetected(text)) continue;
+                // player configstring info detected (servercommand)
+                if (PlayerConfigStringSrvCmdDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (OutgoingPlayerDetected(text).Result) continue;
+                if (OutgoingPlayerDetected(text)) continue;
                 // 'player joined the spectators' detected
                 if (PlayerJoinedSpectatorsDetected(text).Result) continue;
                 // player accuracy data detected
@@ -260,18 +262,8 @@ namespace SSB.Core
         /// </remarks>
         private void DetectMultiLineEvent(string text)
         {
-            // 'configstrings' command has been detected; get the player information from it.
-            if (_ssb.Parser.CfgStringPlayerInfo.IsMatch(text))
-            {
-                var cmd = QlCommandType.ConfigStrings;
-                //ProcessCommand(cmd, _ssb.Parser.CfgStringPlayerInfo.Matches(text));
-                foreach (Match m in _ssb.Parser.CfgStringPlayerInfo.Matches(text))
-                {
-                    ProcessCommand(cmd, m);
-                }
-            }
-                // 'players' command has been detected; extract the player names and ids from it.
-            else if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
+            // 'players' command has been detected; extract the player names and ids from it.
+            if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
             {
                 var cmd = QlCommandType.Players;
                 var playersToParse = new HashSet<string>();
@@ -283,27 +275,27 @@ namespace SSB.Core
                 ProcessCommand(cmd, playersToParse);
             }
                 // 'serverinfo' command has been detected; extract the relevant information from it.
-            else if (_ssb.Parser.CvarServerPublicId.IsMatch(text) || _ssb.Parser.CvarGameType.IsMatch(text) ||
-                     _ssb.Parser.CvarGameState.IsMatch(text))
+            else if (_ssb.Parser.SvInfoServerPublicId.IsMatch(text) || _ssb.Parser.SvInfoGameType.IsMatch(text) ||
+                     _ssb.Parser.SvInfoGameState.IsMatch(text))
             {
                 QlCommandType cmd;
                 Match m;
-                if (_ssb.Parser.CvarServerPublicId.IsMatch(text))
+                if (_ssb.Parser.SvInfoServerPublicId.IsMatch(text))
                 {
                     cmd = QlCommandType.ServerInfoServerId;
-                    m = _ssb.Parser.CvarServerPublicId.Match(text);
+                    m = _ssb.Parser.SvInfoServerPublicId.Match(text);
                     ProcessCommand(cmd, m.Groups["serverid"].Value);
                 }
-                if (_ssb.Parser.CvarGameType.IsMatch(text))
+                if (_ssb.Parser.SvInfoGameType.IsMatch(text))
                 {
                     cmd = QlCommandType.ServerInfoServerGametype;
-                    m = _ssb.Parser.CvarGameType.Match(text);
+                    m = _ssb.Parser.SvInfoGameType.Match(text);
                     ProcessCommand(cmd, m.Groups["gametype"].Value);
                 }
-                if (_ssb.Parser.CvarGameState.IsMatch(text))
+                if (_ssb.Parser.SvInfoGameState.IsMatch(text))
                 {
                     cmd = QlCommandType.ServerInfoServerGamestate;
-                    m = _ssb.Parser.CvarGameState.Match(text);
+                    m = _ssb.Parser.SvInfoGameState.Match(text);
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
@@ -356,6 +348,22 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Handles pre-defined cvar requests.
+        /// </summary>
+        /// <param name="m">The match.</param>
+        private void HandleCvarRequest(Match m)
+        {
+            string cvar = m.Groups["cvarname"].Value;
+            string value = m.Groups["cvarvalue"].Value;
+            switch (cvar)
+            {
+                case "name":
+                    _ssb.ServerEventProcessor.GetBotAccountName(value);
+                    break;
+            }
+        }
+
+        /// <summary>
         ///     Determines whether the text matches that of an incoming player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -392,7 +400,7 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
         /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
-        private async Task<bool> OutgoingPlayerDetected(string text)
+        private bool OutgoingPlayerDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
                 !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) && !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
@@ -414,19 +422,46 @@ namespace SSB.Core
                 m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
-            await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+            _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
             return true;
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a player's config string and handles it if it does.
+        ///     Determines whether the text matches that of a player's config string (via configstrings cmd)
+        ///     and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
-        private bool PlayerConfigStringDetected(string text)
+        private bool PlayerConfigStringCsDetected(string text)
+        {
+            if (!_ssb.Parser.CfgStringPlayerInfo.IsMatch(text)) return false;
+            Match m = _ssb.Parser.CfgStringPlayerInfo.Match(text);
+            if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
+                                "returning to prevent NEWPLAYER(CS).");
+                return false;
+            }
+            _playerEventProcessor.HandlePlayerConfigString(m);
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether the text matches that of a player's config string (via serverCommand)
+        ///     and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
+        private bool PlayerConfigStringSrvCmdDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
             Match m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
+            if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
+                                "returning to prevent NEWPLAYER(CS).");
+                return false;
+            }
             _playerEventProcessor.HandlePlayerConfigString(m);
             return true;
         }
@@ -479,6 +514,10 @@ namespace SSB.Core
 
                 case QlCommandType.InitInfo:
                     _ssb.ServerEventProcessor.HandleMapLoad(t as string);
+                    break;
+
+                case QlCommandType.CvarRequest:
+                    HandleCvarRequest(t as Match);
                     break;
             }
         }

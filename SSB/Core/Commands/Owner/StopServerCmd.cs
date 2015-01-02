@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -72,22 +71,18 @@ namespace SSB.Core.Commands.Owner
                         string.Format(
                             "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
                             delay));
-                await Task.Delay(delay * 1000);
-                Action doShutdown = DoShutdown;
-                doShutdown();
+                
+                // ReSharper disable once UnusedVariable
+                var s = Task.Run(async delegate
+                {
+                    await Task.Delay(delay*1000);
+                    await _ssb.QlCommands.SendToQlAsync("stopserver", false);
+                });
             }
             else
             {
                 await DisplayArgLengthError(c);
             }
-        }
-
-        /// <summary>
-        ///     Does the shutdown.
-        /// </summary>
-        private async void DoShutdown()
-        {
-            await _ssb.QlCommands.SendToQlAsync("stopserver", false);
         }
     }
 }

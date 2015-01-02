@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace SSB.Core
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
-                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7; Expires: ^2{2}^7. For: ^3{3}",
+                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7. Ban expires: ^2{2}^7. For: ^3{3}",
                             player, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                             banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo), reason));
             }

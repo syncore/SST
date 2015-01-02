@@ -183,8 +183,6 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
-            // Specific cvar values:
-
             // serverinfo cmd - Find sv_gtid after issuing 'serverinfo' command
             /*
             ]/serverinfo
@@ -199,14 +197,14 @@ namespace ParserDllGenerator
             */
             // offline test: @"\S\w.adXmitDelay\s+\d+";
             expr = new RegexCompilationInfo(@"sv_gtid (?<serverid>.+)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarServerPublicId",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "svInfoServerPublicId",
                 "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
-            // name - Find name after issuing 'name'
-            expr = new RegexCompilationInfo(@"(""name""\sis:""\w+"")",
-               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarBotAccountName",
+            // standard cvar and its value
+            expr = new RegexCompilationInfo(@"^""(?<cvarname>.+)"" is:""(?<cvarvalue>.+)"" default:.*",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarNameAndValue",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
@@ -214,7 +212,7 @@ namespace ParserDllGenerator
             // g_gametype - extract gametype from serverinfo command
             // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
             expr = new RegexCompilationInfo(@"^g_gametype (?<gametype>.+)",
-               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarGameType",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "svInfoGameType",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
@@ -222,7 +220,7 @@ namespace ParserDllGenerator
             // g_gameState - extract gamestate from serverinfo command
             // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
             expr = new RegexCompilationInfo(@"^g_gameState (?<gamestate>.+)",
-               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarGameState",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "svInfoGameState",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);

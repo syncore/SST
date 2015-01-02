@@ -66,7 +66,6 @@ namespace SSB.Config
             var accuracyOptions = new AccuracyOptions
             {
                 isActive = false,
-                intervalBetweenScans = 0
             };
             var autoVoterOptions = new AutoVoterOptions
             {

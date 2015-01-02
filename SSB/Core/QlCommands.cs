@@ -284,13 +284,13 @@ namespace SSB.Core
         /// </summary>
         /// <param name="toSend">The command (cvar) to send.</param>
         /// <param name="delay">if set to <c>true</c> send with a delay.</param>
-        public void SendCvarReq(string toSend, bool delay)
+        public void SendToQl(string toSend, bool delay)
         {
             SendQlCommand(toSend, delay);
         }
 
         /// <summary>
-        ///     Sends the given text to the QL console.
+        ///     Asynchronously sends the given text to the QL console.
         /// </summary>
         /// <param name="toSend">To text to send.</param>
         /// <param name="delay">if set to <c>true</c> then sends the text to QL and waits with a slight delay.</param>

@@ -2,6 +2,7 @@
 using System.Linq;
 using SSB.Enum;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -66,6 +67,21 @@ namespace SSB.Core
         public List<PlayerInfo> GetTeam(Team t)
         {
             return CurrentPlayers.Where(player => player.Value.Team.Equals(t)).Select(player => player.Value).ToList();
+        }
+
+        /// <summary>
+        /// Determines whether the specified player is an active player (on red or blue team).
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <returns><c>true</c> if the specified player is an active player, otherwise <c>false</c></returns>
+        public bool IsActivePlayer(string player)
+        {
+            if (!Tools.KeyExists(player, CurrentPlayers))
+            {
+                return false;
+            }
+            return CurrentPlayers[player].Team == Team.Blue ||
+                   CurrentPlayers[player].Team == Team.Red;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Timers;
 
 namespace SSB.Core
@@ -72,7 +73,14 @@ namespace SSB.Core
         /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
         private async void MotdTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3**^7 {0}^3 **", Message));
+            try
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format("^3**^7 {0}^3 **", Message));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Caught exception in MotdTimerElapsed asynchronous void (event handler) method: " + ex.Message);
+            }
         }
     }
 }

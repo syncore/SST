@@ -19,10 +19,7 @@ namespace SSB.Util
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
             EvPlayerRageQuit = new evPlayerRageQuit();
-            CvarBotAccountName = new cvarBotAccountName();
-            CvarGameType = new cvarGameType();
-            CvarGameState = new cvarGameState();
-            CvarServerPublicId = new cvarServerPublicId();
+            CvarNameAndValue = new cvarNameAndValue();
             EvMapLoaded = new evMapLoaded();
             ScmdAccuracy = new scmdAccuracy();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
@@ -40,19 +37,22 @@ namespace SSB.Util
             ScmdChatMessage = new scmdChatMessage();
             ScmdVoteFinalResult = new scmdVoteFinalResult();
             ScmdGameStateTimeChange = new scmdGameStateTimeChange();
+            SvInfoGameType = new svInfoGameType();
+            SvInfoGameState = new svInfoGameState();
+            SvInfoServerPublicId = new svInfoServerPublicId();
             UtilCaretColor = new utilCaretColor();
         }
 
         /// <summary>
-        /// Regex for matching the player currently being followed by the bot in spectate mode after
-        /// issuing the 'follow' command.
+        ///     Regex for matching the player currently being followed by the bot in spectate mode after
+        ///     issuing the 'follow' command.
         /// </summary>
         /// <value>
-        /// Regex for matching the player currently being followed by the bot in spectate mode after
-        /// issuing the 'follow' command.
+        ///     Regex for matching the player currently being followed by the bot in spectate mode after
+        ///     issuing the 'follow' command.
         /// </value>
         /// <remarks>
-        /// Named group 'player' returns the name of the player that the follow command has been issued upon.
+        ///     Named group 'player' returns the name of the player that the follow command has been issued upon.
         /// </remarks>
         public Regex CcmdFollowPlayer { get; private set; }
 
@@ -71,45 +71,16 @@ namespace SSB.Util
         public Regex CfgStringPlayerInfo { get; private set; }
 
         /// <summary>
-        ///     Regex for matching the name cvar (name of the account running SSB).
+        ///     Regex for matching a standard cvar and its current value.
         /// </summary>
         /// <value>
-        ///     Regex for matching the name cvar (name of the account running SSB).
-        /// </value>
-        public Regex CvarBotAccountName { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding the g_gameState cvar value after issuing 'serverinfo'
-        /// </summary>
-        /// <value>
-        ///     Regex for cvar g_gameState after issuing 'serverinfo' command.
+        ///     Regex for matching a standard cvar and its current value.
         /// </value>
         /// <remarks>
-        ///     Contains a named group 'gamestate' that has the gamestate status.
+        ///     Named group 'cvarname' returns the name of the cvar. Named group 'cvarvalue' returns the cvar's current value.
+        ///     Example: "name" is:"syncore" default:"UnnamedPlayer" - cvarname: name - cvarvalue: syncore
         /// </remarks>
-        public Regex CvarGameState { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding the g_gametype cvar value after issuing 'serverinfo'
-        /// </summary>
-        /// <value>
-        ///     Regex for cvar g_gametype after issuing 'serverinfo' command.
-        /// </value>
-        /// <remarks>
-        ///     Contains a named group 'gametype' that has the gametype #.
-        /// </remarks>
-        public Regex CvarGameType { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding sv_gtid cvar value after issuing 'serverinfo' command.
-        /// </summary>
-        /// <value>
-        ///     Regex for cvar sv_gtid after issuing 'serverinfo' command.
-        /// </value>
-        /// <remarks>
-        ///     Contains a named group 'serverid' that has the serverid.
-        /// </remarks>
-        public Regex CvarServerPublicId { get; private set; }
+        public Regex CvarNameAndValue { get; private set; }
 
         /// <summary>
         ///     Regex for detecting when the map has loaded.
@@ -152,20 +123,20 @@ namespace SSB.Util
         public Regex PlPlayerNameAndId { get; private set; }
 
         /// <summary>
-        /// Regex for extracting a player's accuracy data when +acc is in effect.
+        ///     Regex for extracting a player's accuracy data when +acc is in effect.
         /// </summary>
         /// <value>
-        /// Regex for extracting a player's accuracy data when +acc is in effect.
+        ///     Regex for extracting a player's accuracy data when +acc is in effect.
         /// </value>
         /// <remarks>
-        /// Named group 'accdata' returns the 15 numbers that represent weapon accuracies, i.e:
-        /// 0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
-        /// Here, the player would have 21% shotgun accuracy and 17% grenade launcher accuracy.
-        /// In-game, these 15 numbers are presented as follows:
-        /// serverCommand # : acc #1 #2 #3 #4 #5 #6 #7 #8 #9 #10 #11 #12 #13 #14 #15
-        /// #1: empty, #2: empty, #3: machinegun, #4: shotgun, #5: grenadelauncher, #6: rocketlauncher
-        /// #7: lightning gun, #8: railgun, #9: plasma gun, #10: bfg, #11: grappling hook, #12: nailgun,
-        /// #13: proxmity mine launcher, #14: chaingun, #15: heavy machine gun
+        ///     Named group 'accdata' returns the 15 numbers that represent weapon accuracies, i.e:
+        ///     0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
+        ///     Here, the player would have 21% shotgun accuracy and 17% grenade launcher accuracy.
+        ///     In-game, these 15 numbers are presented as follows:
+        ///     serverCommand # : acc #1 #2 #3 #4 #5 #6 #7 #8 #9 #10 #11 #12 #13 #14 #15
+        ///     #1: empty, #2: empty, #3: machinegun, #4: shotgun, #5: grenadelauncher, #6: rocketlauncher
+        ///     #7: lightning gun, #8: railgun, #9: plasma gun, #10: bfg, #11: grappling hook, #12: nailgun,
+        ///     #13: proxmity mine launcher, #14: chaingun, #15: heavy machine gun
         /// </remarks>
         public Regex ScmdAccuracy { get; private set; }
 
@@ -361,6 +332,39 @@ namespace SSB.Util
         ///     as a string with the quotation marks already removed.
         /// </remarks>
         public Regex ScmdVoteNumYesVotes { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding the g_gameState cvar value after issuing 'serverinfo'
+        /// </summary>
+        /// <value>
+        ///     Regex for cvar g_gameState after issuing 'serverinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'gamestate' that has the gamestate status.
+        /// </remarks>
+        public Regex SvInfoGameState { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding the g_gametype cvar value after issuing 'serverinfo'
+        /// </summary>
+        /// <value>
+        ///     Regex for cvar g_gametype after issuing 'serverinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'gametype' that has the gametype #.
+        /// </remarks>
+        public Regex SvInfoGameType { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding sv_gtid cvar value after issuing 'serverinfo' command.
+        /// </summary>
+        /// <value>
+        ///     Regex for cvar sv_gtid after issuing 'serverinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'serverid' that has the serverid.
+        /// </remarks>
+        public Regex SvInfoServerPublicId { get; private set; }
 
         /// <summary>
         ///     Regex for matching the caret and color of a player name and/or chat message.

@@ -72,7 +72,6 @@
     <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
     <Compile Include="Config\Modules\EloLimitOptions.cs" />
     <Compile Include="Config\Modules\MotdOptions.cs" />
-    <Compile Include="Core\AccuracyHandler.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />

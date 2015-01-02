@@ -44,6 +44,8 @@ namespace SSB.Core
             Mod = new ModuleManager(this);
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
+            // Get name of account running the bot
+            RetrieveBotAccount();
             // Delay some initilization tasks and complete initilization
             StartDelayedInit(6.5);
         }
@@ -176,12 +178,23 @@ namespace SSB.Core
             readConsoleThread.Start();
         }
 
+        /// <summary>
+        /// Stops the console read thread.
+        /// </summary>
         public void StopConsoleReadThread()
         {
             IsReadingConsole = false;
             Debug.WriteLine("...stopping QL console read thread.");
             MessageBox.Show(@"Stopped reading Quake Live events, because Quake Live is not detected.",
                 @"Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        /// <summary>
+        /// Get name of account running the bot.
+        /// </summary>
+        public void RetrieveBotAccount()
+        {
+            QlCommands.SendToQl("name", true);
         }
 
         /// <summary>
@@ -198,10 +211,10 @@ namespace SSB.Core
             // Initially get the player listing when we start. Synchronous since initilization.
             // ReSharper disable once UnusedVariable
             Task q = QlCommands.QlCmdPlayers();
-            // Get name of account running the bot.
-            QlCommands.SendCvarReq("name", false);
+            
+            //QlCommands.SendToQl("name", false);
             // Get the server's id
-            QlCommands.SendCvarReq("serverinfo", true);
+            QlCommands.SendToQl("serverinfo", true);
             // Enable developer mode
             QlCommands.EnableDeveloperMode();
         }

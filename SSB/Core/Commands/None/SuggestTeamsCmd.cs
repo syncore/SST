@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -197,17 +198,30 @@ namespace SSB.Core.Commands.None
         private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
         {
             // Do balance if enough votes
-            await _ssb.QlCommands.QlCmdSay(string.Format("^2[TEAMBALANCE]^7 Vote results -- YES: ^2{0}^7 -- NO: ^1{1}^7 -- {2}",
-                _ssb.VoteManager.TeamSuggestionYesVoteCount, _ssb.VoteManager.TeamSuggestionNoVoteCount,
-                ((_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount) ? ("Teams will be balanced.") : "Teams will remain unchanged.")));
-
-            if (_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount)
+            try
             {
-                await MovePlayersToBalancedTeams();
-            }
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format("^2[TEAMBALANCE]^7 Vote results -- YES: ^2{0}^7 -- NO: ^1{1}^7 -- {2}",
+                            _ssb.VoteManager.TeamSuggestionYesVoteCount,
+                            _ssb.VoteManager.TeamSuggestionNoVoteCount,
+                            ((_ssb.VoteManager.TeamSuggestionYesVoteCount >
+                              _ssb.VoteManager.TeamSuggestionNoVoteCount)
+                                ? ("Teams will be balanced.")
+                                : "Teams will remain unchanged.")));
 
-            // Reset votes
-            _ssb.VoteManager.ResetTeamSuggestionVote();
+                if (_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount)
+                {
+                    await MovePlayersToBalancedTeams();
+                }
+
+                // Reset votes
+                _ssb.VoteManager.ResetTeamSuggestionVote();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Caught exception in TeamSuggestionTimerElapsed asynchronous void (event handler) method: " + ex.Message);
+            }
         }
 
         /// <summary>

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SSB.Util
 {
     /// <summary>
-    ///     Class containing general helper functions.
+    ///     Class containing general helper methods.
     /// </summary>
     public static class Tools
     {
@@ -32,7 +33,7 @@ namespace SSB.Util
         /// <param name="n">The n-th occurrence.</param>
         /// <returns>The position of the n-th occurrence of the value.</returns>
         /// <remarks>
-        ///     Taken from Alexander PRokofyev's answer at:
+        ///     Taken from Alexander Prokofyev's answer at:
         ///     http://stackoverflow.com/a/187394
         /// </remarks>
         public static int NthIndexOf(string input, string value, int n)

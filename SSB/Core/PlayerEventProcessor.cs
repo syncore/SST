@@ -63,21 +63,39 @@ namespace SSB.Core
         ///     Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
-        public async Task HandleOutgoingPlayerConnection(string player)
+        public void HandleOutgoingPlayerConnection(string player)
         {
+            // Abort the game if an active player leaves during count-down.
+            if (_ssb.ServerInfo.IsActivePlayer(player)
+                && _ssb.ServerInfo.CurrentServerGameState == QlGameStates.Countdown)
+            {
+                _ssb.QlCommands.SendToQl("abort", false);
+                // ReSharper disable once UnusedVariable
+                var s =
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format("^7Active player^3 {0}^7 left during countdown. Aborting game.", player));
+                Debug.WriteLine(string.Format("+++++ Active player {0} left during count-down. Aborting match! +++++",
+                   player));
+            }
+
             // Remove player from our internal list
             RemovePlayer(player);
+
             // If player was/is currently being spectated, clear the internal tracker
-            if (_ssb.ServerInfo.PlayerCurrentlyFollowing.Equals(player))
+            if (!string.IsNullOrEmpty(_ssb.ServerInfo.PlayerCurrentlyFollowing)
+                && _ssb.ServerInfo.PlayerCurrentlyFollowing.Equals(player))
             {
                 _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
             }
+
             Debug.WriteLine("Detected outgoing connection for " + player);
+
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
             var eqh = new EarlyQuitHandler(_ssb);
-            await eqh.ProcessEarlyQuit(player);
+            // ReSharper disable once UnusedVariable
+            var e = eqh.ProcessEarlyQuit(player);
         }
 
         /// <summary>
@@ -185,6 +203,15 @@ namespace SSB.Core
         /// <param name="m">The match.</param>
         public void HandlePlayerConfigString(Match m)
         {
+            // Player has been kicked or otherwise leaves; the playerinfo which is normally
+            // n\name\t#\model... will just be ""; which would be treated as a new player connecting, so return
+            if (m.Groups["playerinfo"].Value.Equals("\"\"", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
+                                "returning to prevent NEWPLAYER(CS).");
+                return;
+            }
+
             string idMatchText = m.Groups["id"].Value;
             string playerInfoMatchText = m.Groups["playerinfo"].Value.Replace("\"", "");
 
@@ -199,8 +226,8 @@ namespace SSB.Core
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus) status;
-            var team = (Team) tm;
+            var ready = (ReadyStatus)status;
+            var team = (Team)tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -286,8 +313,8 @@ namespace SSB.Core
             string country = GetCsValue("c", pi);
 
             // Create player. Also Set misc details like full clan name, country code, subscription status.
-            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
-                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
+            _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
+                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
             Debug.Write(
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
@@ -320,9 +347,9 @@ namespace SSB.Core
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
         {
-            // Remove from players
-            if (_ssb.ServerInfo.CurrentPlayers.Remove(player))
+            if (Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
             {
+                _ssb.ServerInfo.CurrentPlayers.Remove(player);
                 Debug.WriteLine(string.Format("Removed {0} from the current in-game players.", player));
             }
             else

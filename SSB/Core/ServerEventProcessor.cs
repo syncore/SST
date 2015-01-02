@@ -31,11 +31,10 @@ namespace SSB.Core
         /// <summary>
         ///     Gets the name of the bot account.
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="name">The name as text.</param>
         /// <returns>The name of the account running the bot.</returns>
-        public string GetBotAccountName(string text)
+        public string GetBotAccountName(string name)
         {
-            string name = ConsoleTextProcessor.GetCvarValue(text);
             Debug.WriteLine("The name of the account running the bot is: " + name);
             _ssb.BotName = name;
             return name;
@@ -150,6 +149,10 @@ namespace SSB.Core
             var gameState = QlGameStates.Unspecified;
             switch (stateText)
             {
+                case "COUNT_DOWN":
+                    gameState = QlGameStates.Countdown;
+                    break;
+                
                 case "PRE_GAME":
                     gameState = QlGameStates.Warmup;
                     break;

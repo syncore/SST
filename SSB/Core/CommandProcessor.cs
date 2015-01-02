@@ -114,7 +114,7 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             string[] args = msg.Split(sep, 5);
             string cmdName = args[0].Substring(1);
             if (!_ssb.IsInitComplete)

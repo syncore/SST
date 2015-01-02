@@ -15,7 +15,7 @@ namespace SSB.Core.Commands.None
     public class AccCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-        private int _minArgs = 0;
+        private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
@@ -81,27 +81,31 @@ namespace SSB.Core.Commands.None
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
                 return;
             }
-            if (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team != Team.Spec)
+            if (IsBotPlayer())
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
                         "^1[ERROR]^3 Accuracies are unavailable because bot owner is currently playing on same account as bot.");
                 return;
             }
-            switch (c.Args.Length)
-            {
-                case 1:
-                    await GetAccAllPlayers();
-                    break;
 
-                case 2:
-                    await GetAccSinglePlayer(c);
-                    break;
+            await ShowAccSinglePlayer(c);
+        }
 
-                default:
-                    await DisplayArgLengthError(c);
-                    break;
-            }
+        /// <summary>
+        ///     Ends the accuracy read by sending the -acc button command to Quake Live, rejoining the spectators,
+        ///     and by clearing the player that is currently being tracked by the bot internally.
+        /// </summary>
+        private async Task EndAccuracyRead()
+        {
+            // Send negative state of acc button.
+            // Must "re-join" spectators even though we're already there, so that the 1st player whose
+            // accuracy is being scanned on the next go-around is correctly detected (QL issue)
+            //_ssb.QlCommands.SendToQl("-acc;team s", false);
+            await _ssb.QlCommands.SendToQlAsync("-acc;team s", true);
+            // Reset internal tracking
+            _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
+            Debug.WriteLine("Ended accuracy read.");
         }
 
         /// <summary>
@@ -116,92 +120,117 @@ namespace SSB.Core.Commands.None
         {
             var aBuilder = new StringBuilder();
             AccuracyInfo playerAcc = _ssb.ServerInfo.CurrentPlayers[player].Acc;
-            if (!playerAcc.HasAcc())
+            if (playerAcc == null || !playerAcc.HasAcc())
             {
                 Debug.WriteLine(
                     string.Format(
-                        "No accuracies other than defaults detected for {0}. Skipping acc string formation.",
+                        "Accuracy object is null or no accuracies other than defaults detected for {0}. Skipping acc string formation.",
                         player));
                 return string.Empty;
             }
+
             if (playerAcc.MachineGun != 0)
             {
-                aBuilder.Append(string.Format("^3MG^7 {0}%", playerAcc.MachineGun));
+                aBuilder.Append(string.Format("^3MG^7 {0} ", playerAcc.MachineGun));
             }
             if (playerAcc.ShotGun != 0)
             {
-                aBuilder.Append(string.Format("^3SG^7 {0}%", playerAcc.ShotGun));
+                aBuilder.Append(string.Format("^3SG^7 {0} ", playerAcc.ShotGun));
             }
             if (playerAcc.GrenadeLauncher != 0)
             {
-                aBuilder.Append(string.Format("^2GL^7 {0}%", playerAcc.GrenadeLauncher));
+                aBuilder.Append(string.Format("^2GL^7 {0} ", playerAcc.GrenadeLauncher));
             }
             if (playerAcc.RocketLauncher != 0)
             {
-                aBuilder.Append(string.Format("^1RL^7 {0}%", playerAcc.RocketLauncher));
+                aBuilder.Append(string.Format("^1RL^7 {0} ", playerAcc.RocketLauncher));
             }
             if (playerAcc.LightningGun != 0)
             {
-                aBuilder.Append(string.Format("^7LG {0}%", playerAcc.LightningGun));
+                aBuilder.Append(string.Format("^7LG {0} ", playerAcc.LightningGun));
             }
             if (playerAcc.RailGun != 0)
             {
-                aBuilder.Append(string.Format("^5RG^7 {0}%", playerAcc.RailGun));
+                aBuilder.Append(string.Format("^5RG^7 {0} ", playerAcc.RailGun));
             }
             if (playerAcc.PlasmaGun != 0)
             {
-                aBuilder.Append(string.Format("^6PG^7 {0}%", playerAcc.PlasmaGun));
+                aBuilder.Append(string.Format("^6PG^7 {0} ", playerAcc.PlasmaGun));
             }
             if (playerAcc.Bfg != 0)
             {
-                aBuilder.Append(string.Format("^4BFG^7 {0}%", playerAcc.Bfg));
+                aBuilder.Append(string.Format("^4BFG^7 {0} ", playerAcc.Bfg));
             }
             if (playerAcc.GrapplingHook != 0)
             {
-                aBuilder.Append(string.Format("^4GH^7 {0}%", playerAcc.GrapplingHook));
+                aBuilder.Append(string.Format("^4GH^7 {0} ", playerAcc.GrapplingHook));
             }
             if (playerAcc.NailGun != 0)
             {
-                aBuilder.Append(string.Format("^4NG^7 {0}%", playerAcc.NailGun));
+                aBuilder.Append(string.Format("^4NG^7 {0} ", playerAcc.NailGun));
             }
             if (playerAcc.ProximityMineLauncher != 0)
             {
-                aBuilder.Append(string.Format("^4PRX^7 {0}%", playerAcc.ProximityMineLauncher));
+                aBuilder.Append(string.Format("^4PRX^7 {0} ", playerAcc.ProximityMineLauncher));
             }
             if (playerAcc.ChainGun != 0)
             {
-                aBuilder.Append(string.Format("^4CG^7 {0}%", playerAcc.ChainGun));
+                aBuilder.Append(string.Format("^4CG^7 {0} ", playerAcc.ChainGun));
             }
             if (playerAcc.HeavyMachineGun != 0)
             {
-                aBuilder.Append(string.Format("^4MG^7 {0}%", playerAcc.HeavyMachineGun));
+                aBuilder.Append(string.Format("^4MG^7 {0} ", playerAcc.HeavyMachineGun));
             }
 
             return aBuilder.ToString();
         }
 
-        private async Task GetAccAllPlayers()
+        /// <summary>
+        /// Determines whether the owner is currently playing on the same account as the bot, and
+        /// prevents accuracy scanning from taking place, in addition to silently disabling it as well.
+        /// </summary>
+        /// <returns><c>true</c> if the owner is currently playing on the bot account, otherwise <c>false</c>.</returns>
+        private bool IsBotPlayer()
         {
-            // TODO limit on this cmd, once every X seconds since it is spammy
-            var bigStr = new StringBuilder();
-            foreach (var player in _ssb.ServerInfo.CurrentPlayers)
+            if (string.IsNullOrEmpty(_ssb.BotName))
             {
-                if (player.Value.Acc.HasAcc())
-                {
-                    bigStr.Append(string.Format("^3{0}: {1}", player.Value.ShortName,
-                        FormatAccString(player.Value.ShortName)));
-                }
-                else
-                {
-                    bigStr.Append(string.Format("^3{0}: ^1{1}^7", player.Value.ShortName, "none"));
-                }
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format("{0} - Scanned every ^3{1}^7 secs.", bigStr,
-                        _ssb.Mod.Accuracy.IntervalBetweenScans));
+                _ssb.RetrieveBotAccount();
             }
+
+            // We've joined the game. Disable scanning.
+            bool botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Red ||
+                                _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Blue);
+
+            if (botIsPlayer)
+            {
+                // Silently disable, but don't update the config on disk so as to save the owner
+                // the trouble of not having to re-enable the accuracy scanner the next time bot is launched
+                _ssb.Mod.Accuracy.Active = false;
+                Debug.WriteLine(
+                    "Owner has left spectator mode and is playing on bot account. Silently disabling accuracy scanning.");
+                return true;
+            }
+            return false;
         }
 
-        private async Task GetAccSinglePlayer(CmdArgs c)
+        /// <summary>
+        /// Retrieves the accuracy.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task RetrieveAccuracy(CmdArgs c)
+        {
+            var player = c.Args[1];
+            _ssb.QlCommands.SendToQl("team s", false);
+            await _ssb.QlCommands.SendToQlAsync(string.Format("follow {0}", player), true);
+            await StartAccuracyRead();
+            await EndAccuracyRead();
+        }
+
+        /// <summary>
+        /// Shows the accuracy of a single player.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task ShowAccSinglePlayer(CmdArgs c)
         {
             string player = c.Args[1];
             if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
@@ -211,10 +240,20 @@ namespace SSB.Core.Commands.None
                         player));
                 return;
             }
+            await RetrieveAccuracy(c);
             string accStr = FormatAccString(player);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}: {1} - Scanned every ^3{2}^7 secs.",
-                player, (string.IsNullOrEmpty(accStr) ? "^1none^7" : accStr),
-                _ssb.Mod.Accuracy.IntervalBetweenScans));
+            await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 accuracy: {1}",
+                player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr)));
+        }
+
+        /// <summary>
+        ///     Starts the accuracy read by sending the +acc button command to Quake Live.
+        /// </summary>
+        private async Task StartAccuracyRead()
+        {
+            //_ssb.QlCommands.SendToQl("+acc", true);
+            await _ssb.QlCommands.SendToQlAsync("+acc", true);
+            Debug.WriteLine("Starting accuracy read.");
         }
     }
 }
