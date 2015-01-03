@@ -81,6 +81,15 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Denies the uneven shuffle vote.
+        /// </summary>
+        private async Task DenyUnevenShuffle()
+        {
+            await _ssb.QlCommands.SendToQlAsync("vote no", false);
+            await _ssb.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.");
+        }
+
+        /// <summary>
         ///     Evaluates the current vote with the auto-voter module if active.
         /// </summary>
         /// <param name="details">The vote details.</param>
@@ -148,6 +157,19 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether a shuffle vote occurs while the teams are uneven.
+        /// </summary>
+        /// <param name="details">The details.</param>
+        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c>
+        /// </returns>
+        private bool IsUnevenShuffle(Match details)
+        {
+            string type = details.Groups["votetype"].Value;
+            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return false;
+            return _ssb.ServerInfo.HasEvenTeams();
+        }
+
+        /// <summary>
         ///     Performs the automatic vote action based on the type of vote.
         /// </summary>
         /// <param name="vote">The vote.</param>
@@ -174,6 +196,10 @@ namespace SSB.Core
             if (IsAdminKickAttempt(details) || IsAdminClientKickAttempt(details))
             {
                 await DenyAdminKick(details);
+            }
+            if (IsUnevenShuffle(details))
+            {
+                await DenyUnevenShuffle();
             }
             if (_ssb.Mod.AutoVoter.Active)
             {

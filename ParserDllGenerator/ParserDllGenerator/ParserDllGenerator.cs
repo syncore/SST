@@ -20,11 +20,6 @@ namespace ParserDllGenerator
             RegexCompilationInfo expr;
             var compilationList = new List<RegexCompilationInfo>();
 
-            // clientcommand: player currently being followed (spectated) in spec mode
-            expr = new RegexCompilationInfo(@"clientCommand:.* follow (?<player>.+)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "ccmdFollowPlayer", "SSB.External.Parser", true);
-            compilationList.Add(expr);
-
             // command: configstrings - Find player id and player info (team, clantag, full clan, subscriber, etc.)
             // named group 'id' returns the two digit number after the 5, i.e. for 533 it will return 33. Must subtract
             // 29 from this number to get the equivalent player id that can be retrieved from 'players' command.
@@ -83,6 +78,13 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "evMapLoaded", "SSB.External.Parser", true);
             compilationList.Add(expr);
 
+            //servercommand: tinfo
+            // this message is constantly sent when the owner plays on the same account as the bot
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : tinfo",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdTinfo", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+            
             //servercommand: player's accuracy data
             // example: serverCommand: 579 : acc  0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : acc  (?<accdata>.+)",
@@ -106,32 +108,43 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // servercommand: player connected
+            // note: connections include the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) connected",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerConnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             // servercommand: player was kicked
+            // note: kicks do not include clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) was kicked",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerKicked", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             //servercommand: player disconnected
+            // note: disconnections do not include the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) disconnected",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerDisconnected", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             //servercommand: player joined spectators
+            // note: spectating includes the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cp ""(?<player>.+) joined the spectators",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerJoinedSpectators", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
             //servercommand: player ragequits
+            // note: ragequit does not include the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) ragequits",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerRagequits", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //servercommand: match was aborted
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : pcp "".* has aborted the match",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdMatchAborted", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
 
@@ -177,6 +190,12 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
+            //servercommand: unncessary pak info (bcs0 1, bcs1 1, bcs2 1...)
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : (bcs\d+) 1.*",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPakInfo", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+            
             //servercommand: gamestate changge (\time\# less accurate method)
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateTimeChange", "SSB.External.Parser",
@@ -203,8 +222,8 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // standard cvar and its value
-            expr = new RegexCompilationInfo(@"^""(?<cvarname>.+)"" is:""(?<cvarvalue>.+)"" default:.*",
-               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarNameAndValue",
+            expr = new RegexCompilationInfo("\"(?<cvarname>.+)\" is:\"(?<cvarvalue>.+)\" default:.*",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarNameAndValue",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
@@ -231,6 +250,15 @@ namespace ParserDllGenerator
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
+
+            // Cvar_Set2 in developer mode
+            expr = new RegexCompilationInfo(@"^Cvar_Set2:.*",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarSetTwo",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+
 
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];

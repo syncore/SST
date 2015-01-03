@@ -33,7 +33,7 @@ namespace SSB.Core
         /// </summary>
         /// <param name="name">The name as text.</param>
         /// <returns>The name of the account running the bot.</returns>
-        public string GetBotAccountName(string name)
+        public string SetBotAccountName(string name)
         {
             Debug.WriteLine("The name of the account running the bot is: " + name);
             _ssb.BotName = name;

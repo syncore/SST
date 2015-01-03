@@ -63,7 +63,7 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            await _ssb.QlCommands.SendToQlAsync("abort", false);
+            await _ssb.QlCommands.SendToQlAsync("abort", true);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace SSB.Core
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
             // Get name of account running the bot
-            RetrieveBotAccount();
+            QlCommands.ClearQlWinConsole();
             // Delay some initilization tasks and complete initilization
             StartDelayedInit(6.5);
         }
@@ -194,7 +194,7 @@ namespace SSB.Core
         /// </summary>
         public void RetrieveBotAccount()
         {
-            QlCommands.SendToQl("name", true);
+            QlCommands.SendToQl("name", false);
         }
 
         /// <summary>
@@ -226,13 +226,14 @@ namespace SSB.Core
         /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
+            QlCommands.ClearQlWinConsole();
             // Synchronous
             // ReSharper disable once UnusedVariable
             // Request the configstrings after the current players have already been gathered in order
             // to get an accurate listing of the teams. This will also take care of any players that might have
             // been initially missed by the 'players' command.
             Task c = QlCommands.QlCmdConfigStrings();
-            QlCommands.ClearBothQlConsoles();
+            
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
             // Initialization is fully complete, we can accept user commands now.
             IsInitComplete = true;
@@ -286,6 +287,7 @@ namespace SSB.Core
                         var diffBuilder = new StringBuilder(received.Substring(start, length));
                         diffBuilder.Replace("\"\r\n\r\n", "\"\r\n");
                         diffBuilder.Replace("\r\n\"\r\n", "\r\n");
+                        diffBuilder.Replace("\r\n\r\n", "\r\n");
                         ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
                     }
 

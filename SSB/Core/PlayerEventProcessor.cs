@@ -35,6 +35,9 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public async Task HandleIncomingPlayerConnection(string player)
         {
+            // Player connections include the clan tag, so we need to remove it
+            player = GetStrippedName(player);
+            
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
 
             if ((Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
@@ -65,19 +68,14 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public void HandleOutgoingPlayerConnection(string player)
         {
-            // Abort the game if an active player leaves during count-down.
-            if (_ssb.ServerInfo.IsActivePlayer(player)
-                && _ssb.ServerInfo.CurrentServerGameState == QlGameStates.Countdown)
+            // See if outgoing player was active
+            if (_ssb.ServerInfo.IsActivePlayer(player))
             {
-                _ssb.QlCommands.SendToQl("abort", false);
+                // Abort if this player's disconnection would make it uneven
                 // ReSharper disable once UnusedVariable
-                var s =
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format("^7Active player^3 {0}^7 left during countdown. Aborting game.", player));
-                Debug.WriteLine(string.Format("+++++ Active player {0} left during count-down. Aborting match! +++++",
-                   player));
+                var a = AbortIfTeamsUneven();
             }
-
+            
             // Remove player from our internal list
             RemovePlayer(player);
 
@@ -96,6 +94,23 @@ namespace SSB.Core
             var eqh = new EarlyQuitHandler(_ssb);
             // ReSharper disable once UnusedVariable
             var e = eqh.ProcessEarlyQuit(player);
+        }
+
+        /// <summary>
+        /// Abort the game if an active player disconnecting (dc, kick, ragequit, spec) during count-down
+        /// would make the teams uneven.
+        /// </summary>
+        private async Task AbortIfTeamsUneven()
+        {
+            // Abort the game if an active player disconnecting (dc, kick, ragequit) during count-down
+            // would make the teams uneven.
+            if (_ssb.ServerInfo.CurrentServerGameState == QlGameStates.Countdown &&
+                !_ssb.ServerInfo.HasEvenTeams())
+            {
+                await _ssb.QlCommands.QlCmdSay("^1An active player left during countdown. This game will be aborted!");
+                await _ssb.QlCommands.SendToQlDelayedAsync("abort", false, 20);
+                Debug.WriteLine("+++++ Active player left during count-down. Aborting match! +++++");
+            }
         }
 
         /// <summary>
@@ -170,22 +185,11 @@ namespace SSB.Core
                     .ToLowerInvariant();
 
             string name = text.Substring(0, text.LastIndexOf('\u0019'));
-            string msgFrom;
-
+            
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
             if (name.StartsWith("\u0019[")) return;
 
-            if (name.LastIndexOf(" ", StringComparison.Ordinal) != -1)
-            {
-                // Has clan tag; get name only
-                msgFrom = name.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1,
-                    text.LastIndexOf('\u0019')).ToLowerInvariant();
-            }
-            else
-            {
-                // No clan tag; get name only
-                msgFrom = name;
-            }
+            string msgFrom = GetStrippedName(name);
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
@@ -195,6 +199,22 @@ namespace SSB.Core
                 // ReSharper disable once UnusedVariable
                 Task s = _ssb.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
+        }
+
+        /// <summary>
+        /// Gets the name of player with the clan tag stripped away, if it exists.
+        /// </summary>
+        /// <param name="name">The input name.</param>
+        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
+        /// <remarks>
+        /// This is necessary because certain events, namely player connections and when the player spectates,
+        /// use the full name with the clan tag included, but internally the bot always uses the short name.
+        /// </remarks>
+        private string GetStrippedName(string name)
+        {
+            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ? 
+                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
+                : name;
         }
 
         /// <summary>
@@ -232,7 +252,6 @@ namespace SSB.Core
             // Player already exists... Update if necessary.
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
             {
-                //Debug.WriteLine(string.Format("{0} already exists, updating player info if necessary.", playername));
                 if (p.Ready != ready)
                 {
                     UpdatePlayerReadyStatus(playername, ready);
@@ -254,6 +273,16 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public async Task HandlePlayerWentToSpec(string player)
         {
+            // Spectator event includes the full clan tag, so need to strip
+            player = GetStrippedName(player);
+
+            // See if outgoing player was active
+            if (_ssb.ServerInfo.IsActivePlayer(player))
+            {
+                // Abort if this player's disconnection would make it uneven
+                // ReSharper disable once UnusedVariable
+                var a = AbortIfTeamsUneven();
+            }
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;

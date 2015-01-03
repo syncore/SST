@@ -13,8 +13,8 @@ namespace SSB.Util
         /// </summary>
         public Parser()
         {
-            CcmdFollowPlayer = new ccmdFollowPlayer();
             CfgStringPlayerInfo = new cfgStringPlayerInfo();
+            CvarSetTwo = new cvarSetTwo();
             PlPlayerNameAndId = new plPlayerNameAndId();
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
@@ -22,15 +22,18 @@ namespace SSB.Util
             CvarNameAndValue = new cvarNameAndValue();
             EvMapLoaded = new evMapLoaded();
             ScmdAccuracy = new scmdAccuracy();
+            ScmdPakInfo = new scmdPakInfo();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
             ScmdPlayerJoinedSpectators = new scmdPlayerJoinedSpectators();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
+            ScmdTinfo = new scmdTinfo();
             ScmdVoteCalledDetails = new scmdVoteCalledDetails();
             ScmdVoteCalledTagAndPlayer = new scmdVoteCalledTagAndPlayer();
             ScmdVoteNumYesVotes = new scmdVoteNumYesVotes();
+            ScmdMatchAborted = new scmdMatchAborted();
             ScmdGameStateChange = new scmdGameStateChange();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdIntermission = new scmdIntermission();
@@ -42,19 +45,6 @@ namespace SSB.Util
             SvInfoServerPublicId = new svInfoServerPublicId();
             UtilCaretColor = new utilCaretColor();
         }
-
-        /// <summary>
-        ///     Regex for matching the player currently being followed by the bot in spectate mode after
-        ///     issuing the 'follow' command.
-        /// </summary>
-        /// <value>
-        ///     Regex for matching the player currently being followed by the bot in spectate mode after
-        ///     issuing the 'follow' command.
-        /// </value>
-        /// <remarks>
-        ///     Named group 'player' returns the name of the player that the follow command has been issued upon.
-        /// </remarks>
-        public Regex CcmdFollowPlayer { get; private set; }
 
         /// <summary>
         ///     Regex for matching the player info returned by the 'configstrings' command.
@@ -81,6 +71,17 @@ namespace SSB.Util
         ///     Example: "name" is:"syncore" default:"UnnamedPlayer" - cvarname: name - cvarvalue: syncore
         /// </remarks>
         public Regex CvarNameAndValue { get; private set; }
+
+        /// <summary>
+        /// Regex for matching Cvar_Set2 strings which should typically be ignored in 'developer 1' mode.
+        /// </summary>
+        /// <value>
+        /// Regex for matching Cvar_Set2 strings which should typically be ignored in 'developer 1' mode.
+        /// </value>
+        /// <remarks>
+        /// This matches Cvar_Set2: text which should be ignored in developer 1 mode.
+        /// </remarks>
+        public Regex CvarSetTwo { get; private set; }
 
         /// <summary>
         ///     Regex for detecting when the map has loaded.
@@ -197,6 +198,25 @@ namespace SSB.Util
         public Regex ScmdIntermission { get; private set; }
 
         /// <summary>
+        /// Regex for detecting when a match is aborted.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting when a match is aborted.
+        /// </value>
+        public Regex ScmdMatchAborted { get; private set; }
+
+        /// <summary>
+        /// Regex for matching servercommands that contain unneccessarily long pak info which should be ignored.
+        /// </summary>
+        /// <value>
+        /// Regex for matching servercommands that contain unneccessarily long pak info which should be ignored.
+        /// </value>
+        /// <remarks>
+        /// This matches servercommands: bcs# 1, which typically contains sv_pak info which is not necessary for parsing.
+        /// </remarks>
+        public Regex ScmdPakInfo { get; private set; }
+
+        /// <summary>
         ///     Regex for matching the player info presented as a server command.
         /// </summary>
         /// <value>
@@ -267,6 +287,14 @@ namespace SSB.Util
         ///     This contains a named group, 'player' that has the name of the player who has ragequit.
         /// </remarks>
         public Regex ScmdPlayerRageQuits { get; private set; }
+
+        /// <summary>
+        /// Regex for getting the tinfo text (that will be ignored).
+        /// </summary>
+        /// <value>
+        /// Regex for getting the tinfo text (that will be ignored).
+        /// </value>
+        public Regex ScmdTinfo { get; private set; }
 
         /// <summary>
         ///     Regex for getting the details of the vote that was just called.

@@ -76,6 +76,11 @@ namespace SSB.Core.Commands.None
                             ModuleCmd.AccuracyArg));
                 return;
             }
+            if (string.IsNullOrEmpty(_ssb.BotName))
+            {
+                _ssb.RetrieveBotAccount();
+                return;
+            }
             if (!Tools.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
@@ -222,6 +227,8 @@ namespace SSB.Core.Commands.None
             var player = c.Args[1];
             _ssb.QlCommands.SendToQl("team s", false);
             await _ssb.QlCommands.SendToQlAsync(string.Format("follow {0}", player), true);
+            _ssb.ServerInfo.PlayerCurrentlyFollowing = player;
+            Debug.WriteLine("Attempting to follow player: " + player);
             await StartAccuracyRead();
             await EndAccuracyRead();
         }

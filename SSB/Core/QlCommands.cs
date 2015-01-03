@@ -215,7 +215,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                double l = ((text.Length/MaxChatlineLength) + .5);
+                double l = ((text.Length / MaxChatlineLength) + .5);
                 double linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -252,7 +252,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<string> say = DoSay;
                         say(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -306,6 +306,23 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Asynchronously sends the given text to the QL console after a specified time delay.
+        /// </summary>
+        /// <param name="toSend">The text to send.</param>
+        /// <param name="delay">if set to <c>true</c> [delay].</param>
+        /// <param name="runCmdInSeconds">The number of seconds to wait before sending the given text..</param>
+        /// <remarks>
+        ///     This is primarily used for the 'players' command since the player info is not immediately available
+        ///     when a player connects, we wait a certain number of seconds before requesting it.
+        /// </remarks>
+        public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
+        {
+            await Task.Delay(runCmdInSeconds * 1000);
+            Action<string, bool> sendQl = SendQlCommand;
+            sendQl(toSend, delay);
+        }
+
+        /// <summary>
         ///     Sends the 'say' command to QL.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -341,23 +358,6 @@ namespace SSB.Core
                 // Creates a new event handler that will never be set, and then waits the full timeout period
                 new ManualResetEvent(false).WaitOne(10);
             }
-        }
-
-        /// <summary>
-        ///     Asynchronously sends the given text to the QL console after a specified time delay.
-        /// </summary>
-        /// <param name="toSend">The text to send.</param>
-        /// <param name="delay">if set to <c>true</c> [delay].</param>
-        /// <param name="runCmdInSeconds">The number of seconds to wait before sending the given text..</param>
-        /// <remarks>
-        ///     This is primarily used for the 'players' command since the player info is not immediately available
-        ///     when a player connects, we wait a certain number of seconds before requesting it.
-        /// </remarks>
-        private async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
-        {
-            await Task.Delay(runCmdInSeconds*1000);
-            Action<string, bool> sendQl = SendQlCommand;
-            sendQl(toSend, delay);
         }
     }
 }

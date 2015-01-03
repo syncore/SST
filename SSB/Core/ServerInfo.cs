@@ -70,6 +70,18 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether the active player count on the server is an even number.
+        /// </summary>
+        /// <returns><c>true</c> if the server's active (team red or team blue) player count is
+        /// an even number; otherwise <c>false</c>.</returns>
+        public bool HasEvenTeams()
+        {
+            var red = GetTeam(Team.Red);
+            var blue = GetTeam(Team.Blue);
+            return (red.Count + blue.Count) % 2 == 0;
+        }
+
+        /// <summary>
         /// Determines whether the specified player is an active player (on red or blue team).
         /// </summary>
         /// <param name="player">The player.</param>
