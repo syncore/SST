@@ -52,8 +52,8 @@ namespace SSB.Core
             int id = -1;
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo))
             {
-                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
                 id = pinfo.Id;
+                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
             }
             return id;
         }

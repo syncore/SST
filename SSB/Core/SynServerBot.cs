@@ -44,10 +44,9 @@ namespace SSB.Core
             Mod = new ModuleManager(this);
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
-            // Get name of account running the bot
-            QlCommands.ClearQlWinConsole();
             // Delay some initilization tasks and complete initilization
             StartDelayedInit(6.5);
+            QlCommands.ClearQlWinConsole();
         }
 
         /// <summary>
@@ -167,6 +166,28 @@ namespace SSB.Core
         public VoteManager VoteManager { get; private set; }
 
         /// <summary>
+        /// Reloads the initialization step.
+        /// </summary>
+        /// <remarks>
+        /// This is primarily designed to be accessed via an admin command from QL.
+        /// </remarks>
+        public void ReloadInit()
+        {
+            IsInitComplete = false;
+            InitServerInformation();
+            StartDelayedInit(6.5);
+            QlCommands.ClearQlWinConsole();
+        }
+
+        /// <summary>
+        /// Get name of account running the bot.
+        /// </summary>
+        public void RetrieveBotAccount()
+        {
+            QlCommands.SendToQl("name", false);
+        }
+
+        /// <summary>
         ///     Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
@@ -190,14 +211,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Get name of account running the bot.
-        /// </summary>
-        public void RetrieveBotAccount()
-        {
-            QlCommands.SendToQl("name", false);
-        }
-
-        /// <summary>
         ///     Initializes the server information.
         /// </summary>
         private void InitServerInformation()
@@ -211,7 +224,7 @@ namespace SSB.Core
             // Initially get the player listing when we start. Synchronous since initilization.
             // ReSharper disable once UnusedVariable
             Task q = QlCommands.QlCmdPlayers();
-            
+
             //QlCommands.SendToQl("name", false);
             // Get the server's id
             QlCommands.SendToQl("serverinfo", true);
@@ -233,7 +246,7 @@ namespace SSB.Core
             // to get an accurate listing of the teams. This will also take care of any players that might have
             // been initially missed by the 'players' command.
             Task c = QlCommands.QlCmdConfigStrings();
-            
+
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
             // Initialization is fully complete, we can accept user commands now.
             IsInitComplete = true;

@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using SSB.Enum;
 using SSB.Model;
 using SSB.Util;
@@ -26,10 +27,13 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
-        public UserDbResult AddUserToDb(string user)
+        /// <param name="doublePenalty">if set to <c>true</c> double the penalty
+        /// for particularly egregious early quits (i.e. during countdown).</param>
+        /// <returns></returns>
+        public UserDbResult AddUserToDb(string user, bool doublePenalty)
         {
             var result = UserDbResult.Unspecified;
             if (VerifyDb())
@@ -49,7 +53,7 @@ namespace SSB.Database
                             cmd.CommandText =
                                 "INSERT INTO earlyquitters(user, numQuits) VALUES(@user, @numQuits)";
                             cmd.Parameters.AddWithValue("@user", user);
-                            cmd.Parameters.AddWithValue("@numQuits", 1);
+                            cmd.Parameters.AddWithValue("@numQuits", (doublePenalty ? 2 : 1));
                             cmd.ExecuteNonQuery();
                             Debug.WriteLine(
                                 string.Format("AddUserToBanDb: {0} successfully added to early quitter DB",
@@ -106,6 +110,48 @@ namespace SSB.Database
         }
 
         /// <summary>
+        /// Gets all of the users who have quit early.
+        /// </summary>
+        /// <returns>The early quitters as a comma-separated string.</returns>
+        public string GetAllQuits()
+        {
+            var quits = new StringBuilder();
+            if (VerifyDb())
+            {
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText = "SELECT * FROM earlyquitters";
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    Debug.WriteLine("GetAllQuits: No earlyquit users found in database");
+                                    return string.Empty;
+                                }
+                                while (reader.Read())
+                                {
+                                    var player = (string)reader["user"];
+                                    quits.Append(string.Format("{0}({1}), ", player, GetUserQuitCount(player)));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Problem checking if user exists in seen database: " + ex.Message);
+                }
+            }
+            return quits.ToString().TrimEnd(',', ' ');
+        }
+
+        /// <summary>
         ///     Gets the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -139,7 +185,7 @@ namespace SSB.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    quitCount = (long) reader["numQuits"];
+                                    quitCount = (long)reader["numQuits"];
                                     Debug.WriteLine("GetUserQuitCount: {0} has {1} early quits.", user,
                                         quitCount);
                                 }
@@ -156,10 +202,12 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Increments the user quit count.
+        /// Increments the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
-        public void IncrementUserQuitCount(string user)
+        /// <param name="doublePenalty">if set to <c>true</c> double the penalty
+        /// for particularly egregious early quits (i.e. during countdown).</param>
+        public void IncrementUserQuitCount(string user, bool doublePenalty)
         {
             if (VerifyDb())
             {
@@ -178,12 +226,14 @@ namespace SSB.Database
                             cmd.CommandText =
                                 "UPDATE earlyquitters SET numQuits = @newQuitCount WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user);
-                            cmd.Parameters.AddWithValue("@newQuitCount", (GetUserQuitCount(user) + 1));
+
+                            cmd.Parameters.AddWithValue("@newQuitCount", ((doublePenalty ? GetUserQuitCount(user) * 2
+                                : GetUserQuitCount(user) + 1)));
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Incremented early quit count for: {0} from early quitter database.", user));
+                                Debug.WriteLine("{0} Incremented early quit count for: {1} from early quitter database.",
+                                    doublePenalty ? "[DOUBLE PENALTY]" : "", user);
                             }
                         }
                     }

@@ -253,7 +253,7 @@ namespace SSB.Core.Commands.Modules
             }
             if (time > int.MaxValue)
             {
-                // Just compare to int type's max size as in case of month and year
+                // Just compare to int type's max size because in the case of month and year
                 // it has to be converted to int and can't be double anyway
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
                 return;

@@ -226,7 +226,12 @@ namespace SSB.Core.Commands.None
         {
             var player = c.Args[1];
             _ssb.QlCommands.SendToQl("team s", false);
-            await _ssb.QlCommands.SendToQlAsync(string.Format("follow {0}", player), true);
+            int id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            if (id != -1)
+            {
+                await _ssb.QlCommands.SendToQlAsync(string.Format("follow {0}", id), true);
+            }
+            
             _ssb.ServerInfo.PlayerCurrentlyFollowing = player;
             Debug.WriteLine("Attempting to follow player: " + player);
             await StartAccuracyRead();

@@ -109,7 +109,6 @@ namespace SSB.Core
         {
             if (msg.Equals(_oldLastLineText)) return;
 
-            
             _oldLastLineText = msg;
             // See if it's something we've issued
             if (msg.StartsWith("]/"))
@@ -117,10 +116,10 @@ namespace SSB.Core
                 Debug.WriteLine(string.Format("** Detected our own command: {0} **", Strip(msg)));
                 return;
             }
-            
+
             Debug.WriteLine(string.Format("Received console text: {0}", msg));
-            
-             //When owner is playing on same account as bot, tinfo messages will be constantly sent. Ignore.
+
+            //When owner is playing on same account as bot, tinfo messages will be constantly sent. Ignore.
             //if (_ssb.Parser.ScmdTinfo.IsMatch(msg)) return;
 
             // Batch process, as there will sometimes be multiple lines.
@@ -209,7 +208,7 @@ namespace SSB.Core
                 // player configstring info detected (servercommand)
                 if (PlayerConfigStringSrvCmdDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (OutgoingPlayerDetected(text)) continue;
+                if (OutgoingPlayerDetected(text).Result) continue;
                 // 'player joined the spectators' detected
                 if (PlayerJoinedSpectatorsDetected(text).Result) continue;
                 // player accuracy data detected
@@ -284,7 +283,7 @@ namespace SSB.Core
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
-            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring
+            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring (more accurate)
             else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfoServerGamestate;
@@ -398,7 +397,7 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
         /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
-        private bool OutgoingPlayerDetected(string text)
+        private async Task<bool> OutgoingPlayerDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
                 !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) && !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
@@ -420,7 +419,7 @@ namespace SSB.Core
                 m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
-            _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+            await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
             return true;
         }
 
@@ -456,8 +455,8 @@ namespace SSB.Core
             Match m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
             if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
             {
-                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
-                                "returning to prevent NEWPLAYER(CS).");
+                // Ignore parsing of empty player configstring on disconnect,
+                // which would otherwise re-create the outgoing user.
                 return false;
             }
             _playerEventProcessor.HandlePlayerConfigString(m);
@@ -518,19 +517,6 @@ namespace SSB.Core
                     HandleCvarRequest(t as Match);
                     break;
             }
-        }
-
-        /// <summary>
-        /// Determines whether the text matches that of unncessary debug info in developer mode.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the text is unncessary debug information in developer 1 mode,
-        ///  otherwise <c>false</c></returns>
-        private bool UnncessaryDebugInfoDetected(string text)
-        {
-            return _ssb.Parser.ScmdTinfo.IsMatch(text) ||
-                   _ssb.Parser.CvarSetTwo.IsMatch(text) ||
-                   _ssb.Parser.ScmdPakInfo.IsMatch(text);
         }
 
         /// <summary>

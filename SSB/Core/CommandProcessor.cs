@@ -29,6 +29,7 @@ namespace SSB.Core
         public const string CmdAllReady = "allready";
         public const string CmdDelUser = "deluser";
         public const string CmdDeOp = "deop";
+        public const string CmdEarlyQuit = "earlyquit";
         public const string CmdElo = "elo";
         public const string CmdForceJoinBlue = "blue";
         public const string CmdForceJoinRed = "red";
@@ -41,7 +42,7 @@ namespace SSB.Core
         public const string CmdMute = "mute";
         public const string CmdOp = "op";
         public const string CmdPause = "pause";
-        public const string CmdRefresh = "refresh";
+        public const string CmdReload = "reload";
         public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdSeen = "seen";
         public const string CmdShutdown = "shutdown";
@@ -79,6 +80,7 @@ namespace SSB.Core
                 {CmdForceJoinBlue, new ForceJoinBlueCmd(_ssb)},
                 {CmdDelUser, new DelUserCmd(_ssb)},
                 {CmdDeOp, new DeOpCmd(_ssb)},
+                {CmdEarlyQuit, new EarlyQuitCmd(_ssb)},
                 {CmdElo, new EloCmd(_ssb)},
                 {CmdHelp, new HelpCmd(_ssb)},
                 {CmdInvite, new InviteCmd(_ssb)},
@@ -97,7 +99,7 @@ namespace SSB.Core
                 {CmdUnlock, new UnlockCmd(_ssb)},
                 {CmdUnmute, new UnmuteCmd(_ssb)},
                 {CmdUnpause, new UnpauseCmd(_ssb)},
-                {CmdRefresh, new RefreshCmd(_ssb)},
+                {CmdReload, new ReloadCmd(_ssb)},
                 {CmdSeen, new SeenCmd(_ssb)},
                 {CmdShutdown, new ShutdownCmd(_ssb)},
                 {CmdStopServer, new StopServerCmd(_ssb)},

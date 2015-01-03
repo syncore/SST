@@ -35,9 +35,12 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public async Task HandleIncomingPlayerConnection(string player)
         {
+            // "/?" command, regex would otherwise match, so ignore
+            if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase)) return;
+
             // Player connections include the clan tag, so we need to remove it
             player = GetStrippedName(player);
-            
+
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
 
             if ((Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
@@ -66,16 +69,11 @@ namespace SSB.Core
         ///     Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
-        public void HandleOutgoingPlayerConnection(string player)
+        public async Task HandleOutgoingPlayerConnection(string player)
         {
-            // See if outgoing player was active
-            if (_ssb.ServerInfo.IsActivePlayer(player))
-            {
-                // Abort if this player's disconnection would make it uneven
-                // ReSharper disable once UnusedVariable
-                var a = AbortIfTeamsUneven();
-            }
-            
+            // The outgoing player was actually in the game, and not a spectator
+            bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
+
             // Remove player from our internal list
             RemovePlayer(player);
 
@@ -90,27 +88,9 @@ namespace SSB.Core
 
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
-            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
-            var eqh = new EarlyQuitHandler(_ssb);
-            // ReSharper disable once UnusedVariable
-            var e = eqh.ProcessEarlyQuit(player);
-        }
-
-        /// <summary>
-        /// Abort the game if an active player disconnecting (dc, kick, ragequit, spec) during count-down
-        /// would make the teams uneven.
-        /// </summary>
-        private async Task AbortIfTeamsUneven()
-        {
-            // Abort the game if an active player disconnecting (dc, kick, ragequit) during count-down
-            // would make the teams uneven.
-            if (_ssb.ServerInfo.CurrentServerGameState == QlGameStates.Countdown &&
-                !_ssb.ServerInfo.HasEvenTeams())
-            {
-                await _ssb.QlCommands.QlCmdSay("^1An active player left during countdown. This game will be aborted!");
-                await _ssb.QlCommands.SendToQlDelayedAsync("abort", false, 20);
-                Debug.WriteLine("+++++ Active player left during count-down. Aborting match! +++++");
-            }
+            if (!outgoingWasActive) return;
+            await EvalCountdownQuitter(player);
+            await EvalInProgressQuitter(player);
         }
 
         /// <summary>
@@ -185,7 +165,7 @@ namespace SSB.Core
                     .ToLowerInvariant();
 
             string name = text.Substring(0, text.LastIndexOf('\u0019'));
-            
+
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
             if (name.StartsWith("\u0019[")) return;
 
@@ -202,33 +182,15 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Gets the name of player with the clan tag stripped away, if it exists.
-        /// </summary>
-        /// <param name="name">The input name.</param>
-        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
-        /// <remarks>
-        /// This is necessary because certain events, namely player connections and when the player spectates,
-        /// use the full name with the clan tag included, but internally the bot always uses the short name.
-        /// </remarks>
-        private string GetStrippedName(string name)
-        {
-            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ? 
-                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
-                : name;
-        }
-
-        /// <summary>
         ///     Handles the player's configuration string.
         /// </summary>
         /// <param name="m">The match.</param>
         public void HandlePlayerConfigString(Match m)
         {
-            // Player has been kicked or otherwise leaves; the playerinfo which is normally
-            // n\name\t#\model... will just be ""; which would be treated as a new player connecting, so return
             if (m.Groups["playerinfo"].Value.Equals("\"\"", StringComparison.InvariantCultureIgnoreCase))
             {
-                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
-                                "returning to prevent NEWPLAYER(CS).");
+                // Player has been kicked or otherwise leaves; the playerinfo which is normally
+                // n\name\t#\model... will just be ""; which would be treated as a new player connecting, ignore.
                 return;
             }
 
@@ -276,18 +238,14 @@ namespace SSB.Core
             // Spectator event includes the full clan tag, so need to strip
             player = GetStrippedName(player);
 
-            // See if outgoing player was active
-            if (_ssb.ServerInfo.IsActivePlayer(player))
-            {
-                // Abort if this player's disconnection would make it uneven
-                // ReSharper disable once UnusedVariable
-                var a = AbortIfTeamsUneven();
-            }
+            // The outgoing player was actually in the game & not a spectator.
+            bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
+
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
-            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
-            var eqh = new EarlyQuitHandler(_ssb);
-            await eqh.ProcessEarlyQuit(player);
+            if (!outgoingWasActive) return;
+            await EvalCountdownQuitter(player);
+            await EvalInProgressQuitter(player);
         }
 
         /// <summary>
@@ -329,19 +287,20 @@ namespace SSB.Core
             }
             id = (id - 29);
             int tm;
+            string playername = GetCsValue("n", pi);
             if (!int.TryParse(GetCsValue("t", pi), out tm))
             {
                 Debug.WriteLine(string.Format("Unable to determine team info for player {0} from cs info.",
-                    GetCsValue("n", pi)));
+                    playername));
                 return;
             }
-            string playername = GetCsValue("n", pi);
+
             string clantag = GetCsValue("cn", pi);
             string subscriber = GetCsValue("su", pi);
             string fullclanname = GetCsValue("xcn", pi);
             string country = GetCsValue("c", pi);
 
-            // Create player. Also Set misc details like full clan name, country code, subscription status.
+            // Create player. Also set misc details like full clan name, country code, subscription status.
             _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
                 id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
             Debug.Write(
@@ -351,7 +310,53 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Handles the QLRanks elo update if necessary.
+        /// Evaluates early quitters who leave during countdown and punishes them
+        /// with double the usual punishment if the teams would be made uneven by their quitting.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        private async Task EvalCountdownQuitter(string player)
+        {
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.Countdown) return;
+            // Only punish if early quitter actually made the teams uneven by quitting
+            if (!_ssb.ServerInfo.HasEvenTeams())
+            {
+                var eqh = new EarlyQuitHandler(_ssb);
+                // Double penalty for countdown quit
+                await eqh.ProcessEarlyQuit(player, true);
+            }
+        }
+
+        /// <summary>
+        /// Evaluates early quitters who leave during games that are in progress.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        private async Task EvalInProgressQuitter(string player)
+        {
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
+            var eqh = new EarlyQuitHandler(_ssb);
+            await eqh.ProcessEarlyQuit(player, false);
+        }
+
+        /// <summary>
+        /// Gets the name of player with the clan tag stripped away, if it exists.
+        /// </summary>
+        /// <param name="name">The input name.</param>
+        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
+        /// <remarks>
+        /// This is necessary because certain events, namely player connections and when the player spectates,
+        /// use the full name with the clan tag included, but internally the bot always uses the short name.
+        /// </remarks>
+        private string GetStrippedName(string name)
+        {
+            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
+                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
+                : name;
+        }
+
+        /// <summary>
+        ///     Handles the QLRanks Elo update if necessary.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task HandleEloUpdate(string player)

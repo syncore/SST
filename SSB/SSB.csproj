@@ -84,6 +84,7 @@
     <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
+    <Compile Include="Core\Commands\None\EarlyQuitCmd.cs" />
     <Compile Include="Core\Commands\None\EloCmd.cs" />
     <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Core\Commands\Admin\PauseCmd.cs" />
     <Compile Include="Core\Commands\Owner\StopServerCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnbanCmd.cs" />
-    <Compile Include="Core\Commands\SuperUser\RefreshCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\ReloadCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />

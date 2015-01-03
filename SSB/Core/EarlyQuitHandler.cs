@@ -35,10 +35,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Processes the early quit.
+        /// Processes the early quit.
         /// </summary>
         /// <param name="player">The player.</param>
-        public async Task ProcessEarlyQuit(string player)
+        /// <param name="doublePenalty">if set to <c>true</c> double the penalty
+        /// for particularly egregious early quits (i.e. during countdown).</param>
+        public async Task ProcessEarlyQuit(string player, bool doublePenalty)
         {
             if (_usersDb.GetUserLevel(player) >= UserLevel.SuperUser)
             {
@@ -51,15 +53,22 @@ namespace SSB.Core
             long qCount = 0;
             if (_quitsDb.UserExistsInDb(player))
             {
-                _quitsDb.IncrementUserQuitCount(player);
+                _quitsDb.IncrementUserQuitCount(player, doublePenalty);
                 qCount = await EvaluateUserQuitCount(player);
             }
             else
             {
-                _quitsDb.AddUserToDb(player);
+                _quitsDb.AddUserToDb(player, doublePenalty);
+            }
+            if (doublePenalty)
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 penalty was doubled for unbalancing teams during match start!",
+                    player));
+                Debug.WriteLine(string.Format("+++++ Active player {0} left during count-down. Penalty will be doubled.",
+                    player));
             }
             // Only show the log msg if we're not banning the user this time (ban msg is shown in that case)
-            if (qCount <= _maxQuitsAllowed)
+            if (qCount < _maxQuitsAllowed)
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
@@ -67,7 +76,7 @@ namespace SSB.Core
                             player));
             }
         }
-
+        
         /// <summary>
         ///     Bans the early quitter.
         /// </summary>
@@ -89,6 +98,9 @@ namespace SSB.Core
                     string.Format(
                         "^5[EARLYQUIT]^7 ^3{0}^7 has quit too many games early and is now banned until:^1 {1}",
                         player, expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+            
+            // The player might have not actually disconnected but spectated instead, so kickban(QL) immediately
+            await _ssb.QlCommands.CustCmdKickban(player);
         }
 
         /// <summary>
@@ -98,7 +110,7 @@ namespace SSB.Core
         private async Task<long> EvaluateUserQuitCount(string player)
         {
             long quitCount = _quitsDb.GetUserQuitCount(player);
-            if (quitCount > _maxQuitsAllowed)
+            if (quitCount >= _maxQuitsAllowed)
             {
                 await BanEarlyQuitter(player);
                 Debug.WriteLine(

@@ -9,17 +9,17 @@ namespace SSB.Core.Commands.SuperUser
     /// <summary>
     ///     Command: Refresh server information.
     /// </summary>
-    public class RefreshCmd : IBotCommand
+    public class ReloadCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
         private int _minArgs = 0;
         private UserLevel _userLevel = UserLevel.SuperUser;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RefreshCmd" /> class.
+        ///     Initializes a new instance of the <see cref="ReloadCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public RefreshCmd(SynServerBot ssb)
+        public ReloadCmd(SynServerBot ssb)
         {
             _ssb = ssb;
         }
@@ -64,7 +64,9 @@ namespace SSB.Core.Commands.SuperUser
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            await _ssb.QlCommands.SendToQlAsync("serverinfo", true);
+            await _ssb.QlCommands.QlCmdSay("^3[ATTENTION] ^2Reloading...please wait");
+            _ssb.ReloadInit();
+            
         }
     }
 }

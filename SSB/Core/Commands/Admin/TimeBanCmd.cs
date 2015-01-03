@@ -116,7 +116,7 @@ namespace SSB.Core.Commands.Admin
             if (_banDb.UserAlreadyBanned(c.Args[2]))
             {
                 // Ban has previously expired; delete it
-                RemoveAnyExpiredBans(c.Args[2]);
+                await RemoveAnyExpiredBans(c.Args[2]);
 
                 var banInfo = _banDb.GetBanInfo(c.Args[2]);
                 if (banInfo == null) return;
@@ -156,7 +156,7 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         private async Task CheckBan(CmdArgs c)
         {
-            RemoveAnyExpiredBans(c.Args[2]);
+            await RemoveAnyExpiredBans(c.Args[2]);
 
             var banInfo = _banDb.GetBanInfo(c.Args[2]);
             await _ssb.QlCommands.QlCmdSay(string.Format("^5[TIMEBAN]^7 {0}",
@@ -297,7 +297,7 @@ namespace SSB.Core.Commands.Admin
                     string[] bannedUsers = bans.Split(',');
                     foreach (var user in bannedUsers)
                     {
-                        RemoveAnyExpiredBans(user.Trim());
+                        await RemoveAnyExpiredBans(user.Trim());
                     }
                 }
             }
@@ -311,7 +311,7 @@ namespace SSB.Core.Commands.Admin
         /// Removes any expired bans.
         /// </summary>
         /// <param name="user">The user.</param>
-        private void RemoveAnyExpiredBans(string user)
+        private async Task RemoveAnyExpiredBans(string user)
         {
             if (!_banDb.IsExistingBanStillValid(user))
             {
@@ -323,6 +323,8 @@ namespace SSB.Core.Commands.Admin
                 }
 
                 _banDb.DeleteUserFromDb(user);
+                // remove from QL temporary ban system
+                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user), false);
             }
         }
     }

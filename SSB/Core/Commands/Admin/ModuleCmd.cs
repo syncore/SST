@@ -83,7 +83,7 @@ namespace SSB.Core.Commands.Admin
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - possible types are: {2} - ^5{0}{3}^7 to see list of currently active modules.",
+                "^1[ERROR]^3 Usage: {0}{1} <type> <args> ^7 - types: {2} - ^7For active: ^4{0}{1} {3}",
                 CommandProcessor.BotCommandPrefix, c.CmdName, string.Join(", ", _validModuleNames),
                 ActiveModuleArg));
         }
@@ -143,7 +143,7 @@ namespace SSB.Core.Commands.Admin
             var sb = new StringBuilder();
             foreach (IModule mod in _moduleList.Where(mod => mod.Active))
             {
-                sb.Append(string.Join("^7^2, ", mod.ModuleName));
+                sb.Append(string.Format("^7{0}^2, ", mod.ModuleName));
             }
             await
                 _ssb.QlCommands.QlCmdSay(string.Format("^2[ACTIVE MODULES]^7 {0}",

@@ -46,11 +46,11 @@ namespace SSB.Core
                 switch (banInfo.BanType)
                 {
                     case BanType.AddedByAdmin:
-                        reason = "admin ban.";
+                        reason = "admin ban";
                         break;
 
                     case BanType.AddedByEarlyQuit:
-                        reason = "too many early quits";
+                        reason = "early quits";
                         break;
 
                     default:
@@ -79,6 +79,8 @@ namespace SSB.Core
                 // In other words, leave user banned until he tries to reconnect then silently remove the ban. Note:
                 // expired bans are also removed when admins try to add, list, or check bans with the timeban command.
                 _banDb.DeleteUserFromDb(player);
+                // remove from QL's external temp kickban system as well
+                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", player), false);
             }
         }
 
