@@ -29,18 +29,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the name of the bot account.
-        /// </summary>
-        /// <param name="name">The name as text.</param>
-        /// <returns>The name of the account running the bot.</returns>
-        public string SetBotAccountName(string name)
-        {
-            Debug.WriteLine("The name of the account running the bot is: " + name);
-            _ssb.BotName = name;
-            return name;
-        }
-
-        /// <summary>
         ///     Attempts to retrieve a given player's player id (clientnum) from our internal
         ///     player list.
         /// </summary>

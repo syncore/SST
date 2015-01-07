@@ -72,6 +72,7 @@
     <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
     <Compile Include="Config\Modules\EloLimitOptions.cs" />
     <Compile Include="Config\Modules\MotdOptions.cs" />
+    <Compile Include="Config\Modules\ServersOptions.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
     <Compile Include="Core\Commands\Modules\EarlyQuit.cs" />
     <Compile Include="Core\Commands\Modules\Motd.cs" />
+    <Compile Include="Core\Commands\Modules\Servers.cs" />
     <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\AccessCmd.cs" />
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\None\AccCmd.cs" />
+    <Compile Include="Core\Commands\None\ServersCmd.cs" />
     <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Model\QlRanks\QlRanks.cs" />
     <Compile Include="Model\QlRanks\QlRanksPlayer.cs" />
     <Compile Include="Model\QlRanks\Tdm.cs" />
+    <Compile Include="Model\QuakeLiveApi\FilterObject.cs" />
     <Compile Include="Model\QuakeLiveApi\Player.cs" />
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
     <Compile Include="Util\ExpirationDateGenerator.cs" />
@@ -171,6 +175,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\QlCommands.cs" />
     <Compile Include="Util\QlAccountDateChecker.cs" />
+    <Compile Include="Util\QlLocations.cs" />
     <Compile Include="Util\QlRanksEloRetriever.cs" />
     <Compile Include="Util\QlRanksHelper.cs" />
     <Compile Include="Util\QlRemoteInfoRetriever.cs" />

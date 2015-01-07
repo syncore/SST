@@ -64,5 +64,13 @@ namespace SSB.Config
         ///     The motd options.
         /// </value>
         public MotdOptions MotdOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the servers options.
+        /// </summary>
+        /// <value>
+        /// The servers options.
+        /// </value>
+        public ServersOptions ServersOptions { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace SSB.Core.Commands.Modules
             "month", "months", "year", "years"
         };
 
-        private int _minmoduleArgs = 3;
+        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EarlyQuit" /> class.
@@ -81,7 +81,7 @@ namespace SSB.Core.Commands.Modules
         /// </value>
         public int MinModuleArgs
         {
-            get { return _minmoduleArgs; }
+            get { return _minModuleArgs; }
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace SSB.Core.Commands.Modules
         /// <returns></returns>
         public async Task EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minmoduleArgs)
+            if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
                 return;

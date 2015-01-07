@@ -29,8 +29,6 @@ namespace SSB.Core
             _voteHandler = new VoteHandler(_ssb);
         }
 
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
-
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -119,11 +117,8 @@ namespace SSB.Core
 
             Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
-            //When owner is playing on same account as bot, tinfo messages will be constantly sent. Ignore.
-            //if (_ssb.Parser.ScmdTinfo.IsMatch(msg)) return;
-
             // Batch process, as there will sometimes be multiple lines.
-            string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string[] arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -151,7 +146,7 @@ namespace SSB.Core
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
                 return;
             }
             // If appending to textbox, must clear first
@@ -242,7 +237,7 @@ namespace SSB.Core
                 }
                 ProcessCommand(cmd, playersToParse);
             }
-            // 'serverinfo' command has been detected; extract the relevant information from it.
+                // 'serverinfo' command has been detected; extract the relevant information from it.
             else if (_ssb.Parser.SvInfoServerPublicId.IsMatch(text) || _ssb.Parser.SvInfoGameType.IsMatch(text) ||
                      _ssb.Parser.SvInfoGameState.IsMatch(text))
             {
@@ -267,14 +262,14 @@ namespace SSB.Core
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
-            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring (more accurate)
+                // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring (more accurate)
             else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfoServerGamestate;
                 Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
                 ProcessCommand(cmd, m.Groups["gamestatus"].Value);
             }
-            // map load or map change detected; handle it.
+                // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
@@ -315,6 +310,7 @@ namespace SSB.Core
             return true;
         }
 
+        /*
         /// <summary>
         ///     Handles pre-defined cvar requests.
         /// </summary>
@@ -325,11 +321,12 @@ namespace SSB.Core
             string value = m.Groups["cvarvalue"].Value;
             switch (cvar)
             {
-                //case "name":
-                   // _ssb.ServerEventProcessor.SetBotAccountName(value);
-                    //break;
+                case "name":
+                    _ssb.ServerEventProcessor.SetBotAccountName(value);
+                    break;
             }
         }
+        */
 
         /// <summary>
         ///     Determines whether the text matches that of an incoming player and handles it if it does.
@@ -363,7 +360,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of a match abortion.
+        ///     Determines whether the text matches that of a match abortion.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the text matches that of a match abortion, otherwise <c>false</c>.</returns>
@@ -497,9 +494,9 @@ namespace SSB.Core
                     _ssb.ServerEventProcessor.HandleMapLoad(t as string);
                     break;
 
-                case QlCommandType.CvarRequest:
-                    HandleCvarRequest(t as Match);
-                    break;
+                    //case QlCommandType.CvarRequest:
+                    //    HandleCvarRequest(t as Match);
+                    //    break;
             }
         }
 
@@ -540,5 +537,7 @@ namespace SSB.Core
             _voteHandler.HandleVoteStart(text);
             return true;
         }
+
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
 }

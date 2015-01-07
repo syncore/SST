@@ -56,7 +56,7 @@ namespace SSB.Core.Commands.None
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} [name] ^7- Leave name empty to check all players' accuracies.",
+                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
         }
 
@@ -76,6 +76,15 @@ namespace SSB.Core.Commands.None
                             ModuleCmd.AccuracyArg));
                 return;
             }
+
+            if (!Tools.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not currently on the server!",
+                        c.Args[1]));
+                return;
+            }
+            
             if (!Tools.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
@@ -101,7 +110,6 @@ namespace SSB.Core.Commands.None
             // Send negative state of acc button.
             // Must "re-join" spectators even though we're already there, so that the 1st player whose
             // accuracy is being scanned on the next go-around is correctly detected (QL issue)
-            //_ssb.QlCommands.SendToQl("-acc;team s", false);
             await _ssb.QlCommands.SendToQlAsync("-acc;team s", true);
             // Reset internal tracking
             _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
@@ -235,13 +243,6 @@ namespace SSB.Core.Commands.None
         private async Task ShowAccSinglePlayer(CmdArgs c)
         {
             string player = c.Args[1];
-            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
-            {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not currently on the server!",
-                        player));
-                return;
-            }
             await RetrieveAccuracy(c);
             string accStr = FormatAccString(player);
             await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 accuracy: {1}",

@@ -1,5 +1,8 @@
 ﻿namespace SSB.Config.Modules
 {
+    /// <summary>
+    ///     Model class that represents the accuracy module options for the configuration file.
+    /// </summary>
     public class AccuracyOptions
     {
         /// <summary>

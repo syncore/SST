@@ -56,6 +56,8 @@ namespace SSB.Config
         /// </summary>
         public void RestoreDefaultConfiguration()
         {
+            // TODO: re-examine some reasonable defaults for these options, including isActive before release
+            
             // Load these fail-safe defaults and save as the new configuration
             // Bot owners
             var owners = new HashSet<string> {"syncore"};
@@ -102,6 +104,12 @@ namespace SSB.Config
                 message = string.Empty,
                 repeatInterval = 0
             };
+            var serversOptions = new ServersOptions
+            {
+                isActive = false,
+                maxServers = 5,
+                timeBetweenQueries = 45
+            };
 
             Config.AccountDateOptions = acctDateOptions;
             Config.AccuracyOptions = accuracyOptions;
@@ -110,6 +118,7 @@ namespace SSB.Config
             Config.EarlyQuitOptions = earlyQuitOptions;
             Config.EloLimitOptions = eloLimitOptions;
             Config.MotdOptions = motdOptions;
+            Config.ServersOptions = serversOptions;
 
             string json = JsonConvert.SerializeObject(Config);
             using (FileStream fs = File.Create(Filepaths.ConfigurationFilePath))

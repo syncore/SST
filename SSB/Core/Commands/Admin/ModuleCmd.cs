@@ -20,6 +20,7 @@ namespace SSB.Core.Commands.Admin
         public const string EarlyQuitArg = EarlyQuit.NameModule;
         public const string EloLimitArg = EloLimit.NameModule;
         public const string MotdArg = Motd.NameModule;
+        public const string ServersArg = Servers.NameModule;
         private const string ActiveModuleArg = "active";
         private readonly List<IModule> _moduleList;
         private readonly SynServerBot _ssb;
@@ -41,7 +42,8 @@ namespace SSB.Core.Commands.Admin
                 AutoVoteArg,
                 EarlyQuitArg,
                 EloLimitArg,
-                MotdArg
+                MotdArg,
+                ServersArg
             };
             _moduleList = new List<IModule>
             {
@@ -50,7 +52,8 @@ namespace SSB.Core.Commands.Admin
                 _ssb.Mod.AutoVoter,
                 _ssb.Mod.EarlyQuit,
                 _ssb.Mod.EloLimit,
-                _ssb.Mod.Motd
+                _ssb.Mod.Motd,
+                _ssb.Mod.Servers
             };
         }
 
@@ -122,6 +125,10 @@ namespace SSB.Core.Commands.Admin
 
                 case MotdArg:
                     await _ssb.Mod.Motd.EvalModuleCmdAsync(c);
+                    break;
+                
+                case ServersArg:
+                    await _ssb.Mod.Servers.EvalModuleCmdAsync(c);
                     break;
             }
         }

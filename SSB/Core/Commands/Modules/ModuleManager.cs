@@ -18,29 +18,30 @@
             AutoVoter = new AutoVoter(s);
             EarlyQuit = new EarlyQuit(s);
             Motd = new Motd(s);
+            Servers = new Servers(s);
         }
 
         /// <summary>
-        ///     Gets the account date limiter.
+        ///     Gets the account date limiter module.
         /// </summary>
         /// <value>
-        ///     The account date limiter.
+        ///     The account date limiter module.
         /// </value>
         public AccountDateLimit AccountDateLimit { get; private set; }
 
         /// <summary>
-        ///     Gets the accuracy scanner.
+        ///     Gets the accuracy scanner module.
         /// </summary>
         /// <value>
-        ///     The accuracy scanner.
+        ///     The accuracy scanner module.
         /// </value>
         public Accuracy Accuracy { get; private set; }
 
         /// <summary>
-        ///     Gets the automatic voter.
+        ///     Gets the automatic voter module.
         /// </summary>
         /// <value>
-        ///     The automatic voter.
+        ///     The automatic voter module.
         /// </value>
         public AutoVoter AutoVoter { get; private set; }
 
@@ -53,19 +54,27 @@
         public EarlyQuit EarlyQuit { get; private set; }
 
         /// <summary>
-        ///     Gets the elo limiter.
+        ///     Gets the elo limiter modules.
         /// </summary>
         /// <value>
-        ///     The elo limiter.
+        ///     The elo limiter module.
         /// </value>
         public EloLimit EloLimit { get; private set; }
 
         /// <summary>
-        ///     Gets the motd.
+        ///     Gets the message of the day module.
         /// </summary>
         /// <value>
-        ///     The motd.
+        ///     The message of the day module.
         /// </value>
         public Motd Motd { get; private set; }
+
+        /// <summary>
+        /// Gets the servers module.
+        /// </summary>
+        /// <value>
+        /// The servers module.
+        /// </value>
+        public Servers Servers { get; private set; }
     }
 }

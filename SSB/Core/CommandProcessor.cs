@@ -45,6 +45,7 @@ namespace SSB.Core
         public const string CmdReload = "reload";
         public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdSeen = "seen";
+        public const string CmdServers = "servers";
         public const string CmdShutdown = "shutdown";
         public const string CmdStopServer = "stopserver";
         public const string CmdSuggestTeams = "suggest";
@@ -93,6 +94,7 @@ namespace SSB.Core
                 {CmdPause, new PauseCmd(_ssb)},
                 {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
                 {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
+                {CmdServers, new ServersCmd(_ssb)},
                 {CmdSuggestTeams, new SuggestTeamsCmd(_ssb)},
                 {CmdTimeBan, new TimeBanCmd(_ssb)},
                 {CmdUnban, new UnbanCmd(_ssb)},
