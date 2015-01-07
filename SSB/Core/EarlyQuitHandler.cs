@@ -50,16 +50,17 @@ namespace SSB.Core
                         player));
                 return;
             }
-            long qCount = 0;
             if (_quitsDb.UserExistsInDb(player))
             {
                 _quitsDb.IncrementUserQuitCount(player, doublePenalty);
-                qCount = await EvaluateUserQuitCount(player);
             }
             else
             {
                 _quitsDb.AddUserToDb(player, doublePenalty);
             }
+            
+            long qCount = await EvaluateUserQuitCount(player);
+            
             if (doublePenalty)
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 penalty was doubled for unbalancing teams during match start!",

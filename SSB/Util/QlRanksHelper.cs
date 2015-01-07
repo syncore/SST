@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SSB.Config;
+using SSB.Database;
 using SSB.Model;
 using SSB.Model.QlRanks;
 
@@ -13,6 +16,18 @@ namespace SSB.Util
     /// </summary>
     public class QlRanksHelper
     {
+        private readonly Elo _eloDb;
+        private readonly uint _eloExpirationMins;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QlRanksHelper"/> class.
+        /// </summary>
+        public QlRanksHelper()
+        {
+            _eloDb = new Elo();
+            _eloExpirationMins = GetExpirationFromConfig();
+        }
+
         /// <summary>
         /// Creates the new player elo data.
         /// </summary>
@@ -33,19 +48,20 @@ namespace SSB.Util
         /// </returns>
         public bool DoesCachedEloExist(string shortPlayerName)
         {
-            bool exists = false;
-            if (!Tools.KeyExists(shortPlayerName, EloCache.CachedEloData))
-            {
-                EloCache.CachedEloData.Add(shortPlayerName, new EloData());
-                return false;
-            }
-            if (EloCache.CachedEloData[shortPlayerName].CaElo != 0 && EloCache.CachedEloData[shortPlayerName].CtfElo != 0 &&
-                EloCache.CachedEloData[shortPlayerName].DuelElo != 0 &&
-                EloCache.CachedEloData[shortPlayerName].FfaElo != 0 && EloCache.CachedEloData[shortPlayerName].TdmElo != 0)
-            {
-                exists = true;
-            }
-            return exists;
+            return _eloDb.UserAlreadyExists(shortPlayerName) && IsValidEloDatabaseData(shortPlayerName);
+        }
+
+        /// <summary>
+        /// Determines whether the cached elo data for the specified user is too old,
+        /// based on a value set in the core configuration options.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns><c>true</c> if the cached elo data is outdated, otherwise <c>false</c>.</returns>
+        public bool IsCachedEloDataOutdated(string user)
+        {
+            if (!DoesCachedEloExist(user)) return true;
+            var edata = _eloDb.GetEloData(user);
+            return DateTime.Now > edata.LastUpdatedDate.AddMinutes(_eloExpirationMins);
         }
 
         /// <summary>
@@ -55,15 +71,14 @@ namespace SSB.Util
         /// <returns><c>true</c> if the player has invalid elo data, otherwise <c>false</c>.</returns>
         public bool PlayerHasInvalidEloData(PlayerInfo pinfo)
         {
-            bool invalid = false;
             if (pinfo.EloData == null) return true;
             if (pinfo.EloData.CaElo == 0 && pinfo.EloData.CtfElo == 0 && pinfo.EloData.DuelElo == 0 &&
                 pinfo.EloData.FfaElo == 0 && pinfo.EloData.TdmElo == 0)
             {
                 Debug.WriteLine(string.Format("Player: {0} has invalid elo data.", pinfo.ShortName));
-                invalid = true;
+                return true;
             }
-            return invalid;
+            return false;
         }
 
         /// <summary>
@@ -118,7 +133,7 @@ namespace SSB.Util
         public void SetCachedEloData(Dictionary<string, PlayerInfo> currentPlayers, string shortPlayerName)
         {
             if (!DoesCachedEloExist(shortPlayerName)) return;
-            currentPlayers[shortPlayerName].EloData = EloCache.CachedEloData[shortPlayerName];
+            currentPlayers[shortPlayerName].EloData = _eloDb.GetEloData(shortPlayerName);
         }
 
         /// <summary>
@@ -134,6 +149,34 @@ namespace SSB.Util
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Gets the elo expiration time from the configuration.
+        /// </summary>
+        private uint GetExpirationFromConfig()
+        {
+            var cfgHandler = new ConfigHandler();
+            if (!File.Exists(Filepaths.ConfigurationFilePath))
+            {
+                cfgHandler.RestoreDefaultConfiguration();
+            }
+            else
+            {
+                cfgHandler.ReadConfiguration();
+            }
+            return cfgHandler.Config.CoreOptions.eloCacheExpiration;
+        }
+
+        /// <summary>
+        /// Determines whether valid elo data exists for the specified player from the elo database.
+        /// </summary>
+        /// <param name="shortPlayerName">Short name of the player.</param>
+        /// <returns><c>true</c>if valid elo data exists, otherwise <c>false</c>.</returns>
+        private bool IsValidEloDatabaseData(string shortPlayerName)
+        {
+            var edata = _eloDb.GetEloData(shortPlayerName);
+            return edata != null && (edata.CaElo != 0 && edata.CtfElo != 0 && edata.DuelElo != 0 && edata.FfaElo != 0 && edata.TdmElo != 0);
         }
 
         /// <summary>
@@ -163,11 +206,16 @@ namespace SSB.Util
                         "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
                         c, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo, p.tdm.elo);
                     if (DoesCachedEloExist(c)) continue;
-                    EloCache.CachedEloData[c].CaElo = p.ca.elo;
-                    EloCache.CachedEloData[c].CtfElo = p.ctf.elo;
-                    EloCache.CachedEloData[c].DuelElo = p.duel.elo;
-                    EloCache.CachedEloData[c].FfaElo = p.ffa.elo;
-                    EloCache.CachedEloData[c].TdmElo = p.tdm.elo;
+                    if (_eloDb.UserAlreadyExists(c))
+                    {
+                        _eloDb.UpdateEloData(c, DateTime.Now, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo,
+                            p.tdm.elo);
+                    }
+                    else
+                    {
+                        _eloDb.AddUserToDb(c, DateTime.Now, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo,
+                            p.tdm.elo);
+                    }
                 }
             }
         }
@@ -187,9 +235,9 @@ namespace SSB.Util
             {
                 if (currentPlayers[currentPlayer].EloData == null)
                 {
-                 currentPlayers[currentPlayer].EloData = new EloData();
+                    currentPlayers[currentPlayer].EloData = new EloData();
                 }
-                
+
                 currentPlayers[currentPlayer].EloData.CaElo = qp.ca.elo;
                 currentPlayers[currentPlayer].EloData.CtfElo = qp.ctf.elo;
                 currentPlayers[currentPlayer].EloData.DuelElo = qp.duel.elo;
@@ -199,11 +247,16 @@ namespace SSB.Util
                     "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
                     currentPlayer, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo, qp.tdm.elo);
                 if (DoesCachedEloExist(currentPlayer)) continue;
-                EloCache.CachedEloData[currentPlayer].CaElo = qp.ca.elo;
-                EloCache.CachedEloData[currentPlayer].CtfElo = qp.ctf.elo;
-                EloCache.CachedEloData[currentPlayer].DuelElo = qp.duel.elo;
-                EloCache.CachedEloData[currentPlayer].FfaElo = qp.ffa.elo;
-                EloCache.CachedEloData[currentPlayer].TdmElo = qp.tdm.elo;
+                if (_eloDb.UserAlreadyExists(currentPlayer))
+                {
+                    _eloDb.UpdateEloData(currentPlayer, DateTime.Now, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo,
+                        qp.tdm.elo);
+                }
+                else
+                {
+                    _eloDb.AddUserToDb(currentPlayer, DateTime.Now, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo,
+                        qp.tdm.elo);
+                }
             }
         }
     }

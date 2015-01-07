@@ -72,6 +72,52 @@ namespace SSB.Database
         }
 
         /// <summary>
+        /// Decrements the user quit count by a given amount.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="amount">The amount of quits by which to decrement.</param>
+        /// <remarks>This is typically used when an admin chooses to forgive a number of early quits for a user.</remarks>
+        public void DecrementUserQuitCount(string user, int amount)
+        {
+            if (VerifyDb())
+            {
+                if (!DoesUserExistInDb(user.ToLowerInvariant()))
+                {
+                    return;
+                }
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "UPDATE earlyquitters SET numQuits = @newQuitCount WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user);
+
+                            cmd.Parameters.AddWithValue("@newQuitCount", (GetUserQuitCount(user) - amount));
+                            int total = cmd.ExecuteNonQuery();
+                            if (total > 0)
+                            {
+                                Debug.WriteLine(
+                                    "Decremented early quit count for: {0} by {1} from early quitter database.",
+                                    user, amount);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        "Problem decrementing user quit count for {0} in early quitters database: {1}", user,
+                        ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>

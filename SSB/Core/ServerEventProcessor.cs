@@ -116,7 +116,20 @@ namespace SSB.Core
 
                 if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
                 {
-                    qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                    if (!qlranksHelper.IsCachedEloDataOutdated(playerNameOnly))
+                    {
+                        qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                        Debug.WriteLine(
+                            string.Format("Setting non-expired cached elo result for {0} from database",
+                                playerNameOnly));
+                    }
+                    else
+                    {
+                        qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                        eloNeedsUpdating.Add(playerNameOnly);
+                        Debug.WriteLine(
+                            string.Format("Outdated cached elo data found in DB for {0}. Adding to queue to update.", playerNameOnly));
+                    }
                 }
                 else
                 {

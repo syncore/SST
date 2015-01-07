@@ -1,4 +1,5 @@
-﻿using SSB.Enum;
+﻿using System;
+using SSB.Enum;
 
 namespace SSB.Model.QlRanks
 {
@@ -32,6 +33,14 @@ namespace SSB.Model.QlRanks
         /// </summary>
         /// <value>The FFA Elo.</value>
         public long FfaElo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date and time on which the user's elo was last updated.
+        /// </summary>
+        /// <value>
+        /// The date and time on which the user's elo was last updated.
+        /// </value>
+        public DateTime LastUpdatedDate { get; set; }
 
         /// <summary>
         ///     Gets or sets the TDM Elo.

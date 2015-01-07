@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
+using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 
@@ -99,7 +102,7 @@ namespace SSB.Core.Commands.Modules
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <# of early quits> <time> <scale> ^7 - time is a number, scale is: secs, mins, hours, days, months, or years.",
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] [clear] [forgive] <# of early quits> <time> <scale> ^7 - time is a number, scale is: secs, mins, hours, days, months, or years.",
                 CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
         }
 
@@ -118,6 +121,16 @@ namespace SSB.Core.Commands.Modules
             if (c.Args[2].Equals("off"))
             {
                 await DisableEarlyQuit();
+                return;
+            }
+            if (c.Args[2].Equals("clear"))
+            {
+                await EvalEarlyQuitClear(c);
+                return;
+            }
+            if (c.Args[2].Equals("forgive"))
+            {
+                await EvalEarlyQuitForgive(c);
                 return;
             }
             // In the case of enable, evaluate parameters to see if we can enable the module
@@ -182,6 +195,31 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Clears the early quits for a given user.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        /// <param name="qdb">The quit database.</param>
+        private async Task ClearEarlyQuits(CmdArgs c, Quits qdb)
+        {
+            qdb.DeleteUserFromDb(c.Args[3]);
+            await
+                    _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}", c.Args[3]));
+            Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.", c.Args[3]));
+            // See if there is an early quit-related ban and remove it as well
+            var banDb = new Bans();
+            if (banDb.UserAlreadyBanned(c.Args[3]))
+            {
+                var bi = banDb.GetBanInfo(c.Args[3]);
+                if (bi.BanType == BanType.AddedByEarlyQuit)
+                {
+                    banDb.DeleteUserFromDb(c.Args[3]);
+                    await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", c.Args[1]), false);
+                    Debug.WriteLine(string.Format("Also removed early quit-related ban for player {0}.", c.Args[3]));
+                }
+            }
+        }
+
+        /// <summary>
         ///     Disables the early quitter module.
         /// </summary>
         private async Task DisableEarlyQuit()
@@ -210,6 +248,29 @@ namespace SSB.Core.Commands.Modules
                     string.Format(
                         "^5[EARLYQUIT]^7 Early quit tracker is now ^2ON^7. Players who spectate or quit more than ^2{0}^7 times before the game is over will be banned for ^1{1}^7 {2}.",
                         maxQuits, time, scale));
+        }
+
+        /// <summary>
+        /// Evaluates the early quit clear command to see if it can be successfully processed.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task EvalEarlyQuitClear(CmdArgs c)
+        {
+            if (c.Args.Length != 4)
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format(
+                 "^1[ERROR]^3 Usage: {0}{1} {2} clear <name> ^7 - name is without the clan tag",
+                 CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
+                return;
+            }
+            var quitDb = new Quits();
+            if (!quitDb.UserExistsInDb(c.Args[3]))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 {0}^3 has no early quits.", c.Args[3]));
+                return;
+            }
+            await ClearEarlyQuits(c, quitDb);
         }
 
         /// <summary>
@@ -275,6 +336,63 @@ namespace SSB.Core.Commands.Modules
             }
 
             await EnableEarlyQuit(numQuits, time, c.Args[4]);
+        }
+
+        /// <summary>
+        /// Evaluates teh early quit forgive command to see if it can be successfully processed.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task EvalEarlyQuitForgive(CmdArgs c)
+        {
+            if (c.Args.Length != 5)
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format(
+                  "^1[ERROR]^3 Usage: {0}{1} {2} forgive <name> <# of quits> ^7 - name is without the clan tag. # quits is amount to forgive",
+                  CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
+                return;
+            }
+            var quitDb = new Quits();
+            if (!quitDb.UserExistsInDb(c.Args[3]))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 {0}^3 has no early quits.", c.Args[3]));
+                return;
+            }
+            int numQuitsToForgive;
+            if (!int.TryParse(c.Args[4], out numQuitsToForgive))
+            {
+                await
+                      _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 # of quits must be a number greater than zero!");
+                return;
+            }
+            if (numQuitsToForgive == 0)
+            {
+                await
+                      _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 # of quits must be greater than zero.");
+                return;
+            }
+            long userTotalQuits = quitDb.GetUserQuitCount(c.Args[3]);
+            if (numQuitsToForgive >= userTotalQuits)
+            {
+                await _ssb.QlCommands.QlCmdSay(
+                    string.Format("^1[ERROR] ^7{0}^3 has {1} total quits. This would remove all. If that's what you want: ^7{2}{3} {4} clear {0}",
+                    c.Args[3], userTotalQuits, CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
+                return;
+            }
+            await ForgiveEarlyQuits(c, quitDb);
+        }
+
+        /// <summary>
+        /// Forgives a given numer of early quits for a user.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        /// <param name="qdb">The quit database.</param>
+        private async Task ForgiveEarlyQuits(CmdArgs c, Quits qdb)
+        {
+            int num = Convert.ToInt32(c.Args[4]);
+            qdb.DecrementUserQuitCount(c.Args[3], num);
+            await
+                   _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Forgave ^3{0}^7 of ^3{1}^7's early quits.", num, c.Args[3]));
         }
     }
 }

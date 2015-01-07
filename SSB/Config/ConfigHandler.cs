@@ -57,7 +57,13 @@ namespace SSB.Config
         public void RestoreDefaultConfiguration()
         {
             // Load these fail-safe defaults and save as the new configuration
+            // Bot owners
             var owners = new HashSet<string> {"syncore"};
+            // Time in minutes after which cached elo data will expire
+            uint eloCacheExpiration = 300; // 5 hours
+            // Bot name
+            string botName = "syncore";
+            
             var acctDateOptions = new AccountDateOptions
             {
                 isActive = false,
@@ -74,7 +80,9 @@ namespace SSB.Config
             };
             var coreOptions = new CoreOptions
             {
-                owners = owners
+                botName = botName,
+                owners = owners,
+                eloCacheExpiration = eloCacheExpiration
             };
             var earlyQuitOptions = new EarlyQuitOptions
             {

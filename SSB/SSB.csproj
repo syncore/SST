@@ -123,6 +123,7 @@
     <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Core\VoteManager.cs" />
     <Compile Include="Database\Bans.cs" />
+    <Compile Include="Database\Elo.cs" />
     <Compile Include="Database\Quits.cs" />
     <Compile Include="Database\RegistrationDates.cs" />
     <Compile Include="Database\SeenDates.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="Model\QlRanks\Tdm.cs" />
     <Compile Include="Model\QuakeLiveApi\Player.cs" />
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
-    <Compile Include="Util\EloCache.cs" />
     <Compile Include="Util\ExpirationDateGenerator.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />

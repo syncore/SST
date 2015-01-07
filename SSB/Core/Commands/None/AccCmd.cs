@@ -76,11 +76,6 @@ namespace SSB.Core.Commands.None
                             ModuleCmd.AccuracyArg));
                 return;
             }
-            if (string.IsNullOrEmpty(_ssb.BotName))
-            {
-                _ssb.RetrieveBotAccount();
-                return;
-            }
             if (!Tools.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
@@ -197,11 +192,6 @@ namespace SSB.Core.Commands.None
         /// <returns><c>true</c> if the owner is currently playing on the bot account, otherwise <c>false</c>.</returns>
         private bool IsBotPlayer()
         {
-            if (string.IsNullOrEmpty(_ssb.BotName))
-            {
-                _ssb.RetrieveBotAccount();
-            }
-
             // We've joined the game. Disable scanning.
             bool botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Red ||
                                 _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Blue);

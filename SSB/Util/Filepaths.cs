@@ -12,6 +12,7 @@ namespace SSB.Util
         private const string AccountDateDatabaseFile = "acctdate.db";
         private const string BanDatabaseFile = "bannedusers.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
+        private const string EloDatabaseFile = "elo.db";
         private const string QuitDatabaseFile = "earlyquits.db";
         private const string SeenDateDatabaseFile = "seendate.db";
         private const string UserDatabaseFile = "ssbusers.db";
@@ -24,6 +25,8 @@ namespace SSB.Util
 
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
 
+        private static readonly string _eloDatabaseFilePath = Path.Combine(DataDirectory, EloDatabaseFile);
+        
         private static readonly string _quitDatabaseFilePath = Path.Combine(DataDirectory, QuitDatabaseFile);
 
         private static readonly string _seenDateDatabaseFilePath = Path.Combine(DataDirectory,
@@ -56,6 +59,17 @@ namespace SSB.Util
             get { return _configurationFilePath; }
         }
 
+        /// <summary>
+        /// Gets the elo database file path.
+        /// </summary>
+        /// <value>
+        /// The elo database file path.
+        /// </value>
+        public static string EloDatabaseFilePath
+        {
+            get { return _eloDatabaseFilePath; }
+        }
+        
         /// <summary>
         /// Gets the quit database file path.
         /// </summary>

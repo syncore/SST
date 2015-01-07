@@ -160,20 +160,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a request for the bot's name and handles it if it does.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the text matches that of a request for the bot's name, otherwise <c>false</c>.</returns>
-        private bool BotNameDetected(string text)
-        {
-            if (!_ssb.Parser.CvarNameAndValue.IsMatch(text)) return false;
-            Match m = _ssb.Parser.CvarNameAndValue.Match(text);
-            if (!m.Groups["cvarname"].Value.Equals("name")) return false;
-            _ssb.ServerEventProcessor.SetBotAccountName(m.Groups["cvarvalue"].Value);
-            return true;
-        }
-
-        /// <summary>
         ///     Determines whether the text matches that of a player chat message and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -213,8 +199,6 @@ namespace SSB.Core
                 if (PlayerJoinedSpectatorsDetected(text).Result) continue;
                 // player accuracy data detected
                 if (AccuracyInfoDetected(text)) continue;
-                // bot account name
-                if (BotNameDetected(text)) continue;
                 // match aborted
                 if (MatchAbortDetected(text)) continue;
                 // vote start
@@ -341,9 +325,9 @@ namespace SSB.Core
             string value = m.Groups["cvarvalue"].Value;
             switch (cvar)
             {
-                case "name":
-                    _ssb.ServerEventProcessor.SetBotAccountName(value);
-                    break;
+                //case "name":
+                   // _ssb.ServerEventProcessor.SetBotAccountName(value);
+                    //break;
             }
         }
 

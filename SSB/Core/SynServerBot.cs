@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using SSB.Config;
 using SSB.Core.Commands.Modules;
 using SSB.Ui;
 using SSB.Util;
@@ -36,6 +38,9 @@ namespace SSB.Core
             ServerEventProcessor = new ServerEventProcessor(this);
             VoteManager = new VoteManager();
 
+            //Set the name of the bot
+            BotName = GetBotNameFromConfig();
+
             // Start reading the console
             StartConsoleReadThread();
             // Set the important details of the server
@@ -58,10 +63,10 @@ namespace SSB.Core
         public string BotName { get; set; }
 
         /// <summary>
-        /// Gets the command processor.
+        ///     Gets the command processor.
         /// </summary>
         /// <value>
-        /// The command processor.
+        ///     The command processor.
         /// </value>
         public CommandProcessor CommandProcessor { get; private set; }
 
@@ -90,10 +95,10 @@ namespace SSB.Core
         public GuiOptions GuiOptions { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether initialization has completed.
+        ///     Gets or sets a value indicating whether initialization has completed.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if initialization has completed; otherwise, <c>false</c>.
+        ///     <c>true</c> if initialization has completed; otherwise, <c>false</c>.
         /// </value>
         public bool IsInitComplete { get; set; }
 
@@ -110,10 +115,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Gets the module manager.
+        ///     Gets the module manager.
         /// </summary>
         /// <value>
-        /// The module manager.
+        ///     The module manager.
         /// </value>
         public ModuleManager Mod { get; private set; }
 
@@ -158,18 +163,18 @@ namespace SSB.Core
         public ServerInfo ServerInfo { get; private set; }
 
         /// <summary>
-        /// Gets the vote manager.
+        ///     Gets the vote manager.
         /// </summary>
         /// <value>
-        /// The vote manager.
+        ///     The vote manager.
         /// </value>
         public VoteManager VoteManager { get; private set; }
 
         /// <summary>
-        /// Reloads the initialization step.
+        ///     Reloads the initialization step.
         /// </summary>
         /// <remarks>
-        /// This is primarily designed to be accessed via an admin command from QL.
+        ///     This is primarily designed to be accessed via an admin command from QL.
         /// </remarks>
         public void ReloadInit()
         {
@@ -180,14 +185,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Get name of account running the bot.
-        /// </summary>
-        public void RetrieveBotAccount()
-        {
-            QlCommands.SendToQl("name", false);
-        }
-
-        /// <summary>
         ///     Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
@@ -195,12 +192,12 @@ namespace SSB.Core
             if (IsReadingConsole) return;
             Debug.WriteLine("...starting a thread to read QL console.");
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
         }
 
         /// <summary>
-        /// Stops the console read thread.
+        ///     Stops the console read thread.
         /// </summary>
         public void StopConsoleReadThread()
         {
@@ -208,6 +205,23 @@ namespace SSB.Core
             Debug.WriteLine("...stopping QL console read thread.");
             MessageBox.Show(@"Stopped reading Quake Live events, because Quake Live is not detected.",
                 @"Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        /// <summary>
+        ///     Gets the bot's name from the configuration file.
+        /// </summary>
+        private string GetBotNameFromConfig()
+        {
+            var cfgHandler = new ConfigHandler();
+            if (!File.Exists(Filepaths.ConfigurationFilePath))
+            {
+                cfgHandler.RestoreDefaultConfiguration();
+            }
+            else
+            {
+                cfgHandler.ReadConfiguration();
+            }
+            return cfgHandler.Config.CoreOptions.botName;
         }
 
         /// <summary>
@@ -233,10 +247,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Method that is executed to finalize the delayed initilization tasks.
+        ///     Method that is executed to finalize the delayed initilization tasks.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
         private void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             QlCommands.ClearQlWinConsole();
@@ -326,12 +340,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Starts the delayed initialization steps.
+        ///     Starts the delayed initialization steps.
         /// </summary>
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInit(double seconds)
         {
-            _initTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
+            _initTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
             _initTimer.Elapsed += InitTimerOnElapsed;
         }
     }
