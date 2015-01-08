@@ -9,6 +9,9 @@ using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
+    /// <summary>
+    /// Command: display currently populated servers for a user-specified gametype and geographical region.
+    /// </summary>
     public class ServersCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
@@ -26,6 +29,10 @@ namespace SSB.Core.Commands.None
         private int _minArgs = 3;
         private UserLevel _userLevel = UserLevel.None;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServersCmd"/> class.
+        /// </summary>
+        /// <param name="ssb">The main class.</param>
         public ServersCmd(SynServerBot ssb)
         {
             _ssb = ssb;

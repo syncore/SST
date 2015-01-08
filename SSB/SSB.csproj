@@ -88,6 +88,7 @@
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
     <Compile Include="Core\Commands\None\EarlyQuitCmd.cs" />
     <Compile Include="Core\Commands\None\EloCmd.cs" />
+    <Compile Include="Core\Commands\None\FindPlayerCmd.cs" />
     <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\None\AccCmd.cs" />

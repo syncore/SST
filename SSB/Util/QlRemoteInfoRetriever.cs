@@ -82,7 +82,7 @@ namespace SSB.Util
                 var query = new RestApiQuery();
                 var url = string.Format("http://www.quakelive.com/browser/list?filter={0}&_={1}", filter,
                     Math.Truncate((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds));
-                
+
                 var filterObj = await (query.QueryRestApiAsync<FilterObject>(url));
                 return filterObj;
             }
@@ -91,9 +91,8 @@ namespace SSB.Util
                 Debug.WriteLine("QLAPI: Unable to filter object from encoded filter: " + ex.Message);
                 return null;
             }
-
         }
-        
+
         /// <summary>
         /// Queries a Quake Live server.
         /// </summary>

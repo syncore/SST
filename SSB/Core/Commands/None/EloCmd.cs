@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -81,9 +80,8 @@ namespace SSB.Core.Commands.None
                 return;
             }
             string user = c.Args.Length == 1 ? c.FromUser : c.Args[1];
-            if (Regex.IsMatch(c.Args[1], "[^a-zA-Z0-9_,]"))
+            if (!Tools.IsValidQlUsernameFormat(c.Args[1], true))
             {
-                // only A-Z, 0-9, and underscore (with comma as separator for multiple names) allowed by QL
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",

@@ -9,6 +9,32 @@ namespace SSB.Util
     public static class Tools
     {
         /// <summary>
+        /// Determines whether the specified user's name is valid per QL requirements.
+        /// </summary>
+        /// <param name="user">The user to check.</param>
+        /// <param name="allowMultipleUsers">if set to <c>true</c> then also allow
+        /// commas to be included in the regular expression (for things requiring multiple users
+        /// separated by commas).</param>
+        /// <returns>
+        ///   <c>true</c> if the user name is valid, otherwise <c>false.</c>
+        /// </returns>
+        /// <remarks>
+        /// Note: this does not check whether the user actually exists in QL, only whether the
+        /// username does not invalid characters.
+        /// </remarks>
+        public static bool IsValidQlUsernameFormat(string user, bool allowMultipleUsers)
+        {
+            if (allowMultipleUsers)
+            {
+                // Only A-Z, 0-9, and underscore (with comma as separator for multiple names) allowed by QL
+                return !Regex.IsMatch(user, "[^a-zA-Z0-9_,]");
+            }
+            
+            // Single user: Only A-Z, 0-9, and underscore allowed by QL
+            return !Regex.IsMatch(user, "[^a-zA-Z0-9_]");
+        }
+
+        /// <summary>
         ///     Checks whether a key is present in a given dictionary.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>

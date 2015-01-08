@@ -31,6 +31,7 @@ namespace SSB.Core
         public const string CmdDeOp = "deop";
         public const string CmdEarlyQuit = "earlyquit";
         public const string CmdElo = "elo";
+        public const string CmdFindPlayer = "findplayer";
         public const string CmdForceJoinBlue = "blue";
         public const string CmdForceJoinRed = "red";
         public const string CmdForceJoinSpec = "spec";
@@ -79,6 +80,7 @@ namespace SSB.Core
                 {CmdAddUser, new AddUserCmd(_ssb)},
                 {CmdAllReady, new AllReadyCmd(_ssb)},
                 {CmdForceJoinBlue, new ForceJoinBlueCmd(_ssb)},
+                {CmdFindPlayer, new FindPlayerCmd(_ssb)},
                 {CmdDelUser, new DelUserCmd(_ssb)},
                 {CmdDeOp, new DeOpCmd(_ssb)},
                 {CmdEarlyQuit, new EarlyQuitCmd(_ssb)},
