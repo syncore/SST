@@ -13,7 +13,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class AccountDateCmd : IBotCommand
     {
-        private readonly RegistrationDates _registrationDb;
+        private readonly DbRegistrationDates _registrationDb;
         private readonly SynServerBot _ssb;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.None;
@@ -25,7 +25,7 @@ namespace SSB.Core.Commands.None
         public AccountDateCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _registrationDb = new RegistrationDates();
+            _registrationDb = new DbRegistrationDates();
         }
 
         /// <summary>

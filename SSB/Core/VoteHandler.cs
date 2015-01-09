@@ -15,7 +15,7 @@ namespace SSB.Core
     public class VoteHandler
     {
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
         private Match _voteDetails;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SSB.Core
         public VoteHandler(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            _users = new DbUsers();
         }
 
         /// <summary>

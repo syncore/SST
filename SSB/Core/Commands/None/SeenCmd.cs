@@ -14,7 +14,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class SeenCmd : IBotCommand
     {
-        private readonly SeenDates _seenDb;
+        private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.None;
@@ -26,7 +26,7 @@ namespace SSB.Core.Commands.None
         public SeenCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _seenDb = new SeenDates();
+            _seenDb = new DbSeenDates();
         }
 
         /// <summary>

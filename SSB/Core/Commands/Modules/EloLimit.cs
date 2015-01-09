@@ -22,7 +22,7 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "elo";
         private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
         private int _minModuleArgs = 3;
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _users = new Users();
+            _users = new DbUsers();
             LoadConfig();
         }
 

@@ -128,6 +128,13 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: player timed out
+            // note: time outs, like disconnections, do not include the clan tag
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) timed out",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerTimedOut", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
             //servercommand: player joined spectators
             // note: spectating includes the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cp ""(?<player>.+) joined the spectators",

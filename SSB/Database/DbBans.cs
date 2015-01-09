@@ -14,15 +14,15 @@ namespace SSB.Database
     /// <summary>
     ///     Database class responsible for tracking banned players.
     /// </summary>
-    public class Bans : CommonSqliteDb
+    public class DbBans : CommonSqliteDb
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.BanDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.BanDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Bans" /> class.
+        ///     Initializes a new instance of the <see cref="DbBans" /> class.
         /// </summary>
-        public Bans()
+        public DbBans()
         {
             VerifyDb();
         }

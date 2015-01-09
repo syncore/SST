@@ -12,7 +12,7 @@ namespace SSB.Core.Commands.Admin
     public class DelUserCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
 
         private int _minArgs = 1;
 
@@ -25,7 +25,7 @@ namespace SSB.Core.Commands.Admin
         public DelUserCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            _users = new DbUsers();
         }
 
         /// <summary>

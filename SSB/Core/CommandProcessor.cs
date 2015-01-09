@@ -39,9 +39,11 @@ namespace SSB.Core
         public const string CmdInvite = "invite";
         public const string CmdKickBan = "kickban";
         public const string CmdLock = "lock";
+        public const string CmdMap = "map";
         public const string CmdModule = "mod";
         public const string CmdMute = "mute";
         public const string CmdOp = "op";
+        public const string CmdPickup = "pickup";
         public const string CmdPause = "pause";
         public const string CmdReload = "reload";
         public const string CmdRejectTeamSuggestion = "reject";
@@ -60,7 +62,7 @@ namespace SSB.Core
         private readonly Dictionary<string, IBotCommand> _commands;
         private readonly Dictionary<string, DateTime> _playerCommandTime;
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
@@ -69,7 +71,7 @@ namespace SSB.Core
         public CommandProcessor(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            _users = new DbUsers();
             _playerCommandTime = new Dictionary<string, DateTime>();
             _commands = new Dictionary<string, IBotCommand>
             {
@@ -87,6 +89,7 @@ namespace SSB.Core
                 {CmdElo, new EloCmd(_ssb)},
                 {CmdHelp, new HelpCmd(_ssb)},
                 {CmdInvite, new InviteCmd(_ssb)},
+                {CmdMap, new MapCmd(_ssb)},
                 {CmdModule, new ModuleCmd(_ssb)},
                 {CmdLock, new LockCmd(_ssb)},
                 {CmdOp, new OpCmd(_ssb)},
@@ -94,6 +97,7 @@ namespace SSB.Core
                 {CmdVoteNo, new VoteNoCmd(_ssb)},
                 {CmdKickBan, new KickBanCmd(_ssb)},
                 {CmdPause, new PauseCmd(_ssb)},
+                {CmdPickup, new PickupCmd(_ssb)},
                 {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
                 {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
                 {CmdServers, new ServersCmd(_ssb)},

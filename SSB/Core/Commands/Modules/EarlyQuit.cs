@@ -7,6 +7,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
@@ -18,12 +19,6 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "earlyquit";
         private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
-
-        private readonly string[] _validTimeScales =
-        {
-            "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
-            "month", "months", "year", "years"
-        };
 
         private int _minModuleArgs = 3;
 
@@ -143,10 +138,11 @@ namespace SSB.Core.Commands.Modules
         public void LoadConfig()
         {
             // Initialize database
-            var eq = new Quits();
+            var eq = new DbQuits();
             eq.InitDb();
 
             _configHandler.ReadConfiguration();
+            // TODO: reasonable defaults
             // See if we're dealing with the default values
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (_configHandler.Config.EarlyQuitOptions.banTime == 0 ||
@@ -156,7 +152,7 @@ namespace SSB.Core.Commands.Modules
                 return;
             }
             // See if it's a valid scale
-            if (!_validTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
+            if (!Tools.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
             {
                 Active = false;
                 _configHandler.Config.EarlyQuitOptions.SetDefaults();
@@ -199,14 +195,14 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The c.</param>
         /// <param name="qdb">The quit database.</param>
-        private async Task ClearEarlyQuits(CmdArgs c, Quits qdb)
+        private async Task ClearEarlyQuits(CmdArgs c, DbQuits qdb)
         {
             qdb.DeleteUserFromDb(c.Args[3]);
             await
                     _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}", c.Args[3]));
             Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.", c.Args[3]));
             // See if there is an early quit-related ban and remove it as well
-            var banDb = new Bans();
+            var banDb = new DbBans();
             if (banDb.UserAlreadyBanned(c.Args[3]))
             {
                 var bi = banDb.GetBanInfo(c.Args[3]);
@@ -263,7 +259,7 @@ namespace SSB.Core.Commands.Modules
                  CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
                 return;
             }
-            var quitDb = new Quits();
+            var quitDb = new DbQuits();
             if (!quitDb.UserExistsInDb(c.Args[3]))
             {
                 await
@@ -319,14 +315,7 @@ namespace SSB.Core.Commands.Modules
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
                 return;
             }
-            bool validScale = false;
-            foreach (string scale in _validTimeScales)
-            {
-                if (c.Args[4].Equals(scale))
-                {
-                    validScale = true;
-                }
-            }
+            bool validScale = Tools.ValidTimeScales.Contains(c.Args[4]);
             if (!validScale)
             {
                 await
@@ -351,7 +340,7 @@ namespace SSB.Core.Commands.Modules
                   CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
                 return;
             }
-            var quitDb = new Quits();
+            var quitDb = new DbQuits();
             if (!quitDb.UserExistsInDb(c.Args[3]))
             {
                 await
@@ -379,20 +368,21 @@ namespace SSB.Core.Commands.Modules
                     c.Args[3], userTotalQuits, CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
                 return;
             }
-            await ForgiveEarlyQuits(c, quitDb);
+            await ForgiveEarlyQuits(numQuitsToForgive, c.Args[3], quitDb);
         }
 
         /// <summary>
         /// Forgives a given numer of early quits for a user.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="num">The number of quits to forgive.</param>
+        /// <param name="player">The player.</param>
         /// <param name="qdb">The quit database.</param>
-        private async Task ForgiveEarlyQuits(CmdArgs c, Quits qdb)
+        /// <returns></returns>
+        private async Task ForgiveEarlyQuits(int num, string player, DbQuits qdb)
         {
-            int num = Convert.ToInt32(c.Args[4]);
-            qdb.DecrementUserQuitCount(c.Args[3], num);
+            qdb.DecrementUserQuitCount(player, num);
             await
-                   _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Forgave ^3{0}^7 of ^3{1}^7's early quits.", num, c.Args[3]));
+                   _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Forgave ^3{0}^7 of ^3{1}^7's early quits.", num, player));
         }
     }
 }

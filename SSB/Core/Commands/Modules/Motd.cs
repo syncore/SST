@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
@@ -147,7 +146,7 @@ namespace SSB.Core.Commands.Modules
                 return;
             }
 
-            await SetMotd(c);
+            await SetMotd(minsNum);
         }
 
         /// <summary>
@@ -217,17 +216,20 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sets the message of the day.
+        /// Sets the message of the day.
         /// </summary>
-        /// <param name="c">The c.</param>
-        /// <remarks>This is used when an admin issues the command in-game.</remarks>
-        private async Task SetMotd(CmdArgs c)
+        /// <param name="interval">The interval.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used when an admin issues the command in-game.
+        /// </remarks>
+        private async Task SetMotd(uint interval)
         {
             _configHandler.ReadConfiguration();
             if (string.IsNullOrEmpty(_configHandler.Config.MotdOptions.message)) return;
 
             Message = _configHandler.Config.MotdOptions.message;
-            RepeatInterval = Convert.ToUInt32(c.Args[2]);
+            RepeatInterval = interval;
 
             _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
 
@@ -240,7 +242,7 @@ namespace SSB.Core.Commands.Modules
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^2[SUCCESS]^7 Message of the day in config has been set and will repeat every^2 {0}^7 minutes.",
-                        c.Args[2]));
+                        interval));
         }
     }
 }

@@ -18,6 +18,7 @@
             AutoVoter = new AutoVoter(s);
             EarlyQuit = new EarlyQuit(s);
             Motd = new Motd(s);
+            Pickup = new Pickup(s);
             Servers = new Servers(s);
         }
 
@@ -69,6 +70,14 @@
         /// </value>
         public Motd Motd { get; private set; }
 
+        /// <summary>
+        /// Gets the pickup module.
+        /// </summary>
+        /// <value>
+        /// The pickup module.
+        /// </value>
+        public Pickup Pickup { get; private set; }
+        
         /// <summary>
         /// Gets the servers module.
         /// </summary>

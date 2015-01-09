@@ -14,10 +14,10 @@ namespace SSB.Core
     /// </summary>
     public class EarlyQuitHandler
     {
-        private readonly Bans _bansDb;
-        private readonly Quits _quitsDb;
+        private readonly DbBans _bansDb;
+        private readonly DbQuits _quitsDb;
         private readonly SynServerBot _ssb;
-        private readonly Users _usersDb;
+        private readonly DbUsers _usersDb;
         private double _banTime;
         private string _banTimeScale;
         private uint _maxQuitsAllowed;
@@ -28,9 +28,9 @@ namespace SSB.Core
         public EarlyQuitHandler(SynServerBot ssb)
         {
             _ssb = ssb;
-            _quitsDb = new Quits();
-            _usersDb = new Users();
-            _bansDb = new Bans();
+            _quitsDb = new DbQuits();
+            _usersDb = new DbUsers();
+            _bansDb = new DbBans();
             GetConfigData();
         }
 

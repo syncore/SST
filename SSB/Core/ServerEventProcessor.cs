@@ -15,7 +15,7 @@ namespace SSB.Core
     /// </summary>
     public class ServerEventProcessor
     {
-        private readonly SeenDates _seenDb;
+        private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SSB.Core
         public ServerEventProcessor(SynServerBot ssb)
         {
             _ssb = ssb;
-            _seenDb = new SeenDates();
+            _seenDb = new DbSeenDates();
         }
 
         /// <summary>

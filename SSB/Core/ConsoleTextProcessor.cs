@@ -381,7 +381,9 @@ namespace SSB.Core
         private async Task<bool> OutgoingPlayerDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
-                !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) && !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
+                !_ssb.Parser.ScmdPlayerKicked.IsMatch(text) &&
+                !_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text) &&
+                !_ssb.Parser.ScmdPlayerTimedOut.IsMatch(text))
                 return false;
             Match m;
             string outgoingPlayer = string.Empty;
@@ -398,6 +400,11 @@ namespace SSB.Core
             else if (_ssb.Parser.ScmdPlayerRageQuits.IsMatch(text))
             {
                 m = _ssb.Parser.ScmdPlayerRageQuits.Match(text);
+                outgoingPlayer = m.Groups["player"].Value;
+            }
+            else if (_ssb.Parser.ScmdPlayerTimedOut.IsMatch(text))
+            {
+                m = _ssb.Parser.ScmdPlayerTimedOut.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
             await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);

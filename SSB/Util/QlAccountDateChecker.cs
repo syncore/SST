@@ -14,7 +14,7 @@ namespace SSB.Util
     /// </summary>
     public class QlAccountDateChecker
     {
-        private readonly RegistrationDates _regDateDb;
+        private readonly DbRegistrationDates _regDateDb;
 
         private string _userAgent =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1003.1 Safari/535.19 Awesomium/1.7.1";
@@ -24,7 +24,7 @@ namespace SSB.Util
         /// </summary>
         public QlAccountDateChecker()
         {
-            _regDateDb = new RegistrationDates();
+            _regDateDb = new DbRegistrationDates();
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace SSB.Core.Commands.None
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
         private readonly TeamBalancer _teamBalancer;
-        private readonly Users _users;
+        private readonly DbUsers _users;
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
         private int _minArgs = 0;
@@ -38,7 +38,7 @@ namespace SSB.Core.Commands.None
             _ssb = ssb;
             _qlrHelper = new QlRanksHelper();
             _teamBalancer = new TeamBalancer();
-            _users = new Users();
+            _users = new DbUsers();
             _balancedRedTeam = new List<PlayerInfo>();
             _balancedBlueTeam = new List<PlayerInfo>();
             _suggestionTimer = new Timer();

@@ -8,19 +8,28 @@ namespace SSB.Util
     /// </summary>
     public static class Tools
     {
+        // The time scales that are valid for our purposes (primarily used for adding various bans)
+        public static string[] ValidTimeScales =
+        {
+            "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
+            "month", "months", "year", "years"
+        };
+
         /// <summary>
-        /// Determines whether the specified user's name is valid per QL requirements.
+        ///     Determines whether the specified user's name is valid per QL requirements.
         /// </summary>
         /// <param name="user">The user to check.</param>
-        /// <param name="allowMultipleUsers">if set to <c>true</c> then also allow
-        /// commas to be included in the regular expression (for things requiring multiple users
-        /// separated by commas).</param>
+        /// <param name="allowMultipleUsers">
+        ///     if set to <c>true</c> then also allow
+        ///     commas to be included in the regular expression (for things requiring multiple users
+        ///     separated by commas).
+        /// </param>
         /// <returns>
-        ///   <c>true</c> if the user name is valid, otherwise <c>false.</c>
+        ///     <c>true</c> if the user name is valid, otherwise <c>false.</c>
         /// </returns>
         /// <remarks>
-        /// Note: this does not check whether the user actually exists in QL, only whether the
-        /// username does not invalid characters.
+        ///     Note: this does not check whether the user actually exists in QL, only whether the
+        ///     username does not invalid characters.
         /// </remarks>
         public static bool IsValidQlUsernameFormat(string user, bool allowMultipleUsers)
         {
@@ -29,7 +38,7 @@ namespace SSB.Util
                 // Only A-Z, 0-9, and underscore (with comma as separator for multiple names) allowed by QL
                 return !Regex.IsMatch(user, "[^a-zA-Z0-9_,]");
             }
-            
+
             // Single user: Only A-Z, 0-9, and underscore allowed by QL
             return !Regex.IsMatch(user, "[^a-zA-Z0-9_]");
         }

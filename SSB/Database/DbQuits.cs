@@ -13,15 +13,15 @@ namespace SSB.Database
     /// <summary>
     ///     Database class responsible for tracking players who leave games early.
     /// </summary>
-    public class Quits : CommonSqliteDb
+    public class DbQuits : CommonSqliteDb
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.QuitDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.QuitDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Quits" /> class.
+        ///     Initializes a new instance of the <see cref="DbQuits" /> class.
         /// </summary>
-        public Quits()
+        public DbQuits()
         {
             VerifyDb();
         }

@@ -16,7 +16,7 @@ namespace SSB.Util
     /// </summary>
     public class QlRanksHelper
     {
-        private readonly Elo _eloDb;
+        private readonly DbElo _eloDb;
         private readonly uint _eloExpirationMins;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace SSB.Util
         /// </summary>
         public QlRanksHelper()
         {
-            _eloDb = new Elo();
+            _eloDb = new DbElo();
             _eloExpirationMins = GetExpirationFromConfig();
         }
 

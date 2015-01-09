@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using SSB.Database;
 using SSB.Enum;
@@ -15,15 +16,9 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class TimeBanCmd : IBotCommand
     {
-        private readonly Bans _banDb;
+        private readonly DbBans _banDb;
         private readonly SynServerBot _ssb;
-        private readonly Users _userDb;
-
-        private readonly string[] _validTimeScales =
-        {
-            "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
-            "month", "months", "year", "years"
-        };
+        private readonly DbUsers _userDb;
 
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
@@ -35,8 +30,8 @@ namespace SSB.Core.Commands.Admin
         public TimeBanCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _userDb = new Users();
-            _banDb = new Bans();
+            _userDb = new DbUsers();
+            _banDb = new DbBans();
         }
 
         /// <summary>
@@ -121,7 +116,8 @@ namespace SSB.Core.Commands.Admin
                 var banInfo = _banDb.GetBanInfo(c.Args[2]);
                 if (banInfo == null) return;
                 await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^5[TIMEBAN]^7 Time-ban already exists for player: ^3{0}^7, who was banned by admin: ^3{1}^7 on ^1{2}^7. Ban will expire on: ^2{3}.^7 Use ^3{4}{5} del {0}^7 to remove ban.",
+                    string.Format("^5[TIMEBAN]^7 Time-ban already exists for player: ^3{0}^7, who was banned by admin: ^3{1}^7 on ^1{2}^7." +
+                                  " Ban will expire on: ^2{3}.^7 Use ^3{4}{5} del {0}^7 to remove ban.",
                     c.Args[2], banInfo.BannedBy, banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                     banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                     CommandProcessor.BotCommandPrefix, c.CmdName));
@@ -196,7 +192,7 @@ namespace SSB.Core.Commands.Admin
             if (c.Args.Length != 5)
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format(
-             "^1[ERROR]^3 Usage: {0}{1} <add> <name> <time> <scale> - name is without clan, time is a number, scale is: secs, mins, hours, days, months, or years.",
+             "^1[ERROR]^3 Usage: {0}{1} <add> <name> <time> <scale> - name is without clan, time is a number, scale: secs, mins, hours, days, months, or years.",
              CommandProcessor.BotCommandPrefix, c.CmdName));
                 return;
             }
@@ -218,14 +214,7 @@ namespace SSB.Core.Commands.Admin
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
                 return;
             }
-            bool validScale = false;
-            foreach (var scale in _validTimeScales)
-            {
-                if (c.Args[4].Equals(scale))
-                {
-                    validScale = true;
-                }
-            }
+            bool validScale = Tools.ValidTimeScales.Contains(c.Args[4]);
             if (!validScale)
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Scale must be: secs, mins, hours, days, months, OR years");
@@ -318,7 +307,7 @@ namespace SSB.Core.Commands.Admin
                 var bInfo = _banDb.GetBanInfo(user);
                 if (bInfo != null && bInfo.BanType == BanType.AddedByEarlyQuit)
                 {
-                    var eQuitDb = new Quits();
+                    var eQuitDb = new DbQuits();
                     eQuitDb.DeleteUserFromDb(user);
                 }
 

@@ -12,7 +12,7 @@ namespace SSB.Core.Commands.None
     public class AccessCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
         private int _minArgs = 0;
         private UserLevel _userLevel = UserLevel.None;
 
@@ -23,7 +23,7 @@ namespace SSB.Core.Commands.None
         public AccessCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            _users = new DbUsers();
         }
 
         /// <summary>

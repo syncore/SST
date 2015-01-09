@@ -14,7 +14,7 @@ namespace SSB.Core
     /// </summary>
     public class PlayerAutoBanner
     {
-        private readonly Bans _banDb;
+        private readonly DbBans _banDb;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace SSB.Core
         public PlayerAutoBanner(SynServerBot ssb)
         {
             _ssb = ssb;
-            _banDb = new Bans();
+            _banDb = new DbBans();
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace SSB.Core
                 // when we clear the expired ban
                 if (banInfo.BanType == BanType.AddedByEarlyQuit)
                 {
-                    var eQuitDb = new Quits();
+                    var eQuitDb = new DbQuits();
                     eQuitDb.DeleteUserFromDb(player);
                 }
                 // Remove the ban from the database. This "on-demand" method of removing the ban is

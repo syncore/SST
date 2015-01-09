@@ -66,6 +66,14 @@ namespace SSB.Config
         public MotdOptions MotdOptions { get; set; }
 
         /// <summary>
+        /// Gets or sets the pickup options.
+        /// </summary>
+        /// <value>
+        /// The pickup options.
+        /// </value>
+        public PickupOptions PickupOptions { get; set; }
+        
+        /// <summary>
         /// Gets or sets the servers options.
         /// </summary>
         /// <value>

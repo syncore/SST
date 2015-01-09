@@ -104,6 +104,11 @@ namespace SSB.Config
                 message = string.Empty,
                 repeatInterval = 0
             };
+            var pickupOptions = new PickupOptions
+            {
+                isActive = false,
+                teamSize = 4
+            };
             var serversOptions = new ServersOptions
             {
                 isActive = false,
@@ -118,6 +123,7 @@ namespace SSB.Config
             Config.EarlyQuitOptions = earlyQuitOptions;
             Config.EloLimitOptions = eloLimitOptions;
             Config.MotdOptions = motdOptions;
+            Config.PickupOptions = pickupOptions;
             Config.ServersOptions = serversOptions;
 
             string json = JsonConvert.SerializeObject(Config);

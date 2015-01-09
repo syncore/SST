@@ -78,6 +78,16 @@ namespace SSB.Model
         public string FullClanName { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this player has made a successful
+        /// sub request prior to prematurely leaving the game in the case of pick-up games.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this player has made a successful sub request prior to
+        /// leaving a pick-up game early; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasMadeSuccessfulSubRequest { get; set; }
+
+        /// <summary>
         /// Gets or sets the player identifier number.
         /// </summary>
         /// <value>

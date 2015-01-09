@@ -26,6 +26,7 @@ namespace SSB.Util
             ScmdPlayerConfigString = new scmdPlayerConfigString();
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
+            ScmdPlayerTimedOut = new scmdPlayerTimedOut();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
             ScmdPlayerJoinedSpectators = new scmdPlayerJoinedSpectators();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
@@ -287,6 +288,17 @@ namespace SSB.Util
         ///     This contains a named group, 'player' that has the name of the player who has ragequit.
         /// </remarks>
         public Regex ScmdPlayerRageQuits { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding a player who has timed out as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        ///     Regex for finding a player who has timed out as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        ///     This contains a named group, 'player' that has the name of the player who has timed out.
+        /// </remarks>
+        public Regex ScmdPlayerTimedOut { get; private set; }
 
         /// <summary>
         /// Regex for getting the tinfo text (that will be ignored).

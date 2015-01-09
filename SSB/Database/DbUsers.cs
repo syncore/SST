@@ -15,16 +15,16 @@ namespace SSB.Database
     /// <summary>
     ///     Class responsible for user database operations.
     /// </summary>
-    public class Users : CommonSqliteDb, IConfiguration
+    public class DbUsers : CommonSqliteDb, IConfiguration
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.UserDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.UserDatabaseFilePath;
         private HashSet<string> _owners = new HashSet<string>();
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Users" /> class.
+        ///     Initializes a new instance of the <see cref="DbUsers" /> class.
         /// </summary>
-        public Users()
+        public DbUsers()
         {
             VerifyDb();
             LoadCfg();

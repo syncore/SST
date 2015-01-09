@@ -20,6 +20,7 @@ namespace SSB.Core.Commands.Admin
         public const string EarlyQuitArg = EarlyQuit.NameModule;
         public const string EloLimitArg = EloLimit.NameModule;
         public const string MotdArg = Motd.NameModule;
+        public const string PickupArg = Pickup.NameModule;
         public const string ServersArg = Servers.NameModule;
         private const string ActiveModuleArg = "active";
         private readonly List<IModule> _moduleList;
@@ -43,6 +44,7 @@ namespace SSB.Core.Commands.Admin
                 EarlyQuitArg,
                 EloLimitArg,
                 MotdArg,
+                PickupArg,
                 ServersArg
             };
             _moduleList = new List<IModule>
@@ -53,6 +55,7 @@ namespace SSB.Core.Commands.Admin
                 _ssb.Mod.EarlyQuit,
                 _ssb.Mod.EloLimit,
                 _ssb.Mod.Motd,
+                _ssb.Mod.Pickup,
                 _ssb.Mod.Servers
             };
         }
@@ -125,6 +128,10 @@ namespace SSB.Core.Commands.Admin
 
                 case MotdArg:
                     await _ssb.Mod.Motd.EvalModuleCmdAsync(c);
+                    break;
+                
+                case PickupArg:
+                    await _ssb.Mod.Pickup.EvalModuleCmdAsync(c);
                     break;
                 
                 case ServersArg:

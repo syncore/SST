@@ -15,7 +15,7 @@ namespace SSB.Core
     public class PlayerEventProcessor
     {
         private readonly QlRanksHelper _qlRanksHelper;
-        private readonly SeenDates _seenDb;
+        private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _qlRanksHelper = new QlRanksHelper();
-            _seenDb = new SeenDates();
+            _seenDb = new DbSeenDates();
         }
 
         /// <summary>
@@ -74,6 +74,13 @@ namespace SSB.Core
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
+            // TODO: Pickup module integration
+            if (_ssb.Mod.Pickup.Active && (_ssb.Mod.Pickup.Manager.IsPickupPreGame ||
+            _ssb.Mod.Pickup.Manager.IsPickupInProgress))
+            {
+                EvalPickupNoShow(player);
+            }
+            
             // Remove player from our internal list
             RemovePlayer(player);
 
@@ -241,6 +248,13 @@ namespace SSB.Core
             // The outgoing player was actually in the game & not a spectator.
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
+            // TODO: Pickup module integration
+             if (_ssb.Mod.Pickup.Active && (_ssb.Mod.Pickup.Manager.IsPickupPreGame ||
+             _ssb.Mod.Pickup.Manager.IsPickupInProgress)) 
+             {
+             EvalPickupNoShow(player);
+             }
+
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
@@ -248,6 +262,22 @@ namespace SSB.Core
             await EvalInProgressQuitter(player);
         }
 
+        private void EvalPickupNoShow(string player)
+        {
+            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
+            //if (_ssb.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest) {
+            // Increment subsUsedCount for the user in the pickup user database
+            // if subsUsedCount > _ssb.Mod.Pickup.MaxSubsPerPlayer
+            // then add a timeban for _ssb.Mod.Pickup.ExcessiveSubUseBanTime, _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScale
+            // }
+            // else
+            // {
+            // Increment the noShowCount for the user in the pickup user database
+            // if noShowCount > _ssb.Mod.Pickup.MaxNoShowsPerPlayer
+            // then add a timeban for _ssb.Mod.Pickup.ExcessiveNoShowBanTime, _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScale
+            // }
+        }
+        
         /// <summary>
         ///     Gets the corresponding value associated with a player's configstring.
         /// </summary>

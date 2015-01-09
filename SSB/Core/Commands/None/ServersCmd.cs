@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
@@ -96,14 +97,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
 
-            bool validGametype = false;
-            foreach (string gametype in _validGameTypes)
-            {
-                if (c.Args[1].Equals(gametype))
-                {
-                    validGametype = true;
-                }
-            }
+            bool validGametype = _validGameTypes.Contains(c.Args[1]);
             if (!validGametype)
             {
                 await
@@ -111,14 +105,7 @@ namespace SSB.Core.Commands.None
                         "^1[ERROR]^3 Valid gametypes are: {0}", string.Join(", ", _validGameTypes)));
                 return;
             }
-            bool validRegion = false;
-            foreach (string region in _validRegions)
-            {
-                if (c.Args[2].Equals(region))
-                {
-                    validRegion = true;
-                }
-            }
+            bool validRegion = _validRegions.Contains(c.Args[2]);
             if (!validRegion)
             {
                 await

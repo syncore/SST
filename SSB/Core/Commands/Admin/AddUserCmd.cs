@@ -13,7 +13,7 @@ namespace SSB.Core.Commands.Admin
     public class AddUserCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
-        private readonly Users _users;
+        private readonly DbUsers _users;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
 
@@ -24,7 +24,7 @@ namespace SSB.Core.Commands.Admin
         public AddUserCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new Users();
+            _users = new DbUsers();
         }
 
         /// <summary>

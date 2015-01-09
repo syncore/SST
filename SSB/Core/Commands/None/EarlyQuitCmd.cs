@@ -12,7 +12,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class EarlyQuitCmd : IBotCommand
     {
-        private readonly Quits _quitDb;
+        private readonly DbQuits _quitDb;
         private readonly SynServerBot _ssb;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.None;
@@ -24,7 +24,7 @@ namespace SSB.Core.Commands.None
         public EarlyQuitCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _quitDb = new Quits();
+            _quitDb = new DbQuits();
         }
 
         /// <summary>

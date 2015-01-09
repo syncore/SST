@@ -14,15 +14,15 @@ namespace SSB.Database
     /// <summary>
     ///     Database class responsible for QLRanks elo data for players.
     /// </summary>
-    public class Elo : CommonSqliteDb
+    public class DbElo : CommonSqliteDb
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.EloDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.EloDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Elo" /> class.
+        ///     Initializes a new instance of the <see cref="DbElo" /> class.
         /// </summary>
-        public Elo()
+        public DbElo()
         {
             VerifyDb();
         }
