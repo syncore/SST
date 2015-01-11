@@ -45,13 +45,13 @@ namespace SSB.Core.Commands.SuperUser
         public async Task DisplayArgLengthError(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <start/reset/unban>",
+                "^1[ERROR]^3 Usage: {0}{1} <start/stop/reset/unban>",
                 CommandProcessor.BotCommandPrefix, c.CmdName));
         }
 
         public async Task ExecAsync(CmdArgs c)
         {
-            if (!c.Args[1].Equals("reset") && c.Args[1].Equals("start") && !c.Args[1].Equals("unban"))
+            if (!c.Args[1].Equals("reset") && c.Args[1].Equals("start") && c.Args[1].Equals("stop") && !c.Args[1].Equals("unban"))
             {
                 await DisplayArgLengthError(c);
                 return;
@@ -64,9 +64,13 @@ namespace SSB.Core.Commands.SuperUser
             {
                 await _ssb.Mod.Pickup.Manager.EvalPickupStart();
             }
+            else if (c.Args[1].Equals("stop"))
+            {
+                await _ssb.Mod.Pickup.Manager.EvalPickupStop();
+            }
             else if (c.Args[1].Equals("unban"))
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupUnban();
+                //await _ssb.Mod.Pickup.Manager.EvalPickupUnban();
             }
         }
     }

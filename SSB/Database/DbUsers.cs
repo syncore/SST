@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using SSB.Config;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -138,6 +139,42 @@ namespace SSB.Database
                 }
             }
             return UserDbResult.Unspecified;
+        }
+
+        /// <summary>
+        /// Gets the current admins on the server.
+        /// </summary>
+        /// <param name="currentPlayers">The current players.</param>
+        /// <returns>The current admins on the server as a comma-separated string, if any.</returns>
+        public string GetCurrentAdminsOnServer(Dictionary<string, PlayerInfo> currentPlayers)
+        {
+            var sb = new StringBuilder();
+            foreach (var player in currentPlayers)
+            {
+                if (GetUserLevel(player.Key) >= UserLevel.Admin)
+                {
+                    sb.Append(string.Format("{0}, ", player.Key));
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Gets the users on the server who are of SuperUser access level or higher.
+        /// </summary>
+        /// <param name="currentPlayers">The current players.</param>
+        /// <returns>The current users on the server of SuperUser access level or higher, if any.</returns>
+        public string GetSuperUsersOrHigherOnServer(Dictionary<string, PlayerInfo> currentPlayers)
+        {
+            var sb = new StringBuilder();
+            foreach (var player in currentPlayers)
+            {
+                if (GetUserLevel(player.Key) >= UserLevel.SuperUser)
+                {
+                    sb.Append(string.Format("{0}, ", player.Key));
+                }
+            }
+            return sb.ToString();
         }
 
         /// <summary>

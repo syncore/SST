@@ -280,6 +280,79 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Sends the 'tell player' command to QL. If too much text is received then issue 'tell' command
+        ///     over multiple lines.
+        /// </summary>
+        /// <param name="player">The player to whom the message is to be sent.</param>
+        /// <param name="text">The text to tell.</param>
+        /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
+        public async Task QlCmdTell(string player, string text)
+        {
+            // Text to send might be too long, so send over multiple lines.
+            // Line length of between 98 & 115 chars is probably optimal for
+            // lower resolutions based on guestimate. However, QL actually supports
+            // sending up to 135 characters at a time.
+            if ((text.Length) > MaxChatlineLength)
+            {
+                // .5 ensures we always round up to next int, no matter size
+                // ReSharper disable once PossibleLossOfFraction
+                double l = ((text.Length / MaxChatlineLength) + .5);
+                double linesRoundUp = Math.Ceiling(l);
+                try
+                {
+                    int numLines = Convert.ToInt32(linesRoundUp);
+                    var multiLine = new string[numLines];
+                    int startPos = 0;
+                    string lastColor = string.Empty;
+                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
+                        text.Length, numLines);
+                    for (int i = 0; i <= multiLine.Length - 1; i++)
+                    {
+                        if (i != 0)
+                        {
+                            // Keep the text colors consistent across multiple lines of text.
+                            if (_ssb.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
+                            {
+                                MatchCollection m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
+                                lastColor = m[m.Count - 1].Value;
+                            }
+                            if (multiLine[i - 1].EndsWith("^"))
+                            {
+                                lastColor = "^";
+                            }
+                        }
+                        if (i == multiLine.Length - 1)
+                        {
+                            // last iteration; string length cannot be specified
+                            multiLine[i] = string.Format("{0}{1}", lastColor, text.Substring(startPos));
+                        }
+                        else
+                        {
+                            multiLine[i] = string.Format("{0}{1}", lastColor,
+                                text.Substring(startPos, MaxChatlineLength));
+                        }
+
+                        // Double the usual delay when sending multiple lines.
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        Action<string, string> tell = DoTell;
+                        tell(player, multiLine[i]);
+                        startPos += MaxChatlineLength;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                }
+            }
+            else
+            {
+                await Task.Delay(DefaultCommandDelayMsec);
+                Action<string, string> tell = DoTell;
+                tell(player, text);
+            }
+        }
+
+        /// <summary>
         ///     Send a synchronous command, typically for retrieving cvars.
         /// </summary>
         /// <param name="toSend">The command (cvar) to send.</param>
@@ -329,6 +402,16 @@ namespace SSB.Core
         private void DoSay(string text)
         {
             SendQlCommand(string.Format("say {0}", text), false);
+        }
+
+        /// <summary>
+        /// Sends the 'tell player' command to QL.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="text">The text.</param>
+        private void DoTell(string player, string text)
+        {
+            SendQlCommand(string.Format("tell {0} {1}", player, text), false);
         }
 
         /// <summary>

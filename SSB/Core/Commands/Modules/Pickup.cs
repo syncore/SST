@@ -186,7 +186,11 @@ namespace SSB.Core.Commands.Modules
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Team size must be a number between 4 and 8.");
                 return;
             }
-
+            if (!_ssb.ServerInfo.IsATeamGame())
+            {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Pickup module can only be enabled for team-based games.");
+                return;
+            }
             await EnablePickup(teamsize);
         }
 
@@ -217,6 +221,13 @@ namespace SSB.Core.Commands.Modules
                 _configHandler.Config.PickupOptions.SetDefaults();
                 return;
             }
+            // Current game must be team game, despite Active setting
+            if (!_ssb.ServerInfo.IsATeamGame())
+            {
+                Active = false;
+                return;
+            }
+
             Active = _configHandler.Config.PickupOptions.isActive;
             MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
             MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
@@ -261,6 +272,11 @@ namespace SSB.Core.Commands.Modules
         private async Task DisablePickup()
         {
             UpdateConfig(false);
+            // Unlock the teams and clear eligible players if any
+            _ssb.QlCommands.SendToQl("unlock", false);
+            Manager.EligiblePlayers.Clear();
+            Manager.IsPickupPreGame = false;
+            Manager.IsPickupInProgress = false;
             await
                 _ssb.QlCommands.QlCmdSay("^2[SUCCESS]^7 Pickup game module has been disabled.");
         }

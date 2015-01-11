@@ -95,5 +95,33 @@ namespace SSB.Core
             return CurrentPlayers[player].Team == Team.Blue ||
                    CurrentPlayers[player].Team == Team.Red;
         }
+
+        /// <summary>
+        /// Determines whether the current gametype is a team-based game.
+        /// </summary>
+        /// <returns><c>true</c> if the current gametype is a team-based game; otherwise <c>false</c></returns>
+        public bool IsATeamGame()
+        {
+            switch (CurrentServerGameType)
+            {
+                case QlGameTypes.Unspecified:
+                case QlGameTypes.Ffa:
+                case QlGameTypes.Duel:
+                case QlGameTypes.Race:
+                    return false;
+
+                case QlGameTypes.Tdm:
+                case QlGameTypes.Ca:
+                case QlGameTypes.Ctf:
+                case QlGameTypes.OneFlagCtf:
+                case QlGameTypes.Harvester:
+                case QlGameTypes.FreezeTag:
+                case QlGameTypes.Domination:
+                case QlGameTypes.AttackDefend:
+                case QlGameTypes.RedRover:
+                    return true;
+            }
+            return false;
+        }
     }
 }
