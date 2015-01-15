@@ -46,7 +46,9 @@ namespace SSB.Core
         public const string CmdPickup = "pickup";
         public const string CmdPickupAdd = "a";
         public const string CmdPickupCap = "cap";
+        public const string CmdPickupPick = "pick";
         public const string CmdPickupRemove = "r";
+        public const string CmdPickupSub = "sub";
         public const string CmdPause = "pause";
         public const string CmdReload = "reload";
         public const string CmdRejectTeamSuggestion = "reject";
@@ -104,6 +106,8 @@ namespace SSB.Core
                 {CmdPickupAdd, new PickupAddCmd(_ssb)},
                 {CmdPickupCap, new PickupCapCmd(_ssb)},
                 {CmdPickupRemove, new PickupRemoveCmd(_ssb)},
+                {CmdPickupPick, new PickupPickCmd(_ssb)},
+                {CmdPickupSub, new PickupSubCmd(_ssb)},
                 {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
                 {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
                 {CmdServers, new ServersCmd(_ssb)},
