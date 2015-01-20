@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SSB.Core.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -74,13 +75,13 @@ namespace SSB.Core
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
-            // TODO: Pickup module integration
-            if (_ssb.Mod.Pickup.Active && (_ssb.Mod.Pickup.Manager.IsPickupPreGame ||
-            _ssb.Mod.Pickup.Manager.IsPickupInProgress))
+            // Evalute the player's no-show/sub status for pickup module, if active
+            if (_ssb.Mod.Pickup.Active)
             {
-                EvalPickupNoShow(player);
+                await _ssb.Mod.Pickup.Manager.EvalPickupNoShow(player, outgoingWasActive);
+                _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
             }
-            
+
             // Remove player from our internal list
             RemovePlayer(player);
 
@@ -96,8 +97,9 @@ namespace SSB.Core
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
-            await EvalCountdownQuitter(player);
-            await EvalInProgressQuitter(player);
+            var eqh = new EarlyQuitHandler(_ssb);
+            await eqh.EvalCountdownQuitter(player);
+            await eqh.EvalInProgressQuitter(player);
         }
 
         /// <summary>
@@ -246,38 +248,24 @@ namespace SSB.Core
             player = GetStrippedName(player);
 
             // The outgoing player was actually in the game & not a spectator.
+            //TODO: investigate this, it might always be false for sub being moved out in pickup
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
-            // TODO: Pickup module integration
-             if (_ssb.Mod.Pickup.Active && (_ssb.Mod.Pickup.Manager.IsPickupPreGame ||
-             _ssb.Mod.Pickup.Manager.IsPickupInProgress)) 
-             {
-             EvalPickupNoShow(player);
-             }
+            // Evalute the player's no-show/sub status for pickup module, if active
+            if (_ssb.Mod.Pickup.Active)
+            {
+                await _ssb.Mod.Pickup.Manager.EvalPickupNoShow(player, outgoingWasActive);
+                _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
+            }
 
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
-            await EvalCountdownQuitter(player);
-            await EvalInProgressQuitter(player);
+            var eqh = new EarlyQuitHandler(_ssb);
+            await eqh.EvalCountdownQuitter(player);
+            await eqh.EvalInProgressQuitter(player);
         }
 
-        private void EvalPickupNoShow(string player)
-        {
-            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
-            //if (_ssb.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest) {
-            // Increment subsUsedCount for the user in the pickup user database
-            // if subsUsedCount > _ssb.Mod.Pickup.MaxSubsPerPlayer
-            // then add a timeban for _ssb.Mod.Pickup.ExcessiveSubUseBanTime, _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScale
-            // }
-            // else
-            // {
-            // Increment the noShowCount for the user in the pickup user database
-            // if noShowCount > _ssb.Mod.Pickup.MaxNoShowsPerPlayer
-            // then add a timeban for _ssb.Mod.Pickup.ExcessiveNoShowBanTime, _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScale
-            // }
-        }
-        
         /// <summary>
         ///     Gets the corresponding value associated with a player's configstring.
         /// </summary>
@@ -337,36 +325,6 @@ namespace SSB.Core
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
                     playername, country, clantag, fullclanname, subscriber));
-        }
-
-        /// <summary>
-        /// Evaluates early quitters who leave during countdown and punishes them
-        /// with double the usual punishment if the teams would be made uneven by their quitting.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        private async Task EvalCountdownQuitter(string player)
-        {
-            if (!_ssb.Mod.EarlyQuit.Active) return;
-            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.Countdown) return;
-            // Only punish if early quitter actually made the teams uneven by quitting
-            if (!_ssb.ServerInfo.HasEvenTeams())
-            {
-                var eqh = new EarlyQuitHandler(_ssb);
-                // Double penalty for countdown quit
-                await eqh.ProcessEarlyQuit(player, true);
-            }
-        }
-
-        /// <summary>
-        /// Evaluates early quitters who leave during games that are in progress.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        private async Task EvalInProgressQuitter(string player)
-        {
-            if (!_ssb.Mod.EarlyQuit.Active) return;
-            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
-            var eqh = new EarlyQuitHandler(_ssb);
-            await eqh.ProcessEarlyQuit(player, false);
         }
 
         /// <summary>

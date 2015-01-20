@@ -43,7 +43,9 @@
     <Reference Include="Parser">
       <HintPath>..\ParserDllGenerator\ParserDllGenerator\bin\Release\Parser.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net45\System.Data.SQLite.dll</HintPath>
@@ -128,10 +130,11 @@
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
-    <Compile Include="Core\EarlyQuitHandler.cs" />
-    <Compile Include="Core\ModuleEventProcessor.cs" />
-    <Compile Include="Core\MotdHandler.cs" />
-    <Compile Include="Core\PickupManager.cs" />
+    <Compile Include="Core\Modules\EarlyQuitHandler.cs" />
+    <Compile Include="Core\Modules\MotdHandler.cs" />
+    <Compile Include="Core\Modules\PickupCaptains.cs" />
+    <Compile Include="Core\Modules\PickupManager.cs" />
+    <Compile Include="Core\Modules\PickupPlayers.cs" />
     <Compile Include="Core\PlayerAutoBanner.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
@@ -139,6 +142,7 @@
     <Compile Include="Core\VoteManager.cs" />
     <Compile Include="Database\DbBans.cs" />
     <Compile Include="Database\DbElo.cs" />
+    <Compile Include="Database\DbPickups.cs" />
     <Compile Include="Database\DbQuits.cs" />
     <Compile Include="Database\DbRegistrationDates.cs" />
     <Compile Include="Database\DbSeenDates.cs" />

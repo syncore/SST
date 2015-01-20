@@ -7,7 +7,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Util;
 
-namespace SSB.Core
+namespace SSB.Core.Modules
 {
     /// <summary>
     ///     Class responsible for evaluating and handling players who quit early, as specified by the EarlyQuit module.
@@ -35,12 +35,40 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Evaluates early quitters who leave during countdown and punishes them
+        /// with double the usual punishment if the teams would be made uneven by their quitting.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task EvalCountdownQuitter(string player)
+        {
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.Countdown) return;
+            // Only punish if early quitter actually made the teams uneven by quitting
+            if (!_ssb.ServerInfo.HasEvenTeams())
+            {
+                // Double penalty for countdown quit
+                await ProcessEarlyQuit(player, true);
+            }
+        }
+
+        /// <summary>
+        /// Evaluates early quitters who leave during games that are in progress.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task EvalInProgressQuitter(string player)
+        {
+            if (!_ssb.Mod.EarlyQuit.Active) return;
+            if (_ssb.ServerInfo.CurrentServerGameState != QlGameStates.InProgress) return;
+            await ProcessEarlyQuit(player, false);
+        }
+
+        /// <summary>
         /// Processes the early quit.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="doublePenalty">if set to <c>true</c> double the penalty
         /// for particularly egregious early quits (i.e. during countdown).</param>
-        public async Task ProcessEarlyQuit(string player, bool doublePenalty)
+        private async Task ProcessEarlyQuit(string player, bool doublePenalty)
         {
             if (_usersDb.GetUserLevel(player) >= UserLevel.SuperUser)
             {
@@ -58,9 +86,9 @@ namespace SSB.Core
             {
                 _quitsDb.AddUserToDb(player, doublePenalty);
             }
-            
+
             long qCount = await EvaluateUserQuitCount(player);
-            
+
             if (doublePenalty)
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 penalty was doubled for unbalancing teams during match start!",
@@ -77,7 +105,7 @@ namespace SSB.Core
                             player));
             }
         }
-        
+
         /// <summary>
         ///     Bans the early quitter.
         /// </summary>
@@ -99,7 +127,7 @@ namespace SSB.Core
                     string.Format(
                         "^5[EARLYQUIT]^7 ^3{0}^7 has quit too many games early and is now banned until:^1 {1}",
                         player, expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
-            
+
             // The player might have not actually disconnected but spectated instead, so kickban(QL) immediately
             await _ssb.QlCommands.CustCmdKickban(player);
         }

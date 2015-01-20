@@ -32,7 +32,7 @@ namespace SSB.Database
         /// <param name="user">The user.</param>
         /// <param name="doublePenalty">if set to <c>true</c> double the penalty
         /// for particularly egregious early quits (i.e. during countdown).</param>
-        /// <returns></returns>
+        /// <returns>The result of the addition operation as an <see cref="UserDbResult"/> enum value.</returns>
         public UserDbResult AddUserToDb(string user, bool doublePenalty)
         {
             var result = UserDbResult.Unspecified;
@@ -56,7 +56,7 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@numQuits", (doublePenalty ? 2 : 1));
                             cmd.ExecuteNonQuery();
                             Debug.WriteLine(
-                                string.Format("AddUserToBanDb: {0} successfully added to early quitter DB",
+                                string.Format("AddEarlyQuitDb: {0} successfully added to early quitter DB",
                                     user));
                             result = UserDbResult.Success;
                         }
@@ -343,7 +343,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Checks whether the ban database exists.
+        ///     Checks whether the early quit database exists.
         /// </summary>
         /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
@@ -352,7 +352,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Deletes the ban database.
+        ///     Deletes the early quit database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -409,7 +409,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Verifies the registration database.
+        ///     Verifies the quit database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

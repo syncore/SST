@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Timers;
 
-namespace SSB.Core
+namespace SSB.Core.Modules
 {
     /// <summary>
     ///     Class responsible for handling the message of the day set by the motd command.

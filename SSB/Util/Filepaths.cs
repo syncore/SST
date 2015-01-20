@@ -13,6 +13,7 @@ namespace SSB.Util
         private const string BanDatabaseFile = "bannedusers.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
         private const string EloDatabaseFile = "elo.db";
+        private const string PickupGameDatabaseFile = "pickups.db";
         private const string QuitDatabaseFile = "earlyquits.db";
         private const string SeenDateDatabaseFile = "seendate.db";
         private const string UserDatabaseFile = "ssbusers.db";
@@ -26,6 +27,9 @@ namespace SSB.Util
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
 
         private static readonly string _eloDatabaseFilePath = Path.Combine(DataDirectory, EloDatabaseFile);
+
+        private static readonly string _pickupGameDatabaseFilePath = Path.Combine(DataDirectory,
+            PickupGameDatabaseFile);
         
         private static readonly string _quitDatabaseFilePath = Path.Combine(DataDirectory, QuitDatabaseFile);
 
@@ -69,7 +73,18 @@ namespace SSB.Util
         {
             get { return _eloDatabaseFilePath; }
         }
-        
+
+        /// <summary>
+        /// Gets the pickup game database file path.
+        /// </summary>
+        /// <value>
+        /// The pickup game database file path.
+        /// </value>
+        public static string PickupGameDatabaseFilePath
+        {
+            get { return _pickupGameDatabaseFilePath; }
+        }
+
         /// <summary>
         /// Gets the quit database file path.
         /// </summary>

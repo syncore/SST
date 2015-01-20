@@ -6,6 +6,8 @@
     public enum BanType
     {
         AddedByAdmin,
-        AddedByEarlyQuit
+        AddedByEarlyQuit,
+        AddedByPickupSubs,
+        AddedByPickupNoShows,
     }
 }

@@ -77,7 +77,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
 
-            await _ssb.Mod.Pickup.Manager.ProcessPlayerSub(c.FromUser, c.Args[1]);
+            await _ssb.Mod.Pickup.Manager.ProcessSub(c.FromUser, c.Args[1]);
         }
     }
 }

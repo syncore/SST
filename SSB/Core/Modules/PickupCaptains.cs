@@ -1,0 +1,328 @@
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
+using SSB.Core.Commands.None;
+using SSB.Database;
+using SSB.Enum;
+
+namespace SSB.Core.Modules
+{
+    /// <summary>
+    /// Class associated with pickup captains and related methods.
+    /// </summary>
+    public class PickupCaptains
+    {
+        private readonly PickupManager _manager;
+        private readonly SynServerBot _ssb;
+
+        public PickupCaptains(SynServerBot ssb, PickupManager manager)
+        {
+            _ssb = ssb;
+            _manager = manager;
+        }
+
+        /// <summary>
+        /// Gets or sets the blue captain.
+        /// </summary>
+        /// <value>
+        /// The blue captain.
+        /// </value>
+        public string BlueCaptain { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether there is a blue captain.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if there is a blue captain; otherwise, <c>false</c>.
+        /// </value>
+        public bool BlueCaptainExists
+        {
+            get { return !string.IsNullOrEmpty(BlueCaptain); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether it is the blue captain's turn to pick.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if it is the blue captain's turn to pick; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBlueTurnToPick { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether it is the red captain's turn to pick.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if it is the red captain's turn to pick; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRedTurnToPick { get; set; }
+
+        /// <summary>
+        /// Gets or sets the red captain.
+        /// </summary>
+        /// <value>
+        /// The red captain.
+        /// </value>
+        public string RedCaptain { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether there is a red captain.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if there is a red captain; otherwise, <c>false</c>.
+        /// </value>
+        public bool RedCaptainExists
+        {
+            get { return !string.IsNullOrEmpty(RedCaptain); }
+        }
+
+        /// <summary>
+        /// Performs the substitution for a captain.
+        /// </summary>
+        /// <param name="outCaptain">The captain to sub out.</param>
+        /// <param name="team">The team to move the sub to (outCaptain's team).</param>
+        /// <param name="inCaptain">The captain to sub in.</param>
+        /// <returns></returns>
+        public async Task DoCaptainSub(string outCaptain, Team team, string inCaptain)
+        {
+            // Set as successful sub so user doesn't get counted as no-show
+            _ssb.ServerInfo.CurrentPlayers[outCaptain].HasMadeSuccessfulSubRequest = true;
+            // Sub old captain out
+            await _ssb.QlCommands.CustCmdPutPlayer(outCaptain, Team.Spec);
+            // Sub new captain in and set
+            await SetCaptain(inCaptain, team);
+            // Examine which captain's pick it is and set it again so new subbed captain becomes aware
+            if (IsBlueTurnToPick)
+            {
+                await SetPickingTeam(Team.Blue);
+            }
+            else if (IsRedTurnToPick)
+            {
+                await SetPickingTeam(Team.Red);
+            }
+            // Record the outgoing captain's substitution for tracking/banning purposes.
+            _manager.Subs.Append(string.Format("{0}->{1},", inCaptain, outCaptain));
+            var pickupDb = new DbPickups();
+            pickupDb.IncrementUserSubsUsedCount(outCaptain);
+        }
+
+        /// <summary>
+        /// Evaluates the addition of a captain to see if it is possible to add the captain, and adds if so.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <remarks>
+        /// This is called in response to input received from <see cref="PickupCapCmd"/>.
+        /// </remarks>
+        public async Task ProcessAddCaptain(string player)
+        {
+            if (_manager.IsQlGameInProgress)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Cannot become a pickup captain because a game is in progress.");
+                return;
+            }
+            if (!_manager.HasCaptainSelectionStarted)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Cannot become a pickup captain because captain selection hasn't started yet.");
+                return;
+            }
+            if (RedCaptain.Equals(player))
+            {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You've already been assigned as the RED captain.");
+                return;
+            }
+            if (BlueCaptain.Equals(player))
+            {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You've already been assigned as the BLUE captain.");
+                return;
+            }
+            if (!RedCaptainExists)
+            {
+                await SetCaptain(player, Team.Red);
+            }
+            else if (!BlueCaptainExists)
+            {
+                await SetCaptain(player, Team.Blue);
+            }
+        }
+
+        /// <summary>
+        /// Processes and evaluates the captain's player pick and performs it if's possible to do so.
+        /// </summary>
+        /// <param name="fromPlayer">The name of the player sending the command.</param>
+        /// <param name="playerToPick">The player to pick.</param>
+        /// <remarks>
+        /// This is called in response to input received from <see cref="PickupPickCmd"/>.
+        /// </remarks>
+        public async Task ProcessPlayerPick(string fromPlayer, string playerToPick)
+        {
+            if (!RedCaptain.Equals(fromPlayer) && !BlueCaptain.Equals(fromPlayer))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 You cannot pick because you are not a captain!");
+                return;
+            }
+            if ((RedCaptain.Equals(fromPlayer) && !IsRedTurnToPick) ||
+                (BlueCaptain.Equals(fromPlayer) && !IsBlueTurnToPick))
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 It is not your turn to pick!");
+                return;
+            }
+            if (_manager.IsQlGameInProgress)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Cannot pick a player because a game is in progress.");
+                return;
+            }
+            if (!_manager.HasTeamSelectionStarted)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Cannot pick a player because team selection hasn't started.");
+                return;
+            }
+
+            if (RedCaptain.Equals(fromPlayer))
+            {
+                await DoPlayerPick(playerToPick, Team.Red);
+            }
+            else if (BlueCaptain.Equals(fromPlayer))
+            {
+                await DoPlayerPick(playerToPick, Team.Blue);
+            }
+        }
+
+        /// <summary>
+        /// Sets the captain for a given team.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="team">The team to which the captain should be moved.</param>
+        public async Task SetCaptain(string player, Team team)
+        {
+            switch (team)
+            {
+                case Team.Red:
+                    RedCaptain = player;
+                    // Captains from here on are treated differently from eligible players.
+                    _manager.RemoveEligibility(player);
+                    await
+                        _ssb.QlCommands.QlCmdSay(
+                            string.Format("^3[PICKUP]^1 {0}^7 is now the ^1RED^7 captain", player));
+                    break;
+
+                case Team.Blue:
+                    BlueCaptain = player;
+                    // Captains from here on are treated differently from eligible players.
+                    _manager.RemoveEligibility(player);
+                    await
+                        _ssb.QlCommands.QlCmdSay(
+                            string.Format("^3[PICKUP]^5 {0}^7 is now the ^5BLUE^7 captain", player));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Sets the picking team.
+        /// </summary>
+        /// <param name="team">The team.</param>
+        public async Task SetPickingTeam(Team team)
+        {
+            switch (team)
+            {
+                case Team.Red:
+                    IsRedTurnToPick = true;
+                    IsBlueTurnToPick = false;
+                    break;
+
+                case Team.Blue:
+                    IsRedTurnToPick = false;
+                    IsBlueTurnToPick = true;
+                    break;
+            }
+            await _ssb.QlCommands.QlCmdSay(string.Format("^3[PICKUP]^7 It is the {0}^7 captain ({1})'s pick. Type ^2!pick <name>^7 to pick a player.",
+                ((team == Team.Red) ? "^1RED" : "^5BLUE"),
+                ((team == Team.Red) ? RedCaptain : BlueCaptain)));
+            await _manager.DisplayEligiblePlayers();
+        }
+
+        /// <summary>
+        /// Adds the new pickup to the database.
+        /// </summary>
+        private void AddNewPickupToDb()
+        {
+            var pickupDb = new DbPickups();
+            var redTeam = new StringBuilder();
+            var blueTeam = new StringBuilder();
+
+            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Red))
+            {
+                redTeam.Append(string.Format("{0}, ", player.ShortName));
+            }
+
+            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Blue))
+            {
+                blueTeam.Append(string.Format("{0}, ", player.ShortName));
+            }
+            var red = redTeam.ToString().TrimEnd(',', ' ');
+            var blue = blueTeam.ToString().TrimEnd(',', ' ');
+            var subs = _manager.Subs.ToString().TrimEnd(',', ' ');
+            var noshows = _manager.NoShows.ToString().TrimEnd(',', ' ');
+
+            pickupDb.AddPickupGame(red, blue, RedCaptain, BlueCaptain, subs, noshows, DateTime.Now);
+        }
+
+        /// <summary>
+        /// Performs the captain's player pick.
+        /// </summary>
+        /// <param name="player">The player to pick.</param>
+        /// <param name="team">The team on which the player should be placed.</param>
+        private async Task DoPlayerPick(string player, Team team)
+        {
+            if (!_manager.EligiblePlayers.Contains(player))
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not an eligible player!",
+                    player));
+                await _manager.DisplayEligiblePlayers();
+                return;
+            }
+            await _ssb.QlCommands.QlCmdSay(string.Format("^3[PICKUP]{0} ^7({1}{2}^7) picked {1}{3}",
+                ((team == Team.Red) ? "^1RED" : "^5BLUE"), ((team == Team.Red) ? "^1" : "^5"),
+                ((team == Team.Red) ? RedCaptain : BlueCaptain), player));
+
+            if (team == Team.Red)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Red);
+                await SetPickingTeam(Team.Blue);
+            }
+            else if (team == Team.Blue)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Blue);
+                await SetPickingTeam(Team.Red);
+            }
+            // Notify player
+            await _manager.NotifyNewPlayer(player, team);
+
+            // Player can no longer be picked
+            _manager.RemoveEligibility(player);
+
+            // Teams are full, we are ready to start
+            if ((_ssb.ServerInfo.GetTeam(Team.Red).Count == _ssb.Mod.Pickup.Teamsize) &&
+                ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize)))
+            {
+                //At this point, add the game to the pickupgames table
+                AddNewPickupToDb();
+
+                // TODO: need a way to store any subs and/or no-shows that occurred prior to game being added to table for purposes of game stats,
+                // (subs/no shows will automatically be tracked by the ModuleEventProcessor) for purposes of banning
+                _manager.HasTeamSelectionStarted = false;
+                await _ssb.QlCommands.QlCmdSay("^3[PICKUP]^7 Teams are now ^1FULL.^7 PLEASE ^*2READY UP*^7 TO START THE GAME!");
+            }
+        }
+    }
+}

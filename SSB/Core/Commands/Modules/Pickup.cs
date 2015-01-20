@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;

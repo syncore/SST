@@ -75,7 +75,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
 
-            await _ssb.Mod.Pickup.Manager.ProcessAddCaptain(c.FromUser);
+            await _ssb.Mod.Pickup.Manager.Captains.ProcessAddCaptain(c.FromUser);
         }
     }
 }
