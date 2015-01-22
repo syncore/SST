@@ -59,6 +59,12 @@ namespace SSB.Core
             {
                 await _ssb.Mod.AccountDateLimit.RunUserDateCheck(player);
             }
+            // Pickup module: notify connecting player of the game signup process
+            if (_ssb.Mod.Pickup.Active)
+            {
+                await _ssb.Mod.Pickup.Manager.NotifyConnectingUser(player);
+            }
+            
             // Check for time-bans
             var autoBanner = new PlayerAutoBanner(_ssb);
             await autoBanner.CheckForBans(player);
@@ -75,10 +81,10 @@ namespace SSB.Core
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
-            // Evalute the player's no-show/sub status for pickup module, if active
+            // Evaluate the player's no-show/sub status for pickup module, if active
             if (_ssb.Mod.Pickup.Active)
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupNoShow(player, outgoingWasActive);
+                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
             }
 
@@ -251,11 +257,12 @@ namespace SSB.Core
             //TODO: investigate this, it might always be false for sub being moved out in pickup
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
 
-            // Evalute the player's no-show/sub status for pickup module, if active
+            // Evaluate the player's no-show/sub status for pickup module, if active
             if (_ssb.Mod.Pickup.Active)
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupNoShow(player, outgoingWasActive);
+                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
+
             }
 
             // Evaluate player's early quit situation if that module is active

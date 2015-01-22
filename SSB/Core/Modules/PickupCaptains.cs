@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enum;
@@ -251,31 +249,7 @@ namespace SSB.Core.Modules
             await _manager.DisplayEligiblePlayers();
         }
 
-        /// <summary>
-        /// Adds the new pickup to the database.
-        /// </summary>
-        private void AddNewPickupToDb()
-        {
-            var pickupDb = new DbPickups();
-            var redTeam = new StringBuilder();
-            var blueTeam = new StringBuilder();
-
-            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Red))
-            {
-                redTeam.Append(string.Format("{0}, ", player.ShortName));
-            }
-
-            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Blue))
-            {
-                blueTeam.Append(string.Format("{0}, ", player.ShortName));
-            }
-            var red = redTeam.ToString().TrimEnd(',', ' ');
-            var blue = blueTeam.ToString().TrimEnd(',', ' ');
-            var subs = _manager.Subs.ToString().TrimEnd(',', ' ');
-            var noshows = _manager.NoShows.ToString().TrimEnd(',', ' ');
-
-            pickupDb.AddPickupGame(red, blue, RedCaptain, BlueCaptain, subs, noshows, DateTime.Now);
-        }
+        
 
         /// <summary>
         /// Performs the captain's player pick.
@@ -316,7 +290,8 @@ namespace SSB.Core.Modules
                 ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize)))
             {
                 //At this point, add the game to the pickupgames table
-                AddNewPickupToDb();
+                var pickupDb = new DbPickups();
+                pickupDb.AddPickupGame(_manager.CreatePickupInfo());
 
                 // TODO: need a way to store any subs and/or no-shows that occurred prior to game being added to table for purposes of game stats,
                 // (subs/no shows will automatically be tracked by the ModuleEventProcessor) for purposes of banning

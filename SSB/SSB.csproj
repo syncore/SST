@@ -99,6 +99,7 @@
     <Compile Include="Core\Commands\None\PickupPickCmd.cs" />
     <Compile Include="Core\Commands\None\PickupRemoveCmd.cs" />
     <Compile Include="Core\Commands\None\PickupSubCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupWhoCmd.cs" />
     <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
     <Compile Include="Core\Commands\None\SeenCmd.cs" />
     <Compile Include="Core\Commands\None\AccCmd.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Core\Commands\Admin\PauseCmd.cs" />
     <Compile Include="Core\Commands\Owner\StopServerCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnbanCmd.cs" />
-    <Compile Include="Core\Commands\SuperUser\PickupCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\ReloadCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Model\BanInfo.cs" />
     <Compile Include="Model\CmdArgs.cs" />
     <Compile Include="Model\CommonSqliteDb.cs" />
+    <Compile Include="Model\PickupInfo.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />
     <Compile Include="Model\QlRanks\Duel.cs" />

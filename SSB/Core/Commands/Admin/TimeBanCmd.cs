@@ -305,15 +305,8 @@ namespace SSB.Core.Commands.Admin
             if (!_banDb.IsExistingBanStillValid(user))
             {
                 var bInfo = _banDb.GetBanInfo(user);
-                if (bInfo != null && bInfo.BanType == BanType.AddedByEarlyQuit)
-                {
-                    var eQuitDb = new DbQuits();
-                    eQuitDb.DeleteUserFromDb(user);
-                }
-
-                _banDb.DeleteUserFromDb(user);
-                // remove from QL temporary ban system
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user), false);
+                var pAutoBanner = new PlayerAutoBanner(_ssb);
+                await pAutoBanner.RemoveBan(user, bInfo);
             }
         }
     }

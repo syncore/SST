@@ -37,7 +37,7 @@ namespace SSB.Core
         public int GetPlayerId(string player)
         {
             PlayerInfo pinfo;
-            int id = -1;
+            var id = -1;
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo))
             {
                 id = pinfo.Id;
@@ -53,8 +53,11 @@ namespace SSB.Core
         /// <returns>The player name as a string if the id matches the id parameter, otherwise a blank string.</returns>
         public string GetPlayerNameFromId(int id)
         {
-            string name = string.Empty;
-            foreach (var player in _ssb.ServerInfo.CurrentPlayers.Where(player => player.Value.Id.Equals(id)))
+            var name = string.Empty;
+            foreach (
+                var player in
+                    _ssb.ServerInfo.CurrentPlayers.Where(
+                        player => player.Value.Id.Equals(id)))
             {
                 name = player.Value.ShortName;
             }
@@ -77,51 +80,65 @@ namespace SSB.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
-        public async Task HandlePlayersAndIdsFromPlayersCmd<T>(IEnumerable<T> playersText)
+        public async Task HandlePlayersAndIdsFromPlayersCmd<T>(
+            IEnumerable<T> playersText)
         {
             var eloNeedsUpdating = new List<string>();
             var qlranksHelper = new QlRanksHelper();
-            foreach (T p in playersText)
+            foreach (var p in playersText)
             {
-                string text = p.ToString();
-                string playerNameOnly =
-                    text.Substring(text.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant();
-                int sndspace = (Tools.NthIndexOf(text, " ", 2));
-                int clanLength = ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
-                string clan = text.Substring(sndspace, (clanLength)).Trim();
-                string idText = text.Substring(0, 2).Trim();
+                var text = p.ToString();
+                var playerNameOnly =
+                    text.Substring(
+                        text.LastIndexOf(" ", StringComparison.Ordinal) + 1)
+                        .ToLowerInvariant();
+                var sndspace = (Tools.NthIndexOf(text, " ", 2));
+                var clanLength =
+                    ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
+                var clan = text.Substring(sndspace, (clanLength)).Trim();
+                var idText = text.Substring(0, 2).Trim();
                 int id;
                 if (!int.TryParse(idText, out id))
                 {
-                    Debug.WriteLine("Unable to extract player's ID from players.");
+                    Debug.WriteLine(
+                        "Unable to extract player's ID from players.");
                     return;
                 }
-                Debug.Write(string.Format("Found player {0} with client id {1} - setting info.\n",
-                    playerNameOnly, id));
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly, clan,
-                    Team.None,
-                    id);
+                Debug.Write(
+                    string.Format(
+                        "Found player {0} with client id {1} - setting info.\n",
+                        playerNameOnly, id));
+                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] =
+                    new PlayerInfo(playerNameOnly, clan,
+                        Team.None,
+                        id);
 
                 if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
                 {
                     if (!qlranksHelper.IsCachedEloDataOutdated(playerNameOnly))
                     {
-                        qlranksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                        qlranksHelper.SetCachedEloData(
+                            _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
                         Debug.WriteLine(
-                            string.Format("Setting non-expired cached elo result for {0} from database",
+                            string.Format(
+                                "Setting non-expired cached elo result for {0} from database",
                                 playerNameOnly));
                     }
                     else
                     {
-                        qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                        qlranksHelper.CreateNewPlayerEloData(
+                            _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
                         eloNeedsUpdating.Add(playerNameOnly);
                         Debug.WriteLine(
-                            string.Format("Outdated cached elo data found in DB for {0}. Adding to queue to update.", playerNameOnly));
+                            string.Format(
+                                "Outdated cached elo data found in DB for {0}. Adding to queue to update.",
+                                playerNameOnly));
                     }
                 }
                 else
                 {
-                    qlranksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, playerNameOnly);
+                    qlranksHelper.CreateNewPlayerEloData(
+                        _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
                     eloNeedsUpdating.Add(playerNameOnly);
                 }
                 // Store user's last seen date
@@ -133,7 +150,8 @@ namespace SSB.Core
             if (eloNeedsUpdating.Any())
             {
                 await
-                    qlranksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
+                    qlranksHelper.RetrieveEloDataFromApiAsync(
+                        _ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
             }
             // If any players should be kicked (i.e. due to a module setting), then do so
             await DoRequiredPlayerKicks();
@@ -146,14 +164,14 @@ namespace SSB.Core
         /// <returns>The current server's gamestate as a <see cref="QlGameStates" />enum value.</returns>
         public QlGameStates SetServerGameState(string text)
         {
-            string stateText = text.Trim();
+            var stateText = text.Trim();
             var gameState = QlGameStates.Unspecified;
             switch (stateText)
             {
                 case "COUNT_DOWN":
                     gameState = QlGameStates.Countdown;
                     break;
-                
+
                 case "PRE_GAME":
                     gameState = QlGameStates.Warmup;
                     break;
@@ -164,10 +182,14 @@ namespace SSB.Core
             }
             // Set
             _ssb.ServerInfo.CurrentServerGameState = gameState;
-            Debug.WriteLine("*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
+            Debug.WriteLine(
+                "*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
                 gameState);
             // Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
             _ssb.QlCommands.ClearBothQlConsoles();
+            // Pickup module
+            HandlePickupEvents(gameState);
+
             return gameState;
         }
 
@@ -178,7 +200,7 @@ namespace SSB.Core
         /// <returns>The current server's gametype as a <see cref="QlGameTypes" />enum value.</returns>
         public QlGameTypes SetServerGameType(string text)
         {
-            string gtText = text.Trim();
+            var gtText = text.Trim();
             int gt;
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
@@ -203,7 +225,7 @@ namespace SSB.Core
         /// <returns>The server's id (public_id) as a string.</returns>
         public string SetServerId(string text)
         {
-            string serverId = text.Trim();
+            var serverId = text.Trim();
             _ssb.ServerInfo.CurrentServerId = serverId;
             Debug.WriteLine("**** Found server id: " + serverId);
             // Clear
@@ -215,7 +237,8 @@ namespace SSB.Core
         ///     Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>
         /// <param name="players">The players.</param>
-        private async Task CheckAccountDateAgainstLimit(Dictionary<string, PlayerInfo> players)
+        private async Task CheckAccountDateAgainstLimit(
+            Dictionary<string, PlayerInfo> players)
         {
             if (_ssb.Mod.AccountDateLimit.Active)
             {
@@ -229,13 +252,15 @@ namespace SSB.Core
         ///     Checks the player Elo against Elo limit, if Elo limiter is active.
         /// </summary>
         /// <param name="players">The players.</param>
-        private async Task CheckEloAgainstLimit(Dictionary<string, PlayerInfo> players)
+        private async Task CheckEloAgainstLimit(
+            Dictionary<string, PlayerInfo> players)
         {
             if (_ssb.Mod.EloLimit.Active)
             {
                 foreach (var player in players.ToList())
                 {
-                    await _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
+                    await
+                        _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
         }
@@ -252,6 +277,25 @@ namespace SSB.Core
             // Check for time-bans
             var autoBanner = new PlayerAutoBanner(_ssb);
             await autoBanner.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
+        ///     Handles the pickup game events (game start, game end) for the pickup module, if active.
+        /// </summary>
+        /// <param name="gameState">State of the game.</param>
+        private void HandlePickupEvents(QlGameStates gameState)
+        {
+            if (_ssb.Mod.Pickup.Active)
+            {
+                if (gameState == QlGameStates.InProgress)
+                {
+                    _ssb.Mod.Pickup.Manager.HandlePickupLaunch();
+                }
+                else if (gameState == QlGameStates.Warmup)
+                {
+                    _ssb.Mod.Pickup.Manager.HandlePickupEnd();
+                }
+            }
         }
     }
 }

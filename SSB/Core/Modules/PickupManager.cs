@@ -6,9 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using SSB.Core.Commands.SuperUser;
+using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enum;
+using SSB.Model;
 using SSB.Util;
 
 namespace SSB.Core.Modules
@@ -151,6 +152,37 @@ namespace SSB.Core.Modules
         public StringBuilder Subs { get; set; }
 
         /// <summary>
+        /// Creates a pickup info object for the current pickup game.
+        /// </summary>
+        /// <returns>A <see cref="PickupInfo"/> object representing the current pickup game.</returns>
+        public PickupInfo CreatePickupInfo()
+        {
+            var pickupInfo = new PickupInfo();
+            var redTeam = new StringBuilder();
+            var blueTeam = new StringBuilder();
+
+            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Red))
+            {
+                redTeam.Append(string.Format("{0}, ", player.ShortName));
+            }
+
+            foreach (var player in _ssb.ServerInfo.GetTeam(Team.Blue))
+            {
+                blueTeam.Append(string.Format("{0}, ", player.ShortName));
+            }
+
+            pickupInfo.RedTeam = redTeam.ToString().TrimEnd(',', ' ');
+            pickupInfo.BlueTeam = blueTeam.ToString().TrimEnd(',', ' ');
+            pickupInfo.RedCaptain = _captains.RedCaptain;
+            pickupInfo.BlueCaptain = _captains.BlueCaptain;
+            pickupInfo.Subs = Subs.ToString().TrimEnd(',', ' ');
+            pickupInfo.NoShows = NoShows.ToString().TrimEnd(',', ' ');
+            pickupInfo.StartDate = DateTime.Now;
+
+            return pickupInfo;
+        }
+
+        /// <summary>
         ///     Displays the list of eligible players, if any.
         /// </summary>
         public async Task DisplayEligiblePlayers()
@@ -169,14 +201,15 @@ namespace SSB.Core.Modules
         ///     if set to <c>true</c> indicates that the departing player was
         ///     active (i.e. was on the red or the blue team, thus not a spectator).
         /// </param>
-        public async Task EvalPickupNoShow(string player, bool wasActive)
+        public async Task EvalOutgoingPlayer(string player, bool wasActive)
         {
             if (!IsNoShowEvalApplicable(player, wasActive)) return;
             if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
             var pickupDb = new DbPickups();
             if (_ssb.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest)
             {
-                // Check whether user has exceeded the permissible number of sub requests used
+                // Check whether non-exempt user (lower than SuperUser) has exceeded the permissible number of sub requests used
+                if (_userDb.GetUserLevel(player) >= UserLevel.SuperUser) return;
                 var subsUsed = pickupDb.GetUserSubsUsedCount(player);
                 if (subsUsed > _ssb.Mod.Pickup.MaxSubsPerPlayer)
                 {
@@ -200,7 +233,8 @@ namespace SSB.Core.Modules
                 // Sub request was not successfully made, count as no-show
                 pickupDb.IncrementUserNoShowCount(player);
 
-                // Ban if the limit is exceeded
+                // Ban if the limit is exceeded and the user is not exempt (superusers & higher are exempt)
+                if (_userDb.GetUserLevel(player) >= UserLevel.SuperUser) return;
                 var noShows = pickupDb.GetUserNoShowCount(player);
                 if (noShows > _ssb.Mod.Pickup.MaxNoShowsPerPlayer)
                 {
@@ -275,6 +309,51 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        /// Handles the pickup end (when the QL gamestate changes to WARM_UP)
+        /// </summary>
+        public void HandlePickupEnd()
+        {
+            // Pickup needs to have previously been in progress
+            if (!IsPickupInProgress) return;
+            Debug.WriteLine("QL (WARM_UP): Pickup game has now officially ended!");
+            // Game officially ended (QL: WARM_UP gamestate), update the pickup DB table to
+            // incldue any changes that occurred between the game start and the game end
+            var pickupDb = new DbPickups();
+            pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
+            // Set the end time
+            pickupDb.UpdatePickupEndTime(DateTime.Now);
+            // And get ready for the next pickup game
+            // Synchronous
+            // ReSharper disable once UnusedVariable
+            Task s = StartPickupPreGame();
+        }
+
+        /// <summary>
+        /// Handles the pickup launch (when the QL gamestate changes to IN_PROGRESS)
+        /// </summary>
+        public void HandlePickupLaunch()
+        {
+            // Pickup pre-game extends from !pickup start to the game actually launching
+            // So do nothing if for some reason we are not at this point
+            if (!IsPickupPreGame) return;
+            Debug.WriteLine("QL (IN_PROGRESS): Pickup game has now officially started!");
+            // When game officially starts (IN_PROGRESS) update the pickup DB table to include
+            // actual start time, any team member changes, subs &/or no-shows that occurred after the teams
+            // were already full.
+            var pickupDb = new DbPickups();
+            pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
+            // We are now in progress
+            IsPickupPreGame = false;
+            IsPickupInProgress = true;
+            // Move any remaining eligible players who were not picked to the list of eligible substitutes and clear.
+            foreach (var player in EligiblePlayers.Where(player => !InProgressSubCandidates.Contains(player)))
+            {
+                InProgressSubCandidates.Add(player);
+            }
+            EligiblePlayers.Clear();
+        }
+
+        /// <summary>
         ///     Notifies the new player that he has been picked.
         /// </summary>
         /// <param name="player">The player.</param>
@@ -286,6 +365,30 @@ namespace SSB.Core.Modules
                     string.Format(
                         "^7You've been picked for {0}^7. If you must leave early: ^3!sub <spectator>^7 to avoid a no-show.",
                         ((team == Team.Red) ? "^1RED" : "^5BLUE")));
+        }
+
+        /// <summary>
+        /// Notifies the connecting user on how to sign up for next or current pickup game.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public async Task NotifyConnectingUser(string user)
+        {
+            if (IsPickupPreGame)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^7This server is in pickup game mode. Type ^5{0}{1}^7 to sign up for the next game.",
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd), user);
+            }
+            else if (IsPickupInProgress)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^7A pickup game is in progress. Type ^5{0}{1}^7 to sign up as a susbstitute player.",
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd), user);
+            }
         }
 
         /// <summary>
@@ -415,7 +518,7 @@ namespace SSB.Core.Modules
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^3[PICKUP]^7 You have {0} seconds to type^2 {1}{2}^7 to become a captain!",
-                        (CaptainSelectionTimeLimit/1000), CommandProcessor.BotCommandPrefix,
+                        (CaptainSelectionTimeLimit / 1000), CommandProcessor.BotCommandPrefix,
                         CommandProcessor.CmdPickupCap));
         }
 
@@ -428,7 +531,7 @@ namespace SSB.Core.Modules
         {
             // Players might have disconnected before the captain selection timer expired, so
             // make sure we have enough players one last time, and reset if we don't.
-            if (EligiblePlayers.Count < (_ssb.Mod.Pickup.Teamsize*2))
+            if (EligiblePlayers.Count < (_ssb.Mod.Pickup.Teamsize * 2))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
@@ -623,7 +726,7 @@ namespace SSB.Core.Modules
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^3[PICKUP]^7 At least ^2{0}^7 players needed before team & captains are picked.",
-                        (_ssb.Mod.Pickup.Teamsize*2)));
+                        (_ssb.Mod.Pickup.Teamsize * 2)));
         }
 
         /// <summary>
