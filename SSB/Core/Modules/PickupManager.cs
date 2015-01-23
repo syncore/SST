@@ -309,7 +309,62 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        /// Handles the pickup end (when the QL gamestate changes to WARM_UP)
+        /// Evaluates whether a user can be removed for no-show/sub abuse.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        public async Task EvalPickupUnban(string sender, string[] args)
+        {
+            if (args.Length == 1)
+            {
+                await _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>", CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup), sender);
+                return;
+            }
+            var banDb = new DbBans();
+            var bInfo = banDb.GetBanInfo(args[1]);
+            if (bInfo == null)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Ban information not found for {0}",
+                        args[1]), sender);
+                return;
+            }
+            if (bInfo.BanType != BanType.AddedByPickupSubs ||
+                    bInfo.BanType != BanType.AddedByPickupNoShows)
+            {
+                var senderLevel = _userDb.GetUserLevel(sender);
+                // Don't allow SuperUsers to remove non pickup-related bans
+                if (senderLevel == UserLevel.SuperUser)
+                {
+                    await
+                        _ssb.QlCommands.QlCmdTell(
+                            string.Format(
+                                "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. Cannot remove.",
+                                args[1]), sender);
+                    return;
+                }
+                // Notify admins and higher that they should use timeban del command to remove non-pickup related ban
+                if (senderLevel > UserLevel.SuperUser)
+                {
+                    await
+                        _ssb.QlCommands.QlCmdTell(
+                            string.Format(
+                                "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. To remove: ^3{1}{2} del {0}",
+                                args[1], CommandProcessor.BotCommandPrefix, CommandProcessor.CmdTimeBan), sender);
+                    return;
+                }
+            }
+            // Remove the ban and reset the count, depending on type of ban.
+            var pAutoBanner = new PlayerAutoBanner(_ssb);
+            await pAutoBanner.RemoveBan(args[1], bInfo);
+            await
+                _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
+                args[1]), sender);
+        }
+
+        /// <summary>
+        /// Handles the end of the pickup (when the QL gamestate changes to WARM_UP)
         /// </summary>
         public void HandlePickupEnd()
         {

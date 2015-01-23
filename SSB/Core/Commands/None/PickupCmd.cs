@@ -63,7 +63,6 @@ namespace SSB.Core.Commands.None
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
             if (!c.Args[1].Equals("reset") && c.Args[1].Equals("start") && c.Args[1].Equals("stop")
@@ -96,7 +95,7 @@ namespace SSB.Core.Commands.None
             }
             else if (c.Args[1].Equals("unban"))
             {
-                //await _ssb.Mod.Pickup.Manager.EvalPickupUnban();
+                await _ssb.Mod.Pickup.Manager.EvalPickupUnban(c.FromUser, c.Args);
             }
             else if (c.Args[1].Equals("help"))
             {

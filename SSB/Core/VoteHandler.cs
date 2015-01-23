@@ -90,6 +90,16 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Denies the disallowed vote in pickup mode.
+        /// </summary>
+        private async Task DenyPickupModeVotes()
+        {
+            await _ssb.QlCommands.SendToQlAsync("vote no", false);
+            await
+                _ssb.QlCommands.QlCmdSay("^3 This type of vote is not allowed when pickup module is active!");
+        }
+
+        /// <summary>
         ///     Evaluates the current vote with the auto-voter module if active.
         /// </summary>
         /// <param name="details">The vote details.</param>
@@ -170,6 +180,22 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether the speci.
+        /// </summary>
+        /// <param name="details">The details.</param>
+        /// <returns><c>true</c> if the vote is one that is not allowed in pickup mode; otherwise
+        /// <c>false</c></returns>
+        private bool IsDisallowedPickupModeVote(Match details)
+        {
+            string type = details.Groups["votetype"].Value;
+            // Shuffle votes are not allowed in pickup mode
+            if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
+            // Teamsize votes are not allowed in pickup mode;
+            if (type.StartsWith("teamsize", StringComparison.InvariantCultureIgnoreCase)) return true;
+            return false;
+        }
+
+        /// <summary>
         ///     Performs the automatic vote action based on the type of vote.
         /// </summary>
         /// <param name="vote">The vote.</param>
@@ -204,6 +230,14 @@ namespace SSB.Core
             if (_ssb.Mod.AutoVoter.Active)
             {
                 await EvalVoteWithAutoVote(details);
+            }
+            if (_ssb.Mod.Pickup.Active && (_ssb.Mod.Pickup.Manager.IsPickupPreGame ||
+                _ssb.Mod.Pickup.Manager.IsPickupInProgress))
+            {
+                if (IsDisallowedPickupModeVote(details))
+                {
+                    await DenyPickupModeVotes();
+                }
             }
         }
     }
