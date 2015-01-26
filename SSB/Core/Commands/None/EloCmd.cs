@@ -80,7 +80,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
             string user = c.Args.Length == 1 ? c.FromUser : c.Args[1];
-            if (!Tools.IsValidQlUsernameFormat(c.Args[1], true))
+            if (!Tools.IsValidQlUsernameFormat(user, true))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(

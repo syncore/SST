@@ -29,6 +29,15 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Gets or sets the vote caller; this is the short name with the clan stripped
+        /// away if it existed, which corresponds to an internal bot player name;
+        /// </summary>
+        /// <value>
+        /// The vote caller.
+        /// </value>
+        public string VoteCaller { get; set; }
+
+        /// <summary>
         ///     Gets or sets the vote details.
         /// </summary>
         /// <value>
@@ -52,6 +61,7 @@ namespace SSB.Core
         public void HandleVoteEnd()
         {
             _ssb.VoteManager.StopQlVoteTimer();
+            VoteCaller = string.Empty;
         }
 
         /// <summary>
@@ -96,7 +106,7 @@ namespace SSB.Core
         {
             await _ssb.QlCommands.SendToQlAsync("vote no", false);
             await
-                _ssb.QlCommands.QlCmdSay("^3 This type of vote is not allowed when pickup module is active!");
+                _ssb.QlCommands.QlCmdSay("^3This type of vote is not allowed when pickup module is active!");
         }
 
         /// <summary>
@@ -188,6 +198,8 @@ namespace SSB.Core
         private bool IsDisallowedPickupModeVote(Match details)
         {
             string type = details.Groups["votetype"].Value;
+            // Ignore cases when the bot calls the vote, i.e. setting the teamsize when setting up the pickup teams.
+            if (VoteCaller.Equals(_ssb.BotName)) return false;
             // Shuffle votes are not allowed in pickup mode
             if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
             // Teamsize votes are not allowed in pickup mode;

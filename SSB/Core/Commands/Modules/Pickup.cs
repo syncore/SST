@@ -15,6 +15,8 @@ namespace SSB.Core.Commands.Modules
     public class Pickup : IModule
     {
         public const string NameModule = "pickup";
+        private const int TeamMaxSize = 8;
+        private const int TeamMinSize = 3;
         private readonly ConfigHandler _configHandler;
         private readonly PickupManager _pickupManager;
         private readonly SynServerBot _ssb;
@@ -179,18 +181,32 @@ namespace SSB.Core.Commands.Modules
             uint teamsize;
             if (!uint.TryParse(c.Args[2], out teamsize))
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Team size must be a number between 4 and 8.");
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
+                    TeamMinSize, TeamMaxSize));
                 return;
             }
-            if (teamsize < 4 || teamsize > 8)
+            if (teamsize < TeamMinSize || teamsize > TeamMaxSize)
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Team size must be a number between 4 and 8.");
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
+                    TeamMinSize, TeamMaxSize));
                 return;
             }
             if (!_ssb.ServerInfo.IsATeamGame())
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Pickup module can only be enabled for team-based games.");
-                return;
+                //TODO: create a fix for this
+                // Might have not gotten it the first time, so request again
+                await _ssb.QlCommands.SendToQlAsync("serverinfo", true);
+                _ssb.QlCommands.ClearBothQlConsoles();
+                // If we still don't have it now, then notify
+                if (!_ssb.ServerInfo.IsATeamGame())
+                {
+                    await
+                        _ssb.QlCommands.QlCmdSay(
+                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games.");
+                    return;
+                }
+                    await EnablePickup(teamsize);
+                
             }
             await EnablePickup(teamsize);
         }
@@ -203,8 +219,8 @@ namespace SSB.Core.Commands.Modules
             _configHandler.ReadConfiguration();
 
             // Valid values?
-            if (_configHandler.Config.PickupOptions.teamSize < 4 ||
-                _configHandler.Config.PickupOptions.teamSize > 8)
+            if (_configHandler.Config.PickupOptions.teamSize < TeamMinSize ||
+                _configHandler.Config.PickupOptions.teamSize > TeamMaxSize)
             {
                 Active = false;
                 _configHandler.Config.PickupOptions.SetDefaults();
@@ -275,9 +291,7 @@ namespace SSB.Core.Commands.Modules
             UpdateConfig(false);
             // Unlock the teams and clear eligible players if any
             _ssb.QlCommands.SendToQl("unlock", false);
-            Manager.EligiblePlayers.Clear();
-            Manager.IsPickupPreGame = false;
-            Manager.IsPickupInProgress = false;
+            Manager.ResetPickupStatus();
             await
                 _ssb.QlCommands.QlCmdSay("^2[SUCCESS]^7 Pickup game module has been disabled.");
         }
@@ -318,9 +332,9 @@ namespace SSB.Core.Commands.Modules
             if (c.Args.Length != 6)
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^1[ERROR]^3 Usage: {0}{1} {2} {3} <max> <bantime> <banscale> - max: max # {3}, bantime: #, banscale: secs," +
+                    "^1[ERROR]^3 Usage: {0}{1} {2} {3} <max> <bantime> <banscale> - max: max # {4}, bantime: #, banscale: secs," +
                     " mins, hours, days, months, OR years",
-                    CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.PickupArg, c.Args[2]));
+                    CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.PickupArg, c.Args[2], settingsType));
                 return;
             }
             uint maxNum;

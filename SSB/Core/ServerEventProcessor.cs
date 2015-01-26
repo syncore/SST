@@ -162,6 +162,10 @@ namespace SSB.Core
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>The current server's gamestate as a <see cref="QlGameStates" />enum value.</returns>
+        /// <remarks>
+        /// This method sets the server's gamestate received through either the serverinfo command or a bcs0/cs
+        /// configstring.
+        /// </remarks>
         public QlGameStates SetServerGameState(string text)
         {
             var stateText = text.Trim();
@@ -205,8 +209,8 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
-                gameType = (QlGameTypes) gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
+                gameType = (QlGameTypes)gt;
                 Debug.WriteLine("*** Found server gametype: " + gameType);
             }
             else
@@ -231,6 +235,18 @@ namespace SSB.Core
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
+        }
+
+        /// <summary>
+        /// Sets the game to WARM_UP after an intermission (map end vote) is detected.
+        /// </summary>
+        public void SetWarmupAfterIntermission()
+        {
+            var gameState = QlGameStates.Warmup;
+            _ssb.ServerInfo.CurrentServerGameState = gameState;
+            Debug.WriteLine("Intermission (game end/map voting) detected: setting status back to warm-up mode.");
+            // Pickup module
+            HandlePickupEvents(gameState);
         }
 
         /// <summary>

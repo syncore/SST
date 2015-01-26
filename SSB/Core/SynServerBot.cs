@@ -40,13 +40,12 @@ namespace SSB.Core
 
             //Set the name of the bot
             BotName = GetBotNameFromConfig();
-
+            // Hook up modules
+            Mod = new ModuleManager(this);
             // Start reading the console
             StartConsoleReadThread();
             // Set the important details of the server
             InitServerInformation();
-            // Hook up modules
-            Mod = new ModuleManager(this);
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
             // Delay some initilization tasks and complete initilization
@@ -238,8 +237,6 @@ namespace SSB.Core
             // Initially get the player listing when we start. Synchronous since initilization.
             // ReSharper disable once UnusedVariable
             Task q = QlCommands.QlCmdPlayers();
-
-            //QlCommands.SendToQl("name", false);
             // Get the server's id
             QlCommands.SendToQl("serverinfo", true);
             // Enable developer mode

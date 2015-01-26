@@ -124,7 +124,7 @@ namespace SSB.Database
                             cmd.ExecuteNonQuery();
                             Debug.WriteLine(
                                 string.Format(
-                                    "AddUserToBanDb: {0} successfully added to early quitter DB",
+                                    "AddUserToBanDb: {0} successfully added to pickup user DB",
                                     user));
                             result = UserDbResult.Success;
                         }
@@ -133,7 +133,7 @@ namespace SSB.Database
                 catch (Exception ex)
                 {
                     Debug.WriteLine(
-                        "Problem adding user to early quitter database: " +
+                        "Problem adding user to pickup user database: " +
                         ex.Message);
                     result = UserDbResult.InternalError;
                 }
@@ -734,7 +734,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupgames SET redTeam = @redTeam, blueTeam = @blueTeam, redCaptain = @redCaptain, " +
-                                "blueCaptain = @blueCaptain, subs = @subs, noShows = @noShows, startDate = @startDate ORDERBY startDate DESC LIMIT 1";
+                                "blueCaptain = @blueCaptain, subs = @subs, noShows = @noShows, startDate = @startDate WHERE id IN (SELECT id FROM pickupgames ORDER BY startDate DESC LIMIT 1)";
                             cmd.Parameters.AddWithValue("@redTeam", pInfo.RedTeam);
                             cmd.Parameters.AddWithValue("@blueTeam", pInfo.BlueTeam);
                             cmd.Parameters.AddWithValue("@redCaptain",
@@ -762,6 +762,8 @@ namespace SSB.Database
             }
         }
 
+
+
         /// <summary>
         ///     Updates the last pickup game's end time.
         /// </summary>
@@ -779,7 +781,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "UPDATE pickupgames SET endDate = @newEndDate WHERE id IN (SELECT id FROM pickupgames ORDERBY startDate DESC LIMIT 1)";
+                                "UPDATE pickupgames SET endDate = @newEndDate WHERE id IN (SELECT id FROM pickupgames ORDER BY startDate DESC LIMIT 1)";
                             cmd.Parameters.AddWithValue("@newEndDate", endDate);
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
@@ -894,7 +896,7 @@ namespace SSB.Database
                     using (var cmd = new SQLiteCommand(sqlcon))
                     {
                         cmd.CommandText =
-                            "SELECT * FROM earlyquitters WHERE user = @user";
+                            "SELECT * FROM pickupusers WHERE user = @user";
                         cmd.Parameters.AddWithValue("@user",
                             user.ToLowerInvariant());
                         using (var reader = cmd.ExecuteReader())
@@ -902,13 +904,13 @@ namespace SSB.Database
                             if (!reader.HasRows)
                             {
                                 Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the early quitter database.",
+                                    "User: {0} does not exist in the pickup users database.",
                                     user));
                                 return false;
                             }
                             Debug.WriteLine(
                                 string.Format(
-                                    "User: {0} already exists in the early quitter database.",
+                                    "User: {0} already exists in the pickup users database.",
                                     user));
                             return true;
                         }

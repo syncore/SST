@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SSB.Util
@@ -43,6 +44,22 @@ namespace SSB.Util
             return !Regex.IsMatch(user, "[^a-zA-Z0-9_]");
         }
 
+        /// <summary>
+        /// Gets the name of player with the clan tag stripped away, if it exists.
+        /// </summary>
+        /// <param name="name">The input name.</param>
+        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
+        /// <remarks>
+        /// This is necessary because certain events, namely player connections and when the player spectates,
+        /// use the full name with the clan tag included, but internally the bot always uses the short name.
+        /// </remarks>
+        public static string GetStrippedName(string name)
+        {
+            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
+                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
+                : name;
+        }
+        
         /// <summary>
         ///     Checks whether a key is present in a given dictionary.
         /// </summary>

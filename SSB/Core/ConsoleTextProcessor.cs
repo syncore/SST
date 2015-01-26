@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enum;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -347,14 +348,16 @@ namespace SSB.Core
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if an intermission (game end) was detected, otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This is the period that begins when the map voting starts at the end of a game.
+        /// </remarks>
         private bool IntermissionDetected(string text)
         {
             if (!_ssb.Parser.ScmdIntermission.IsMatch(text)) return false;
             Match m = _ssb.Parser.ScmdIntermission.Match(text);
             if (m.Groups["intermissionvalue"].Value.Equals("1", StringComparison.InvariantCultureIgnoreCase))
             {
-                _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
-                Debug.WriteLine("Intermission (game end) detected: setting status back to warm-up mode.");
+                _ssb.ServerEventProcessor.SetWarmupAfterIntermission();
             }
             return true;
         }
@@ -405,6 +408,11 @@ namespace SSB.Core
             else if (_ssb.Parser.ScmdPlayerTimedOut.IsMatch(text))
             {
                 m = _ssb.Parser.ScmdPlayerTimedOut.Match(text);
+                outgoingPlayer = m.Groups["player"].Value;
+            }
+            else if (_ssb.Parser.ScmdPlayerInvalidPasswordDisconnect.IsMatch(text))
+            {
+                m = _ssb.Parser.ScmdPlayerInvalidPasswordDisconnect.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
             await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
@@ -542,9 +550,11 @@ namespace SSB.Core
             if (!_ssb.Parser.ScmdVoteCalledTagAndPlayer.IsMatch(text)) return false;
             // Don't care about the player who called the vote, just fact that vote was called.
             _voteHandler.HandleVoteStart(text);
+            var match = _ssb.Parser.ScmdVoteCalledTagAndPlayer.Match(text);
+            _voteHandler.VoteCaller = Tools.GetStrippedName(match.Groups["clanandplayer"].Value);
             return true;
         }
 
         private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
-}
+} 

@@ -58,7 +58,8 @@ namespace SSB.Core.Modules
             if (_manager.EligiblePlayers.Contains(player))
             {
                 await
-                    _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 You've already added yourself to the pickup!",
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 You've already added yourself to the pickup!",
                         player);
                 return;
             }
@@ -67,7 +68,8 @@ namespace SSB.Core.Modules
             if (_ssb.ServerInfo.IsActivePlayer(player))
             {
                 await
-                    _ssb.QlCommands.QlCmdTell("^1[ERROR] You are already on a team for this pickup.", player);
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR] You are already on a team for this pickup.", player);
                 return;
             }
             if (_manager.IsPickupInProgress)
@@ -76,24 +78,34 @@ namespace SSB.Core.Modules
                 {
                     await
                         _ssb.QlCommands.QlCmdTell(
-                            "^1[ERROR] You are already signed up as a sub for the current game!", player);
+                            "^1[ERROR] You are already signed up as a sub for the current game!",
+                            player);
                     return;
                 }
                 // User will be signed up as a sub for the current in-progress game
                 _manager.InProgressSubCandidates.Add(player);
                 await
                     _ssb.QlCommands.QlCmdTell(
-                        "^3[PICKUP]^7 Game is already in progress, but you're now signed up as a sub if one is needed.",
+                        "^5[PICKUP]^7 Game is already in progress, but you're now signed up as a sub if one is needed.",
                         player);
             }
             if (_manager.IsPickupPreGame)
             {
                 // Add the player.
                 _manager.EligiblePlayers.Add(player);
+                await ShowNumPlayers();
+
                 await
                     _ssb.QlCommands.QlCmdTell(
-                        string.Format("^3[PICKUP] {0},^7 you are now signed up for the next pickup game.",
+                        string.Format(
+                            "^5[PICKUP]^3 {0},^7 you are now signed up for the next pickup game.",
                             player), player);
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^5[PICKUP]^7 you may remove yourself before team selection begins with: ^3{0}{1}",
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupRemove),
+                        player);
 
                 // If we now have enough players, start the captain selection process.
                 if ((_manager.EligiblePlayers.Count >= _ssb.Mod.Pickup.Teamsize*2) &&
@@ -104,7 +116,8 @@ namespace SSB.Core.Modules
             }
             else
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 A pickup has not been set to start.");
+                await
+                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 A pickup has not been set to start.");
                 await _manager.ShowPrivUserCanStartMsg();
             }
         }
@@ -122,7 +135,8 @@ namespace SSB.Core.Modules
             {
                 await
                     _ssb.QlCommands.QlCmdTell(
-                        "^1[ERROR]^3 Can't remove since you were not added to the next pickup!", player);
+                        "^1[ERROR]^3 Can't remove since you were not added to the next pickup!",
+                        player);
                 return;
             }
             if (!_manager.HasTeamSelectionStarted)
@@ -131,7 +145,7 @@ namespace SSB.Core.Modules
                 await
                     _ssb.QlCommands.QlCmdTell(
                         string.Format(
-                            "^3[PICKUP] {0},^7 you have now removed yourself from the next pickup game.",
+                            "^5[PICKUP]^3 {0},^7 you have now removed yourself from the next pickup game.",
                             player), player);
             }
             else
@@ -146,9 +160,24 @@ namespace SSB.Core.Modules
                 await
                     _ssb.QlCommands.QlCmdTell(
                         string.Format(
-                            "^3[PICKUP] {0},^7 you are no longer signed up as a sub for the current game.",
+                            "^5[PICKUP] {0},^7 you are no longer signed up as a sub for the current game.",
                             player), player);
             }
+        }
+
+        /// <summary>
+        ///     Shows the numbers of players signed up and needed.
+        /// </summary>
+        private async Task ShowNumPlayers()
+        {
+            var playersNeeded = ((_ssb.Mod.Pickup.Teamsize*2) -
+                                 (_manager.EligiblePlayers.Count));
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^5[PICKUP]^2 {0}^7 players signed up (^3{1}^7 more needed)",
+                        _manager.EligiblePlayers.Count,
+                        ((playersNeeded < 0) ? "0" : playersNeeded.ToString())));
         }
     }
 }

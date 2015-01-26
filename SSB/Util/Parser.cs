@@ -27,6 +27,7 @@ namespace SSB.Util
             ScmdPlayerConnected = new scmdPlayerConnected();
             ScmdPlayerKicked = new scmdPlayerKicked();
             ScmdPlayerTimedOut = new scmdPlayerTimedOut();
+            ScmdPlayerInvalidPasswordDisconnect = new scmdPlayerInvalidPasswordDisconnect();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
             ScmdPlayerJoinedSpectators = new scmdPlayerJoinedSpectators();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
@@ -255,6 +256,19 @@ namespace SSB.Util
         ///     This contains a named group, 'player' that has the name of the player who disconnected.
         /// </remarks>
         public Regex ScmdPlayerDisconnected { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who has been disconnected due to specifying an invalid password in a server command.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has been disconnected due to specifying an invalid password in a server command.
+        /// </value>
+        /// <remarks>
+        ///  This contains a named group, 'player' that has the name of the player who got disconnected. Note, this type of disconnection
+        /// can happen when the game starts on passworded servers, where, for whatever reason, the player's configuration did not set
+        /// the current server's password in the password cvar.
+        /// </remarks>
+        public Regex ScmdPlayerInvalidPasswordDisconnect { get; private set; }
 
         /// <summary>
         ///     Regex for finding a player who has joined the spectators as issued in a servercommand.

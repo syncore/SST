@@ -135,6 +135,15 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: player was disconnected due to invalid password
+            // note: invalid password disconnects do NOT include the clan tag
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) Invalid password",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerInvalidPasswordDisconnect", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+
+
             //servercommand: player joined spectators
             // note: spectating includes the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cp ""(?<player>.+) joined the spectators",

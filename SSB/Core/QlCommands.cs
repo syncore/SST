@@ -286,8 +286,13 @@ namespace SSB.Core
         /// <param name="player">The player to whom the message is to be sent.</param>
         /// <param name="text">The text to tell.</param>
         /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
-        public async Task QlCmdTell(string player, string text)
+        public async Task QlCmdTell(string text, string player)
         {
+            // tell command uses the players id
+            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
+
+            var playerId = _ssb.ServerInfo.CurrentPlayers[player].Id;
+            
             // Text to send might be too long, so send over multiple lines.
             // Line length of between 98 & 115 chars is probably optimal for
             // lower resolutions based on guestimate. However, QL actually supports
@@ -334,8 +339,8 @@ namespace SSB.Core
 
                         // Double the usual delay when sending multiple lines.
                         await Task.Delay(DefaultCommandDelayMsec * 2);
-                        Action<string, string> tell = DoTell;
-                        tell(player, multiLine[i]);
+                        Action<int, string> tell = DoTell;
+                        tell(playerId, multiLine[i]);
                         startPos += MaxChatlineLength;
                     }
                 }
@@ -347,8 +352,8 @@ namespace SSB.Core
             else
             {
                 await Task.Delay(DefaultCommandDelayMsec);
-                Action<string, string> tell = DoTell;
-                tell(player, text);
+                Action<int, string> tell = DoTell;
+                tell(playerId, text);
             }
         }
 
@@ -407,11 +412,11 @@ namespace SSB.Core
         /// <summary>
         /// Sends the 'tell player' command to QL.
         /// </summary>
-        /// <param name="player">The player.</param>
+        /// <param name="playerId">The player's id.</param>
         /// <param name="text">The text.</param>
-        private void DoTell(string player, string text)
+        private void DoTell(int playerId, string text)
         {
-            SendQlCommand(string.Format("tell {0} {1}", player, text), false);
+            SendQlCommand(string.Format("tell {0} {1}", playerId, text), false);
         }
 
         /// <summary>

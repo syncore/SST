@@ -40,7 +40,7 @@ namespace SSB.Core
             if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase)) return;
 
             // Player connections include the clan tag, so we need to remove it
-            player = GetStrippedName(player);
+            player = Tools.GetStrippedName(player);
 
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
 
@@ -80,11 +80,13 @@ namespace SSB.Core
         {
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
+            // Get the outgoing player's team before he disconnected
+            var outgoingTeam = _ssb.ServerInfo.CurrentPlayers[player].Team;
 
             // Evaluate the player's no-show/sub status for pickup module, if active
             if (_ssb.Mod.Pickup.Active)
             {
-                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive);
+                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive, outgoingTeam);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
             }
 
@@ -184,7 +186,7 @@ namespace SSB.Core
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
             if (name.StartsWith("\u0019[")) return;
 
-            string msgFrom = GetStrippedName(name);
+            string msgFrom = Tools.GetStrippedName(name);
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
@@ -251,16 +253,18 @@ namespace SSB.Core
         public async Task HandlePlayerWentToSpec(string player)
         {
             // Spectator event includes the full clan tag, so need to strip
-            player = GetStrippedName(player);
+            player = Tools.GetStrippedName(player);
 
             // The outgoing player was actually in the game & not a spectator.
             //TODO: investigate this, it might always be false for sub being moved out in pickup
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
+            // Get the outgoing player's team before he disconnected
+            var outgoingTeam = _ssb.ServerInfo.CurrentPlayers[player].Team;
 
             // Evaluate the player's no-show/sub status for pickup module, if active
             if (_ssb.Mod.Pickup.Active)
             {
-                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive);
+                await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive, outgoingTeam);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
 
             }
@@ -332,22 +336,6 @@ namespace SSB.Core
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
                     playername, country, clantag, fullclanname, subscriber));
-        }
-
-        /// <summary>
-        /// Gets the name of player with the clan tag stripped away, if it exists.
-        /// </summary>
-        /// <param name="name">The input name.</param>
-        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
-        /// <remarks>
-        /// This is necessary because certain events, namely player connections and when the player spectates,
-        /// use the full name with the clan tag included, but internally the bot always uses the short name.
-        /// </remarks>
-        private string GetStrippedName(string name)
-        {
-            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
-                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
-                : name;
         }
 
         /// <summary>

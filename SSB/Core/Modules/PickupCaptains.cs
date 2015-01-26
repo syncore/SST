@@ -2,6 +2,7 @@
 using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enum;
+using SSB.Util;
 
 namespace SSB.Core.Modules
 {
@@ -35,7 +36,11 @@ namespace SSB.Core.Modules
         /// </value>
         public bool BlueCaptainExists
         {
-            get { return !string.IsNullOrEmpty(BlueCaptain); }
+            get
+            {
+                return (!string.IsNullOrEmpty(BlueCaptain) &&
+                    Tools.KeyExists(BlueCaptain, _ssb.ServerInfo.CurrentPlayers));
+            }
         }
 
         /// <summary>
@@ -70,7 +75,23 @@ namespace SSB.Core.Modules
         /// </value>
         public bool RedCaptainExists
         {
-            get { return !string.IsNullOrEmpty(RedCaptain); }
+            get { return (!string.IsNullOrEmpty(RedCaptain) &&
+                Tools.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers)); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the teams are full.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if teams are full; otherwise, <c>false</c>.
+        /// </value>
+        public bool AreTeamsFull
+        {
+            get
+            {
+                return (_ssb.ServerInfo.GetTeam(Team.Red).Count == _ssb.Mod.Pickup.Teamsize) &&
+                       ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize));
+            }
         }
 
         /// <summary>
@@ -211,7 +232,7 @@ namespace SSB.Core.Modules
                     _manager.RemoveEligibility(player);
                     await
                         _ssb.QlCommands.QlCmdSay(
-                            string.Format("^3[PICKUP]^1 {0}^7 is now the ^1RED^7 captain", player));
+                            string.Format("^5[PICKUP]^1 {0}^7 is now the ^1RED^7 captain", player));
                     break;
 
                 case Team.Blue:
@@ -220,8 +241,14 @@ namespace SSB.Core.Modules
                     _manager.RemoveEligibility(player);
                     await
                         _ssb.QlCommands.QlCmdSay(
-                            string.Format("^3[PICKUP]^5 {0}^7 is now the ^5BLUE^7 captain", player));
+                            string.Format("^5[PICKUP]^5 {0}^7 is now the ^5BLUE^7 captain", player));
                     break;
+            }
+            if (RedCaptainExists && BlueCaptainExists)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^5[PICKUP]^7 Both captains have been selected! Team selection will begin shortly. Please wait...");
             }
         }
 
@@ -243,13 +270,24 @@ namespace SSB.Core.Modules
                     IsBlueTurnToPick = true;
                     break;
             }
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3[PICKUP]^7 It is the {0}^7 captain ({1})'s pick. Type ^2!pick <name>^7 to pick a player.",
-                ((team == Team.Red) ? "^1RED" : "^5BLUE"),
-                ((team == Team.Red) ? RedCaptain : BlueCaptain)));
-            await _manager.DisplayEligiblePlayers();
+            if (!AreTeamsFull)
+            {
+                await ShowWhosePick(team);
+                await _manager.DisplayEligiblePlayers();
+            }
         }
 
-        
+        /// <summary>
+        /// Displays a message indicating which captain has the turn to pick a player.
+        /// </summary>
+        /// <param name="team">The captain's team.</param>
+        private async Task ShowWhosePick(Team team)
+        {
+            await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 It is the {0}^7 captain ({1}{2}^7)'s pick. Type ^2!pick <name>^7 to pick a player.",
+                ((team == Team.Red) ? "^1RED" : "^5BLUE"),
+                ((team == Team.Red) ? "^1" : "^5"),
+                ((team == Team.Red) ? RedCaptain : BlueCaptain)));
+        }
 
         /// <summary>
         /// Performs the captain's player pick.
@@ -263,40 +301,38 @@ namespace SSB.Core.Modules
                 await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not an eligible player!",
                     player));
                 await _manager.DisplayEligiblePlayers();
+                await ShowWhosePick(team);
                 return;
             }
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3[PICKUP]{0} ^7({1}{2}^7) picked {1}{3}",
+            await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP] {0} ^7({1}{2}^7) picked {1}{3}",
                 ((team == Team.Red) ? "^1RED" : "^5BLUE"), ((team == Team.Red) ? "^1" : "^5"),
                 ((team == Team.Red) ? RedCaptain : BlueCaptain), player));
 
             if (team == Team.Red)
             {
+                _manager.RemoveEligibility(player);
                 await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Red);
                 await SetPickingTeam(Team.Blue);
             }
             else if (team == Team.Blue)
             {
+                _manager.RemoveEligibility(player);
                 await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Blue);
                 await SetPickingTeam(Team.Red);
             }
+
             // Notify player
             await _manager.NotifyNewPlayer(player, team);
 
-            // Player can no longer be picked
-            _manager.RemoveEligibility(player);
-
             // Teams are full, we are ready to start
-            if ((_ssb.ServerInfo.GetTeam(Team.Red).Count == _ssb.Mod.Pickup.Teamsize) &&
-                ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize)))
+            if (AreTeamsFull)
             {
                 //At this point, add the game to the pickupgames table
                 var pickupDb = new DbPickups();
                 pickupDb.AddPickupGame(_manager.CreatePickupInfo());
 
-                // TODO: need a way to store any subs and/or no-shows that occurred prior to game being added to table for purposes of game stats,
-                // (subs/no shows will automatically be tracked by the ModuleEventProcessor) for purposes of banning
                 _manager.HasTeamSelectionStarted = false;
-                await _ssb.QlCommands.QlCmdSay("^3[PICKUP]^7 Teams are now ^1FULL.^7 PLEASE ^*2READY UP*^7 TO START THE GAME!");
+                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^7 Teams are ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME!");
             }
         }
     }
