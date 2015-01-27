@@ -183,6 +183,29 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Sends the /say command after a given delay in seconds.
+        /// </summary>
+        /// <param name="text">The text to send.</param>
+        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
+        public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
+        {
+            await Task.Delay(runCmdInSeconds * 1000);
+            await QlCmdSay(text);
+        }
+
+        /// <summary>
+        /// Sends the /tell command to a player after a given delay in seconds.
+        /// </summary>
+        /// <param name="text">The text to send.</param>
+        /// <param name="player">The player.</param>
+        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
+        public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
+        {
+            await Task.Delay(runCmdInSeconds * 1000);
+            await QlCmdTell(text, player);
+        }
+
+        /// <summary>
         ///     Sends the 'players' command to QL.
         /// </summary>
         public async Task QlCmdPlayers()
@@ -292,7 +315,7 @@ namespace SSB.Core
             if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
 
             var playerId = _ssb.ServerInfo.CurrentPlayers[player].Id;
-            
+
             // Text to send might be too long, so send over multiple lines.
             // Line length of between 98 & 115 chars is probably optimal for
             // lower resolutions based on guestimate. However, QL actually supports

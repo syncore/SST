@@ -38,7 +38,11 @@ namespace SSB.Core.Modules
             await _ssb.QlCommands.CustCmdPutPlayer(outPlayer, Team.Spec);
             // Sub new player in
             await _ssb.QlCommands.CustCmdPutPlayer(inPlayer, team);
+            // Set player as active
+            _manager.AddActivePickupPlayer(inPlayer);
+            // Tell the player the rules
             await _manager.NotifyNewPlayer(inPlayer, team);
+            // Remove from sub candidates
             _manager.RemoveEligibility(inPlayer);
             // Record the outgoing player's substituion for tracking/banning purposes
             _manager.Subs.Append(string.Format("{0}->{1},", inPlayer, outPlayer));
@@ -63,9 +67,11 @@ namespace SSB.Core.Modules
                         player);
                 return;
             }
+
             // Deny player who is already on red or blue (i.e. already set to play this pickup) who tries
             // to get a head start for adding to the next pickup.
-            if (_ssb.ServerInfo.IsActivePlayer(player))
+            if (_ssb.ServerInfo.IsActivePlayer(player) ||
+                _manager.ActivePickupPlayers.Contains(player))
             {
                 await
                     _ssb.QlCommands.QlCmdTell(
@@ -88,8 +94,13 @@ namespace SSB.Core.Modules
                     _ssb.QlCommands.QlCmdTell(
                         "^5[PICKUP]^7 Game is already in progress, but you're now signed up as a sub if one is needed.",
                         player);
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^5[PICKUP] ^3{0} ^7has signed up as a substitute player for the current game.",
+                            player));
             }
-            if (_manager.IsPickupPreGame)
+            else if (_manager.IsPickupPreGame)
             {
                 // Add the player.
                 _manager.EligiblePlayers.Add(player);
@@ -142,6 +153,7 @@ namespace SSB.Core.Modules
             if (!_manager.HasTeamSelectionStarted)
             {
                 _manager.RemoveEligibility(player);
+                await ShowNumPlayers();
                 await
                     _ssb.QlCommands.QlCmdTell(
                         string.Format(

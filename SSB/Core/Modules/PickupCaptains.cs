@@ -75,22 +75,10 @@ namespace SSB.Core.Modules
         /// </value>
         public bool RedCaptainExists
         {
-            get { return (!string.IsNullOrEmpty(RedCaptain) &&
-                Tools.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers)); }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the teams are full.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if teams are full; otherwise, <c>false</c>.
-        /// </value>
-        public bool AreTeamsFull
-        {
             get
             {
-                return (_ssb.ServerInfo.GetTeam(Team.Red).Count == _ssb.Mod.Pickup.Teamsize) &&
-                       ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize));
+                return (!string.IsNullOrEmpty(RedCaptain) &&
+                    Tools.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers));
             }
         }
 
@@ -109,6 +97,8 @@ namespace SSB.Core.Modules
             await _ssb.QlCommands.CustCmdPutPlayer(outCaptain, Team.Spec);
             // Sub new captain in and set
             await SetCaptain(inCaptain, team);
+            // Set player as active
+            _manager.AddActivePickupPlayer(inCaptain);
             // Examine which captain's pick it is and set it again so new subbed captain becomes aware
             if (IsBlueTurnToPick)
             {
@@ -270,23 +260,9 @@ namespace SSB.Core.Modules
                     IsBlueTurnToPick = true;
                     break;
             }
-            if (!AreTeamsFull)
-            {
-                await ShowWhosePick(team);
-                await _manager.DisplayEligiblePlayers();
-            }
-        }
 
-        /// <summary>
-        /// Displays a message indicating which captain has the turn to pick a player.
-        /// </summary>
-        /// <param name="team">The captain's team.</param>
-        private async Task ShowWhosePick(Team team)
-        {
-            await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 It is the {0}^7 captain ({1}{2}^7)'s pick. Type ^2!pick <name>^7 to pick a player.",
-                ((team == Team.Red) ? "^1RED" : "^5BLUE"),
-                ((team == Team.Red) ? "^1" : "^5"),
-                ((team == Team.Red) ? RedCaptain : BlueCaptain)));
+            await ShowWhosePick(team);
+            await _manager.DisplayEligiblePlayers();
         }
 
         /// <summary>
@@ -312,12 +288,14 @@ namespace SSB.Core.Modules
             {
                 _manager.RemoveEligibility(player);
                 await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Red);
+                _manager.AddActivePickupPlayer(player);
                 await SetPickingTeam(Team.Blue);
             }
             else if (team == Team.Blue)
             {
                 _manager.RemoveEligibility(player);
                 await _ssb.QlCommands.CustCmdPutPlayer(player, Team.Blue);
+                _manager.AddActivePickupPlayer(player);
                 await SetPickingTeam(Team.Red);
             }
 
@@ -325,15 +303,27 @@ namespace SSB.Core.Modules
             await _manager.NotifyNewPlayer(player, team);
 
             // Teams are full, we are ready to start
-            if (AreTeamsFull)
+            if (_manager.AreTeamsFull)
             {
                 //At this point, add the game to the pickupgames table
                 var pickupDb = new DbPickups();
                 pickupDb.AddPickupGame(_manager.CreatePickupInfo());
 
                 _manager.HasTeamSelectionStarted = false;
-                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^7 Teams are ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME!");
+                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^4*** ^7TEAMS ARE ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME! ^4***");
             }
+        }
+
+        /// <summary>
+        /// Displays a message indicating which captain has the turn to pick a player.
+        /// </summary>
+        /// <param name="team">The captain's team.</param>
+        private async Task ShowWhosePick(Team team)
+        {
+            await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 It's the {0}^7 captain ({1}{2}^7)'s pick. Type ^2!pick <name>^7 to pick a player.",
+                ((team == Team.Red) ? "^1RED" : "^5BLUE"),
+                ((team == Team.Red) ? "^1" : "^5"),
+                ((team == Team.Red) ? RedCaptain : BlueCaptain)));
         }
     }
 }

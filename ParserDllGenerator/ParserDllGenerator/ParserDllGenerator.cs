@@ -164,6 +164,18 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: match endeded due to timelimit being reached
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""Timelimit hit",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdTimelimitHit", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //servercommand: match ended due to fraglimit, capturelimit, or roundlimit being reached
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : print "".* hit the (fraglimit|capturelimit|roundlimit)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdScorelimitHit", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+            
             //servercommand: vote called - player who called vote (includes clantag and player name)
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<clanandplayer>.+) called a vote",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledTagAndPlayer", "SSB.External.Parser",

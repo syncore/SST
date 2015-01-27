@@ -95,7 +95,8 @@ namespace SSB.Core
         /// <returns>
         /// See comment for explanation.
         /// </returns>
-        private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo, IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue, QlGameTypes gametype)
+        private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo, IList<PlayerInfo> teamRed,
+            IList<PlayerInfo> teamBlue, QlGameTypes gametype)
         {
             /* Example:
                 * Elos (asc): 860,1000,1200,1300,1750,1920,2000,2200
@@ -168,7 +169,6 @@ namespace SSB.Core
             return (t1bT2BDiff <= t1aT2ADiff) ? 0 : 1;
         }
 
-        
         /// <summary>
         /// Gets and displays the results (for debug purposes)
         /// </summary>

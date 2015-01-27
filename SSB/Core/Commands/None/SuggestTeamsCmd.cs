@@ -84,6 +84,7 @@ namespace SSB.Core.Commands.None
         /// </remarks>
         public async Task ExecAsync(CmdArgs c)
         {
+            // Must be a team gametype that is supported by QLRanks
             if (_ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Ca &&
                 _ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Ctf &&
                 _ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Tdm)
@@ -91,6 +92,15 @@ namespace SSB.Core.Commands.None
                 await
                     _ssb.QlCommands.QlCmdSay(
                         "^1[ERROR]^3 Team balancing is not available on this server!");
+                return;
+            }
+
+            // Disable this command if the pickup module is active
+            if (_ssb.Mod.Pickup.Active)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Team balancing is unavailable when pickup module is active!");
                 return;
             }
 

@@ -786,10 +786,10 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
+                                Debug.WriteLine(string.Format(
                                     "AddPickupGame: Successfully updated last pickup game's end date to: {0} in pickup database.",
                                     endDate.ToString("G",
-                                        DateTimeFormatInfo.InvariantInfo));
+                                        DateTimeFormatInfo.InvariantInfo)));
                             }
                         }
                     }

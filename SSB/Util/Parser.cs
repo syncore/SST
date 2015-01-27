@@ -36,6 +36,8 @@ namespace SSB.Util
             ScmdVoteCalledTagAndPlayer = new scmdVoteCalledTagAndPlayer();
             ScmdVoteNumYesVotes = new scmdVoteNumYesVotes();
             ScmdMatchAborted = new scmdMatchAborted();
+            ScmdTimelimitHit = new scmdTimelimitHit();
+            ScmdScorelimitHit = new scmdScorelimitHit();
             ScmdGameStateChange = new scmdGameStateChange();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdIntermission = new scmdIntermission();
@@ -314,6 +316,22 @@ namespace SSB.Util
         /// </remarks>
         public Regex ScmdPlayerTimedOut { get; private set; }
 
+        /// <summary>
+        /// Regex for detecting when a game has ended due to the timelimt being reached.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting when a game has ended due to the timelimt being reached.
+        /// </value>
+        public Regex ScmdTimelimitHit { get; private set; }
+
+        /// <summary>
+        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
+        /// </value>
+        public Regex ScmdScorelimitHit { get; private set; }
+        
         /// <summary>
         /// Regex for getting the tinfo text (that will be ignored).
         /// </summary>

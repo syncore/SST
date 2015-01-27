@@ -16,7 +16,7 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "pickup";
         private const int TeamMaxSize = 8;
-        private const int TeamMinSize = 3;
+        private const int TeamMinSize = 2;
         private readonly ConfigHandler _configHandler;
         private readonly PickupManager _pickupManager;
         private readonly SynServerBot _ssb;
@@ -193,20 +193,14 @@ namespace SSB.Core.Commands.Modules
             }
             if (!_ssb.ServerInfo.IsATeamGame())
             {
-                //TODO: create a fix for this
-                // Might have not gotten it the first time, so request again
-                await _ssb.QlCommands.SendToQlAsync("serverinfo", true);
-                _ssb.QlCommands.ClearBothQlConsoles();
-                // If we still don't have it now, then notify
-                if (!_ssb.ServerInfo.IsATeamGame())
-                {
+                // Might have not gotten it the first time, so request again, in a few seconds.
+                await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", true, 5);
+                _ssb.QlCommands.ClearQlWinConsole();
+                
                     await
                         _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games.");
+                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is an error, try again in 5 seconds.");
                     return;
-                }
-                    await EnablePickup(teamsize);
-                
             }
             await EnablePickup(teamsize);
         }
@@ -238,12 +232,16 @@ namespace SSB.Core.Commands.Modules
                 _configHandler.Config.PickupOptions.SetDefaults();
                 return;
             }
+            //TODO: FIX: Module load on start causes timing issues that make IsATeamGame always return false
+            // Disable this check for now; it will be evaluated any time a !pickup command is issued
             // Current game must be team game, despite Active setting
+            /*
             if (!_ssb.ServerInfo.IsATeamGame())
             {
                 Active = false;
                 return;
             }
+            */
 
             Active = _configHandler.Config.PickupOptions.isActive;
             MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
@@ -302,10 +300,13 @@ namespace SSB.Core.Commands.Modules
         /// <param name="teamsize">The teamsize.</param>
         private async Task EnablePickup(uint teamsize)
         {
-            Teamsize = teamsize;
             // Note: notice the missing ban settings here.
             // The configuration has some pretty sane defaults, so unless the admin specifically
             // overrides the defaults with noshows/subbans args, then we will just use those.
+            UsePickupDefaults();
+            // Set the specified teamsize to override the default teamsize, keeping other default settings
+            Teamsize = teamsize;
+            // Activate the module, overriding the default of active = false
             UpdateConfig(true);
             await
                 _ssb.QlCommands.QlCmdSay(
@@ -403,6 +404,21 @@ namespace SSB.Core.Commands.Modules
                             maxNum, timeToBan, scaleToBan));
             }
             UpdateConfig(true);
+        }
+
+        /// <summary>
+        /// Uses the pickup defaults when enabling the pickup module.
+        /// </summary>
+        private void UsePickupDefaults()
+        {
+            _configHandler.Config.PickupOptions.SetDefaults();
+            MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
+            MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
+            ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
+            ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
+            ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
+            ExcessiveSubUseBanTimeScale =
+                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
         }
     }
 }

@@ -64,7 +64,7 @@ namespace SSB.Core
             {
                 await _ssb.Mod.Pickup.Manager.NotifyConnectingUser(player);
             }
-            
+
             // Check for time-bans
             var autoBanner = new PlayerAutoBanner(_ssb);
             await autoBanner.CheckForBans(player);
@@ -87,6 +87,7 @@ namespace SSB.Core
             if (_ssb.Mod.Pickup.Active)
             {
                 await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive, outgoingTeam);
+                _ssb.Mod.Pickup.Manager.RemoveActivePickupPlayer(player);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
             }
 
@@ -265,8 +266,8 @@ namespace SSB.Core
             if (_ssb.Mod.Pickup.Active)
             {
                 await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive, outgoingTeam);
+                _ssb.Mod.Pickup.Manager.RemoveActivePickupPlayer(player);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
-
             }
 
             // Evaluate player's early quit situation if that module is active
@@ -336,6 +337,9 @@ namespace SSB.Core
                 string.Format(
                     "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
                     playername, country, clantag, fullclanname, subscriber));
+
+            // Keep team information up to date
+            UpdatePlayerTeam(playername, (Team)tm);
         }
 
         /// <summary>
@@ -411,6 +415,12 @@ namespace SSB.Core
         {
             _ssb.ServerInfo.CurrentPlayers[player].Team = team;
             Debug.WriteLine("****** Updated {0}'s team to: {1} ******", player, team);
+            // Pickup module
+            if (_ssb.Mod == null) return;
+            if (_ssb.Mod.Pickup.Active && (team == Team.Red || team == Team.Blue))
+            {
+                _ssb.Mod.Pickup.Manager.AddActivePickupPlayer(player);
+            }
         }
     }
 }

@@ -205,8 +205,12 @@ namespace SSB.Core
                 if (VoteEndDetected(text)) continue;
                 // gamestate change (\time\# format)
                 if (GameStateTimeChangeDetected(text)) continue;
-                // intermission (game end) detected
-                if (IntermissionDetected(text)) continue;
+                // start of intermission (game end) detected
+                if (IntermissionStartDetected(text)) continue;
+                // game ends due to 'timelimit hit'
+                if (TimelimitReachedDetected(text)) continue;
+                // game ends due to 'frag/round/capturelimit hit'
+                if (ScorelimitReachedDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text))
                 {
@@ -301,11 +305,15 @@ namespace SSB.Core
             if (m.Groups["time"].Value.Equals(@"\time\-1", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
+                // Large batch of text incoming
+                _ssb.QlCommands.ClearQlWinConsole();
                 Debug.WriteLine(@"Gamestate change detected (\time\ info): setting warm-up mode.");
             }
             else if (m.Groups["time"].Value.Equals(@"\time\0", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.InProgress;
+                // Large batch of text incoming
+                _ssb.QlCommands.ClearQlWinConsole();
                 Debug.WriteLine(@"Gamestate change detected (\time\ info): setting in-progress mode.");
             }
             return true;
@@ -344,21 +352,41 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Determines whether an intermission (game end) was detected.
+        ///     Determines whether the text matches that of the start of an intermission (game end) and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if an intermission (game end) was detected, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if an intermission start (game end) was detected, otherwise <c>false</c>.</returns>
         /// <remarks>
-        /// This is the period that begins when the map voting starts at the end of a game.
+        /// This is the period that begins after the game has ended, typically during end-game map voting (if enabled).
         /// </remarks>
-        private bool IntermissionDetected(string text)
+        private bool IntermissionStartDetected(string text)
         {
             if (!_ssb.Parser.ScmdIntermission.IsMatch(text)) return false;
             Match m = _ssb.Parser.ScmdIntermission.Match(text);
             if (m.Groups["intermissionvalue"].Value.Equals("1", StringComparison.InvariantCultureIgnoreCase))
             {
-                _ssb.ServerEventProcessor.SetWarmupAfterIntermission();
+                _ssb.ServerEventProcessor.SetIntermissionStart();
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of the game's end due to the timelimit being reached
+        /// and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the 'timelimit hit' message was detected, otherwise <c>false</c>.</returns>
+        private bool TimelimitReachedDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdTimelimitHit.IsMatch(text)) return false;
+            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
+            return true;
+        }
+
+        private bool ScorelimitReachedDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdScorelimitHit.IsMatch(text)) return false;
+            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
             return true;
         }
 

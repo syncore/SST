@@ -158,6 +158,44 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Sets the end of game (frag/time/roundlimit reached)
+        /// </summary>
+        public void SetEndOfGameLimitReached()
+        {
+            // Set the game to WARM_UP after an 'limit reached' event is detected.
+            var gameState = QlGameStates.Warmup;
+            _ssb.ServerInfo.CurrentServerGameState = gameState;
+            // Large batch of text incoming
+            _ssb.QlCommands.ClearQlWinConsole();
+            Debug.WriteLine("End of game (frag/time/roundlimit reached) detected: setting status back to warm-up mode.");
+            // Pickup module
+            if (_ssb.Mod.Pickup.Active)
+            {
+                _ssb.Mod.Pickup.Manager.HandleScoreOrTimelimitHit();
+            }
+            //HandlePickupEvents(gameState);
+        }
+
+        /// <summary>
+        /// Handles the start of the game intermission (period between game's end and end of endgame map-voting)
+        /// </summary>
+        public void SetIntermissionStart()
+        {
+            // Set the game to WARM_UP after an intermission (typically map end vote) is detected.
+            var gameState = QlGameStates.Warmup;
+            _ssb.ServerInfo.CurrentServerGameState = gameState;
+            // Large batch of text incoming
+            _ssb.QlCommands.ClearQlWinConsole();
+            Debug.WriteLine("START of Intermission (game end/map voting) detected: setting status back to warm-up mode.");
+            // Pickup module
+            if (_ssb.Mod.Pickup.Active)
+            {
+                _ssb.Mod.Pickup.Manager.HandleIntermissionStart();
+            }
+            //HandlePickupEvents(gameState);
+        }
+
+        /// <summary>
         ///     Sets the current server's gamestate.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -190,7 +228,7 @@ namespace SSB.Core
                 "*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
                 gameState);
             // Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
-            _ssb.QlCommands.ClearBothQlConsoles();
+            _ssb.QlCommands.ClearQlWinConsole();
             // Pickup module
             HandlePickupEvents(gameState);
 
@@ -235,18 +273,6 @@ namespace SSB.Core
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
-        }
-
-        /// <summary>
-        /// Sets the game to WARM_UP after an intermission (map end vote) is detected.
-        /// </summary>
-        public void SetWarmupAfterIntermission()
-        {
-            var gameState = QlGameStates.Warmup;
-            _ssb.ServerInfo.CurrentServerGameState = gameState;
-            Debug.WriteLine("Intermission (game end/map voting) detected: setting status back to warm-up mode.");
-            // Pickup module
-            HandlePickupEvents(gameState);
         }
 
         /// <summary>

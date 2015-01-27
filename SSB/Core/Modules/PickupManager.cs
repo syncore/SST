@@ -19,9 +19,11 @@ namespace SSB.Core.Modules
     /// </summary>
     public class PickupManager
     {
-        private const double CaptainSelectionTimeLimit = 30000;
+        private const double CaptainSelectionTimeLimit = 20000;
+        private const double PickupResetOnEndGameLimit = 65000;
         private readonly PickupCaptains _captains;
         private readonly Timer _captainSelectionTimer;
+        private readonly Timer _endGameResetTimer;
         private readonly PickupPlayers _players;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _userDb;
@@ -37,10 +39,40 @@ namespace SSB.Core.Modules
             _players = new PickupPlayers(_ssb, this);
             _userDb = new DbUsers();
             EligiblePlayers = new List<string>();
+            ActivePickupPlayers = new List<string>();
             InProgressSubCandidates = new List<string>();
             Subs = new StringBuilder();
             NoShows = new StringBuilder();
             _captainSelectionTimer = new Timer();
+            _endGameResetTimer = new Timer();
+        }
+
+        /// <summary>
+        ///     Gets or sets the active pickup players.
+        /// </summary>
+        /// <value>
+        ///     The active pickup players.
+        /// </value>
+        /// <remarks>
+        ///     This is used to supplement QL's actual player team tracking of those players who are
+        ///     on a team for the pickup. This is included because sometimes the game's actual team
+        ///     tracking is not reliably updated.
+        /// </remarks>
+        public List<string> ActivePickupPlayers { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the teams are full.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if teams are full; otherwise, <c>false</c>.
+        /// </value>
+        public bool AreTeamsFull
+        {
+            get
+            {
+                return (_ssb.ServerInfo.GetTeam(Team.Red).Count == _ssb.Mod.Pickup.Teamsize) &&
+                       ((_ssb.ServerInfo.GetTeam(Team.Blue).Count == _ssb.Mod.Pickup.Teamsize));
+            }
         }
 
         /// <summary>
@@ -55,10 +87,10 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the eligible players.
+        ///     Gets or sets the players that are eligible to be picked for a pickup game.
         /// </summary>
         /// <value>
-        ///     The eligible players.
+        ///     The players that are eligible to be picked for a pickup game.
         /// </value>
         public List<string> EligiblePlayers { get; set; }
 
@@ -85,22 +117,35 @@ namespace SSB.Core.Modules
         ///     The list of players who are eligible to be subbed in after a pickup is already
         ///     in progress.
         /// </value>
-        
         public List<string> InProgressSubCandidates { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the is bot currently setting up teams (locking server down).
+        ///     Gets or sets a value indicating whether the is bot currently setting up teams (locking server down).
         /// </summary>
         /// <value>
-        /// <c>true</c> if the bot is setting up teams (locking server down); otherwise, <c>false</c>.
+        ///     <c>true</c> if the bot is setting up teams (locking server down); otherwise, <c>false</c>.
         /// </value>
         /// <remarks>
-        /// This value indicates whether the <see cref="SetupTeams()"/> method is executing, to serve as a guard
-        /// that indicates that the teams should not be unlocked due to no-shows, which would typically happen when an active
-        /// player goes to SPEC or disconnects; here, the bot moves back to spec after locking the teams, which would
-        /// otherwise trigger an unlock.
+        ///     This value indicates whether the <see cref="SetupTeams()" /> method is executing, to serve as a guard
+        ///     that indicates that the teams should not be unlocked due to no-shows, which would typically happen when an active
+        ///     player goes to SPEC or disconnects; here, the bot moves back to spec after locking the teams, which would
+        ///     otherwise trigger an unlock.
         /// </remarks>
         public bool IsBotSettingUpTeams { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the game is in intermission
+        ///     (i.e. between time/frag/roundlimit reached and the end of the end-game
+        ///     map vote, if enabled.)
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the game is in intermission; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        ///     The primary purpose of this is to serve as a guard that will allow players to disconnect
+        ///     during this period without it counting towards their no-show count.
+        /// </remarks>
+        public bool IsIntermission { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether a pickup in progress.
@@ -140,22 +185,22 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        /// Gets or sets the missing blue player count of players who leave
-        /// prematurely without securing a substitute replacement.
+        ///     Gets or sets the missing blue player count of players who leave
+        ///     prematurely without securing a substitute replacement.
         /// </summary>
         /// <value>
-        /// The missing blue player count of players who leave
-        /// prematurely without securing a substitute replacement.
+        ///     The missing blue player count of players who leave
+        ///     prematurely without securing a substitute replacement.
         /// </value>
         public int MissingBluePlayerCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the missing red player count of players who leave
-        /// prematurely without securing a substitute replacement.
+        ///     Gets or sets the missing red player count of players who leave
+        ///     prematurely without securing a substitute replacement.
         /// </summary>
         /// <value>
-        /// The missing red player count of players who leave
-        /// prematurely without securing a substitute replacement.
+        ///     The missing red player count of players who leave
+        ///     prematurely without securing a substitute replacement.
         /// </value>
         public int MissingRedPlayerCount { get; set; }
 
@@ -187,9 +232,28 @@ namespace SSB.Core.Modules
         public StringBuilder Subs { get; set; }
 
         /// <summary>
-        /// Creates a pickup info object for the current pickup game.
+        ///     Adds the active pickup player.
         /// </summary>
-        /// <returns>A <see cref="PickupInfo"/> object representing the current pickup game.</returns>
+        /// <param name="player">The player.</param>
+        /// <remarks>
+        ///     This is used for <see cref="ActivePickupPlayers" />, which is the bot's internal list
+        ///     of those players who are on a team for the pickup. This is included because sometimes
+        ///     the game's actual team tracking is not reliably updated.
+        /// </remarks>
+        public void AddActivePickupPlayer(string player)
+        {
+            if (!ActivePickupPlayers.Contains(player))
+            {
+                ActivePickupPlayers.Add(player);
+                Debug.WriteLine(string.Format("Added {0} to the active pickup players",
+                    player));
+            }
+        }
+
+        /// <summary>
+        ///     Creates a pickup info object for the current pickup game.
+        /// </summary>
+        /// <returns>A <see cref="PickupInfo" /> object representing the current pickup game.</returns>
         public PickupInfo CreatePickupInfo()
         {
             var pickupInfo = new PickupInfo();
@@ -229,14 +293,17 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        /// Evauates a departing pickup user's noshow or sub status and punishes if necessary.
+        ///     Evauates a departing pickup user's noshow or sub status and punishes if necessary.
         /// </summary>
         /// <param name="player">The departing player.</param>
-        /// <param name="playerWasActive">if set to <c>true</c> indicates that the departing player was
-        /// active (i.e. was on the red or the blue team, thus not a spectator).</param>
+        /// <param name="playerWasActive">
+        ///     if set to <c>true</c> indicates that the departing player was
+        ///     active (i.e. was on the red or the blue team, thus not a spectator).
+        /// </param>
         /// <param name="outgoingTeam">The departing player's team.</param>
         /// <returns></returns>
-        public async Task EvalOutgoingPlayer(string player, bool playerWasActive, Team outgoingTeam)
+        public async Task EvalOutgoingPlayer(string player, bool playerWasActive,
+            Team outgoingTeam)
         {
             if (!IsNoShowEvalApplicable(player, playerWasActive)) return;
             // No-show/sub database tracking operations
@@ -247,26 +314,36 @@ namespace SSB.Core.Modules
             if (HasCaptainSelectionStarted &&
                 (Captains.RedCaptain.Equals(player) || Captains.BlueCaptain.Equals(player)))
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...", player));
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...",
+                            player));
                 await DoResetPickup();
             }
             // The captain left during the team selection process... Reset.
             if (HasTeamSelectionStarted &&
                 (Captains.RedCaptain.Equals(player) || Captains.BlueCaptain.Equals(player)))
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...", player));
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...",
+                            player));
                 await DoResetPickup();
             }
             // Team selection started and an eligible player leaves, notify of cancelation possibility
             if (HasTeamSelectionStarted && EligiblePlayers.Contains(player))
             {
-                if ((_ssb.Mod.Pickup.Teamsize * 2) - (redSize + blueSize) < EligiblePlayers.Count)
+                if ((_ssb.Mod.Pickup.Teamsize*2) - (redSize + blueSize) < EligiblePlayers.Count)
                 {
                     await
                         _ssb.QlCommands.QlCmdSay(string.Format(
-                            "^5[PICKUP]^7 There might not be enough players to start because of ^3{0}^7's early quit", player));
+                            "^5[PICKUP]^7 There might not be enough players to start because of ^3{0}^7's early quit",
+                            player));
                     await
-                        _ssb.QlCommands.QlCmdSay("^5[PICKUP]^7 You can wait for more players to connect and sign up or the game can be canceled.");
+                        _ssb.QlCommands.QlCmdSay(
+                            "^5[PICKUP]^7 You can wait for more players to connect and sign up or the game can be canceled.");
                     await ShowPrivUserCanCancelMsg();
                 }
             }
@@ -277,7 +354,8 @@ namespace SSB.Core.Modules
                 // Situation where departing player is moved to spec due to successful sub request. Do nothing.
                 if (_ssb.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest) return;
 
-                Debug.WriteLine(string.Format("{0} left mid-game without securing a sub.", player));
+                Debug.WriteLine(string.Format("{0} left mid-game without securing a sub.",
+                    player));
                 if (outgoingTeam == Team.Blue)
                 {
                     await UnlockTeamDueToNoShow(player, Team.Blue);
@@ -312,9 +390,12 @@ namespace SSB.Core.Modules
         {
             if (!_ssb.ServerInfo.IsATeamGame())
             {
+                // Might have not gotten it the first time, so request again, in a few seconds.
+                await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", true, 5);
+                _ssb.QlCommands.ClearQlWinConsole();
                 await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Pickup can only be started on server running a team-based game.");
+                        _ssb.QlCommands.QlCmdSay(
+                            "^1[ERROR]^3 Pickup can only be started for team-based games. If this is an error, try again in 5 seconds.");
                 return;
             }
             if (IsQlGameInProgress)
@@ -322,10 +403,11 @@ namespace SSB.Core.Modules
                 await ShowProgressInError();
                 return;
             }
-            if (IsPickupPreGame || IsPickupInProgress)
+            if (IsPickupInProgress)
             {
                 await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Another pickup game is already pending!");
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Another pickup game is already pending!");
                 return;
             }
             await StartPickupPreGame();
@@ -345,7 +427,7 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        /// Evaluates whether a user can be removed for no-show/sub abuse.
+        ///     Evaluates whether a user can be removed for no-show/sub abuse.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="args">The arguments.</param>
@@ -354,7 +436,11 @@ namespace SSB.Core.Modules
         {
             if (args.Length == 1)
             {
-                await _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>", CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup), sender);
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>",
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup),
+                        sender);
                 return;
             }
             var banDb = new DbBans();
@@ -362,12 +448,13 @@ namespace SSB.Core.Modules
             if (bInfo == null)
             {
                 await
-                    _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Ban information not found for {0}",
-                        args[1]), sender);
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format("^5[PICKUP]^7 Ban information not found for {0}",
+                            args[1]), sender);
                 return;
             }
             if (bInfo.BanType != BanType.AddedByPickupSubs ||
-                    bInfo.BanType != BanType.AddedByPickupNoShows)
+                bInfo.BanType != BanType.AddedByPickupNoShows)
             {
                 var senderLevel = _userDb.GetUserLevel(sender);
                 // Don't allow SuperUsers to remove non pickup-related bans
@@ -387,7 +474,8 @@ namespace SSB.Core.Modules
                         _ssb.QlCommands.QlCmdTell(
                             string.Format(
                                 "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. To remove: ^3{1}{2} del {0}",
-                                args[1], CommandProcessor.BotCommandPrefix, CommandProcessor.CmdTimeBan), sender);
+                                args[1], CommandProcessor.BotCommandPrefix,
+                                CommandProcessor.CmdTimeBan), sender);
                     return;
                 }
             }
@@ -395,32 +483,40 @@ namespace SSB.Core.Modules
             var pAutoBanner = new PlayerAutoBanner(_ssb);
             await pAutoBanner.RemoveBan(args[1], bInfo);
             await
-                _ssb.QlCommands.QlCmdTell(string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
-                args[1]), sender);
+                _ssb.QlCommands.QlCmdTell(
+                    string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
+                        args[1]), sender);
         }
 
         /// <summary>
-        /// Handles the end of the pickup (when the QL gamestate changes to WARM_UP)
+        ///     Handles the start of intermission (period between end of game and end of endgame map-voting)
+        /// </summary>
+        public void HandleIntermissionStart()
+        {
+            Debug.WriteLine(
+                "PICKUP: Intermission start detected: setting IsIntermission to true");
+            IsIntermission = true;
+        }
+
+        /// <summary>
+        ///     Handles the end of the pickup (when the QL gamestate changes to WARM_UP)
         /// </summary>
         public void HandlePickupEnd()
         {
             // Pickup needs to have previously been in progress
             if (!IsPickupInProgress) return;
-            Debug.WriteLine("QL (WARM_UP): Pickup game has now officially ended!");
-            // Game officially ended (QL: WARM_UP gamestate), update the pickup DB table to
-            // incldue any changes that occurred between the game start and the game end
+            Debug.WriteLine("** Pickup game has now officially ended! **");
+            // Update the pickup DB table to incldue any changes that occurred between the
+            // game start and the game end
             var pickupDb = new DbPickups();
             pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
+            // TODO: Update pickup players table (gamesFinished) for players
             // Set the end time
             pickupDb.UpdatePickupEndTime(DateTime.Now);
-            // And get ready for the next pickup game
-            // Synchronous
-            // ReSharper disable once UnusedVariable
-            Task s = StartPickupPreGame();
         }
 
         /// <summary>
-        /// Handles the pickup launch (when the QL gamestate changes to IN_PROGRESS)
+        ///     Handles the pickup launch (when the QL gamestate changes to IN_PROGRESS)
         /// </summary>
         public void HandlePickupLaunch()
         {
@@ -433,11 +529,14 @@ namespace SSB.Core.Modules
             // were already full.
             var pickupDb = new DbPickups();
             pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
+            // TODO: Update pickup players table (gamesStarted) for players
             // We are now in progress
             IsPickupPreGame = false;
             IsPickupInProgress = true;
             // Move any remaining eligible players who were not picked to the list of eligible substitutes and clear.
-            foreach (var player in EligiblePlayers.Where(player => !InProgressSubCandidates.Contains(player)))
+            foreach (
+                var player in
+                    EligiblePlayers.Where(player => !InProgressSubCandidates.Contains(player)))
             {
                 InProgressSubCandidates.Add(player);
             }
@@ -445,7 +544,24 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        /// Notifies the connecting user on how to sign up for next or current pickup game.
+        ///     Handles the score or timelimit hit event.
+        /// </summary>
+        public void HandleScoreOrTimelimitHit()
+        {
+            Debug.WriteLine("Score or timelimit hit: setting IsIntermission to true");
+            IsIntermission = true;
+            // Pickup has now officially ended
+            HandlePickupEnd();
+            // Start the pickup reset timer
+            StartEndGameResetTimer();
+            // ReSharper disable once UnusedVariable
+            var i1 = _ssb.QlCommands.QlCmdSay(string.Format(
+                "^5[PICKUP]^7 Pickup is OVER. A new pickup should start ^3{0}^7 seconds after map restart or map change!",
+                (PickupResetOnEndGameLimit/1000)));
+        }
+
+        /// <summary>
+        ///     Notifies the connecting user on how to sign up for next or current pickup game.
         /// </summary>
         /// <param name="user">The user.</param>
         public async Task NotifyConnectingUser(string user)
@@ -453,18 +569,20 @@ namespace SSB.Core.Modules
             if (IsPickupPreGame)
             {
                 await
-                    _ssb.QlCommands.QlCmdTell(
+                    _ssb.QlCommands.QlCmdDelayedTell(
                         string.Format(
                             "^7This server is in pickup game mode. Type ^5{0}{1}^7 to sign up for the next game.",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd), user);
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd),
+                        user, 25);
             }
             else if (IsPickupInProgress)
             {
                 await
-                    _ssb.QlCommands.QlCmdTell(
+                    _ssb.QlCommands.QlCmdDelayedTell(
                         string.Format(
                             "^7A pickup game is in progress. Type ^5{0}{1}^7 to sign up as a susbstitute player.",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd), user);
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd),
+                        user, 25);
             }
         }
 
@@ -477,8 +595,8 @@ namespace SSB.Core.Modules
         {
             await
                 _ssb.QlCommands.QlCmdTell(string.Format(
-                        "^7You've been picked for {0}^7. If you must leave early: ^3!sub <spectator>^7 to avoid a no-show.",
-                        ((team == Team.Red) ? "^1RED" : "^5BLUE")), player);
+                    "^7You've been added to {0}^7. If you must leave early: ^3!sub <spectator>^7 to avoid a no-show.",
+                    ((team == Team.Red) ? "^1RED" : "^5BLUE")), player);
         }
 
         /// <summary>
@@ -488,24 +606,39 @@ namespace SSB.Core.Modules
         /// <param name="playerToSub">The player/captain to sub in.</param>
         public async Task ProcessSub(string fromPlayer, string playerToSub)
         {
-            if (!IsPickupInProgress || !IsPickupPreGame)
+            if (!IsPickupInProgress && !IsPickupPreGame)
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You may not request a sub at this time.");
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 You may not request a sub at this time.");
+                return;
+            }
+
+            if (_ssb.ServerInfo.IsActivePlayer(playerToSub) ||
+                ActivePickupPlayers.Contains(playerToSub))
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 Your replacement cannot already be in the pickup.",
+                        fromPlayer);
                 return;
             }
 
             if (!Tools.KeyExists(playerToSub, _ssb.ServerInfo.CurrentPlayers))
             {
                 await
-                    _ssb.QlCommands.QlCmdTell(string.Format("^1[ERROR]^3 {0} is not currently on the server!",
-                        playerToSub), fromPlayer);
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format("^1[ERROR]^3 {0} is not currently on the server!",
+                            playerToSub), fromPlayer);
                 return;
             }
             if (IsPickupPreGame && !EligiblePlayers.Contains(playerToSub))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
-                        string.Format("^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!", playerToSub,
+                        string.Format(
+                            "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
+                            playerToSub,
                             CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
                 return;
             }
@@ -513,23 +646,58 @@ namespace SSB.Core.Modules
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
-                        string.Format("^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!", playerToSub,
+                        string.Format(
+                            "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
+                            playerToSub,
                             CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
                 return;
             }
-            if (!_ssb.ServerInfo.IsActivePlayer(fromPlayer))
+            if (!_ssb.ServerInfo.IsActivePlayer(fromPlayer) && !ActivePickupPlayers.Contains(fromPlayer))
             {
-                await _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 You may not request a sub.", fromPlayer);
+                await
+                    _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 You may not request a sub.",
+                        fromPlayer);
                 return;
             }
             var team = _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team;
-            if (_captains.RedCaptain.Equals(fromPlayer) || _captains.BlueCaptain.Equals(fromPlayer))
+            Debug.WriteLine("PICKUP SUP: Player {0} on TEAM: {1} is requesting that player: {2} play as his substitute",
+                fromPlayer, team, playerToSub);
+            if (_captains.RedCaptain.Equals(fromPlayer) ||
+                _captains.BlueCaptain.Equals(fromPlayer))
             {
-                await _captains.DoCaptainSub(fromPlayer, team, playerToSub);
+                //Captain makes a sub during pre-game, treat as special captain sub case
+                // to allow resumption of player picking
+                if (IsPickupPreGame)
+                {
+                    await _captains.DoCaptainSub(fromPlayer, team, playerToSub);
+                }
+                // Captain makes a sub during the game, treat as a regular sub
+                else if (IsPickupInProgress)
+                {
+                    await _players.DoPlayerSub(fromPlayer, team, playerToSub);
+                }
             }
             else
             {
                 await _players.DoPlayerSub(fromPlayer, team, playerToSub);
+            }
+        }
+
+        /// <summary>
+        ///     Removes the active pickup player.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <remarks>
+        ///     This is used for <see cref="ActivePickupPlayers" />, which is the bot's internal list
+        ///     of those players who are on a team for the pickup. This is included because sometimes
+        ///     the game's actual team tracking is not reliably updated.
+        /// </remarks>
+        public void RemoveActivePickupPlayer(string player)
+        {
+            if (ActivePickupPlayers.Remove(player))
+            {
+                Debug.WriteLine(string.Format("Removed {0} from active pickup players",
+                    player));
             }
         }
 
@@ -546,8 +714,38 @@ namespace SSB.Core.Modules
             }
             if (InProgressSubCandidates.Remove(player))
             {
-                Debug.WriteLine(string.Format("Removed {0} from the in-progress sub candidates",
+                Debug.WriteLine(string.Format(
+                    "Removed {0} from the in-progress sub candidates",
                     player));
+            }
+        }
+
+        /// <summary>
+        ///     Resets the pickup status. This is the overall housekeeping method.
+        /// </summary>
+        public void ResetPickupStatus()
+        {
+            EligiblePlayers.Clear();
+            ActivePickupPlayers.Clear();
+            InProgressSubCandidates.Clear();
+            Subs.Clear();
+            NoShows.Clear();
+            MissingBluePlayerCount = 0;
+            MissingRedPlayerCount = 0;
+            IsBotSettingUpTeams = false;
+            HasCaptainSelectionStarted = false;
+            HasTeamSelectionStarted = false;
+            IsIntermission = false;
+            IsPickupPreGame = false;
+            IsPickupInProgress = false;
+            _captains.IsBlueTurnToPick = false;
+            _captains.IsRedTurnToPick = false;
+            _captains.RedCaptain = string.Empty;
+            _captains.BlueCaptain = string.Empty;
+            _captainSelectionTimer.Elapsed -= CaptainSelectionExpired;
+            foreach (var player in _ssb.ServerInfo.CurrentPlayers)
+            {
+                player.Value.HasMadeSuccessfulSubRequest = false;
             }
         }
 
@@ -557,12 +755,14 @@ namespace SSB.Core.Modules
         /// </summary>
         public async Task ShowPrivUserCanCancelMsg()
         {
-            var superUsers = _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
+            var superUsers =
+                _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
             await
                 _ssb.QlCommands.QlCmdSay(
-                    string.Format("^3{0}^7 can completely cancel the pickup with^3 {1}{2} stop",
+                    string.Format(
+                        "^3{0}^7 can completely cancel the pickup with^3 {1}{2} stop",
                         (string.IsNullOrEmpty(superUsers)
-                            ? "A super-user or higher."
+                            ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
                         CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
         }
@@ -573,10 +773,15 @@ namespace SSB.Core.Modules
         /// </summary>
         public async Task ShowPrivUserCanResetMsg()
         {
-            var superUsers = _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}^7 can reset the pickup with^3 {1}{2} reset",
-                (string.IsNullOrEmpty(superUsers) ? "A super-user or higher." : superUsers.TrimEnd(',', ' ')),
-                CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+            var superUsers =
+                _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format("^3{0}^7 can reset the pickup with^3 {1}{2} reset",
+                        (string.IsNullOrEmpty(superUsers)
+                            ? "A super-user or higher"
+                            : superUsers.TrimEnd(',', ' ')),
+                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
         }
 
         /// <summary>
@@ -585,10 +790,15 @@ namespace SSB.Core.Modules
         /// </summary>
         public async Task ShowPrivUserCanStartMsg()
         {
-            var superUsers = _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}^7 can start a new pickup with^3 {1}{2} start",
-                (string.IsNullOrEmpty(superUsers) ? "A super-user or higher." : superUsers.TrimEnd(',', ' ')),
-                CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+            var superUsers =
+                _userDb.GetSuperUsersOrHigherOnServer(_ssb.ServerInfo.CurrentPlayers);
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format("^3{0}^7 can start a new pickup with^3 {1}{2} start",
+                        (string.IsNullOrEmpty(superUsers)
+                            ? "A super-user or higher"
+                            : superUsers.TrimEnd(',', ' ')),
+                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
         }
 
         /// <summary>
@@ -604,11 +814,12 @@ namespace SSB.Core.Modules
             HasCaptainSelectionStarted = true;
             await
                 _ssb.QlCommands.QlCmdSay(
-                    "^5[PICKUP]^7 Captain selection has started. ^32^7 captains are needed!");
+                    "^5[PICKUP]^7 Captain selection has started. **^22**^7 captains are needed!");
             await
                 _ssb.QlCommands.QlCmdSay(
-                    string.Format("^5[PICKUP]^7 You have {0} seconds to type^2 {1}{2}^7 to become a captain!",
-                        (CaptainSelectionTimeLimit / 1000), CommandProcessor.BotCommandPrefix,
+                    string.Format(
+                        "^5[PICKUP]^7 You have ^5{0}^7 seconds to type^2 {1}{2}^7 to become a captain!",
+                        (CaptainSelectionTimeLimit/1000), CommandProcessor.BotCommandPrefix,
                         CommandProcessor.CmdPickupCap));
         }
 
@@ -619,11 +830,19 @@ namespace SSB.Core.Modules
         /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
         private async void CaptainSelectionExpired(object sender, ElapsedEventArgs e)
         {
+            // Too many people might have removed, leaving an inadequate number of players from which to pick caps. Reset.
+            //if (EligiblePlayers.Count < 2)
+            //{
+            //    await ResetDueToInadequatePlayerCount();
+            //    return;
+            //}
+
             // We have zero captains -- no one bothered to !cap or it's a rare situation where both
             // captains disconnected before team selection.
             if (!_captains.RedCaptainExists && !_captains.BlueCaptainExists)
             {
                 // Randomly pick the two captains and move to the proper teams so that team selection can begin.
+
                 await
                     _ssb.QlCommands.QlCmdSay(
                         "^3[PICKUP]^7 No one signed up to be captain! Randomly selecting 2 captains...");
@@ -675,14 +894,15 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        ///     Moves all of the players except for the bot to spectator mode.
+        ///     Moves all of the players to spectator mode.
         /// </summary>
         private async Task ClearTeams()
         {
-            //ToList() because .NET modifies collection enumeration under the hood and can sometimes cause error
-            // see http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
+            //ToList() because .NET can modify collection during enumeration, sometimes causing error
+            // see: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
             foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList().Where(player =>
-                !player.Value.ShortName.Equals(_ssb.BotName, StringComparison.InvariantCultureIgnoreCase)))
+                !player.Value.ShortName.Equals(_ssb.BotName,
+                    StringComparison.InvariantCultureIgnoreCase)))
             {
                 await _ssb.QlCommands.CustCmdPutPlayer(player.Value.ShortName, Team.Spec);
             }
@@ -702,6 +922,24 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        ///     Event handler that is called upon the end of the pre-defined intermission period.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <remarks>
+        ///     This is a method that is used to automatically reset the pickup after a pre-determined time
+        ///     after the intermission. It is used to reset and re-setup the teams after the previous game ends
+        ///     (typically after end-of-game map voting).
+        /// </remarks>
+        private void EndGameResetExpired(object sender, ElapsedEventArgs e)
+        {
+            Debug.WriteLine("Intermission timer expired. Re-establishing pickup.");
+            // ReSharper disable once UnusedVariable
+            // Synchronous
+            var s = StartPickupPreGame();
+        }
+
+        /// <summary>
         ///     Determines whether to perform the no-show evaluation for the specified player.
         /// </summary>
         /// <param name="player">The player.</param>
@@ -712,6 +950,8 @@ namespace SSB.Core.Modules
         /// <returns><c>true</c> if the evaluation is to be performed, otherwise <c>false</c>.</returns>
         private bool IsNoShowEvalApplicable(string player, bool wasActive)
         {
+            // Game is in intermission (timelimit hit to end of end-game map voting); do not eval no shows
+            if (IsIntermission) return false;
             // Player signed up as a captain, but left during captain selection process; evaluation is applicable.
             if (HasCaptainSelectionStarted &&
                 (Captains.RedCaptain.Equals(player) || Captains.BlueCaptain.Equals(player)))
@@ -737,6 +977,10 @@ namespace SSB.Core.Modules
         {
             await _ssb.QlCommands.CustCmdPutPlayer(_captains.RedCaptain, Team.Red);
             await _ssb.QlCommands.CustCmdPutPlayer(_captains.BlueCaptain, Team.Blue);
+            // Captains are now active pickup players
+            AddActivePickupPlayer(_captains.RedCaptain);
+            AddActivePickupPlayer(_captains.BlueCaptain);
+            // Let them know how the procedure is to occur
             string[] capNotifyMsgs =
             {
                 "^1You are now a captain. When it's your turn type ^2!pick <name>^7 to pick a player for your team.",
@@ -750,29 +994,15 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        ///     Resets the pickup status. This is the overall housekeeping method.
+        ///     Resets the pickup due to inadequate eligible player count.
         /// </summary>
-        public void ResetPickupStatus()
+        private async Task ResetDueToInadequatePlayerCount()
         {
-            EligiblePlayers.Clear();
-            InProgressSubCandidates.Clear();
-            Subs.Clear();
-            NoShows.Clear();
-            MissingBluePlayerCount = 0;
-            MissingRedPlayerCount = 0;
-            IsBotSettingUpTeams = false;
-            HasCaptainSelectionStarted = false;
-            HasTeamSelectionStarted = false;
-            IsPickupPreGame = false;
-            IsPickupInProgress = false;
-            _captains.IsBlueTurnToPick = false;
-            _captains.IsRedTurnToPick = false;
-            _captains.RedCaptain = string.Empty;
-            _captains.BlueCaptain = string.Empty;
-            foreach (var player in _ssb.ServerInfo.CurrentPlayers)
-            {
-                player.Value.HasMadeSuccessfulSubRequest = false;
-            }
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    "^1[ERROR]^3 There are no longer enough eligible players. Resetting...");
+            await ShowPrivUserCanCancelMsg();
+            await DoResetPickup();
         }
 
         /// <summary>
@@ -789,7 +1019,9 @@ namespace SSB.Core.Modules
             var botId = _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Id;
             await _ssb.QlCommands.SendToQlAsync(string.Format("put {0} r", botId), false);
             // Callvote the teamsize based on the specified teamsize in the pickup module options.
-            await _ssb.QlCommands.SendToQlAsync(string.Format("cv teamsize {0}", _ssb.Mod.Pickup.Teamsize), false);
+            await
+                _ssb.QlCommands.SendToQlAsync(
+                    string.Format("cv teamsize {0}", _ssb.Mod.Pickup.Teamsize), false);
             // Force the bot back to spectators.
             await _ssb.QlCommands.SendToQlAsync(string.Format("put {0} s", botId), false);
             IsBotSettingUpTeams = false;
@@ -806,11 +1038,25 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        ///     Starts the pickup reset timer on game's end.
+        /// </summary>
+        private void StartEndGameResetTimer()
+        {
+            Debug.WriteLine(
+                "*** Starting end-game pickup reset timer. Will try to start a new pickup in {0} seconds***",
+                (PickupResetOnEndGameLimit/1000));
+            _endGameResetTimer.AutoReset = false;
+            _endGameResetTimer.Interval = PickupResetOnEndGameLimit;
+            _endGameResetTimer.Elapsed += EndGameResetExpired;
+            _endGameResetTimer.Start();
+        }
+
+        /// <summary>
         ///     Starts the pickup pre game mode that sets up the server for an upcoming pickup game.
         /// </summary>
         private async Task StartPickupPreGame()
         {
-            // Housekeeping... Reset, in case this method is called from !pickup start
+            // Housekeeping...
             ResetPickupStatus();
 
             // Lock down the server
@@ -818,13 +1064,13 @@ namespace SSB.Core.Modules
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3[PICKUP]^7 Pickup mode is enabled. To be eligible to play, type: ^2{0}{1}",
+                        "^5[PICKUP]^7 Pickup mode is enabled. To be eligible to play, type: ^2{0}{1}",
                         CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
-                        (_ssb.Mod.Pickup.Teamsize * 2)));
+                        "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
+                        (_ssb.Mod.Pickup.Teamsize*2)));
 
             IsPickupPreGame = true;
         }
@@ -837,13 +1083,9 @@ namespace SSB.Core.Modules
             // We should have both captains (+2) selected at this point.
             // However, players might have disconnected before the captain selection timer expired, so
             // make sure we have enough players one last time, and reset if we don't.
-            if ((EligiblePlayers.Count + 2) < (_ssb.Mod.Pickup.Teamsize * 2))
+            if ((EligiblePlayers.Count + 2) < (_ssb.Mod.Pickup.Teamsize*2))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 There are no longer enough eligible players. Resetting...");
-                await ShowPrivUserCanCancelMsg();
-                await DoResetPickup();
+                await ResetDueToInadequatePlayerCount();
                 return;
             }
 
@@ -862,22 +1104,21 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        ///     Stops the pickup and unlocks the teams so that anyone can join.
+        ///     Stops (cancels) the pickup and unlocks the teams so that anyone can join.
         /// </summary>
         private async Task StopPickup()
         {
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3[PICKUP]^7 Stopping pickup. Teams will be free for anyone to join. ^2{0}{1} start^7 to start another.",
+                        "^3[PICKUP]^7 Canceling pickup. Teams unlocked so anyone can join. ^2{0}{1} start^7 to start another.",
                         CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
             ResetPickupStatus();
-            await ClearTeams();
-            _ssb.QlCommands.SendToQl("unlock", false);
+            await _ssb.QlCommands.SendToQlAsync("unlock", false);
         }
 
         /// <summary>
-        /// Unlocks a team due to a player's premature mid-game departure.
+        ///     Unlocks a team due to a player's premature mid-game departure.
         /// </summary>
         /// <param name="player">The departing player.</param>
         /// <param name="team">The team to unlock.</param>
@@ -885,7 +1126,7 @@ namespace SSB.Core.Modules
         {
             // Ignore when bot moves back to spec during initial server lockdown setup.
             if (IsBotSettingUpTeams) return;
-            
+
             if (team == Team.Blue)
             {
                 MissingBluePlayerCount++;
@@ -894,13 +1135,18 @@ namespace SSB.Core.Modules
             {
                 MissingRedPlayerCount++;
             }
-            await _ssb.QlCommands.SendToQlAsync(((team == Team.Blue) ? "unlock blue" : "unlock red"), false);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 Unlocking {0}^7 because ^3{1}^7 no-showed the game.",
-                ((team == Team.Blue) ? "^5BLUE" : "^1RED"), player));
+            await
+                _ssb.QlCommands.SendToQlAsync(
+                    ((team == Team.Blue) ? "unlock blue" : "unlock red"), false);
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^5[PICKUP]^7 Unlocking {0}^7 because ^3{1}^7 no-showed the game.",
+                        ((team == Team.Blue) ? "^5BLUE" : "^1RED"), player));
         }
 
         /// <summary>
-        /// Updates the departing player's no-show/sub information in the pickup database.
+        ///     Updates the departing player's no-show/sub information in the pickup database.
         /// </summary>
         /// <param name="player">The departing player.</param>
         private async Task UpdateNoShowAndSubDatabase(string player)
@@ -925,7 +1171,8 @@ namespace SSB.Core.Modules
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
-                                "^5[PICKUP]^3 {0}^7 has requested too many subs, banning until ^1{1}", player,
+                                "^5[PICKUP]^3 {0}^7 has requested too many subs, banning until ^1{1}",
+                                player,
                                 expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
                 }
             }
@@ -949,7 +1196,8 @@ namespace SSB.Core.Modules
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
-                                "^5[PICKUP]^3 {0}^7 has no-showed too many games, banning until ^1{1}", player,
+                                "^5[PICKUP]^3 {0}^7 has no-showed too many games, banning until ^1{1}",
+                                player,
                                 expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
                 }
             }

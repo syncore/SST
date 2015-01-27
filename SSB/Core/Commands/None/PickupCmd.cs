@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SSB.Core.Commands.Admin;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -65,7 +66,18 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            if (!c.Args[1].Equals("reset") && c.Args[1].Equals("start") && c.Args[1].Equals("stop")
+            if (!_ssb.Mod.Pickup.Active)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
+                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdModule,
+                            ModuleCmd.PickupArg));
+                return;
+            }
+            
+            if (!c.Args[1].Equals("reset") && !c.Args[1].Equals("start") && !c.Args[1].Equals("stop")
                 && !c.Args[1].Equals("unban") && !c.Args[1].Equals("help"))
             {
                 await DisplayArgLengthError(c);
