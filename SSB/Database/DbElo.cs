@@ -58,7 +58,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "INSERT INTO elo(user, lastUpdated, caElo, ctfElo, duelElo, ffaElo, tdmElo) VALUES(@user, @lastUpdatedDate, @caElo, @ctfElo, @duelElo, @ffaElo, @tdmElo)";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@lastUpdatedDate", lastUpdatedDate);
                             cmd.Parameters.AddWithValue("@caElo", caElo);
                             cmd.Parameters.AddWithValue("@ctfElo", ctfElo);
@@ -106,7 +106,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText = "SELECT * FROM elo WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -164,7 +164,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE elo SET lastUpdated = @lastUpdatedDate, caElo = @caElo, ctfElo = @ctfElo, duelElo = @duelElo, ffaElo = @ffaElo, tdmElo = @tdmElo WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@lastUpdatedDate", lastUpdatedDate);
                             cmd.Parameters.AddWithValue("@caElo", caElo);
                             cmd.Parameters.AddWithValue("@ctfElo", ctfElo);
@@ -276,16 +276,7 @@ namespace SSB.Database
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the elo database.", user));
-                                return false;
-                            }
-                            Debug.WriteLine(
-                                string.Format("User: {0} already exists in the elo database.",
-                                    user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

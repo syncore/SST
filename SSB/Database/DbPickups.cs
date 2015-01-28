@@ -114,7 +114,7 @@ namespace SSB.Database
                             cmd.CommandText =
                                 "INSERT INTO pickupusers(user, subsUsed, noShows, gamesStarted, gamesFinished, lastPlayedDate) VALUES(@user, " +
                                 "@subsUsed, @noShows, @gamesStarted, @gamesFinished, @lastPlayedDate)";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@subsUsed", 0);
                             cmd.Parameters.AddWithValue("@noShows", 0);
                             cmd.Parameters.AddWithValue("@gamesStarted", 0);
@@ -124,7 +124,7 @@ namespace SSB.Database
                             cmd.ExecuteNonQuery();
                             Debug.WriteLine(
                                 string.Format(
-                                    "AddUserToBanDb: {0} successfully added to pickup user DB",
+                                    "AddUserToPickupDb: {0} successfully added to pickup user DB",
                                     user));
                             result = UserDbResult.Success;
                         }
@@ -163,7 +163,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "DELETE FROM pickupusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
@@ -319,7 +319,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "SELECT * FROM pickupusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -373,7 +373,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "SELECT * FROM pickupusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -428,7 +428,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "SELECT * FROM pickupusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -452,11 +452,8 @@ namespace SSB.Database
                                             : 0);
                                     var lastPlayedGameDate =
                                         (DateTime)reader["lastPlayedDate"];
-                                    var lastPlayedStr = ((lastPlayedGameDate !=
-                                                          default(DateTime))
-                                        ? lastPlayedGameDate.ToString("G",
-                                            DateTimeFormatInfo.InvariantInfo)
-                                        : "never");
+                                    var lastPlayedStr = lastPlayedGameDate.ToString("G",
+                                        DateTimeFormatInfo.InvariantInfo);
                                     userInfo.Append(
                                         string.Format(
                                             "^3subs used: {0}^7 | ^1no-shows: {1}^7 | ^2games: started {2}, finished {3}^7 (^5{4}%^7), last: {5}",
@@ -504,7 +501,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "SELECT * FROM pickupusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -536,6 +533,140 @@ namespace SSB.Database
         }
 
         /// <summary>
+        /// Increments the user's games finished count.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void IncrementUserGamesFinishedCount(string user)
+        {
+            if (VerifyDb())
+            {
+                if (!DoesUserExistInDb(user.ToLowerInvariant()))
+                {
+                    AddUserToDb(user, DateTime.Now);
+                }
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        long gameFinishedCount = 0;
+
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "SELECT * FROM pickupusers WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
+
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    Debug.WriteLine(
+                                        "IncrementUserGamesFinishedCount: user not found");
+                                    return;
+                                }
+                                while (reader.Read())
+                                {
+                                    gameFinishedCount = (long)reader["gamesFinished"];
+                                }
+                            }
+                        }
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "UPDATE pickupusers SET gamesFinished = @newGamesFinishedCount WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
+                            cmd.Parameters.AddWithValue("@newGamesFinishedCount",
+                                gameFinishedCount + 1);
+                            var total = cmd.ExecuteNonQuery();
+                            if (total > 0)
+                            {
+                                Debug.WriteLine(string.Format("Incremented games finished count for: {0} in pickup users database.",
+                                    user));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        "Problem incrementing games finished count for {0} in pickup users database: {1}",
+                        user,
+                        ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Increments the user's games started count.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void IncrementUserGamesStartedCount(string user)
+        {
+            if (VerifyDb())
+            {
+                if (!DoesUserExistInDb(user.ToLowerInvariant()))
+                {
+                    AddUserToDb(user, DateTime.Now);
+                }
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        long gameStartedCount = 0;
+
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "SELECT * FROM pickupusers WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
+
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    Debug.WriteLine(
+                                        "IncrementUserGamesStartedCount: user not found");
+                                    return;
+                                }
+                                while (reader.Read())
+                                {
+                                    gameStartedCount = (long)reader["gamesStarted"];
+                                }
+                            }
+                        }
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "UPDATE pickupusers SET gamesStarted = @newGamesStartedCount WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
+                            cmd.Parameters.AddWithValue("@newGamesStartedCount",
+                                gameStartedCount + 1);
+                            var total = cmd.ExecuteNonQuery();
+                            if (total > 0)
+                            {
+                                Debug.WriteLine(string.Format("Incremented games started count for: {0} in pickup users database.",
+                                    user));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        "Problem incrementing games started count for {0} in pickup users database: {1}",
+                        user,
+                        ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Increments the user's no-show count.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -545,7 +676,7 @@ namespace SSB.Database
             {
                 if (!DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    AddUserToDb(user, default(DateTime));
+                    AddUserToDb(user, DateTime.Now);
                 }
                 try
                 {
@@ -557,7 +688,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupusers SET noShows = @newNoShowCount WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@newNoShowCount",
                                 GetUserNoShowCount(user) + 1);
                             var total = cmd.ExecuteNonQuery();
@@ -572,7 +703,7 @@ namespace SSB.Database
                 catch (Exception ex)
                 {
                     Debug.WriteLine(
-                        "Problem incrementing no-show count for {0} in early pickup users database: {1}",
+                        "Problem incrementing no-show count for {0} in pickup users database: {1}",
                         user,
                         ex.Message);
                 }
@@ -589,7 +720,7 @@ namespace SSB.Database
             {
                 if (!DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    AddUserToDb(user, default(DateTime));
+                    AddUserToDb(user, DateTime.Now);
                 }
                 try
                 {
@@ -601,7 +732,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupusers SET subsUsed = @newSubsUsedCount WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@newSubsUsedCount",
                                 GetUserSubsUsedCount(user) + 1);
                             var total = cmd.ExecuteNonQuery();
@@ -616,7 +747,7 @@ namespace SSB.Database
                 catch (Exception ex)
                 {
                     Debug.WriteLine(
-                        "Problem incrementing subs used count for {0} in early pickup users database: {1}",
+                        "Problem incrementing subs used count for {0} in pickup users database: {1}",
                         user,
                         ex.Message);
                 }
@@ -654,7 +785,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupusers SET noShows = @noShows WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@noShows", 0);
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
@@ -696,7 +827,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupusers SET subsUsed = @newSubsUsedCount WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@newSubsUsedCount", 0);
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
@@ -762,8 +893,6 @@ namespace SSB.Database
             }
         }
 
-
-
         /// <summary>
         ///     Updates the last pickup game's end time.
         /// </summary>
@@ -798,6 +927,49 @@ namespace SSB.Database
                 {
                     Debug.WriteLine(
                         "Problem updating last pickup game's end date in pickup database: " +
+                        ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the pickup user's last played date.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void UpdateUserLastPlayedDate(string user)
+        {
+            if (VerifyDb())
+            {
+                if (!DoesUserExistInDb(user.ToLowerInvariant()))
+                {
+                    AddUserToDb(user, DateTime.Now);
+                }
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText =
+                                "UPDATE pickupusers SET lastPlayedDate = @newLastPlayedDate WHERE user = @user";
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
+                            cmd.Parameters.AddWithValue("newLastPlayedDate", DateTime.Now);
+                            var total = cmd.ExecuteNonQuery();
+                            if (total > 0)
+                            {
+                                Debug.WriteLine(string.Format("Updated last played date for: {0} in pickup users database.",
+                                    user));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        "Problem updating last played date for {0} in pickup users database: {1}",
+                        user,
                         ex.Message);
                 }
             }
@@ -901,18 +1073,7 @@ namespace SSB.Database
                             user.ToLowerInvariant());
                         using (var reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the pickup users database.",
-                                    user));
-                                return false;
-                            }
-                            Debug.WriteLine(
-                                string.Format(
-                                    "User: {0} already exists in the pickup users database.",
-                                    user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

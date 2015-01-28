@@ -78,32 +78,35 @@ namespace SSB.Core.Commands.None
             string epStr;
             if (_ssb.Mod.Pickup.Manager.IsPickupPreGame)
             {
-                if (_ssb.Mod.Pickup.Manager.EligiblePlayers.Count > 0)
+                if (_ssb.Mod.Pickup.Manager.AvailablePlayers.Count > 0)
                 {
-                    epStr = string.Format("Available players are: ^2{0}",
-                        string.Join(",", _ssb.Mod.Pickup.Manager.EligiblePlayers));
+                    epStr = string.Format("^2Available players (^7{0}^2): {1}",
+                        _ssb.Mod.Pickup.Manager.AvailablePlayers.Count,
+                        string.Join(",", _ssb.Mod.Pickup.Manager.AvailablePlayers));
                 }
                 else
                 {
-                    epStr = string.Format("^1NO available players.^3 {0}{1}^7 to sign up!",
+                    epStr = string.Format("^1NO available players.^3 {0}{1}^1 to sign up!",
                         CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd);
                 }
 
-                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 {0}", epStr));
+                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP] {0}", epStr));
             }
             else if (_ssb.Mod.Pickup.Manager.IsPickupInProgress)
             {
-                if (_ssb.Mod.Pickup.Manager.InProgressSubCandidates.Count > 0)
+                if (_ssb.Mod.Pickup.Manager.SubCandidates.Count > 0)
                 {
-                    epStr = string.Format("Available substitutes are: ^2{0}",
-                        string.Join(",", _ssb.Mod.Pickup.Manager.InProgressSubCandidates));
+                    epStr = string.Format("^6Available substitutes (^7{0}^6): {1}",
+                        _ssb.Mod.Pickup.Manager.SubCandidates.Count,
+                        string.Join(",", _ssb.Mod.Pickup.Manager.SubCandidates));
                 }
                 else
                 {
-                    epStr = string.Format("^1NO available substitutes.^3 {0}{1}^7 to sign up!",
+                    epStr = string.Format("^1NO available substitutes.^3 {0}{1}^1 to sign up!",
                         CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd);
                 }
-                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP]^7 {0}", epStr));
+                await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP] {0} ^7- Game size: ^5{1}v{1}",
+                    epStr, _ssb.Mod.Pickup.Teamsize));
             }
         }
     }

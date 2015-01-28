@@ -14,6 +14,7 @@ namespace SSB.Util
         public Parser()
         {
             CfgStringPlayerInfo = new cfgStringPlayerInfo();
+            CfgStringGameType = new cfgStringGameType();
             CvarSetTwo = new cvarSetTwo();
             PlPlayerNameAndId = new plPlayerNameAndId();
             EvPlayerDisconnected = new evPlayerDisconnected();
@@ -49,6 +50,17 @@ namespace SSB.Util
             SvInfoServerPublicId = new svInfoServerPublicId();
             UtilCaretColor = new utilCaretColor();
         }
+
+        /// <summary>
+        /// Regex for matching the gametype number returned by the 'configstrings' command.
+        /// </summary>
+        /// <value>
+        /// Regex for matching the gametype number returned by the 'configstrings' command.
+        /// </value>
+        /// <remarks>
+        /// Named group: 'gametype' contains the gametype number (i.e. 4 for ca, 5 for ctf, etc.)
+        /// </remarks>
+        public Regex CfgStringGameType { get; private set; }
 
         /// <summary>
         ///     Regex for matching the player info returned by the 'configstrings' command.
@@ -317,6 +329,14 @@ namespace SSB.Util
         public Regex ScmdPlayerTimedOut { get; private set; }
 
         /// <summary>
+        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
+        /// </value>
+        public Regex ScmdScorelimitHit { get; private set; }
+
+        /// <summary>
         /// Regex for detecting when a game has ended due to the timelimt being reached.
         /// </summary>
         /// <value>
@@ -324,14 +344,6 @@ namespace SSB.Util
         /// </value>
         public Regex ScmdTimelimitHit { get; private set; }
 
-        /// <summary>
-        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
-        /// </summary>
-        /// <value>
-        /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.
-        /// </value>
-        public Regex ScmdScorelimitHit { get; private set; }
-        
         /// <summary>
         /// Regex for getting the tinfo text (that will be ignored).
         /// </summary>

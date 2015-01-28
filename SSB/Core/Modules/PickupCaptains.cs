@@ -81,39 +81,7 @@ namespace SSB.Core.Modules
                     Tools.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers));
             }
         }
-
-        /// <summary>
-        /// Performs the substitution for a captain.
-        /// </summary>
-        /// <param name="outCaptain">The captain to sub out.</param>
-        /// <param name="team">The team to move the sub to (outCaptain's team).</param>
-        /// <param name="inCaptain">The captain to sub in.</param>
-        /// <returns></returns>
-        public async Task DoCaptainSub(string outCaptain, Team team, string inCaptain)
-        {
-            // Set as successful sub so user doesn't get counted as no-show
-            _ssb.ServerInfo.CurrentPlayers[outCaptain].HasMadeSuccessfulSubRequest = true;
-            // Sub old captain out
-            await _ssb.QlCommands.CustCmdPutPlayer(outCaptain, Team.Spec);
-            // Sub new captain in and set
-            await SetCaptain(inCaptain, team);
-            // Set player as active
-            _manager.AddActivePickupPlayer(inCaptain);
-            // Examine which captain's pick it is and set it again so new subbed captain becomes aware
-            if (IsBlueTurnToPick)
-            {
-                await SetPickingTeam(Team.Blue);
-            }
-            else if (IsRedTurnToPick)
-            {
-                await SetPickingTeam(Team.Red);
-            }
-            // Record the outgoing captain's substitution for tracking/banning purposes.
-            _manager.Subs.Append(string.Format("{0}->{1},", inCaptain, outCaptain));
-            var pickupDb = new DbPickups();
-            pickupDb.IncrementUserSubsUsedCount(outCaptain);
-        }
-
+        
         /// <summary>
         /// Evaluates the addition of a captain to see if it is possible to add the captain, and adds if so.
         /// </summary>
@@ -137,6 +105,12 @@ namespace SSB.Core.Modules
                         "^1[ERROR]^3 Cannot become a pickup captain because captain selection hasn't started yet.");
                 return;
             }
+            if (!_manager.AvailablePlayers.Contains(player))
+            {
+                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 You can't cap because you're not signed up. ^7{0}{1}^3 to sign up.",
+                    CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
+                return;
+            }
             if (RedCaptain.Equals(player))
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You've already been assigned as the RED captain.");
@@ -149,11 +123,11 @@ namespace SSB.Core.Modules
             }
             if (!RedCaptainExists)
             {
-                await SetCaptain(player, Team.Red);
+                await SetCaptain(player, Team.Red, false);
             }
             else if (!BlueCaptainExists)
             {
-                await SetCaptain(player, Team.Blue);
+                await SetCaptain(player, Team.Blue, false);
             }
         }
 
@@ -212,7 +186,9 @@ namespace SSB.Core.Modules
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team to which the captain should be moved.</param>
-        public async Task SetCaptain(string player, Team team)
+        /// <param name="isCaptainSub">if set to <c>true</c> indicates that the captain is
+        /// being set as part of a captain substitution process.</param>
+        public async Task SetCaptain(string player, Team team, bool isCaptainSub)
         {
             switch (team)
             {
@@ -237,8 +213,9 @@ namespace SSB.Core.Modules
             if (RedCaptainExists && BlueCaptainExists)
             {
                 await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^5[PICKUP]^7 Both captains have been selected! Team selection will begin shortly. Please wait...");
+                    _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^5[PICKUP]^7 Both captains have been selected! Team selection will {0}.",
+                    ((isCaptainSub) ? "continue. Please wait..." : "begin. Please wait...")));
             }
         }
 
@@ -262,7 +239,7 @@ namespace SSB.Core.Modules
             }
 
             await ShowWhosePick(team);
-            await _manager.DisplayEligiblePlayers();
+            await _manager.DisplayAvailablePlayers();
         }
 
         /// <summary>
@@ -272,11 +249,11 @@ namespace SSB.Core.Modules
         /// <param name="team">The team on which the player should be placed.</param>
         private async Task DoPlayerPick(string player, Team team)
         {
-            if (!_manager.EligiblePlayers.Contains(player))
+            if (!_manager.AvailablePlayers.Contains(player))
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not an eligible player!",
                     player));
-                await _manager.DisplayEligiblePlayers();
+                await _manager.DisplayAvailablePlayers();
                 await ShowWhosePick(team);
                 return;
             }
@@ -310,7 +287,8 @@ namespace SSB.Core.Modules
                 pickupDb.AddPickupGame(_manager.CreatePickupInfo());
 
                 _manager.HasTeamSelectionStarted = false;
-                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^4*** ^7TEAMS ARE ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME! ^4***");
+                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^4 *** ^7TEAMS ARE ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME! ^4***");
+                await _ssb.QlCommands.QlCmdSay("^5[PICKUP]^7 Any unpicked players or late-adders will be automatically added to the substitutes list when the game starts!");
             }
         }
 

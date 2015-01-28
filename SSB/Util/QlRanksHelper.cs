@@ -205,7 +205,7 @@ namespace SSB.Util
                     Debug.WriteLine(
                         "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
                         c, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo, p.tdm.elo);
-                    if (DoesCachedEloExist(c)) continue;
+
                     if (_eloDb.UserAlreadyExists(c))
                     {
                         _eloDb.UpdateEloData(c, DateTime.Now, p.ca.elo, p.ctf.elo, p.duel.elo, p.ffa.elo,
@@ -246,7 +246,7 @@ namespace SSB.Util
                 Debug.WriteLine(
                     "Set {0}'s elo data to: [CA]: {1} - [CTF]: {2} - [DUEL]: {3} - [FFA]: {4} - [TDM]: {5}",
                     currentPlayer, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo, qp.tdm.elo);
-                if (DoesCachedEloExist(currentPlayer)) continue;
+
                 if (_eloDb.UserAlreadyExists(currentPlayer))
                 {
                     _eloDb.UpdateEloData(currentPlayer, DateTime.Now, qp.ca.elo, qp.ctf.elo, qp.duel.elo, qp.ffa.elo,

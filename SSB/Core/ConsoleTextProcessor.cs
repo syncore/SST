@@ -30,6 +30,8 @@ namespace SSB.Core
             _voteHandler = new VoteHandler(_ssb);
         }
 
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
+
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SSB.Core
             Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            string[] arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -147,7 +149,7 @@ namespace SSB.Core
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] {text, length});
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
                 return;
             }
             // If appending to textbox, must clear first
@@ -187,6 +189,8 @@ namespace SSB.Core
                 if (IncomingPlayerDetected(text).Result) continue;
                 // player configstring info detected (configstrings command)
                 if (PlayerConfigStringCsDetected(text)) continue;
+                // gametype configstring info detected (configstrings command)
+                if (GameTypeCfgStringDetected(text)) continue;
                 // player configstring info detected (servercommand)
                 if (PlayerConfigStringSrvCmdDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
@@ -242,7 +246,7 @@ namespace SSB.Core
                 }
                 ProcessCommand(cmd, playersToParse);
             }
-                // 'serverinfo' command has been detected; extract the relevant information from it.
+            // 'serverinfo' command has been detected; extract the relevant information from it.
             else if (_ssb.Parser.SvInfoServerPublicId.IsMatch(text) || _ssb.Parser.SvInfoGameType.IsMatch(text) ||
                      _ssb.Parser.SvInfoGameState.IsMatch(text))
             {
@@ -267,14 +271,14 @@ namespace SSB.Core
                     ProcessCommand(cmd, m.Groups["gamestate"].Value);
                 }
             }
-                // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring (more accurate)
+            // gamestate change detected either via bcs0 0 or cs 0 multi-line configstring (more accurate)
             else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfoServerGamestate;
                 Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
                 ProcessCommand(cmd, m.Groups["gamestatus"].Value);
             }
-                // map load or map change detected; handle it.
+            // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
@@ -338,6 +342,22 @@ namespace SSB.Core
         */
 
         /// <summary>
+        /// Determines whether the text matches that of the gametype information returned from the configstrings
+        /// command, and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the gametype was detected via configstrings, otherwise <c>false</c>.</returns>
+        private bool GameTypeCfgStringDetected(string text)
+        {
+            if (!_ssb.Parser.CfgStringGameType.IsMatch(text)) return false;
+            Match m = _ssb.Parser.CfgStringGameType.Match(text);
+            Debug.WriteLine(string.Format("Found gametype number {0} in configstrings, will set...",
+                m.Groups["gametype"].Value));
+            _ssb.ServerEventProcessor.SetServerGameType(m.Groups["gametype"].Value);
+            return true;
+        }
+
+        /// <summary>
         ///     Determines whether the text matches that of an incoming player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -367,26 +387,6 @@ namespace SSB.Core
             {
                 _ssb.ServerEventProcessor.SetIntermissionStart();
             }
-            return true;
-        }
-
-        /// <summary>
-        /// Determines whether the text matches that of the game's end due to the timelimit being reached
-        /// and handles it if it does.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the 'timelimit hit' message was detected, otherwise <c>false</c>.</returns>
-        private bool TimelimitReachedDetected(string text)
-        {
-            if (!_ssb.Parser.ScmdTimelimitHit.IsMatch(text)) return false;
-            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
-            return true;
-        }
-
-        private bool ScorelimitReachedDetected(string text)
-        {
-            if (!_ssb.Parser.ScmdScorelimitHit.IsMatch(text)) return false;
-            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
             return true;
         }
 
@@ -537,10 +537,37 @@ namespace SSB.Core
                     _ssb.ServerEventProcessor.HandleMapLoad(t as string);
                     break;
 
-                    //case QlCommandType.CvarRequest:
-                    //    HandleCvarRequest(t as Match);
-                    //    break;
+                //case QlCommandType.CvarRequest:
+                //    HandleCvarRequest(t as Match);
+                //    break;
             }
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of the game's end due to the score/frag/roundlimit
+        /// being reached and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the 'score/frag/roundlimit' message was detected, otherwise <c>false</c>.
+        /// </returns>
+        private bool ScorelimitReachedDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdScorelimitHit.IsMatch(text)) return false;
+            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of the game's end due to the timelimit being reached
+        /// and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the 'timelimit hit' message was detected, otherwise <c>false</c>.</returns>
+        private bool TimelimitReachedDetected(string text)
+        {
+            if (!_ssb.Parser.ScmdTimelimitHit.IsMatch(text)) return false;
+            _ssb.ServerEventProcessor.SetEndOfGameLimitReached();
+            return true;
         }
 
         /// <summary>
@@ -582,7 +609,5 @@ namespace SSB.Core
             _voteHandler.VoteCaller = Tools.GetStrippedName(match.Groups["clanandplayer"].Value);
             return true;
         }
-
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
     }
-} 
+}

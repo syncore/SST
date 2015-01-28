@@ -48,7 +48,7 @@ namespace SSB.Database
                             cmd.CommandText =
                                 "INSERT INTO regdates(user, acctdate) VALUES(@user, @acctdate)";
                             cmd.Prepare();
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@acctdate", registrationDate);
                             cmd.ExecuteNonQuery();
                         }
@@ -83,7 +83,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText = "DELETE FROM regdates WHERE user = @user";
                             cmd.Prepare();
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
@@ -226,16 +226,7 @@ namespace SSB.Database
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the registration database.", user));
-                                return false;
-                            }
-                            Debug.WriteLine(
-                                string.Format("User: {0} already exists in the registration database.",
-                                    user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

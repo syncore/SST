@@ -52,7 +52,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "INSERT INTO earlyquitters(user, numQuits) VALUES(@user, @numQuits)";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@numQuits", (doublePenalty ? 2 : 1));
                             cmd.ExecuteNonQuery();
                             Debug.WriteLine(
@@ -95,7 +95,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE earlyquitters SET numQuits = @newQuitCount WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
 
                             cmd.Parameters.AddWithValue("@newQuitCount", (GetUserQuitCount(user) - amount));
                             int total = cmd.ExecuteNonQuery();
@@ -138,7 +138,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText = "DELETE FROM earlyquitters WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
@@ -220,7 +220,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText = "SELECT * FROM earlyquitters WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -271,7 +271,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE earlyquitters SET numQuits = @newQuitCount WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
 
                             cmd.Parameters.AddWithValue("@newQuitCount", ((doublePenalty ? GetUserQuitCount(user) * 2
                                 : GetUserQuitCount(user) + 1)));
@@ -387,16 +387,7 @@ namespace SSB.Database
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the early quitter database.", user));
-                                return false;
-                            }
-                            Debug.WriteLine(
-                                string.Format("User: {0} already exists in the early quitter database.",
-                                    user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

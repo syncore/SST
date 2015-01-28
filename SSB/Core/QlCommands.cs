@@ -117,6 +117,19 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Sends the /put command after a given delay in seconds.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="team">The team.</param>
+        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'put' command.</param>
+        /// <returns></returns>
+        public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
+        {
+            await Task.Delay(runCmdInSeconds * 1000);
+            await CustCmdPutPlayer(player, team);
+        }
+
+        /// <summary>
         ///     Disables in-game console printing.
         ///     <remarks>
         ///         With this set (con_noprint 1) no text will be shown in the in-game console. This

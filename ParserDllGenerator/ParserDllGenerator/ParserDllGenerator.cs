@@ -31,6 +31,17 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            // command: configstrings - find the gametype information from the configstrings command
+            // named group 'gametype' contains the gametype number (i.e. 4 for ca, 5 for ctf, etc.)
+            expr = new RegexCompilationInfo(@"\b0:.+g_gametype\\(?<gametype>\d+)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+                "cfgStringGameType", "SSB.External.Parser",
+                true);
+            compilationList.Add(expr);
+
+            //\b0:.+g_gametype\\(\d+)
+
+
             // command: players - Find name and player id after issuing 'players' command
             // This requires the multiline (RegexOptions.Multiline) option
             /*

@@ -194,12 +194,12 @@ namespace SSB.Core.Commands.Modules
             if (!_ssb.ServerInfo.IsATeamGame())
             {
                 // Might have not gotten it the first time, so request again, in a few seconds.
-                await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", true, 5);
+                await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", false, 3);
                 _ssb.QlCommands.ClearQlWinConsole();
                 
                     await
                         _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is an error, try again in 5 seconds.");
+                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is an error, try again in a few seconds.");
                     return;
             }
             await EnablePickup(teamsize);

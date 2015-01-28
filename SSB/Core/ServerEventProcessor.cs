@@ -70,9 +70,9 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         public void HandleMapLoad(string text)
         {
+            // Large text: clear
+            _ssb.QlCommands.ClearQlWinConsole();
             Debug.WriteLine("Detected map load (pak info): " + text);
-            // Clear
-            _ssb.QlCommands.ClearBothQlConsoles();
         }
 
         /// <summary>
@@ -206,6 +206,8 @@ namespace SSB.Core
         /// </remarks>
         public QlGameStates SetServerGameState(string text)
         {
+            // Large text: Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
+            _ssb.QlCommands.ClearQlWinConsole();
             var stateText = text.Trim();
             var gameState = QlGameStates.Unspecified;
             switch (stateText)
@@ -227,7 +229,7 @@ namespace SSB.Core
             Debug.WriteLine(
                 "*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
                 gameState);
-            // Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
+            // Large text: clear again
             _ssb.QlCommands.ClearQlWinConsole();
             // Pickup module
             HandlePickupEvents(gameState);

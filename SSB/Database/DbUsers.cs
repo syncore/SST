@@ -59,7 +59,7 @@ namespace SSB.Database
                             cmd.CommandText =
                                 "INSERT INTO users(user, accesslevel, addedby, dateadded) VALUES(@user, @accesslevel, @addedby, @dateadded)";
                             cmd.Prepare();
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@accesslevel", (long)accessLevel);
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
                             cmd.Parameters.AddWithValue("@dateadded", dateAdded);
@@ -116,7 +116,7 @@ namespace SSB.Database
                                 ? "DELETE FROM users WHERE user = @user"
                                 : "DELETE FROM users WHERE user = @user AND addedby = @addedby";
                             cmd.Prepare();
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
@@ -335,15 +335,7 @@ namespace SSB.Database
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the user database.", user));
-                                return false;
-                            }
-                            Debug.WriteLine(string.Format("User: {0} already exists in the user database.",
-                                user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

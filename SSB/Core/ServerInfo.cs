@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SSB.Enum;
 using SSB.Model;
@@ -16,7 +17,9 @@ namespace SSB.Core
         /// </summary>
         public ServerInfo()
         {
-            CurrentPlayers = new Dictionary<string, PlayerInfo>();
+            // Ignoring case is very important here
+            CurrentPlayers =
+                new Dictionary<string, PlayerInfo>(StringComparer.InvariantCultureIgnoreCase);
         }
 
         /// <summary>

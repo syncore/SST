@@ -55,7 +55,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "INSERT INTO bannedusers(user, bannedBy, banAddDate, banExpirationDate, banType) VALUES(@user, @bannedBy, @banAddDate, @banExpirationDate, @banType)";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@bannedBy", bannedBy);
                             cmd.Parameters.AddWithValue("@banAddDate", banAddDate);
                             cmd.Parameters.AddWithValue("@banExpirationDate", banExpirationDate);
@@ -98,7 +98,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText = "DELETE FROM bannedusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
@@ -138,7 +138,7 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText = "SELECT * FROM bannedusers WHERE user = @user";
-                            cmd.Parameters.AddWithValue("@user", user);
+                            cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -303,16 +303,7 @@ namespace SSB.Database
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!reader.HasRows)
-                            {
-                                Debug.WriteLine(string.Format(
-                                    "User: {0} does not exist in the bans database.", user));
-                                return false;
-                            }
-                            Debug.WriteLine(
-                                string.Format("User: {0} already exists in the bans database.",
-                                    user));
-                            return true;
+                            return reader.HasRows;
                         }
                     }
                 }

@@ -57,7 +57,7 @@ namespace SSB.Util
         {
             return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
                 name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
-                : name;
+                : name.ToLowerInvariant();
         }
         
         /// <summary>

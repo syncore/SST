@@ -178,6 +178,8 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         public void HandlePlayerChatMessage(string text)
         {
+            // Typically we'd normalize using ToUpperInvariant() but QL doesn't allow accented characters,
+            // so it doesn't matter
             string msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
@@ -419,7 +421,10 @@ namespace SSB.Core
             if (_ssb.Mod == null) return;
             if (_ssb.Mod.Pickup.Active && (team == Team.Red || team == Team.Blue))
             {
-                _ssb.Mod.Pickup.Manager.AddActivePickupPlayer(player);
+                if (!_ssb.Mod.Pickup.Manager.IsPickupPreGame &&
+                    !_ssb.Mod.Pickup.Manager.IsPickupInProgress) return;
+                
+                _ssb.Mod.Pickup.Manager.AddActivePickupPlayer(player.ToLowerInvariant());
             }
         }
     }
