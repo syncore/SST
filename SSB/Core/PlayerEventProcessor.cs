@@ -78,6 +78,8 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public async Task HandleOutgoingPlayerConnection(string player)
         {
+            player = player.ToLowerInvariant();
+            
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
             // Get the outgoing player's team before he disconnected
@@ -319,7 +321,7 @@ namespace SSB.Core
             }
             id = (id - 29);
             int tm;
-            string playername = GetCsValue("n", pi);
+            string playername = GetCsValue("n", pi).ToLowerInvariant();
             if (!int.TryParse(GetCsValue("t", pi), out tm))
             {
                 Debug.WriteLine(string.Format("Unable to determine team info for player {0} from cs info.",

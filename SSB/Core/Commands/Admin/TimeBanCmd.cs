@@ -172,6 +172,8 @@ namespace SSB.Core.Commands.Admin
             {
                 _banDb.DeleteUserFromDb(c.Args[2]);
                 await _ssb.QlCommands.QlCmdSay(string.Format("^2[SUCCESS]^7 Removed time-ban for player {0}", c.Args[2]));
+                // Unban immediately from QL's internal ban system
+                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", c.Args[2]), false);
                 return;
             }
             catch (Exception e)

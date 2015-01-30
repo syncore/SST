@@ -170,13 +170,12 @@ namespace SSB.Core
                         fromUser, cmdName));
                 return;
             }
-            string user = _ssb.ServerInfo.CurrentPlayers[fromUser].ShortName;
-            if (!UserHasReqLevel(user, _commands[cmdName].UserLevel))
+            if (!UserHasReqLevel(fromUser, _commands[cmdName].UserLevel))
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, user);
+            var c = new CmdArgs(args, cmdName, fromUser);
             if (args.Length < _commands[cmdName].MinArgs)
             {
                 await _commands[cmdName].DisplayArgLengthError(c);

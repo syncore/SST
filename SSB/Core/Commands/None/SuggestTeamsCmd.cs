@@ -274,7 +274,7 @@ namespace SSB.Core.Commands.None
             {
                 //blue.Append(string.Format("^5{0} [{1}]^7, ", player.ShortName,
                     //player.EloData.GetEloFromGameType(gametype)));
-                blue.Append(string.Format("^1{0}^7, ", player.ShortName));
+                blue.Append(string.Format("^5{0}^7, ", player.ShortName));
             }
 
             await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:");
