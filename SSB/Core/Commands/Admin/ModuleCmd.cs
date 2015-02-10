@@ -19,6 +19,7 @@ namespace SSB.Core.Commands.Admin
         public const string AutoVoteArg = AutoVoter.NameModule;
         public const string EarlyQuitArg = EarlyQuit.NameModule;
         public const string EloLimitArg = EloLimit.NameModule;
+        public const string IrcArg = Irc.NameModule;
         public const string MotdArg = Motd.NameModule;
         public const string PickupArg = Pickup.NameModule;
         public const string ServersArg = Servers.NameModule;
@@ -44,6 +45,7 @@ namespace SSB.Core.Commands.Admin
                 EarlyQuitArg,
                 EloLimitArg,
                 MotdArg,
+                IrcArg,
                 PickupArg,
                 ServersArg
             };
@@ -54,6 +56,7 @@ namespace SSB.Core.Commands.Admin
                 _ssb.Mod.AutoVoter,
                 _ssb.Mod.EarlyQuit,
                 _ssb.Mod.EloLimit,
+                _ssb.Mod.Irc,
                 _ssb.Mod.Motd,
                 _ssb.Mod.Pickup,
                 _ssb.Mod.Servers
@@ -124,6 +127,10 @@ namespace SSB.Core.Commands.Admin
 
                 case EloLimitArg:
                     await _ssb.Mod.EloLimit.EvalModuleCmdAsync(c);
+                    break;
+
+                case IrcArg:
+                    await _ssb.Mod.Irc.EvalModuleCmdAsync(c);
                     break;
 
                 case MotdArg:

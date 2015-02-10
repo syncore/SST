@@ -8,20 +8,20 @@ namespace SSB.Config.Core
     public class CoreOptions
     {
         /// <summary>
-        /// Gets or sets the name of the bot.
+        ///     Gets or sets the name of the bot.
         /// </summary>
         /// <value>
-        /// The name of the bot.
+        ///     The name of the bot.
         /// </value>
         // ReSharper disable once InconsistentNaming
         public string botName { get; set; }
 
         /// <summary>
-        /// Gets or sets the elo cache interval, which is
-        /// the time in minutes after which the cached elo data will expire.
+        ///     Gets or sets the elo cache interval, which is
+        ///     the time in minutes after which the cached elo data will expire.
         /// </summary>
         /// <value>
-        /// The elo cache interval.
+        ///     The elo cache interval.
         /// </value>
         // ReSharper disable once InconsistentNaming
         public uint eloCacheExpiration { get; set; }
@@ -34,5 +34,17 @@ namespace SSB.Config.Core
         /// </value>
         // ReSharper disable once InconsistentNaming
         public HashSet<string> owners { get; set; }
+
+        /// <summary>
+        ///     Sets the defaults.
+        /// </summary>
+        public void SetDefaults()
+        {
+            // TODO: prior to release, change this default bot name to something completely random
+            botName = "syncore";
+            var o = new HashSet<string> {"syncore"};
+            owners = o;
+            eloCacheExpiration = 300; // 5 hours
+        }
     }
 }

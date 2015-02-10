@@ -38,10 +38,6 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>
-        ///     Used to query activity status for a list of modules. Be sure to set
-        ///     a public static bool property IsModuleActive for outside access in other parts of app.
-        /// </remarks>
         public bool Active { get; set; }
 
         /// <summary>

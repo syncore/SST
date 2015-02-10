@@ -58,6 +58,14 @@ namespace SSB.Config
         public EloLimitOptions EloLimitOptions { get; set; }
 
         /// <summary>
+        ///     Gets or sets the irc options.
+        /// </summary>
+        /// <value>
+        ///     The irc options.
+        /// </value>
+        public IrcOptions IrcOptions { get; set; }
+
+        /// <summary>
         ///     Gets or sets the motd options.
         /// </summary>
         /// <value>
@@ -66,18 +74,18 @@ namespace SSB.Config
         public MotdOptions MotdOptions { get; set; }
 
         /// <summary>
-        /// Gets or sets the pickup options.
+        ///     Gets or sets the pickup options.
         /// </summary>
         /// <value>
-        /// The pickup options.
+        ///     The pickup options.
         /// </value>
         public PickupOptions PickupOptions { get; set; }
-        
+
         /// <summary>
-        /// Gets or sets the servers options.
+        ///     Gets or sets the servers options.
         /// </summary>
         /// <value>
-        /// The servers options.
+        ///     The servers options.
         /// </value>
         public ServersOptions ServersOptions { get; set; }
     }

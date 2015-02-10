@@ -11,7 +11,7 @@
         /// <param name="ssb">The main class.</param>
         public ModuleManager(SynServerBot ssb)
         {
-            SynServerBot s = ssb;
+            var s = ssb;
             EloLimit = new EloLimit(s);
             AccountDateLimit = new AccountDateLimit(s);
             Accuracy = new Accuracy(s);
@@ -20,6 +20,7 @@
             Motd = new Motd(s);
             Pickup = new Pickup(s);
             Servers = new Servers(s);
+            Irc = new Irc(s);
         }
 
         /// <summary>
@@ -63,6 +64,14 @@
         public EloLimit EloLimit { get; private set; }
 
         /// <summary>
+        ///     Gets the Internet Relay Chat (IRC) module.
+        /// </summary>
+        /// <value>
+        ///     The Internet Relay Chat (IRC) module.
+        /// </value>
+        public Irc Irc { get; private set; }
+
+        /// <summary>
         ///     Gets the message of the day module.
         /// </summary>
         /// <value>
@@ -71,18 +80,18 @@
         public Motd Motd { get; private set; }
 
         /// <summary>
-        /// Gets the pickup module.
+        ///     Gets the pickup module.
         /// </summary>
         /// <value>
-        /// The pickup module.
+        ///     The pickup module.
         /// </value>
         public Pickup Pickup { get; private set; }
-        
+
         /// <summary>
-        /// Gets the servers module.
+        ///     Gets the servers module.
         /// </summary>
         /// <value>
-        /// The servers module.
+        ///     The servers module.
         /// </value>
         public Servers Servers { get; private set; }
     }

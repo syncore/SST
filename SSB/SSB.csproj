@@ -36,6 +36,9 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="IrcDotNet">
+      <HintPath>..\packages\IrcDotNet.0.4.1\lib\net40\IrcDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -73,6 +76,7 @@
     <Compile Include="Config\Modules\AutoVoterOptions.cs" />
     <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
     <Compile Include="Config\Modules\EloLimitOptions.cs" />
+    <Compile Include="Config\Modules\IrcOptions.cs" />
     <Compile Include="Config\Modules\MotdOptions.cs" />
     <Compile Include="Config\Modules\PickupOptions.cs" />
     <Compile Include="Config\Modules\ServersOptions.cs" />
@@ -85,6 +89,7 @@
     <Compile Include="Core\Commands\Modules\Accuracy.cs" />
     <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
     <Compile Include="Core\Commands\Modules\EarlyQuit.cs" />
+    <Compile Include="Core\Commands\Modules\Irc.cs" />
     <Compile Include="Core\Commands\Modules\Motd.cs" />
     <Compile Include="Core\Commands\Modules\Pickup.cs" />
     <Compile Include="Core\Commands\Modules\Servers.cs" />
@@ -149,12 +154,14 @@
     <Compile Include="Database\DbSeenDates.cs" />
     <Compile Include="Enum\BanType.cs" />
     <Compile Include="Enum\IntendedVoteResult.cs" />
+    <Compile Include="Enum\IrcUserLevel.cs" />
     <Compile Include="Enum\ReadyStatus.cs" />
     <Compile Include="Enum\TeamBalanceVote.cs" />
     <Compile Include="Enum\UserDbResult.cs" />
     <Compile Include="Enum\QlGameStates.cs" />
     <Compile Include="Enum\QlGameTypes.cs" />
     <Compile Include="Interfaces\IBotCommand.cs" />
+    <Compile Include="Interfaces\IIrcCommand.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Model\AccuracyInfo.cs" />
     <Compile Include="Model\AutoVote.cs" />

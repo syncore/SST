@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 using SSB.Config.Core;
 using SSB.Config.Modules;
-using SSB.Model;
 using SSB.Util;
 
 namespace SSB.Config
@@ -57,64 +55,28 @@ namespace SSB.Config
         public void RestoreDefaultConfiguration()
         {
             // TODO: re-examine some reasonable defaults for these options, including isActive before release
-            
             // Load these fail-safe defaults and save as the new configuration
-            // Bot owners
-            var owners = new HashSet<string> {"syncore"};
-            // Time in minutes after which cached elo data will expire
-            uint eloCacheExpiration = 300; // 5 hours
-            // Bot name
-            string botName = "syncore";
-            
-            var acctDateOptions = new AccountDateOptions
-            {
-                isActive = false,
-                minimumDaysRequired = 0
-            };
-            var accuracyOptions = new AccuracyOptions
-            {
-                isActive = false,
-            };
-            var autoVoterOptions = new AutoVoterOptions
-            {
-                isActive = false,
-                autoVotes = new List<AutoVote>()
-            };
-            var coreOptions = new CoreOptions
-            {
-                botName = botName,
-                owners = owners,
-                eloCacheExpiration = eloCacheExpiration
-            };
-            var earlyQuitOptions = new EarlyQuitOptions
-            {
-                isActive = false,
-                banTime = 0,
-                banTimeScale = string.Empty
-            };
-            var eloLimitOptions = new EloLimitOptions
-            {
-                isActive = false,
-                maximumRequiredElo = 0,
-                minimumRequiredElo = 0
-            };
-            var motdOptions = new MotdOptions
-            {
-                isActive = false,
-                message = string.Empty,
-                repeatInterval = 0
-            };
-            var pickupOptions = new PickupOptions
-            {
-                isActive = false,
-                teamSize = 4
-            };
-            var serversOptions = new ServersOptions
-            {
-                isActive = false,
-                maxServers = 5,
-                timeBetweenQueries = 45
-            };
+
+            var acctDateOptions = new AccountDateOptions();
+            acctDateOptions.SetDefaults();
+            var accuracyOptions = new AccuracyOptions();
+            accuracyOptions.SetDefaults();
+            var autoVoterOptions = new AutoVoterOptions();
+            autoVoterOptions.SetDefaults();
+            var coreOptions = new CoreOptions();
+            coreOptions.SetDefaults();
+            var earlyQuitOptions = new EarlyQuitOptions();
+            earlyQuitOptions.SetDefaults();
+            var eloLimitOptions = new EloLimitOptions();
+            eloLimitOptions.SetDefaults();
+            var ircOptions = new IrcOptions();
+            ircOptions.SetDefaults();
+            var motdOptions = new MotdOptions();
+            motdOptions.SetDefaults();
+            var pickupOptions = new PickupOptions();
+            pickupOptions.SetDefaults();
+            var serversOptions = new ServersOptions();
+            serversOptions.SetDefaults();
 
             Config.AccountDateOptions = acctDateOptions;
             Config.AccuracyOptions = accuracyOptions;
@@ -122,12 +84,13 @@ namespace SSB.Config
             Config.CoreOptions = coreOptions;
             Config.EarlyQuitOptions = earlyQuitOptions;
             Config.EloLimitOptions = eloLimitOptions;
+            Config.IrcOptions = ircOptions;
             Config.MotdOptions = motdOptions;
             Config.PickupOptions = pickupOptions;
             Config.ServersOptions = serversOptions;
 
-            string json = JsonConvert.SerializeObject(Config);
-            using (FileStream fs = File.Create(Filepaths.ConfigurationFilePath))
+            var json = JsonConvert.SerializeObject(Config);
+            using (var fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {
                 writer.WriteLine(json);
@@ -148,8 +111,8 @@ namespace SSB.Config
         /// </summary>
         public void WriteConfiguration()
         {
-            string json = JsonConvert.SerializeObject(Config);
-            using (FileStream fs = File.Create(Filepaths.ConfigurationFilePath))
+            var json = JsonConvert.SerializeObject(Config);
+            using (var fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {
                 writer.WriteLine(json);
