@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules;
 using SSB.Interfaces;
 using SSB.Model;
 
@@ -15,15 +15,10 @@ namespace SSB.Core.Commands.Modules
     public class Irc : IModule
     {
         public const string NameModule = "irc";
-        // MaxNickLength: 15 for QuakeNet; Freenode is 16; some others might be up to 32
-        private const int MaxNickLength = 15;
         private readonly ConfigHandler _configHandler;
+        private readonly IrcHandler _irc;
         private readonly SynServerBot _ssb;
-        // Regex for testing validity of IRC nick according to IRC RFC specification;
-        // currently set from 2-15 max length
-        private readonly Regex _validIrcNick;
         private int _minModuleArgs = 3;
-        
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Irc" /> class.
@@ -33,7 +28,7 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _validIrcNick = new Regex(@"^([a-zA-Z\[\]\\`_\^\{\|\}][a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,15})");
+            _irc = new IrcHandler();
             LoadConfig();
         }
 
@@ -119,7 +114,8 @@ namespace SSB.Core.Commands.Modules
                     return;
                 }
                 // Validity check
-                if (RequiredIrcSettingsAreValid())
+
+                if (_irc.RequiredIrcSettingsAreValid())
                 {
                     await EnableIrc(c);
                 }
@@ -152,7 +148,7 @@ namespace SSB.Core.Commands.Modules
         {
             _configHandler.ReadConfiguration();
             // Validate
-            if (!RequiredIrcSettingsAreValid())
+            if (!_irc.RequiredIrcSettingsAreValid())
             {
                 Active = false;
             }
@@ -197,7 +193,7 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Enables the IRC module.
+        /// Enables the IRC module and makes the initial connection to the IRC server.
         /// </summary>
         /// <param name="c">The c.</param>
         private async Task EnableIrc(CmdArgs c)
@@ -218,7 +214,8 @@ namespace SSB.Core.Commands.Modules
                     "^6[IRC]^7 Attempting to connect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
                     ircServer, ircServerPort, nick, channel), c.FromUser);
 
-            // TODO: Do connection here
+            // Attempt to make the connection
+            _irc.Connect();
         }
 
         /// <summary>
@@ -228,66 +225,8 @@ namespace SSB.Core.Commands.Modules
         /// server on load, if applicable.</remarks>
         private void Init()
         {
-            // TODO: Perform an IRC connection here
             Debug.WriteLine("Active flag detected in saved configuration; auto-initializing IRC module.");
-        }
-
-        /// <summary>
-        /// Determines whether the specified channel is valid.
-        /// </summary>
-        /// <param name="channel">The channel.</param>
-        /// <returns><c>true</c> if the specified channel is valid, otherwise <c>false</c>.</returns>
-        /// <remarks>
-        /// Note: this does not take into account the length of the channel name, as such requirements
-        /// vary from ircd to ircd.
-        /// </remarks>
-        private bool IsValidIrcChannelName(string channel)
-        {
-            if (string.IsNullOrEmpty(channel)) return false;
-            if (!channel.StartsWith("#")) return false;
-            if (channel.Contains(" ")) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// Determines whether the specified nickname is a valid IRC nickname.
-        /// </summary>
-        /// <param name="nick">The nickname to check.</param>
-        /// <returns><c>true</c> if the specified nickname is valid, otherwise <c>false</c>.</returns>
-        private bool IsValidIrcNickname(string nick)
-        {
-            if (!_validIrcNick.IsMatch(nick)) return false;
-            if (string.IsNullOrEmpty(nick)) return false;
-            if (nick.Length > MaxNickLength) return false;
-            if (nick.Contains(" ")) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// Checks the validity of the settings in the IRC portion of the configuration file that
-        /// are required to enable basic irc functionality.
-        /// </summary>
-        /// <returns><c>true</c> if the required settings are valid, otherwise <c>false</c>.</returns>
-        /// <remarks>
-        /// Optional settings (i.e. Nickserv auto-auth, admin nickname) are not checked here.
-        /// As with any other module, invalid settings will cause a default configuration to be loaded
-        /// when the configuration is read.
-        /// </remarks>
-        private bool RequiredIrcSettingsAreValid()
-        {
-            _configHandler.ReadConfiguration();
-            var cfg = _configHandler.Config.IrcOptions;
-            // Nickname validity
-            if (!IsValidIrcNickname(cfg.ircNickName)) return false;
-            // Channel name validity
-            if (!IsValidIrcChannelName(cfg.ircChannel)) return false;
-            // Username (ident) validity; re-use nickname check
-            if (!IsValidIrcNickname(cfg.ircUserName)) return false;
-            // IRC host validity
-            if (string.IsNullOrEmpty(cfg.ircServerAddress)) return false;
-            // IRC port validity
-            if (cfg.ircServerPort > 65535) return false;
-            return true;
+            _irc.Connect();
         }
     }
 }

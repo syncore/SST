@@ -10,13 +10,15 @@ namespace SSB.Config.Modules
         /// <summary>
         ///     Gets or sets a value indicating whether the IRC client should
         ///     attempt to automatically authenticate with the nickname service bot
-        ///     specified by <see cref="ircNickServiceName" /> using the password specified
-        ///     by <see cref="ircNickServicePassword" />.
+        ///     specified by <see cref="ircNickServiceBot" /> using the user name specified
+        ///  by <see cref="ircNickServiceUsername"/> and the password specified by
+        ///  <see cref="ircNickServicePassword" />.
         /// </summary>
         /// <value>
         ///     <c>true</c> if the IRC client should automatically authenticate with the IRC
-        ///     server's nickname service bot specified by <see cref="ircNickServiceName" /> using the
-        ///     password specified by <see cref="ircNickServicePassword" />.
+        ///     server's nickname service bot specified by <see cref="ircNickServiceBot" /> using the
+        ///  user name specified by <see cref="ircNickServiceUsername"/>
+        /// and the password specified by <see cref="ircNickServicePassword" />.
         /// </value>
         // ReSharper disable once InconsistentNaming
         public bool autoAuthWithNickService { get; set; }
@@ -97,12 +99,11 @@ namespace SSB.Config.Modules
         ///     nickname authentication.
         /// </value>
         // ReSharper disable once InconsistentNaming
-        public string ircNickServiceName { get; set; }
+        public string ircNickServiceBot { get; set; }
 
         /// <summary>
         ///     Gets or sets the password used for nickname authentication
-        ///     with the <see cref="ircNickServiceName" /> auth bot.
-        ///     nickname authentication.
+        ///     with the <see cref="ircNickServiceBot" /> auth bot.
         /// </summary>
         /// <value>
         ///     The password used for nickname authentication with the IRC
@@ -110,6 +111,17 @@ namespace SSB.Config.Modules
         /// </value>
         // ReSharper disable once InconsistentNaming
         public string ircNickServicePassword { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the username used for nickname authentication
+        ///     with the <see cref="ircNickServiceBot" /> auth bot.
+        /// </summary>
+        /// <value>
+        ///     The username used for nickname authentication with the IRC
+        ///     service's nickname bot.
+        /// </value>
+        // ReSharper disable once InconsistentNaming
+        public string ircNickServiceUsername { get; set; }
 
         /// <summary>
         ///     Gets or sets the IRC real name.
@@ -180,7 +192,8 @@ namespace SSB.Config.Modules
             ircChannel = string.Empty;
             ircChannelKey = string.Empty;
             ircNickName = string.Format("SSB|QLive-{0}", GenerateRandomIdentifier());
-            ircNickServiceName = "Q@CServe.quakenet.org";
+            ircNickServiceBot = "Q@CServe.quakenet.org";
+            ircNickServiceUsername = string.Empty;
             ircNickServicePassword = string.Empty;
             ircRealName = "SSB Internet Relay Chat Interface";
             ircServerAddress = string.Empty;

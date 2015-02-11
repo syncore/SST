@@ -137,6 +137,8 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\Modules\EarlyQuitHandler.cs" />
+    <Compile Include="Core\Modules\IrcEvents.cs" />
+    <Compile Include="Core\Modules\IrcHandler.cs" />
     <Compile Include="Core\Modules\MotdHandler.cs" />
     <Compile Include="Core\Modules\PickupCaptains.cs" />
     <Compile Include="Core\Modules\PickupManager.cs" />
