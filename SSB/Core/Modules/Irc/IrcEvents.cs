@@ -2,8 +2,11 @@
 using System.Diagnostics;
 using IrcDotNet;
 
-namespace SSB.Core.Modules
+namespace SSB.Core.Modules.Irc
 {
+    /// <summary>
+    /// Class responsible for handling various events defined by the IRC protocol.
+    /// </summary>
     public class IrcEvents : IrcHandler
     {
         // TODO: irc command processor class here?
@@ -89,20 +92,20 @@ namespace SSB.Core.Modules
         {
             // Automatically identify with services, i.e.:
             // msg "Q@CServe.quakenet.org" AUTH user password
-            if (AutoAuthWithNickService)
+            if (AutoAuthWithNickService && AuthInfoIsValid())
             {
-                if (!string.IsNullOrEmpty(IrcNickServiceBot) &&
-                    !string.IsNullOrEmpty(IrcNickServiceUsername) &&
-                    !string.IsNullOrEmpty(IrcNickServicePassword))
-                {
-                    client.LocalUser.SendMessage(IrcNickServiceBot, string.Format("AUTH {0} {1}",
-                        IrcNickServiceUsername, IrcNickServicePassword));
-                }
+                // Has to be sent as a raw message, because IrcDotNet library
+                // does not accept '@' in message target, which is at least necessary
+                // for QuakeNet authentication.
+                // TODO: Perhaps make universal auth for networks other than Quakenet
+                client.SendRawMessage(string.Format("PRIVMSG {0} :AUTH {1} {2}",
+                    IrcNickServiceBot, IrcNickServiceUsername, IrcNickServicePassword));
             }
-            
+
             // Join the main channel
-            //TODO: Channel key
-            client.Channels.Join(IrcChannel);
+            var channel = Tuple.Create(MainChannel, MainChannelKey);
+            client.Channels.Join(channel);
+            
         }
 
         /// <summary>
@@ -156,6 +159,17 @@ namespace SSB.Core.Modules
             else
             {
                 Debug.WriteLine("Received notice from {0}: {1}", e.Source.Name, e.Text);
+            }
+
+            // Services (Quakenet) auto authentication
+            if (HideQuakeNetHostname)
+            {
+                if (e.Text.StartsWith("You are now logged in",
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    localUser.SetModes("+x");
+                    Debug.WriteLine("Hiding hostname...");
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SSB.Enum;
@@ -42,10 +41,10 @@ namespace SSB.Core
         /// </summary>
         public void ClearQlWinConsole()
         {
-            IntPtr consoleWindow = _ssb.QlWindowUtils.GetQuakeLiveConsoleWindow();
+            var consoleWindow = _ssb.QlWindowUtils.GetQuakeLiveConsoleWindow();
             if (consoleWindow != IntPtr.Zero)
             {
-                IntPtr child = Win32Api.FindWindowEx(consoleWindow, IntPtr.Zero, "Button", "clear");
+                var child = Win32Api.FindWindowEx(consoleWindow, IntPtr.Zero, "Button", "clear");
                 Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
                 Win32Api.SendMessage(child, Win32Api.BN_CLICKED, IntPtr.Zero, IntPtr.Zero);
                 // Re-focus the window
@@ -67,7 +66,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task CustCmdKickban(string player)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(player.ToLowerInvariant());
+            var id = _ssb.ServerEventProcessor.GetPlayerId(player.ToLowerInvariant());
             if (id != -1)
             {
                 await SendToQlAsync(string.Format("kickban {0}", id), false);
@@ -90,7 +89,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task CustCmdPutPlayer(string player, Team team)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            var id = _ssb.ServerEventProcessor.GetPlayerId(player);
             if (id != -1)
             {
                 switch (team)
@@ -117,7 +116,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the /put command after a given delay in seconds.
+        ///     Sends the /put command after a given delay in seconds.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>
@@ -125,7 +124,7 @@ namespace SSB.Core
         /// <returns></returns>
         public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await CustCmdPutPlayer(player, team);
         }
 
@@ -196,25 +195,25 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the /say command after a given delay in seconds.
+        ///     Sends the /say command after a given delay in seconds.
         /// </summary>
         /// <param name="text">The text to send.</param>
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await QlCmdSay(text);
         }
 
         /// <summary>
-        /// Sends the /tell command to a player after a given delay in seconds.
+        ///     Sends the /tell command to a player after a given delay in seconds.
         /// </summary>
         /// <param name="text">The text to send.</param>
         /// <param name="player">The player.</param>
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
         public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await QlCmdTell(text, player);
         }
 
@@ -251,24 +250,24 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                double l = ((text.Length / MaxChatlineLength) + .5);
-                double linesRoundUp = Math.Ceiling(l);
+                var l = ((text.Length/MaxChatlineLength) + .5);
+                var linesRoundUp = Math.Ceiling(l);
                 try
                 {
-                    int numLines = Convert.ToInt32(linesRoundUp);
+                    var numLines = Convert.ToInt32(linesRoundUp);
                     var multiLine = new string[numLines];
-                    int startPos = 0;
-                    string lastColor = string.Empty;
+                    var startPos = 0;
+                    var lastColor = string.Empty;
                     Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
                         text.Length, numLines);
-                    for (int i = 0; i <= multiLine.Length - 1; i++)
+                    for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
                         if (i != 0)
                         {
                             // Keep the text colors consistent across multiple lines of text.
                             if (_ssb.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
                             {
-                                MatchCollection m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
+                                var m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
                                 lastColor = m[m.Count - 1].Value;
                             }
                             if (multiLine[i - 1].EndsWith("^"))
@@ -288,7 +287,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        await Task.Delay(DefaultCommandDelayMsec*2);
                         Action<string> say = DoSay;
                         say(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -304,6 +303,78 @@ namespace SSB.Core
                 await Task.Delay(DefaultCommandDelayMsec);
                 Action<string> say = DoSay;
                 say(text);
+            }
+        }
+
+        /// <summary>
+        ///     Sends the 'say_team' command to QL. If too much text is received then issue 'say_team' command
+        ///     over multiple lines.
+        /// </summary>
+        /// <param name="text">The text to say.</param>
+        /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
+        public async Task QlCmdSayTeam(string text)
+        {
+            // Text to send might be too long, so send over multiple lines.
+            // Line length of between 98 & 115 chars is probably optimal for
+            // lower resolutions based on guestimate. However, QL actually supports
+            // sending up to 135 characters at a time.
+            if ((text.Length) > MaxChatlineLength)
+            {
+                // .5 ensures we always round up to next int, no matter size
+                // ReSharper disable once PossibleLossOfFraction
+                var l = ((text.Length/MaxChatlineLength) + .5);
+                var linesRoundUp = Math.Ceiling(l);
+                try
+                {
+                    var numLines = Convert.ToInt32(linesRoundUp);
+                    var multiLine = new string[numLines];
+                    var startPos = 0;
+                    var lastColor = string.Empty;
+                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
+                        text.Length, numLines);
+                    for (var i = 0; i <= multiLine.Length - 1; i++)
+                    {
+                        if (i != 0)
+                        {
+                            // Keep the text colors consistent across multiple lines of text.
+                            if (_ssb.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
+                            {
+                                var m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
+                                lastColor = m[m.Count - 1].Value;
+                            }
+                            if (multiLine[i - 1].EndsWith("^"))
+                            {
+                                lastColor = "^";
+                            }
+                        }
+                        if (i == multiLine.Length - 1)
+                        {
+                            // last iteration; string length cannot be specified
+                            multiLine[i] = string.Format("{0}{1}", lastColor, text.Substring(startPos));
+                        }
+                        else
+                        {
+                            multiLine[i] = string.Format("{0}{1}", lastColor,
+                                text.Substring(startPos, MaxChatlineLength));
+                        }
+
+                        // Double the usual delay when sending multiple lines.
+                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        Action<string> sayTeam = DoSayTeam;
+                        sayTeam(multiLine[i]);
+                        startPos += MaxChatlineLength;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                }
+            }
+            else
+            {
+                await Task.Delay(DefaultCommandDelayMsec);
+                Action<string> sayTeam = DoSayTeam;
+                sayTeam(text);
             }
         }
 
@@ -337,24 +408,24 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                double l = ((text.Length / MaxChatlineLength) + .5);
-                double linesRoundUp = Math.Ceiling(l);
+                var l = ((text.Length/MaxChatlineLength) + .5);
+                var linesRoundUp = Math.Ceiling(l);
                 try
                 {
-                    int numLines = Convert.ToInt32(linesRoundUp);
+                    var numLines = Convert.ToInt32(linesRoundUp);
                     var multiLine = new string[numLines];
-                    int startPos = 0;
-                    string lastColor = string.Empty;
+                    var startPos = 0;
+                    var lastColor = string.Empty;
                     Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
                         text.Length, numLines);
-                    for (int i = 0; i <= multiLine.Length - 1; i++)
+                    for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
                         if (i != 0)
                         {
                             // Keep the text colors consistent across multiple lines of text.
                             if (_ssb.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
                             {
-                                MatchCollection m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
+                                var m = _ssb.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
                                 lastColor = m[m.Count - 1].Value;
                             }
                             if (multiLine[i - 1].EndsWith("^"))
@@ -374,7 +445,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        await Task.Delay(DefaultCommandDelayMsec*2);
                         Action<int, string> tell = DoTell;
                         tell(playerId, multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -431,7 +502,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }
@@ -446,7 +517,16 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sends the 'tell player' command to QL.
+        ///     Sends the 'say_team' command to QL.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        private void DoSayTeam(string text)
+        {
+            SendQlCommand(string.Format("say_team {0}", text), false);
+        }
+
+        /// <summary>
+        ///     Sends the 'tell player' command to QL.
         /// </summary>
         /// <param name="playerId">The player's id.</param>
         /// <param name="text">The text.</param>
@@ -462,7 +542,7 @@ namespace SSB.Core
         /// <param name="delay">if set to <c>true</c> [delay].</param>
         private void SendQlCommand(string toSend, bool delay)
         {
-            IntPtr iText =
+            var iText =
                 _ssb.QlWindowUtils.GetQuakeLiveConsoleInputArea(_ssb.QlWindowUtils.GetQuakeLiveConsoleWindow());
             if (iText == IntPtr.Zero)
             {

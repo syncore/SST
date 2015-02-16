@@ -10,6 +10,15 @@ namespace SSB.Interfaces
     internal interface IIrcCommand
     {
         /// <summary>
+        ///     Gets a value that determines whether this command is to be executed asynchronously.
+        /// </summary>
+        /// <returns>
+        ///     <c>true</c> if this command is to be executed asynchronously,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        bool IsAsync { get; }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>

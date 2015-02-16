@@ -205,7 +205,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Checks whether the user has the required access level to access a command.
+        ///     Checks whether the user has the required access level to issue a command.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="requiredLevel">The required access level.</param>

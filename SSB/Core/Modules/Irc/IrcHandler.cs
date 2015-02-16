@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using IrcDotNet;
 using SSB.Config;
 using SSB.Core.Commands.Modules;
+using SSB.Enum;
 
-namespace SSB.Core.Modules
+namespace SSB.Core.Modules.Irc
 {
     public class IrcHandler
     {
@@ -29,27 +31,18 @@ namespace SSB.Core.Modules
 
         private string _ircAdminNickname;
 
-        private string _ircChannel;
-
-        private string _ircChannelKey;
-
         private string _ircNickName;
-
         private string _ircNickServiceBot;
-
-        private string _ircNickServiceUsername;
-        
         private string _ircNickServicePassword;
-
+        private string _ircNickServiceUsername;
         private string _ircRealName;
-
         private string _ircServerAddress;
-
         private string _ircServerPassword;
-
         private uint _ircServerPort;
-
         private string _ircUserName;
+        private string _mainChannel;
+
+        private string _mainChannelKey;
 
         //private bool _isDisposed;
         private string _quitMessage = "SSB QL Interface Quit Message";
@@ -65,34 +58,7 @@ namespace SSB.Core.Modules
             _validIrcNick = new Regex(@"^([a-zA-Z\[\]\\`_\^\{\|\}][a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,15})");
         }
 
-        //~Irc()
-        //{
-        //    Dispose(false);
-        //}
-
-        //public void Dispose()
-        //{
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
-
-        //protected void Dispose(bool disposing)
-        //{
-        //    if (!_isDisposed)
-        //    {
-        //        if (disposing)
-        //        {
-        //            // Gracefully disconnect the client
-        //                if (_client != null)
-        //                {
-        //                    _client.Quit(3000, _quitMessage);
-        //                    _client.Dispose();
-        //                }
-
-        //        }
-        //    }
-        //    _isDisposed = true;
-        //}
+        // TODO: disposal code
 
         /// <summary>
         /// Gets a value indicating whether to automatically authenticate with
@@ -105,20 +71,14 @@ namespace SSB.Core.Modules
         public bool AutoAuthWithNickService { get { return _autoAuthWithNickService; } }
 
         /// <summary>
-        /// Gets the main IRC channel.
+        /// Gets a value indicating whether or not to hide the irc client's hostname
+        /// (mode +x) after authenticating with the IRC nickname service on QuakeNet.
         /// </summary>
         /// <value>
-        /// The main IRC channel.
+        /// <c>true</c> if the hostname should be hidden after authentication;
+        /// otherwise, <c>false</c>.
         /// </value>
-        public string IrcChannel { get { return _ircChannel; } }
-
-        /// <summary>
-        /// Gets the IRC channel key.
-        /// </summary>
-        /// <value>
-        /// The IRC channel key.
-        /// </value>
-        public string IrcChannelKey { get { return _ircChannelKey; } }
+        public bool HideQuakeNetHostname { get { return _hideHostnameOnQuakeNet; } }
 
         /// <summary>
         /// Gets the name of the IRC nickname authentication service bot.
@@ -129,20 +89,36 @@ namespace SSB.Core.Modules
         public string IrcNickServiceBot { get { return _ircNickServiceBot; } }
 
         /// <summary>
-        /// Gets the username to be sent to the IRC nickname authentication service bot.
-        /// </summary>
-        /// <value>
-        /// The username to be sent to the IRC nickname authentication service bot.
-        /// </value>
-        public string IrcNickServiceUsername { get { return _ircNickServiceUsername;} }
-        
-        /// <summary>
         /// Gets the password to be sent to the IRC nickname authentication service.
         /// </summary>
         /// <value>
         /// The password to be sent to the IRC nickname authentication service.
         /// </value>
         public string IrcNickServicePassword { get { return _ircNickServicePassword; } }
+
+        /// <summary>
+        /// Gets the username to be sent to the IRC nickname authentication service bot.
+        /// </summary>
+        /// <value>
+        /// The username to be sent to the IRC nickname authentication service bot.
+        /// </value>
+        public string IrcNickServiceUsername { get { return _ircNickServiceUsername; } }
+
+        /// <summary>
+        /// Gets the main IRC channel.
+        /// </summary>
+        /// <value>
+        /// The main IRC channel.
+        /// </value>
+        public string MainChannel { get { return _mainChannel; } }
+
+        /// <summary>
+        /// Gets the IRC channel key.
+        /// </summary>
+        /// <value>
+        /// The IRC channel key.
+        /// </value>
+        public string MainChannelKey { get { return _mainChannelKey; } }
 
         /// <summary>
         /// Gets the Irc client registration information.
@@ -159,10 +135,23 @@ namespace SSB.Core.Modules
                     NickName = _ircNickName,
                     UserName = _ircUserName,
                     RealName = _ircRealName,
-                    Password = _ircServerPassword
-                    //UserModes = { 'i' }
+                    Password = _ircServerPassword,
+                    UserModes = { 'i' }
                 };
             }
+        }
+
+        /// <summary>
+        /// Checks whether the information necessary for IRC nickname service
+        /// authentication is complete.
+        /// </summary>
+        /// <returns><c>true</c> if the information is complete, otherwise
+        /// <c>false</c>.</returns>
+        public bool AuthInfoIsValid()
+        {
+            return !string.IsNullOrEmpty(IrcNickServiceBot) &&
+                   !string.IsNullOrEmpty(IrcNickServiceUsername) &&
+                   !string.IsNullOrEmpty(IrcNickServicePassword);
         }
 
         /// <summary>
@@ -207,6 +196,27 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        /// Gets the IRC user level of a user in the main channel.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>The user's IRC user level as an <see cref="IrcUserLevel"/>
+        /// enum value, if it exists.</returns>
+        public IrcUserLevel GetIrcUserLevel(string user)
+        {
+            if (_client.Channels.Count == 0) return IrcUserLevel.None;
+            var userList = _client.Channels[0].Users;
+            foreach (var u in userList.Where(u => u.User.NickName.Equals
+                (user, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                if (IsUserVoicedInChannel(u)) return IrcUserLevel.Voice;
+                if (IsUserOppedInChannel(u)) return IrcUserLevel.Operator;
+                if (IsUserChannelAdmin(u)) return IrcUserLevel.Admin;
+                if (IsUserChannelOwner(u)) return IrcUserLevel.Owner;
+            }
+            return IrcUserLevel.None;
+        }
+
+        /// <summary>
         /// Checks the validity of the settings in the IRC portion of the configuration file that
         /// are required to enable basic irc functionality.
         /// </summary>
@@ -231,6 +241,28 @@ namespace SSB.Core.Modules
             // IRC port validity
             if (cfg.ircServerPort > 65535) return false;
             return true;
+        }
+
+        /// <summary>
+        /// Sends a specified IRC message to the specified target.
+        /// </summary>
+        /// <param name="target">The target (nickname or channel)
+        ///  to which the message should be sent.</param>
+        /// <param name="message">The message.</param>
+        public void SendIrcMessage(string target, string message)
+        {
+            _client.LocalUser.SendMessage(target, message);
+        }
+
+        /// <summary>
+        /// Sends a specified IRC notice to the specified target.
+        /// </summary>
+        /// <param name="target">The target (nickname or channel)
+        ///  to which the notice should be sent.</param>
+        /// <param name="message">The message.</param>
+        public void SendIrcNotice(string target, string message)
+        {
+            _client.LocalUser.SendNotice(target, message);
         }
 
         /// <summary>
@@ -474,6 +506,94 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        /// Determines whether the specified user is a channel admin (&)
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns><c>true</c> if the user is a channel admin.</returns>
+        /// <remarks>This usermode (&) is inapplicable to QuakeNet's IRCD, on which
+        /// operator (@) is the highest possible user mode in a channel.</remarks>
+        private bool IsUserChannelAdmin(object obj)
+        {
+            if (obj is IrcUser)
+            {
+                var user = (IrcUser)obj;
+                IrcChannelUser cUser = user.GetChannelUsers().First(g => g.User.NickName == user.NickName);
+                return cUser.Modes.Contains('a');
+            }
+            if (obj is IrcChannelUser)
+            {
+                var user = (IrcChannelUser)obj;
+                return user.Modes.Contains('a');
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified user is a channel owner (~)
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns><c>true</c> if the user is a channel owner.</returns>
+        /// <remarks>This usermode (~) is inapplicable to QuakeNet's IRCD, on which
+        /// operator (@) is the highest possible user mode in a channel.</remarks>
+        private bool IsUserChannelOwner(object obj)
+        {
+            if (obj is IrcUser)
+            {
+                var user = (IrcUser)obj;
+                IrcChannelUser cUser = user.GetChannelUsers().First(g => g.User.NickName == user.NickName);
+                return cUser.Modes.Contains('q');
+            }
+            if (obj is IrcChannelUser)
+            {
+                var user = (IrcChannelUser)obj;
+                return user.Modes.Contains('q');
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified user is a channel operator.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns><c>true</c> if the user is a channel operator, otherwise <c>false</c>.</returns>
+        private bool IsUserOppedInChannel(object obj)
+        {
+            if (obj is IrcUser)
+            {
+                var user = (IrcUser)obj;
+                IrcChannelUser cUser = user.GetChannelUsers().First(g => g.User.NickName == user.NickName);
+                return cUser.Modes.Contains('o');
+            }
+            if (obj is IrcChannelUser)
+            {
+                var user = (IrcChannelUser)obj;
+                return user.Modes.Contains('o');
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified user is voiced in the channel.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns><c>true</c>if the user is voiced in the channel, otherwise <c>false</c>.</returns>
+        private bool IsUserVoicedInChannel(object obj)
+        {
+            if (obj is IrcUser)
+            {
+                var user = (IrcUser)obj;
+                IrcChannelUser cUser = user.GetChannelUsers().First(g => g.User.NickName == user.NickName);
+                return cUser.Modes.Contains('v');
+            }
+            if (obj is IrcChannelUser)
+            {
+                var user = (IrcChannelUser)obj;
+                return user.Modes.Contains('v');
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether the specified channel is valid.
         /// </summary>
         /// <param name="channel">The channel.</param>
@@ -575,8 +695,8 @@ namespace SSB.Core.Modules
             _autoConnectOnStart = cfg.autoConnectOnStart;
             _hideHostnameOnQuakeNet = cfg.hideHostnameOnQuakeNet;
             _ircAdminNickname = cfg.ircAdminNickname;
-            _ircChannel = cfg.ircChannel;
-            _ircChannelKey = cfg.ircChannelKey;
+            _mainChannel = cfg.ircChannel;
+            _mainChannelKey = cfg.ircChannelKey;
             _ircNickName = cfg.ircNickName;
             _ircNickServiceBot = cfg.ircNickServiceBot;
             _ircNickServiceUsername = cfg.ircNickServiceUsername;
