@@ -222,10 +222,10 @@ namespace SSB.Core.Commands.Modules
             }
             // Valid scales?
             if (
-                (!Tools.ValidTimeScales.Contains(
+                (!Helpers.ValidTimeScales.Contains(
                     _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale))
                 &&
-                ((!Tools.ValidTimeScales.Contains(
+                ((!Helpers.ValidTimeScales.Contains(
                     _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale))))
             {
                 Active = false;
@@ -361,7 +361,7 @@ namespace SSB.Core.Commands.Modules
                     _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 The time to ban must be a number greater than zero.");
                 return;
             }
-            bool isValidScale = Tools.ValidTimeScales.Contains(c.Args[5]);
+            bool isValidScale = Helpers.ValidTimeScales.Contains(c.Args[5]);
             if (!isValidScale)
             {
                 await

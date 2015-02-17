@@ -30,8 +30,6 @@ namespace SSB.Core
             _voteHandler = new VoteHandler(_ssb);
         }
 
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
-
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -121,7 +119,7 @@ namespace SSB.Core
             Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            string[] arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -133,7 +131,7 @@ namespace SSB.Core
         private bool AccuracyInfoDetected(string text)
         {
             if (!_ssb.Parser.ScmdAccuracy.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdAccuracy.Match(text);
+            var m = _ssb.Parser.ScmdAccuracy.Match(text);
             _playerEventProcessor.HandlePlayerAccuracyData(m);
             return true;
         }
@@ -149,7 +147,7 @@ namespace SSB.Core
             if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, new object[] { text, length });
+                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, text, length);
                 return;
             }
             // If appending to textbox, must clear first
@@ -168,7 +166,7 @@ namespace SSB.Core
         private bool ChatMessageDetected(string text)
         {
             if (!_ssb.Parser.ScmdChatMessage.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdChatMessage.Match(text);
+            var m = _ssb.Parser.ScmdChatMessage.Match(text);
             _playerEventProcessor.HandlePlayerChatMessage(m.Groups["fullplayerandmsg"].Value);
             return true;
         }
@@ -181,7 +179,7 @@ namespace SSB.Core
         private void DetectConsoleEvent(string[] events)
         {
             // Most of time the text will include multiple lines. Iterate and process.
-            foreach (string text in events)
+            foreach (var text in events)
             {
                 // unncessary debug (developer mode) info to be ignored
                 //if (UnncessaryDebugInfoDetected(text)) continue;
@@ -215,6 +213,8 @@ namespace SSB.Core
                 if (TimelimitReachedDetected(text)) continue;
                 // game ends due to 'frag/round/capturelimit hit'
                 if (ScorelimitReachedDetected(text)) continue;
+                // change of a team's score detected
+                if (TeamScoreChangeDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text))
                 {
@@ -275,14 +275,14 @@ namespace SSB.Core
             else if (_ssb.Parser.ScmdGameStateChange.IsMatch(text))
             {
                 var cmd = QlCommandType.ServerInfoServerGamestate;
-                Match m = _ssb.Parser.ScmdGameStateChange.Match(text);
+                var m = _ssb.Parser.ScmdGameStateChange.Match(text);
                 ProcessCommand(cmd, m.Groups["gamestatus"].Value);
             }
             // map load or map change detected; handle it.
             else if (_ssb.Parser.EvMapLoaded.IsMatch(text))
             {
                 var cmd = QlCommandType.InitInfo;
-                Match m = _ssb.Parser.EvMapLoaded.Match(text);
+                var m = _ssb.Parser.EvMapLoaded.Match(text);
                 text = m.Value;
                 ProcessCommand(cmd, text);
             }
@@ -305,7 +305,7 @@ namespace SSB.Core
         private bool GameStateTimeChangeDetected(string text)
         {
             if (!_ssb.Parser.ScmdGameStateTimeChange.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdGameStateTimeChange.Match(text);
+            var m = _ssb.Parser.ScmdGameStateTimeChange.Match(text);
             if (m.Groups["time"].Value.Equals(@"\time\-1", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
@@ -342,15 +342,15 @@ namespace SSB.Core
         */
 
         /// <summary>
-        /// Determines whether the text matches that of the gametype information returned from the configstrings
-        /// command, and handles it if it does.
+        ///     Determines whether the text matches that of the gametype information returned from the configstrings
+        ///     command, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the gametype was detected via configstrings, otherwise <c>false</c>.</returns>
         private bool GameTypeCfgStringDetected(string text)
         {
             if (!_ssb.Parser.CfgStringGameType.IsMatch(text)) return false;
-            Match m = _ssb.Parser.CfgStringGameType.Match(text);
+            var m = _ssb.Parser.CfgStringGameType.Match(text);
             Debug.WriteLine(string.Format("Found gametype number {0} in configstrings, will set...",
                 m.Groups["gametype"].Value));
             _ssb.ServerEventProcessor.SetServerGameType(m.Groups["gametype"].Value);
@@ -366,7 +366,7 @@ namespace SSB.Core
         {
             // 'player connected' detected.
             if (!_ssb.Parser.ScmdPlayerConnected.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdPlayerConnected.Match(text);
+            var m = _ssb.Parser.ScmdPlayerConnected.Match(text);
             await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
             return true;
         }
@@ -377,12 +377,12 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if an intermission start (game end) was detected, otherwise <c>false</c>.</returns>
         /// <remarks>
-        /// This is the period that begins after the game has ended, typically during end-game map voting (if enabled).
+        ///     This is the period that begins after the game has ended, typically during end-game map voting (if enabled).
         /// </remarks>
         private bool IntermissionStartDetected(string text)
         {
             if (!_ssb.Parser.ScmdIntermission.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdIntermission.Match(text);
+            var m = _ssb.Parser.ScmdIntermission.Match(text);
             if (m.Groups["intermissionvalue"].Value.Equals("1", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerEventProcessor.SetIntermissionStart();
@@ -417,7 +417,7 @@ namespace SSB.Core
                 !_ssb.Parser.ScmdPlayerTimedOut.IsMatch(text))
                 return false;
             Match m;
-            string outgoingPlayer = string.Empty;
+            var outgoingPlayer = string.Empty;
             if (_ssb.Parser.ScmdPlayerDisconnected.IsMatch(text))
             {
                 m = _ssb.Parser.ScmdPlayerDisconnected.Match(text);
@@ -456,7 +456,7 @@ namespace SSB.Core
         private bool PlayerConfigStringCsDetected(string text)
         {
             if (!_ssb.Parser.CfgStringPlayerInfo.IsMatch(text)) return false;
-            Match m = _ssb.Parser.CfgStringPlayerInfo.Match(text);
+            var m = _ssb.Parser.CfgStringPlayerInfo.Match(text);
             if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
             {
                 Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
@@ -476,7 +476,7 @@ namespace SSB.Core
         private bool PlayerConfigStringSrvCmdDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
+            var m = _ssb.Parser.ScmdPlayerConfigString.Match(text);
             if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
             {
                 // Ignore parsing of empty player configstring on disconnect,
@@ -495,10 +495,12 @@ namespace SSB.Core
         private async Task<bool> PlayerJoinedSpectatorsDetected(string text)
         {
             if (!_ssb.Parser.ScmdPlayerJoinedSpectators.IsMatch(text)) return false;
-            Match m = _ssb.Parser.ScmdPlayerJoinedSpectators.Match(text);
+            var m = _ssb.Parser.ScmdPlayerJoinedSpectators.Match(text);
             await _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
             return true;
         }
+
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
 
         /// <summary>
         ///     Processes the command.
@@ -513,7 +515,7 @@ namespace SSB.Core
                 case QlCommandType.Players:
                     // Synchronous
                     // ReSharper disable once UnusedVariable
-                    Task g =
+                    var g =
                         _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);
                     break;
 
@@ -544,11 +546,12 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of the game's end due to the score/frag/roundlimit
-        /// being reached and handles it if it does.
+        ///     Determines whether the text matches that of the game's end due to the score/frag/roundlimit
+        ///     being reached and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the 'score/frag/roundlimit' message was detected, otherwise <c>false</c>.
+        /// <returns>
+        ///     <c>true</c> if the 'score/frag/roundlimit' message was detected, otherwise <c>false</c>.
         /// </returns>
         private bool ScorelimitReachedDetected(string text)
         {
@@ -558,8 +561,43 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of the game's end due to the timelimit being reached
-        /// and handles it if it does.
+        ///     Determines whether the text matches that of a change in a team's score, and handles it if
+        ///     it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>
+        ///     <c>true</c> if the team score change serverCommand was detected, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        private bool TeamScoreChangeDetected(string text)
+        {
+            if ((!_ssb.Parser.ScmdBlueTeamScore.IsMatch(text)) &&
+                (!_ssb.Parser.ScmdRedTeamScore.IsMatch(text)))
+            {
+                return false;
+            }
+            var team = Team.None;
+            var score = 0;
+            if (_ssb.Parser.ScmdBlueTeamScore.IsMatch(text))
+            {
+                team = Team.Blue;
+                var s = _ssb.Parser.ScmdBlueTeamScore.Match(text);
+                int.TryParse(s.Groups["bluescore"].Value, out score);
+            }
+            else if (_ssb.Parser.ScmdRedTeamScore.IsMatch(text))
+            {
+                team = Team.Red;
+                var s = _ssb.Parser.ScmdRedTeamScore.Match(text);
+                int.TryParse(s.Groups["redscore"].Value, out score);
+            }
+
+            _ssb.ServerEventProcessor.SetTeamScore(team, score);
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether the text matches that of the game's end due to the timelimit being reached
+        ///     and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the 'timelimit hit' message was detected, otherwise <c>false</c>.</returns>
@@ -606,7 +644,7 @@ namespace SSB.Core
             // Don't care about the player who called the vote, just fact that vote was called.
             _voteHandler.HandleVoteStart(text);
             var match = _ssb.Parser.ScmdVoteCalledTagAndPlayer.Match(text);
-            _voteHandler.VoteCaller = Tools.GetStrippedName(match.Groups["clanandplayer"].Value);
+            _voteHandler.VoteCaller = Helpers.GetStrippedName(match.Groups["clanandplayer"].Value);
             return true;
         }
     }

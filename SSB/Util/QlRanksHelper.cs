@@ -35,7 +35,7 @@ namespace SSB.Util
         /// <param name="player">The player.</param>
         public void CreateNewPlayerEloData(Dictionary<string, PlayerInfo> currentPlayers, string player)
         {
-            if (!Tools.KeyExists(player, currentPlayers)) return;
+            if (!Helpers.KeyExists(player, currentPlayers)) return;
             currentPlayers[player].EloData = new EloData();
         }
 
@@ -144,7 +144,7 @@ namespace SSB.Util
         /// <returns><c>true</c> if the elo update should be skipped, otherwise <c>false</c>.</returns>
         public bool ShouldSkipEloUpdate(string player, Dictionary<string, PlayerInfo> currentPlayers)
         {
-            if ((Tools.KeyExists(player, currentPlayers) && (!PlayerHasInvalidEloData(currentPlayers[player]))))
+            if ((Helpers.KeyExists(player, currentPlayers) && (!PlayerHasInvalidEloData(currentPlayers[player]))))
             {
                 return true;
             }

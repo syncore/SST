@@ -7,7 +7,7 @@ namespace SSB.Interfaces
     /// <summary>
     ///     Interface for IRC commands.
     /// </summary>
-    internal interface IIrcCommand
+    public interface IIrcCommand
     {
         /// <summary>
         ///     Gets a value that determines whether this command is to be executed asynchronously.

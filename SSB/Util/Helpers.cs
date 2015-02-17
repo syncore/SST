@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SSB.Enum;
 
 namespace SSB.Util
 {
     /// <summary>
     ///     Class containing general helper methods.
     /// </summary>
-    public static class Tools
+    public static class Helpers
     {
         // The time scales that are valid for our purposes (primarily used for adding various bans)
         public static string[] ValidTimeScales =
@@ -15,6 +16,51 @@ namespace SSB.Util
             "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
             "month", "months", "year", "years"
         };
+
+        /// <summary>
+        /// Gets the name of player with the clan tag stripped away, if it exists.
+        /// </summary>
+        /// <param name="name">The input name.</param>
+        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
+        /// <remarks>
+        /// This is necessary because certain events, namely player connections and when the player spectates,
+        /// use the full name with the clan tag included, but internally the bot always uses the short name.
+        /// </remarks>
+        public static string GetStrippedName(string name)
+        {
+            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
+                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
+                : name.ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// Determines whether the specified gametype is a team-based game.
+        /// </summary>
+        /// <returns><c>true</c> if the specified gametype is a team-based game; otherwise
+        ///  <c>false</c></returns>
+        public static bool IsQuakeLiveTeamGame(QlGameTypes gametype)
+        {
+            switch (gametype)
+            {
+                case QlGameTypes.Unspecified:
+                case QlGameTypes.Ffa:
+                case QlGameTypes.Duel:
+                case QlGameTypes.Race:
+                    return false;
+
+                case QlGameTypes.Tdm:
+                case QlGameTypes.Ca:
+                case QlGameTypes.Ctf:
+                case QlGameTypes.OneFlagCtf:
+                case QlGameTypes.Harvester:
+                case QlGameTypes.FreezeTag:
+                case QlGameTypes.Domination:
+                case QlGameTypes.AttackDefend:
+                case QlGameTypes.RedRover:
+                    return true;
+            }
+            return false;
+        }
 
         /// <summary>
         ///     Determines whether the specified user's name is valid per QL requirements.
@@ -44,22 +90,6 @@ namespace SSB.Util
             return !Regex.IsMatch(user, "[^a-zA-Z0-9_]");
         }
 
-        /// <summary>
-        /// Gets the name of player with the clan tag stripped away, if it exists.
-        /// </summary>
-        /// <param name="name">The input name.</param>
-        /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
-        /// <remarks>
-        /// This is necessary because certain events, namely player connections and when the player spectates,
-        /// use the full name with the clan tag included, but internally the bot always uses the short name.
-        /// </remarks>
-        public static string GetStrippedName(string name)
-        {
-            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
-                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
-                : name.ToLowerInvariant();
-        }
-        
         /// <summary>
         ///     Checks whether a key is present in a given dictionary.
         /// </summary>

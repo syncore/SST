@@ -69,7 +69,7 @@ namespace SSB.Core.Commands.None
                         "^1[ERROR]^3 A team balance vote is not in progress.");
                 return;
             }
-            if (!Tools.KeyExists(c.FromUser, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(c.FromUser, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine(string.Format("{0} is not in the list of current players, ignoring vote", c.FromUser));
                 return;
@@ -80,7 +80,7 @@ namespace SSB.Core.Commands.None
                         "^1[ERROR]^3 Only active players may vote.");
                 return;
             }
-            if (Tools.KeyExists(c.FromUser, _ssb.VoteManager.TeamSuggestionVoters))
+            if (Helpers.KeyExists(c.FromUser, _ssb.VoteManager.TeamSuggestionVoters))
             {
                 await _ssb.QlCommands.QlCmdSay(
                         string.Format("^1[ERROR]^3 {0} has already voted.", c.FromUser));

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,6 +17,7 @@ namespace SSB.Core.Modules.Irc
 
         private readonly StandardIrcClient _client;
         private readonly ConfigHandler _configHandler;
+
 
         // Regex for testing validity of IRC nick according to IRC RFC specification;
         // currently set from 2-15 max length
@@ -50,16 +50,26 @@ namespace SSB.Core.Modules.Irc
         /// <summary>
         /// Initializes a new instance of the <see cref="Irc"/> class.
         /// </summary>
-        public IrcHandler()
+        public IrcHandler(SynServerBot ssb)
         {
             _client = new StandardIrcClient();
             _configHandler = new ConfigHandler();
+            IrcCmdProcessor = new IrcCommandProcessor(ssb, this);
             SetIrcSettingsFromConfig();
             _validIrcNick = new Regex(@"^([a-zA-Z\[\]\\`_\^\{\|\}][a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,15})");
+            
         }
 
         // TODO: disposal code
 
+        /// <summary>
+        /// Gets the IRC command processor.
+        /// </summary>
+        /// <value>
+        /// The IRC command processor.
+        /// </value>
+        public IrcCommandProcessor IrcCmdProcessor { get; private set; }
+        
         /// <summary>
         /// Gets a value indicating whether to automatically authenticate with
         /// the IRC nickname authentication service.
@@ -79,6 +89,14 @@ namespace SSB.Core.Modules.Irc
         /// otherwise, <c>false</c>.
         /// </value>
         public bool HideQuakeNetHostname { get { return _hideHostnameOnQuakeNet; } }
+
+        /// <summary>
+        /// Gets the nickname of the user designated as the bot's IRC admin.
+        /// </summary>
+        /// <value>
+        /// Gets the nickname of the user designated as the bot's IRC admin.
+        /// </value>
+        public string IrcAdminNickname { get { return _ircAdminNickname; } }
 
         /// <summary>
         /// Gets the name of the IRC nickname authentication service bot.
@@ -214,6 +232,25 @@ namespace SSB.Core.Modules.Irc
                 if (IsUserChannelOwner(u)) return IrcUserLevel.Owner;
             }
             return IrcUserLevel.None;
+        }
+
+        /// <summary>
+        /// Ops the user.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void OpUser(object obj)
+        {
+            if (obj is IrcUser)
+            {
+                var user = (IrcUser)obj;
+                IrcChannelUser cUser = user.GetChannelUsers().First(g => g.User.NickName == user.NickName);
+                cUser.Op();
+            }
+            if (obj is IrcChannelUser)
+            {
+                var user = (IrcChannelUser)obj;
+                user.Op();
+            }
         }
 
         /// <summary>
@@ -408,23 +445,6 @@ namespace SSB.Core.Modules.Irc
         {
             var channel = (IrcChannel)sender;
             OnChannelUserLeft(channel, e);
-        }
-
-        /// <summary>
-        /// Gets the default reply target.
-        /// </summary>
-        /// <param name="client">The client.</param>
-        /// <param name="source">The source.</param>
-        /// <param name="targets">The targets.</param>
-        /// <returns></returns>
-        private IList<IIrcMessageTarget> GetDefaultReplyTarget(IrcClient client, IIrcMessageSource source,
-            IList<IIrcMessageTarget> targets)
-        {
-            if (targets.Contains(client.LocalUser) && source is IIrcMessageTarget)
-            {
-                return new[] { (IIrcMessageTarget)source };
-            }
-            return targets;
         }
 
         /// <summary>

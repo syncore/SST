@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Modules;
@@ -10,7 +9,7 @@ using SSB.Model;
 namespace SSB.Core.Commands.Admin
 {
     /// <summary>
-    ///     Command: Class for persisted modules
+    ///     Command: Class for module access.
     /// </summary>
     public class ModuleCmd : IBotCommand
     {
@@ -24,7 +23,6 @@ namespace SSB.Core.Commands.Admin
         public const string PickupArg = Pickup.NameModule;
         public const string ServersArg = Servers.NameModule;
         private const string ActiveModuleArg = "active";
-        private readonly List<IModule> _moduleList;
         private readonly SynServerBot _ssb;
         private readonly List<string> _validModuleNames;
         private int _minArgs = 2;
@@ -48,18 +46,6 @@ namespace SSB.Core.Commands.Admin
                 IrcArg,
                 PickupArg,
                 ServersArg
-            };
-            _moduleList = new List<IModule>
-            {
-                _ssb.Mod.AccountDateLimit,
-                _ssb.Mod.Accuracy,
-                _ssb.Mod.AutoVoter,
-                _ssb.Mod.EarlyQuit,
-                _ssb.Mod.EloLimit,
-                _ssb.Mod.Irc,
-                _ssb.Mod.Motd,
-                _ssb.Mod.Pickup,
-                _ssb.Mod.Servers
             };
         }
 
@@ -136,11 +122,11 @@ namespace SSB.Core.Commands.Admin
                 case MotdArg:
                     await _ssb.Mod.Motd.EvalModuleCmdAsync(c);
                     break;
-                
+
                 case PickupArg:
                     await _ssb.Mod.Pickup.EvalModuleCmdAsync(c);
                     break;
-                
+
                 case ServersArg:
                     await _ssb.Mod.Servers.EvalModuleCmdAsync(c);
                     break;
@@ -152,7 +138,8 @@ namespace SSB.Core.Commands.Admin
         /// </summary>
         private async Task DisplayActiveModules(CmdArgs c)
         {
-            if (!_moduleList.Any(mod => mod.Active))
+            var activeMods = _ssb.Mod.GetActiveModules();
+            if (activeMods.Count == 0)
             {
                 await
                     _ssb.QlCommands.QlCmdSay(string.Format(
@@ -162,7 +149,7 @@ namespace SSB.Core.Commands.Admin
             }
 
             var sb = new StringBuilder();
-            foreach (IModule mod in _moduleList.Where(mod => mod.Active))
+            foreach (var mod in activeMods)
             {
                 sb.Append(string.Format("^7{0}^2, ", mod.ModuleName));
             }

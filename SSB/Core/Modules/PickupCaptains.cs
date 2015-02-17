@@ -39,7 +39,7 @@ namespace SSB.Core.Modules
             get
             {
                 return (!string.IsNullOrEmpty(BlueCaptain) &&
-                    Tools.KeyExists(BlueCaptain, _ssb.ServerInfo.CurrentPlayers));
+                    Helpers.KeyExists(BlueCaptain, _ssb.ServerInfo.CurrentPlayers));
             }
         }
 
@@ -78,7 +78,7 @@ namespace SSB.Core.Modules
             get
             {
                 return (!string.IsNullOrEmpty(RedCaptain) &&
-                    Tools.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers));
+                    Helpers.KeyExists(RedCaptain, _ssb.ServerInfo.CurrentPlayers));
             }
         }
         

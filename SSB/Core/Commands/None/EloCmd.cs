@@ -80,7 +80,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
             string user = c.Args.Length == 1 ? c.FromUser : c.Args[1];
-            if (!Tools.IsValidQlUsernameFormat(user, true))
+            if (!Helpers.IsValidQlUsernameFormat(user, true))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
@@ -88,12 +88,12 @@ namespace SSB.Core.Commands.None
                             c.Args[1]));
                 return;
             }
-            if (!Tools.KeyExists(user, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(user, _ssb.ServerInfo.CurrentPlayers))
             {
                 await GetAndSayElo(user);
             }
                 // Use existing elo data if it exists and is not invalid
-            else if ((Tools.KeyExists(user, _ssb.ServerInfo.CurrentPlayers)
+            else if ((Helpers.KeyExists(user, _ssb.ServerInfo.CurrentPlayers)
                       &&
                       (!_qlrHelper.PlayerHasInvalidEloData(_ssb.ServerInfo.CurrentPlayers[user]))))
             {

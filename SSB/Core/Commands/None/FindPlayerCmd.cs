@@ -67,7 +67,7 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            if (!Tools.IsValidQlUsernameFormat(c.Args[1], false))
+            if (!Helpers.IsValidQlUsernameFormat(c.Args[1], false))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(

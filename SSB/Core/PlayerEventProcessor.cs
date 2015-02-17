@@ -40,11 +40,11 @@ namespace SSB.Core
             if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase)) return;
 
             // Player connections include the clan tag, so we need to remove it
-            player = Tools.GetStrippedName(player);
+            player = Helpers.GetStrippedName(player);
 
             _seenDb.UpdateLastSeenDate(player, DateTime.Now);
 
-            if ((Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
+            if ((Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers) &&
                  (!_qlRanksHelper.ShouldSkipEloUpdate(player, _ssb.ServerInfo.CurrentPlayers))))
             {
                 await HandleEloUpdate(player);
@@ -126,7 +126,7 @@ namespace SSB.Core
                     "Accuracy data detected but is of no use because no player is currently being followed. Ignoring.");
                 return;
             }
-            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine(
                     "Player currently being followed is no longer on the server/doesn't exist in internal list. Ignoring.");
@@ -191,7 +191,7 @@ namespace SSB.Core
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
             if (name.StartsWith("\u0019[")) return;
 
-            string msgFrom = Tools.GetStrippedName(name);
+            string msgFrom = Helpers.GetStrippedName(name);
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
@@ -258,7 +258,7 @@ namespace SSB.Core
         public async Task HandlePlayerWentToSpec(string player)
         {
             // Spectator event includes the full clan tag, so need to strip
-            player = Tools.GetStrippedName(player);
+            player = Helpers.GetStrippedName(player);
 
             // The outgoing player was actually in the game & not a spectator.
             //TODO: investigate this, it might always be false for sub being moved out in pickup
@@ -385,7 +385,7 @@ namespace SSB.Core
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
         {
-            if (Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
+            if (Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
             {
                 _ssb.ServerInfo.CurrentPlayers.Remove(player);
                 Debug.WriteLine(string.Format("Removed {0} from the current in-game players.", player));

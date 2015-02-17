@@ -77,7 +77,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
 
-            if (!Tools.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not currently on the server!",
@@ -85,7 +85,7 @@ namespace SSB.Core.Commands.None
                 return;
             }
             
-            if (!Tools.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
                 return;

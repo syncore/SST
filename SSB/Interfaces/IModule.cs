@@ -6,7 +6,7 @@ namespace SSB.Interfaces
     /// <summary>
     ///     Interface for module commands.
     /// </summary>
-    internal interface IModule
+    public interface IModule
     {
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.

@@ -8,18 +8,21 @@
         public string[] Args;
         public string CmdName;
         public string FromUser;
+        public string Text;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CmdArgs" /> struct.
+        /// Initializes a new instance of the <see cref="CmdArgs" /> struct.
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <param name="cmdName">Name of the command.</param>
         /// <param name="fromUser">The user who sent the command.</param>
-        public CmdArgs(string[] args, string cmdName, string fromUser)
+        /// <param name="text">The full text.</param>
+        public CmdArgs(string[] args, string cmdName, string fromUser, string text)
         {
             Args = args;
             CmdName = cmdName;
             FromUser = fromUser;
+            Text = text;
         }
     }
 }

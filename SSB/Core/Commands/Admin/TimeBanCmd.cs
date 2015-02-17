@@ -216,7 +216,7 @@ namespace SSB.Core.Commands.Admin
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
                 return;
             }
-            bool validScale = Tools.ValidTimeScales.Contains(c.Args[4]);
+            bool validScale = Helpers.ValidTimeScales.Contains(c.Args[4]);
             if (!validScale)
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Scale must be: secs, mins, hours, days, months, OR years");

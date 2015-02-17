@@ -63,6 +63,22 @@ namespace SSB.Core
         public string PlayerCurrentlyFollowing { get; set; }
 
         /// <summary>
+        /// Gets or sets the blue team's score.
+        /// </summary>
+        /// <value>
+        /// The blue team's score.
+        /// </value>
+        public int ScoreBlueTeam { get; set; }
+
+        /// <summary>
+        /// Gets or sets the red team's score.
+        /// </summary>
+        /// <value>
+        /// The red team's score.
+        /// </value>
+        public int ScoreRedTeam { get; set; }
+
+        /// <summary>
         /// Gets the team.
         /// </summary>
         /// <param name="t">The Team enum.</param>
@@ -91,7 +107,7 @@ namespace SSB.Core
         /// <returns><c>true</c> if the specified player is an active player, otherwise <c>false</c></returns>
         public bool IsActivePlayer(string player)
         {
-            if (!Tools.KeyExists(player, CurrentPlayers))
+            if (!Helpers.KeyExists(player, CurrentPlayers))
             {
                 return false;
             }
@@ -105,26 +121,7 @@ namespace SSB.Core
         /// <returns><c>true</c> if the current gametype is a team-based game; otherwise <c>false</c></returns>
         public bool IsATeamGame()
         {
-            switch (CurrentServerGameType)
-            {
-                case QlGameTypes.Unspecified:
-                case QlGameTypes.Ffa:
-                case QlGameTypes.Duel:
-                case QlGameTypes.Race:
-                    return false;
-
-                case QlGameTypes.Tdm:
-                case QlGameTypes.Ca:
-                case QlGameTypes.Ctf:
-                case QlGameTypes.OneFlagCtf:
-                case QlGameTypes.Harvester:
-                case QlGameTypes.FreezeTag:
-                case QlGameTypes.Domination:
-                case QlGameTypes.AttackDefend:
-                case QlGameTypes.RedRover:
-                    return true;
-            }
-            return false;
+            return Helpers.IsQuakeLiveTeamGame(CurrentServerGameType);
         }
     }
 }

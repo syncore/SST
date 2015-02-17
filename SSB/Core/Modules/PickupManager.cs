@@ -642,7 +642,7 @@ namespace SSB.Core.Modules
                 return;
             }
 
-            if (!Tools.KeyExists(playerToSub, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(playerToSub, _ssb.ServerInfo.CurrentPlayers))
             {
                 await
                     _ssb.QlCommands.QlCmdTell(
@@ -1174,7 +1174,7 @@ namespace SSB.Core.Modules
         /// <param name="player">The departing player.</param>
         private async Task UpdateNoShowAndSubDatabase(string player)
         {
-            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
+            if (!Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
             var pickupDb = new DbPickups();
             if (_ssb.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest)
             {

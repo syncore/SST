@@ -40,6 +40,8 @@ namespace SSB.Util
             ScmdTimelimitHit = new scmdTimelimitHit();
             ScmdScorelimitHit = new scmdScorelimitHit();
             ScmdGameStateChange = new scmdGameStateChange();
+            ScmdBlueTeamScore = new scmdBlueScore();
+            ScmdRedTeamScore = new scmdRedScore();
             ScmdVoteNumNoVotes = new scmdVoteNumNoVotes();
             ScmdIntermission = new scmdIntermission();
             ScmdChatMessage = new scmdChatMessage();
@@ -156,6 +158,18 @@ namespace SSB.Util
         ///     #13: proxmity mine launcher, #14: chaingun, #15: heavy machine gun
         /// </remarks>
         public Regex ScmdAccuracy { get; private set; }
+
+        /// <summary>
+        /// Regex for finding the blue team's score.
+        /// </summary>
+        /// <value>
+        /// Regex for finding the blue team's score.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group 'bluescore' that contains the numerical value representing
+        /// the blue team's score.
+        /// </remarks>
+        public Regex ScmdBlueTeamScore { get; private set; }
 
         /// <summary>
         ///     Regex for matching a player's chat message.
@@ -327,6 +341,18 @@ namespace SSB.Util
         ///     This contains a named group, 'player' that has the name of the player who has timed out.
         /// </remarks>
         public Regex ScmdPlayerTimedOut { get; private set; }
+
+        /// <summary>
+        /// Regex for finding the red team's score.
+        /// </summary>
+        /// <value>
+        /// Regex for finding the red team's score.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group 'redscore' that contains the numerical value representing
+        /// the red team's score.
+        /// </remarks>
+        public Regex ScmdRedTeamScore { get; private set; }
 
         /// <summary>
         /// Regex for detecting when a game has ended due to the frag, round, or capturelimit being reached.

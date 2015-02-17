@@ -396,7 +396,7 @@ namespace SSB.Core
         public async Task QlCmdTell(string text, string player)
         {
             // tell command uses the players id
-            if (!Tools.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
+            if (!Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers)) return;
 
             var playerId = _ssb.ServerInfo.CurrentPlayers[player].Id;
 

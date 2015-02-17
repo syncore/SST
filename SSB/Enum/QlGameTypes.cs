@@ -6,9 +6,8 @@
     public enum QlGameTypes
     {
         // error or default
-        Unspecified = 0,
-        // Ffa is really g_gametype 0 in QL; will need to handle this special case elsewhere in code
-        Ffa = 999,
+        Unspecified = -1,
+        Ffa = 0,
         Duel = 1,
         Race = 2,
         Tdm = 3,

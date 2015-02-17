@@ -19,12 +19,14 @@ namespace SSB.Core.Modules.Irc
         private readonly Dictionary<string, IIrcCommand> _ircCommands;
         private readonly Dictionary<string, DateTime> _ircCommandUserTime;
         private readonly SynServerBot _ssb;
+        private readonly string IrcCmdHelp = "help";
+        private readonly string IrcCmdMods = "mods";
+        private readonly string IrcCmdOpMe = "opme";
         private readonly string IrcCmdSay = "say";
         private readonly string IrcCmdSayTeam = "sayteam";
-        private string IrcCmdMods = "mods";
-        private string IrcCmdStatus = "status";
-        private string IrcCmdUsers = "users";
-        private string IrcCmdWho = "who";
+        private readonly string IrcCmdStatus = "status";
+        private readonly string IrcCmdUsers = "users";
+        private readonly string IrcCmdWho = "who";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcCommandProcessor" /> class.
@@ -38,14 +40,27 @@ namespace SSB.Core.Modules.Irc
             _ircCommands = new Dictionary<string, IIrcCommand>
             {
                 {IrcCmdSay, new IrcSayCmd(_ssb, _irc)},
-                {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)}
-                //{IrcCmdSayTeam, new IrcSayTeamCmd(_ssb)},
-                //{IrcCmdWho, new IrcWhoCmd(_ssb)},
-                //{IrcCmdStatus, new IrcStatusCmd(_ssb)},
-                //{IrcCmdMods, new IrcModsCmd(_ssb)},
-                //{IrcCmdUsers, new IrcUsersCmd(_ssb)},
+                {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
+                {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
+                {IrcCmdWho, new IrcWhoCmd(_ssb, _irc)},
+                {IrcCmdStatus, new IrcStatusCmd(_ssb, _irc)},
+                {IrcCmdMods, new IrcModsCmd(_ssb, _irc)},
+                {IrcCmdUsers, new IrcUsersCmd(_ssb, _irc)},
+                {IrcCmdOpMe, new IrcOpMeCmd(_irc)},
+                {IrcCmdHelp, new IrcHelpCmd(_irc)}
             };
             _ircCommandUserTime = new Dictionary<string, DateTime>();
+        }
+
+        /// <summary>
+        ///     Gets the IRC command list.
+        /// </summary>
+        /// <value>
+        ///     The IRC command list.
+        /// </value>
+        public Dictionary<string, IIrcCommand> IrcCommandList
+        {
+            get { return _ircCommands; }
         }
 
         /// <summary>
@@ -77,7 +92,7 @@ namespace SSB.Core.Modules.Irc
             {
                 return;
             }
-            if (!Tools.KeyExists(cmdName, _ircCommands))
+            if (!Helpers.KeyExists(cmdName, _ircCommands))
             {
                 return;
             }
@@ -87,7 +102,7 @@ namespace SSB.Core.Modules.Irc
                     "\u0002[ERROR]\u0002 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, fromUser);
+            var c = new CmdArgs(args, cmdName, fromUser, msg);
             if (args.Length < _ircCommands[cmdName].MinArgs)
             {
                 _ircCommands[cmdName].DisplayArgLengthError(c);
@@ -111,7 +126,7 @@ namespace SSB.Core.Modules.Irc
         /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
         private bool SufficientTimeElapsed(string user)
         {
-            if (!Tools.KeyExists(user, _ircCommandUserTime) ||
+            if (!Helpers.KeyExists(user, _ircCommandUserTime) ||
                 _irc.GetIrcUserLevel(user) >= IrcUserLevel.Voice)
             {
                 return true;

@@ -71,7 +71,7 @@ namespace SSB.Core.Commands.None
         /// </remarks>
         public async Task ExecAsync(CmdArgs c)
         {
-            if (Tools.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
+            if (Helpers.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
             {
                 await
                     _ssb.QlCommands.QlCmdSay(

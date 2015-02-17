@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
-using SSB.Core.Modules;
+using SSB.Core.Modules.Irc;
 using SSB.Interfaces;
 using SSB.Model;
 
@@ -28,7 +28,7 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _irc = new IrcHandler();
+            _irc = new IrcHandler(_ssb);
             LoadConfig();
         }
 

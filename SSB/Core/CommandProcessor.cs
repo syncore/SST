@@ -158,11 +158,11 @@ namespace SSB.Core
             {
                 return;
             }
-            if (!Tools.KeyExists(cmdName, _commands))
+            if (!Helpers.KeyExists(cmdName, _commands))
             {
                 return;
             }
-            if (!Tools.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
             {
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format(
@@ -175,7 +175,7 @@ namespace SSB.Core
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, fromUser);
+            var c = new CmdArgs(args, cmdName, fromUser, msg);
             if (args.Length < _commands[cmdName].MinArgs)
             {
                 await _commands[cmdName].DisplayArgLengthError(c);
@@ -192,7 +192,7 @@ namespace SSB.Core
         /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
         private bool SufficientTimeElapsed(string user)
         {
-            if (!Tools.KeyExists(user, _playerCommandTime) || _users.GetUserLevel(user) >= UserLevel.Admin)
+            if (!Helpers.KeyExists(user, _playerCommandTime) || _users.GetUserLevel(user) >= UserLevel.Admin)
             {
                 return true;
             }

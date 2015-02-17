@@ -1,10 +1,16 @@
-﻿namespace SSB.Core.Commands.Modules
+﻿using System.Collections.Generic;
+using System.Linq;
+using SSB.Interfaces;
+
+namespace SSB.Core.Commands.Modules
 {
     /// <summary>
     ///     Class for limting commands.
     /// </summary>
     public class ModuleManager
     {
+        private readonly List<IModule> _moduleList;
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="ModuleManager" /> class.
         /// </summary>
@@ -12,15 +18,45 @@
         public ModuleManager(SynServerBot ssb)
         {
             var s = ssb;
+            _moduleList = new List<IModule>();
+            
             EloLimit = new EloLimit(s);
+            _moduleList.Add(EloLimit);
+            
             AccountDateLimit = new AccountDateLimit(s);
+            _moduleList.Add(AccountDateLimit);
+            
             Accuracy = new Accuracy(s);
+            _moduleList.Add(Accuracy);
+            
             AutoVoter = new AutoVoter(s);
+            _moduleList.Add(AutoVoter);
+            
             EarlyQuit = new EarlyQuit(s);
+            _moduleList.Add(EarlyQuit);
+            
             Motd = new Motd(s);
+            _moduleList.Add(Motd);
+            
             Pickup = new Pickup(s);
+            _moduleList.Add(Pickup);
+            
             Servers = new Servers(s);
+            _moduleList.Add(Servers);
+            
             Irc = new Irc(s);
+            _moduleList.Add(Irc);
+        }
+
+        /// <summary>
+        /// Gets the module list.
+        /// </summary>
+        /// <value>
+        /// The module list.
+        /// </value>
+        public List<IModule> ModuleList
+        {
+            get { return _moduleList;}
         }
 
         /// <summary>
@@ -94,5 +130,14 @@
         ///     The servers module.
         /// </value>
         public Servers Servers { get; private set; }
+
+        /// <summary>
+        /// Gets the active modules.
+        /// </summary>
+        /// <returns>A list of the active modules.</returns>
+        public List<IModule> GetActiveModules()
+        {
+            return ModuleList.Where(mod => mod.Active).ToList();
+        }
     }
 }

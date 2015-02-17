@@ -92,7 +92,7 @@ namespace SSB.Core
                     text.Substring(
                         text.LastIndexOf(" ", StringComparison.Ordinal) + 1)
                         .ToLowerInvariant();
-                var sndspace = (Tools.NthIndexOf(text, " ", 2));
+                var sndspace = (Helpers.NthIndexOf(text, " ", 2));
                 var clanLength =
                     ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
                 var clan = text.Substring(sndspace, (clanLength)).Trim();
@@ -277,6 +277,25 @@ namespace SSB.Core
             return serverId;
         }
 
+        /// <summary>
+        /// Sets the team score.
+        /// </summary>
+        /// <param name="team">The team.</param>
+        /// <param name="score">The score.</param>
+        public void SetTeamScore(Team team, int score)
+        {
+            if (team == Team.Blue)
+            {
+                _ssb.ServerInfo.ScoreBlueTeam = score;
+            }
+            else if (team == Team.Red)
+            {
+                _ssb.ServerInfo.ScoreRedTeam = score;
+            }
+            Debug.WriteLine("Setting {0} team's score to {1}",
+                ((team == Team.Blue) ? "BLUE" : "RED"), score);
+        }
+        
         /// <summary>
         ///     Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>

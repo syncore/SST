@@ -235,12 +235,24 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
             
-            //servercommand: gamestate changge (\time\# less accurate method)
+            //servercommand: gamestate change (\time\# less accurate method)
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateTimeChange", "SSB.External.Parser",
                true);
             compilationList.Add(expr);
 
+            //servercommand: red team score
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 6 ""(?<redscore>\d+)""",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdRedScore", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+            //servercommand: blue team score
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 7 ""(?<bluescore>\d+)""",
+               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdBlueScore", "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+            
             // serverinfo cmd - Find sv_gtid after issuing 'serverinfo' command
             /*
             ]/serverinfo

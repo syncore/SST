@@ -9,15 +9,16 @@ using SSB.Model.QuakeLiveApi;
 namespace SSB.Util
 {
     /// <summary>
-    /// Class that remotely retrieves various details from the Quake Live API when such details are not represented by a console command, cvar, etc.
+    ///     Class that remotely retrieves various details from the Quake Live API when such details are not represented by a
+    ///     console command, cvar, etc.
     /// </summary>
     public class QlRemoteInfoRetriever
     {
         /// <summary>
-        /// Gets the server's gamestate from the QL API.
+        ///     Gets the server's gamestate from the QL API.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>A <see cref="QlGameStates"/> enum containing the server's gametype.</returns>
+        /// <returns>A <see cref="QlGameStates" /> enum containing the server's gametype.</returns>
         public async Task<QlGameStates> GetGameState(string serverId)
         {
             var server = await QueryQlServer(serverId);
@@ -42,34 +43,25 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Gets the server's gametype from the QL API.
+        ///     Gets the server's gametype from the QL API.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>A <see cref="QlGameTypes"/> enum containing the server's gametype.</returns>
+        /// <returns>A <see cref="QlGameTypes" /> enum containing the server's gametype.</returns>
         public async Task<QlGameTypes> GetGameType(string serverId)
         {
             var server = await QueryQlServer(serverId);
-            QlGameTypes gametype;
-            int gtNum = server.game_type;
-            if (gtNum == 0)
-            {
-                // Special case for FFA
-                gametype = (QlGameTypes)999;
-            }
-            else
-            {
-                gametype = (QlGameTypes)gtNum;
-            }
+            var gtNum = server.game_type;
+            var gametype = (QlGameTypes) gtNum;
 
             Debug.WriteLine("This server's gametype is: " + gametype);
             return gametype;
         }
 
         /// <summary>
-        /// Retrieves Quake Live server data from a public filter URL.
+        ///     Retrieves Quake Live server data from a public filter URL.
         /// </summary>
         /// <param name="filter">The base64 encoded json filter.</param>
-        /// <returns>The server data as a root <see cref="FilterObject"/></returns>
+        /// <returns>The server data as a root <see cref="FilterObject" /></returns>
         public async Task<FilterObject> GetServerDataFromFilter(string filter)
         {
             if (string.IsNullOrEmpty(filter))
@@ -94,11 +86,11 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Queries a Quake Live server.
+        ///     Queries a Quake Live server.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>The server's details as a <see cref="Server"/> object.</returns>
-        private async Task<Server> QueryQlServer(string serverId)
+        /// <returns>The server's details as a <see cref="Server" /> object.</returns>
+        public async Task<Server> QueryQlServer(string serverId)
         {
             if (string.IsNullOrEmpty(serverId))
             {
@@ -109,7 +101,7 @@ namespace SSB.Util
             {
                 var query = new RestApiQuery();
                 var url = "http://www.quakelive.com/browser/details?ids=" + serverId;
-                IList<Server> serverList = await (query.QueryRestApiAsync<IList<Server>>(url));
+                var serverList = await (query.QueryRestApiAsync<IList<Server>>(url));
 
                 // QL always returns a collection no matter what. We're only querying one server so get first.
                 return serverList.First();

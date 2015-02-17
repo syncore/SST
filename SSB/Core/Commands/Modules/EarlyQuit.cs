@@ -152,7 +152,7 @@ namespace SSB.Core.Commands.Modules
                 return;
             }
             // See if it's a valid scale
-            if (!Tools.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
+            if (!Helpers.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
             {
                 Active = false;
                 _configHandler.Config.EarlyQuitOptions.SetDefaults();
@@ -315,7 +315,7 @@ namespace SSB.Core.Commands.Modules
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
                 return;
             }
-            bool validScale = Tools.ValidTimeScales.Contains(c.Args[4]);
+            bool validScale = Helpers.ValidTimeScales.Contains(c.Args[4]);
             if (!validScale)
             {
                 await
