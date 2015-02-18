@@ -27,6 +27,7 @@ namespace SSB.Core.Commands.None
             "africa", "asia", "eu", "na", "oceania", "sa"
         };
 
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 3;
         private UserLevel _userLevel = UserLevel.None;
 
@@ -37,6 +38,17 @@ namespace SSB.Core.Commands.None
         public ServersCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>

@@ -13,10 +13,11 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class AccountDateCmd : IBotCommand
     {
+        private readonly int _minArgs = 2;
         private readonly DbRegistrationDates _registrationDb;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
+        private bool _isIrcAccessAllowed = true;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccountDateCmd" /> class.
@@ -26,6 +27,17 @@ namespace SSB.Core.Commands.None
         {
             _ssb = ssb;
             _registrationDb = new DbRegistrationDates();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -92,7 +104,7 @@ namespace SSB.Core.Commands.None
             }
             else
             {
-                var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays*100)/100;
+                var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays * 100) / 100;
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(

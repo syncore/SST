@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
 using IrcDotNet;
+using SSB.Config.Modules;
 
 namespace SSB.Core.Modules.Irc
 {
     /// <summary>
-    ///     Class responsible for handling various events defined by the IRC protocol.
+    ///     Class responsible for explicitly handling various events defined by the IRC protocol.
     /// </summary>
-    public class IrcEvents : IrcHandler
+    public class IrcEvents : IrcEventHandlers
     {
+        private readonly IrcCommandProcessor _ircCommandProcessor;
+        private readonly IrcOptions _ircSettings;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcEvents" /> class.
         /// </summary>
-        /// <param name="ssb">The main bot class.</param>
-        public IrcEvents(SynServerBot ssb)
-            : base(ssb)
+        /// <param name="ircSettings">The irc settings.</param>
+        /// <param name="ircCommandProcessor">The irc command processor.</param>
+        public IrcEvents(IrcOptions ircSettings, IrcCommandProcessor ircCommandProcessor)
+            : base(ircSettings, ircCommandProcessor)
         {
+            _ircSettings = ircSettings;
+            _ircCommandProcessor = ircCommandProcessor;
         }
 
         /// <summary>
@@ -33,7 +40,7 @@ namespace SSB.Core.Modules.Irc
                 {
                     // Synchronous
                     // ReSharper disable once UnusedVariable
-                    var i = IrcCmdProcessor.ProcessIrcCommand(e.Source.Name, e.Text);
+                    var i = _ircCommandProcessor.ProcessIrcCommand(e.Source.Name, e.Text);
                 }
             }
             else
@@ -78,7 +85,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="client">The client.</param>
         protected override void OnClientConnect(IrcClient client)
         {
-            //
+            Debug.WriteLine("IRC client with name {0} connected to {1}",
+                client.LocalUser.NickName, client.ServerName);
         }
 
         /// <summary>
@@ -87,7 +95,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="client">The client.</param>
         protected override void OnClientDisconnect(IrcClient client)
         {
-            //
+            Debug.WriteLine("IRC client with name {0} disconnected from {1}",
+                client.LocalUser.NickName, client.ServerName);
         }
 
         /// <summary>
@@ -98,18 +107,20 @@ namespace SSB.Core.Modules.Irc
         {
             // Automatically identify with services, i.e.:
             // msg "Q@CServe.quakenet.org" AUTH user password
-            if (AutoAuthWithNickService && AuthInfoIsValid())
+            if (_ircSettings.autoAuthWithNickService && IsAuthInfoValid())
             {
                 // Has to be sent as a raw message, because IrcDotNet library
                 // does not accept '@' in message target, which is at least necessary
                 // for QuakeNet authentication.
                 // TODO: Perhaps make universal auth for networks other than Quakenet
                 client.SendRawMessage(string.Format("PRIVMSG {0} :AUTH {1} {2}",
-                    IrcNickServiceBot, IrcNickServiceUsername, IrcNickServicePassword));
+                    _ircSettings.ircNickServiceBot,
+                    _ircSettings.ircNickServiceUsername,
+                    _ircSettings.ircNickServicePassword));
             }
 
             // Join the main channel
-            var channel = Tuple.Create(MainChannel, MainChannelKey);
+            var channel = Tuple.Create(_ircSettings.ircChannel, _ircSettings.ircChannelKey);
             client.Channels.Join(channel);
         }
 
@@ -167,7 +178,7 @@ namespace SSB.Core.Modules.Irc
             }
 
             // Services (Quakenet) auto authentication
-            if (HideQuakeNetHostname)
+            if (_ircSettings.hideHostnameOnQuakeNet)
             {
                 if (e.Text.StartsWith("You are now logged in",
                     StringComparison.InvariantCultureIgnoreCase))
@@ -176,6 +187,21 @@ namespace SSB.Core.Modules.Irc
                     Debug.WriteLine("Hiding hostname...");
                 }
             }
+        }
+
+        /// <summary>
+        ///     Checks whether the information necessary for IRC nickname service
+        ///     authentication is complete.
+        /// </summary>
+        /// <returns>
+        ///     <c>true</c> if the information is complete, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        private bool IsAuthInfoValid()
+        {
+            return !string.IsNullOrEmpty(_ircSettings.ircNickServiceBot) &&
+                   !string.IsNullOrEmpty(_ircSettings.ircNickServiceUsername) &&
+                   !string.IsNullOrEmpty(_ircSettings.ircNickServicePassword);
         }
     }
 }

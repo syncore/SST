@@ -11,14 +11,14 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcHelpCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcHelpCmd" /> class.
         /// </summary>
         /// <param name="irc">The IRC interface.</param>
-        public IrcHelpCmd(IrcHandler irc)
+        public IrcHelpCmd(IrcManager irc)
         {
             MinArgs = 0;
             IsAsync = false;
@@ -66,7 +66,7 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public void Exec(CmdArgs c)
         {
-            var cmdList = _irc.IrcCmdProcessor.IrcCommandList.Select(cmd =>
+            var cmdList = IrcCommandProcessor.IrcCommandList.Select(cmd =>
                 string.Format("{0}{1}", IrcCommandProcessor.IrcCommandPrefix, cmd.Key)).ToList();
 
             //TODO: update the URL

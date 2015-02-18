@@ -11,8 +11,9 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class MuteCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 2;
+        private readonly SynServerBot _ssb;
         private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
@@ -22,6 +23,17 @@ namespace SSB.Core.Commands.Admin
         public MuteCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -52,9 +64,9 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c"></param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
         }
 
         /// <summary>
@@ -63,7 +75,7 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
+            var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
             if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
@@ -72,7 +84,9 @@ namespace SSB.Core.Commands.Admin
             else
             {
                 await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 MUTE: Player not found. Use player name without clan tag.",
+                        c.FromUser);
                 Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
                     c.Args[1]));
             }

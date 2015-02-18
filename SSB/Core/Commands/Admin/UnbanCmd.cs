@@ -10,9 +10,10 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class UnbanCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private readonly SynServerBot _ssb;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnbanCmd" /> class.
@@ -21,6 +22,17 @@ namespace SSB.Core.Commands.Admin
         public UnbanCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -51,9 +63,9 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c"></param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
         }
 
         /// <summary>

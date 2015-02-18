@@ -15,8 +15,7 @@ namespace SSB.Core.Modules.Irc
     public class IrcCommandProcessor
     {
         public const string IrcCommandPrefix = "!";
-        private readonly IrcHandler _irc;
-        private readonly Dictionary<string, IIrcCommand> _ircCommands;
+        private readonly IrcManager _irc;
         private readonly Dictionary<string, DateTime> _ircCommandUserTime;
         private readonly SynServerBot _ssb;
         private readonly string IrcCmdHelp = "help";
@@ -33,11 +32,11 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcCommandProcessor(SynServerBot ssb, IrcHandler irc)
+        public IrcCommandProcessor(SynServerBot ssb, IrcManager irc)
         {
             _ssb = ssb;
             _irc = irc;
-            _ircCommands = new Dictionary<string, IIrcCommand>
+            IrcCommandList = new Dictionary<string, IIrcCommand>
             {
                 {IrcCmdSay, new IrcSayCmd(_ssb, _irc)},
                 {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
@@ -58,10 +57,7 @@ namespace SSB.Core.Modules.Irc
         /// <value>
         ///     The IRC command list.
         /// </value>
-        public Dictionary<string, IIrcCommand> IrcCommandList
-        {
-            get { return _ircCommands; }
-        }
+        public static Dictionary<string, IIrcCommand> IrcCommandList { get; private set; }
 
         /// <summary>
         ///     Processes the IRC command.
@@ -92,30 +88,30 @@ namespace SSB.Core.Modules.Irc
             {
                 return;
             }
-            if (!Helpers.KeyExists(cmdName, _ircCommands))
+            if (!Helpers.KeyExists(cmdName, IrcCommandList))
             {
                 return;
             }
-            if (!UserHasReqLevel(fromUser, _ircCommands[cmdName].UserLevel))
+            if (!UserHasReqLevel(fromUser, IrcCommandList[cmdName].UserLevel))
             {
                 _irc.SendIrcNotice(fromUser,
                     "\u0002[ERROR]\u0002 You do not have permission to use that command.");
                 return;
             }
             var c = new CmdArgs(args, cmdName, fromUser, msg);
-            if (args.Length < _ircCommands[cmdName].MinArgs)
+            if (args.Length < IrcCommandList[cmdName].MinArgs)
             {
-                _ircCommands[cmdName].DisplayArgLengthError(c);
+                IrcCommandList[cmdName].DisplayArgLengthError(c);
                 return;
             }
             // Execute
-            if (_ircCommands[cmdName].IsAsync)
+            if (IrcCommandList[cmdName].IsAsync)
             {
-                await _ircCommands[cmdName].ExecAsync(c);
+                await IrcCommandList[cmdName].ExecAsync(c);
             }
             else
             {
-                _ircCommands[cmdName].Exec(c);
+                IrcCommandList[cmdName].Exec(c);
             }
         }
 

@@ -14,10 +14,11 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class SeenCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = true;
+        private int _minArgs = 2;
         private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SeenCmd" /> class.
@@ -27,6 +28,17 @@ namespace SSB.Core.Commands.None
         {
             _ssb = ssb;
             _seenDb = new DbSeenDates();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -83,7 +95,7 @@ namespace SSB.Core.Commands.None
             var date = _seenDb.GetLastSeenDate(c.Args[1]);
             if (date != default(DateTime))
             {
-                var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays * 100) / 100;
+                var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays*100)/100;
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(

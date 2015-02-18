@@ -10,7 +10,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcSayTeamCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly bool _isAsync = true;
         private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
@@ -21,7 +21,7 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcSayTeamCmd(SynServerBot ssb, IrcHandler irc)
+        public IrcSayTeamCmd(SynServerBot ssb, IrcManager irc)
         {
             _ssb = ssb;
             _irc = irc;

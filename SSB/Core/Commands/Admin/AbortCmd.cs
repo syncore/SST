@@ -10,9 +10,10 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class AbortCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private readonly SynServerBot _ssb;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AbortCmd" /> class.
@@ -21,6 +22,17 @@ namespace SSB.Core.Commands.Admin
         public AbortCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>

@@ -12,10 +12,11 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class AddUserCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
         private readonly DbUsers _users;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AddUserCmd" /> class.
@@ -25,6 +26,17 @@ namespace SSB.Core.Commands.Admin
         {
             _ssb = ssb;
             _users = new DbUsers();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -55,9 +67,9 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name access#^7 - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
         }
 
         /// <summary>
@@ -69,20 +81,18 @@ namespace SSB.Core.Commands.Admin
         /// </remarks>
         public async Task ExecAsync(CmdArgs c)
         {
-            // TODO: define this in terms of the enum instead of hardcoding values
             if (!c.Args[2].Equals("1") && !c.Args[2].Equals("2") && !c.Args[2].Equals("3"))
             {
                 await DisplayArgLengthError(c);
                 return;
             }
-            // TODO: define this in terms of the enum instead of hardcoding values
             if ((c.Args[2].Equals("3")) && ((_users.GetUserLevel(c.FromUser) != UserLevel.Owner)))
             {
                 await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 Only owners can add admins."));
                 return;
             }
-            string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            UserDbResult result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
+            var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
                 date);
             if (result == UserDbResult.Success)
             {

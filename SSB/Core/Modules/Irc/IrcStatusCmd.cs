@@ -14,7 +14,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcStatusCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly bool _isAsync = true;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
@@ -24,7 +24,7 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcStatusCmd(SynServerBot ssb, IrcHandler irc)
+        public IrcStatusCmd(SynServerBot ssb, IrcManager irc)
         {
             MinArgs = 0;
             _ssb = ssb;
@@ -89,13 +89,13 @@ namespace SSB.Core.Modules.Irc
             var serverDetails = await GetServerDetails(_ssb.ServerInfo.CurrentServerId);
             if (serverDetails == null)
             {
-                _irc.SendIrcMessage(_irc.MainChannel,
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     "\u0003\u0002[ERROR]\u0002 Unable to retrieve server information.");
                 return;
             }
             var gametype = (QlGameTypes) serverDetails.game_type;
 
-            _irc.SendIrcMessage(_irc.MainChannel,
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                 Helpers.IsQuakeLiveTeamGame(gametype)
                     ? FormatTeamGameStatusMessage(serverDetails)
                     : FormatNonTeamGameStatusMessage(serverDetails));

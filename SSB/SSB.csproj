@@ -137,13 +137,14 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\Modules\EarlyQuitHandler.cs" />
+    <Compile Include="Core\Modules\Irc\IrcEventHandlers.cs" />
     <Compile Include="Core\Modules\Irc\IrcHelpCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcModsCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcOpMeCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcSayCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcCommandProcessor.cs" />
     <Compile Include="Core\Modules\Irc\IrcEvents.cs" />
-    <Compile Include="Core\Modules\Irc\IrcHandler.cs" />
+    <Compile Include="Core\Modules\Irc\IrcManager.cs" />
     <Compile Include="Core\Modules\Irc\IrcSayTeamCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcStatusCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcUsersCmd.cs" />

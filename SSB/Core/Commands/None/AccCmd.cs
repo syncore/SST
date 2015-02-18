@@ -14,9 +14,10 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class AccCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccCmd" /> class.
@@ -25,6 +26,17 @@ namespace SSB.Core.Commands.None
         public AccCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -84,7 +96,7 @@ namespace SSB.Core.Commands.None
                         c.Args[1]));
                 return;
             }
-            
+
             if (!Helpers.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
@@ -127,7 +139,7 @@ namespace SSB.Core.Commands.None
         private string FormatAccString(string player)
         {
             var aBuilder = new StringBuilder();
-            AccuracyInfo playerAcc = _ssb.ServerInfo.CurrentPlayers[player].Acc;
+            var playerAcc = _ssb.ServerInfo.CurrentPlayers[player].Acc;
             if (playerAcc == null || !playerAcc.HasAcc())
             {
                 Debug.WriteLine(
@@ -194,15 +206,15 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Determines whether the owner is currently playing on the same account as the bot, and
-        /// prevents accuracy scanning from taking place, in addition to silently disabling it as well.
+        ///     Determines whether the owner is currently playing on the same account as the bot, and
+        ///     prevents accuracy scanning from taking place, in addition to silently disabling it as well.
         /// </summary>
         /// <returns><c>true</c> if the owner is currently playing on the bot account, otherwise <c>false</c>.</returns>
         private bool IsBotPlayer()
         {
             // We've joined the game. Disable scanning.
-            bool botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Red ||
-                                _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Blue);
+            var botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Red ||
+                               _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Blue);
 
             if (botIsPlayer)
             {
@@ -217,19 +229,19 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Retrieves the accuracy.
+        ///     Retrieves the accuracy.
         /// </summary>
         /// <param name="c">The c.</param>
         private async Task RetrieveAccuracy(CmdArgs c)
         {
             var player = c.Args[1];
             _ssb.QlCommands.SendToQl("team s", false);
-            int id = _ssb.ServerEventProcessor.GetPlayerId(player);
+            var id = _ssb.ServerEventProcessor.GetPlayerId(player);
             if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("follow {0}", id), true);
             }
-            
+
             _ssb.ServerInfo.PlayerCurrentlyFollowing = player;
             Debug.WriteLine("Attempting to follow player: " + player);
             await StartAccuracyRead();
@@ -237,14 +249,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Shows the accuracy of a single player.
+        ///     Shows the accuracy of a single player.
         /// </summary>
         /// <param name="c">The c.</param>
         private async Task ShowAccSinglePlayer(CmdArgs c)
         {
-            string player = c.Args[1];
+            var player = c.Args[1];
             await RetrieveAccuracy(c);
-            string accStr = FormatAccString(player);
+            var accStr = FormatAccString(player);
             await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 accuracy: {1}",
                 player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr)));
         }

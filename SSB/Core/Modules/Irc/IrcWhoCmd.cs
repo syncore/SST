@@ -11,7 +11,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcWhoCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
 
@@ -20,7 +20,7 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcWhoCmd(SynServerBot ssb, IrcHandler irc)
+        public IrcWhoCmd(SynServerBot ssb, IrcManager irc)
         {
             MinArgs = 0;
             IsAsync = false;
@@ -91,7 +91,7 @@ namespace SSB.Core.Modules.Irc
                 }
             }
 
-            _irc.SendIrcMessage(_irc.MainChannel, string.Format("\u0003[\u0002{0}\u0002 players] {1}",
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003[\u0002{0}\u0002 players] {1}",
                 _ssb.ServerInfo.CurrentPlayers.Count, sb.ToString().TrimEnd(',', ' ')));
         }
 

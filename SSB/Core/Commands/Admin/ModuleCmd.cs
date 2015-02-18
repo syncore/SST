@@ -25,6 +25,7 @@ namespace SSB.Core.Commands.Admin
         private const string ActiveModuleArg = "active";
         private readonly SynServerBot _ssb;
         private readonly List<string> _validModuleNames;
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
 
@@ -47,6 +48,17 @@ namespace SSB.Core.Commands.Admin
                 PickupArg,
                 ServersArg
             };
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>

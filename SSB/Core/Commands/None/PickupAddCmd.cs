@@ -11,9 +11,10 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class PickupAddCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = false;
         private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly SynServerBot _ssb;
+        private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupAddCmd" /> class.
@@ -25,6 +26,17 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed 
+        {
+            get { return _isIrcAccessAllowed; } 
+        }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -33,6 +45,7 @@ namespace SSB.Core.Commands.None
         public int MinArgs
         {
             get { return _minArgs; }
+            
         }
 
         /// <summary>

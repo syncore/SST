@@ -13,9 +13,8 @@ namespace SSB.Core.Commands.Admin
     {
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
-
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 1;
-
         private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
@@ -26,6 +25,17 @@ namespace SSB.Core.Commands.Admin
         {
             _ssb = ssb;
             _users = new DbUsers();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -56,9 +66,9 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} user - user is without clantag",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
         }
 
         /// <summary>
@@ -70,8 +80,8 @@ namespace SSB.Core.Commands.Admin
         /// </remarks>
         public async Task ExecAsync(CmdArgs c)
         {
-            UserLevel todelUserLevel = _users.GetUserLevel(c.Args[1]);
-            UserDbResult result = _users.DeleteUserFromDb(c.Args[1], c.FromUser, _users.GetUserLevel(c.FromUser));
+            var todelUserLevel = _users.GetUserLevel(c.Args[1]);
+            var result = _users.DeleteUserFromDb(c.Args[1], c.FromUser, _users.GetUserLevel(c.FromUser));
             if (result == UserDbResult.Success)
             {
                 await _ssb.QlCommands.QlCmdSay(

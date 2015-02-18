@@ -7,8 +7,16 @@ namespace SSB.Interfaces
     /// <summary>
     ///     Interface for bot commands.
     /// </summary>
-    internal interface IBotCommand
+    public interface IBotCommand
     {
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        bool IsIrcAccessAllowed { get; }
+
         /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>

@@ -12,6 +12,7 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class MapCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = true;
         private readonly SynServerBot _ssb;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.Admin;
@@ -25,6 +26,17 @@ namespace SSB.Core.Commands.Admin
             _ssb = ssb;
         }
 
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
+        
         /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
@@ -53,9 +65,9 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c"></param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} map",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
         }
 
         /// <summary>

@@ -8,16 +8,17 @@ using SSB.Util;
 namespace SSB.Core.Commands.None
 {
     /// <summary>
-    /// Command: vote yes to a team balance suggestion.
+    ///     Command: vote yes to a team balance suggestion.
     /// </summary>
     public class AcceptTeamSuggestCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
+        private readonly UserLevel _userLevel = UserLevel.None;
         private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.None;
+        private bool _isIrcAccessAllowed = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AcceptTeamSuggestCmd"/> class.
+        ///     Initializes a new instance of the <see cref="AcceptTeamSuggestCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
         public AcceptTeamSuggestCmd(SynServerBot ssb)
@@ -26,21 +27,33 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Gets the minimum arguments.
+        ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
-        /// The minimum arguments.
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public int MinArgs
+        public bool IsIrcAccessAllowed
         {
-            get { return _minArgs; }
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        /// Gets the user level.
+        ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
-        /// The user level.
+        ///     The minimum arguments.
+        /// </value>
+        public int MinArgs
+        {
+            get { return _minArgs;}
+            
+        }
+
+        /// <summary>
+        ///     Gets the user level.
+        /// </summary>
+        /// <value>
+        ///     The user level.
         /// </value>
         public UserLevel UserLevel
         {
@@ -48,7 +61,7 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Displays the argument length error.
+        ///     Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
         /// <returns>null, since this command requires no arguments.</returns>
@@ -58,7 +71,7 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
@@ -66,24 +79,26 @@ namespace SSB.Core.Commands.None
             if (!_ssb.VoteManager.IsTeamSuggestionVotePending)
             {
                 await _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 A team balance vote is not in progress.");
+                    "^1[ERROR]^3 A team balance vote is not in progress.");
                 return;
             }
             if (!Helpers.KeyExists(c.FromUser, _ssb.ServerInfo.CurrentPlayers))
             {
-                Debug.WriteLine(string.Format("{0} is not in the list of current players, ignoring vote", c.FromUser));
+                Debug.WriteLine(string.Format("{0} is not in the list of current players, ignoring vote",
+                    c.FromUser));
                 return;
             }
-            if (_ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.None) || _ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.Spec))
+            if (_ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.None) ||
+                _ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.Spec))
             {
                 await _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Only active players may vote.");
+                    "^1[ERROR]^3 Only active players may vote.");
                 return;
             }
             if (Helpers.KeyExists(c.FromUser, _ssb.VoteManager.TeamSuggestionVoters))
             {
                 await _ssb.QlCommands.QlCmdSay(
-                        string.Format("^1[ERROR]^3 {0} has already voted.", c.FromUser));
+                    string.Format("^1[ERROR]^3 {0} has already voted.", c.FromUser));
                 return;
             }
             _ssb.VoteManager.TeamSuggestionYesVoteCount++;

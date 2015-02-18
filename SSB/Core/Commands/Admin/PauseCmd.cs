@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -13,8 +12,9 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class PauseCmd : IBotCommand
     {
-        private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 0;
+        private readonly SynServerBot _ssb;
         private UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
@@ -24,6 +24,17 @@ namespace SSB.Core.Commands.Admin
         public PauseCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -83,7 +94,6 @@ namespace SSB.Core.Commands.Admin
             {
                 Debug.WriteLine("PAUSE: Server id is empty. Now trying to request serverinfo...");
                 await _ssb.QlCommands.QlCmdServerInfo();
-                //return QlGameStates.Unspecified;
             }
             var qlApiQuery = new QlRemoteInfoRetriever();
             var gs = await qlApiQuery.GetGameState(serverId);

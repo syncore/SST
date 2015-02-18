@@ -11,7 +11,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcModsCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private bool _isAsync = false;
@@ -22,7 +22,7 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcModsCmd(SynServerBot ssb, IrcHandler irc)
+        public IrcModsCmd(SynServerBot ssb, IrcManager irc)
         {
             _ssb = ssb;
             _irc = irc;
@@ -78,7 +78,7 @@ namespace SSB.Core.Modules.Irc
             var activeMods = _ssb.Mod.GetActiveModules();
             if (activeMods.Count == 0)
             {
-                _irc.SendIrcMessage(_irc.MainChannel,
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     string.Format("\u0003My server has no active modules loaded at this time"));
                 return;
             }
@@ -89,7 +89,7 @@ namespace SSB.Core.Modules.Irc
                 sb.Append(string.Format("\u00033{0}\u0003, ", mod.ModuleName));
             }
 
-            _irc.SendIrcMessage(_irc.MainChannel, string.Format("\u0003My server has \u0002{0}\u0002 active modules loaded: {1}",
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003My server has \u0002{0}\u0002 active modules loaded: {1}",
                 activeMods.Count, sb.ToString().TrimEnd(',', ' ')));
         }
 

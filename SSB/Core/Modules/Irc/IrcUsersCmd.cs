@@ -12,7 +12,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcUsersCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private readonly DbUsers _usersDb;
@@ -22,7 +22,7 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
-        public IrcUsersCmd(SynServerBot ssb, IrcHandler irc)
+        public IrcUsersCmd(SynServerBot ssb, IrcManager irc)
         {
             MinArgs = 0;
             IsAsync = false;
@@ -74,7 +74,7 @@ namespace SSB.Core.Modules.Irc
         {
             if (_ssb.ServerInfo.CurrentPlayers.Count == 0)
             {
-                _irc.SendIrcMessage(_irc.MainChannel,
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     string.Format("\u0003My server has no players at this time."));
                 return;
             }
@@ -86,7 +86,7 @@ namespace SSB.Core.Modules.Irc
                     player.Key, _usersDb.GetUserLevel(player.Key)));
             }
 
-            _irc.SendIrcMessage(_irc.MainChannel,
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                 string.Format("\u0003My server's current players have the following access levels: {0}",
                     sb.ToString().TrimEnd(',', ' ')));
         }

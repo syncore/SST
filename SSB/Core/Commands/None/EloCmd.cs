@@ -14,6 +14,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class EloCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = true;
         private readonly QlRanksEloRetriever _qlrEloRetriever;
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
@@ -29,6 +30,17 @@ namespace SSB.Core.Commands.None
             _ssb = ssb;
             _qlrEloRetriever = new QlRanksEloRetriever();
             _qlrHelper = new QlRanksHelper();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>

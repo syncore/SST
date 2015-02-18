@@ -11,21 +11,33 @@ using SSB.Util;
 namespace SSB.Core.Commands.None
 {
     /// <summary>
-    /// Command: find the QL server location for a user-specified player.
+    ///     Command: find the QL server location for a user-specified player.
     /// </summary>
     public class FindPlayerCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FindPlayerCmd"/> class.
+        ///     Initializes a new instance of the <see cref="FindPlayerCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
         public FindPlayerCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -62,7 +74,7 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
@@ -119,27 +131,30 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Displays the search results.
+        ///     Displays the search results.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="server">The server.</param>
         private async Task DisplaySearchResults(string player, Server server)
         {
             var qlLoc = new QlLocations();
-            string country = qlLoc.GetLocationNameFromId(server.location_id);
+            var country = qlLoc.GetLocationNameFromId(server.location_id);
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^6[PLAYERFINDER] ^7Found ^3{0}^7 on [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
-                    player, country, server.map, server.num_clients, server.max_clients, server.host_address));
+                        player, country, server.map, server.num_clients, server.max_clients,
+                        server.host_address));
         }
 
         /// <summary>
-        /// Does the server query.
+        ///     Does the server query.
         /// </summary>
         /// <param name="player">The player.</param>
-        /// <param name="usePrivate">if set to <c>true</c> then query private (private 1) servers. otherwise
-        /// query public (private 0) servers.</param>
-        /// <returns>The results of the query as a <see cref="FilterObject"/> object.</returns>
+        /// <param name="usePrivate">
+        ///     if set to <c>true</c> then query private (private 1) servers. otherwise
+        ///     query public (private 0) servers.
+        /// </param>
+        /// <returns>The results of the query as a <see cref="FilterObject" /> object.</returns>
         private async Task<FilterObject> DoServerQuery(string player, bool usePrivate)
         {
             var qlInfoRetriever = new QlRemoteInfoRetriever();
@@ -148,18 +163,21 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Makes the encoded filter.
+        ///     Makes the encoded filter.
         /// </summary>
         /// <param name="player">The player to find.</param>
-        /// <param name="usePrivate">if set to <c>true</c> then query private (private 1) servers. otherwise
-        /// query public (private 0) servers.</param>
+        /// <param name="usePrivate">
+        ///     if set to <c>true</c> then query private (private 1) servers. otherwise
+        ///     query public (private 0) servers.
+        /// </param>
         /// <returns>The base64-encoded JSON as a string.</returns>
         private string MakeEncodedFilter(string player, bool usePrivate)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(
                 "{\"filters\":{\"group\":\"all\",\"game_type\":\"any\",\"arena\":\"any\",\"state\":\"POPULATED\"," +
                 "\"difficulty\":\"any\",\"location\":\"ALL\",\"private\":\"" + (usePrivate ? "1" : "0") +
-                "\",\"premium_only\":0,\"ranked\":\"any\",\"invitation_only\":0},\"arena_type\":\"\",\"players\":[\"" + player + "\"]," +
+                "\",\"premium_only\":0,\"ranked\":\"any\",\"invitation_only\":0},\"arena_type\":\"\",\"players\":[\"" +
+                player + "\"]," +
                 "\"game_types\":[5,4,3,0,1,2,9,10,11,8,6,7],\"ig\":0}"));
         }
     }

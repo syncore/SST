@@ -10,9 +10,10 @@ namespace SSB.Core.Commands.Owner
     /// </summary>
     public class StopServerCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Owner;
+        private readonly UserLevel _userLevel = UserLevel.Owner;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="StopServerCmd" /> class.
@@ -21,6 +22,17 @@ namespace SSB.Core.Commands.Owner
         public StopServerCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -63,7 +75,7 @@ namespace SSB.Core.Commands.Owner
         public async Task ExecAsync(CmdArgs c)
         {
             int delay;
-            bool delayIsNum = (int.TryParse(c.Args[1], out delay));
+            var delayIsNum = (int.TryParse(c.Args[1], out delay));
             if (delayIsNum)
             {
                 await
@@ -71,7 +83,7 @@ namespace SSB.Core.Commands.Owner
                         string.Format(
                             "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
                             delay));
-                
+
                 // ReSharper disable once UnusedVariable
                 var s = Task.Run(async delegate
                 {

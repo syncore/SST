@@ -11,14 +11,14 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcOpMeCmd : IIrcCommand
     {
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcOpMeCmd" /> class.
         /// </summary>
         /// <param name="irc">The IRC interface.</param>
-        public IrcOpMeCmd(IrcHandler irc)
+        public IrcOpMeCmd(IrcManager irc)
         {
             MinArgs = 0;
             IsAsync = false;
@@ -66,7 +66,7 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public void Exec(CmdArgs c)
         {
-            if (!c.FromUser.Equals(_irc.IrcAdminNickname, StringComparison.InvariantCultureIgnoreCase))
+            if (!c.FromUser.Equals(_irc.IrcSettings.ircAdminNickname, StringComparison.InvariantCultureIgnoreCase))
             {
                 _irc.SendIrcNotice(c.FromUser,
                     "\u0002[ERROR]\u0002 You do not have permission to access this command.");

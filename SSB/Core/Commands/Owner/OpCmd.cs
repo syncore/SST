@@ -11,9 +11,10 @@ namespace SSB.Core.Commands.Owner
     /// </summary>
     public class OpCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 2;
-        private UserLevel _userLevel = UserLevel.Owner;
+        private readonly UserLevel _userLevel = UserLevel.Owner;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="OpCmd" /> class.
@@ -22,6 +23,17 @@ namespace SSB.Core.Commands.Owner
         public OpCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -63,7 +75,7 @@ namespace SSB.Core.Commands.Owner
         /// <param name="c">The c.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            int id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
+            var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
             if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);

@@ -16,9 +16,9 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "irc";
         private readonly ConfigHandler _configHandler;
-        private readonly IrcHandler _irc;
+        private readonly IrcManager _irc;
+        private readonly int _minModuleArgs = 3;
         private readonly SynServerBot _ssb;
-        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Irc" /> class.
@@ -28,7 +28,7 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _irc = new IrcHandler(_ssb);
+            _irc = new IrcManager(_ssb);
             LoadConfig();
         }
 
@@ -69,9 +69,9 @@ namespace SSB.Core.Commands.Modules
         /// <returns></returns>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            await _ssb.QlCommands.QlCmdTell(string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect> ^7 - this uses server info from config file!",
-                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg));
+                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
         }
 
         /// <summary>
@@ -107,10 +107,10 @@ namespace SSB.Core.Commands.Modules
                 if (Active)
                 {
                     await
-                        _ssb.QlCommands.QlCmdSay(
+                        _ssb.QlCommands.QlCmdTell(
                             string.Format(
                                 "^1[ERROR]^3 IRC module is already enabled. To disable: {0}{1} {2} off ",
-                                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg));
+                                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
                     return;
                 }
                 // Validity check
@@ -122,8 +122,8 @@ namespace SSB.Core.Commands.Modules
                 else
                 {
                     await
-                        _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 Invalid IRC setting(s) found in config. Cannot load.");
+                        _ssb.QlCommands.QlCmdTell(
+                            "^1[ERROR]^3 Invalid IRC setting(s) found in config. Cannot load.", c.FromUser);
                 }
             }
             if (c.Args[2].Equals("disconnect"))
@@ -131,13 +131,13 @@ namespace SSB.Core.Commands.Modules
                 if (!Active)
                 {
                     await
-                       _ssb.QlCommands.QlCmdSay(
-                           string.Format(
-                               "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
-                               CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg));
-                    //return;
+                        _ssb.QlCommands.QlCmdTell(
+                            string.Format(
+                                "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
+                                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
+                    return;
                 }
-                // TODO: Do disconnection here
+                _irc.Disconnect();
             }
         }
 
@@ -185,15 +185,16 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         private async Task DisableIrc(CmdArgs c)
         {
-            // TODO: Perform an IRC disconnection here
+            _irc.Disconnect();
             UpdateConfig(false);
             await
-                _ssb.QlCommands.QlCmdTell("^2[SUCCESS]^7 Internet Relay Chat module disabled. Existing connection has been terminated.",
-                c.FromUser);
+                _ssb.QlCommands.QlCmdTell(
+                    "^2[SUCCESS]^7 Internet Relay Chat module disabled. Existing connection has been terminated.",
+                    c.FromUser);
         }
 
         /// <summary>
-        /// Enables the IRC module and makes the initial connection to the IRC server.
+        ///     Enables the IRC module and makes the initial connection to the IRC server.
         /// </summary>
         /// <param name="c">The c.</param>
         private async Task EnableIrc(CmdArgs c)
@@ -221,8 +222,10 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         ///     Automatically starts the module if an active flag is detected in the configuration.
         /// </summary>
-        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
-        /// server on load, if applicable.</remarks>
+        /// <remarks>
+        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
+        ///     server on load, if applicable.
+        /// </remarks>
         private void Init()
         {
             Debug.WriteLine("Active flag detected in saved configuration; auto-initializing IRC module.");

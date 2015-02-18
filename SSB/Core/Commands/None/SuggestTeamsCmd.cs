@@ -10,7 +10,6 @@ using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
-using Timer = System.Timers.Timer;
 
 namespace SSB.Core.Commands.None
 {
@@ -19,15 +18,16 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class SuggestTeamsCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = true;
+        private int _minArgs = 0;
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
+        private readonly Timer _suggestionTimer;
         private readonly TeamBalancer _teamBalancer;
+        private readonly UserLevel _userLevel = UserLevel.None;
         private readonly DbUsers _users;
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
-        private int _minArgs = 0;
-        private readonly Timer _suggestionTimer;
-        private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SuggestTeamsCmd" /> class.
@@ -42,6 +42,17 @@ namespace SSB.Core.Commands.None
             _balancedRedTeam = new List<PlayerInfo>();
             _balancedBlueTeam = new List<PlayerInfo>();
             _suggestionTimer = new Timer();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -106,9 +117,9 @@ namespace SSB.Core.Commands.None
 
             var blueTeam = _ssb.ServerInfo.GetTeam(Team.Blue);
             var redTeam = _ssb.ServerInfo.GetTeam(Team.Red);
-            int redAndBlueTotalPlayers = (blueTeam.Count + redTeam.Count);
+            var redAndBlueTotalPlayers = (blueTeam.Count + redTeam.Count);
 
-            if ((redAndBlueTotalPlayers) % 2 != 0)
+            if ((redAndBlueTotalPlayers)%2 != 0)
             {
                 await
                     _ssb.QlCommands.QlCmdSay(
@@ -132,7 +143,8 @@ namespace SSB.Core.Commands.None
             }
 
             // SuperUser or higher... Force the vote
-            if ((c.Args.Length == 2) && (c.Args[1].Equals("force", StringComparison.InvariantCultureIgnoreCase)))
+            if ((c.Args.Length == 2) &&
+                (c.Args[1].Equals("force", StringComparison.InvariantCultureIgnoreCase)))
             {
                 if (_users.GetUserLevel(c.FromUser) < UserLevel.SuperUser)
                 {
@@ -148,12 +160,45 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Initiates the balance process.
+        ///     Gets and displays the results.
+        /// </summary>
+        /// <param name="teamRed">The red team.</param>
+        /// <param name="teamBlue">The blue team.</param>
+        private async Task DisplayBalanceResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue)
+        {
+            var red = new StringBuilder();
+            var blue = new StringBuilder();
+
+            foreach (var player in teamRed)
+            {
+                red.Append(string.Format("^1{0}^7, ", player.ShortName));
+            }
+            foreach (var player in teamBlue)
+            {
+                blue.Append(string.Format("^5{0}^7, ", player.ShortName));
+            }
+
+            await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:");
+            await
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^1[RED]: {0}", red.ToString().TrimEnd(',', ' ')));
+
+            await
+                _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^5[BLUE]: {0}", blue.ToString().TrimEnd(',', ' ')));
+        }
+
+        /// <summary>
+        ///     Initiates the balance process.
         /// </summary>
         /// <param name="redTeam">The red team.</param>
         /// <param name="blueTeam">The blue team.</param>
-        /// <param name="isForcedBalance">if set to <c>true</c> then a user with required permissions is forcing balance; vote will be bypassed.</param>
-        private async Task InitiateBalance(List<PlayerInfo> redTeam, List<PlayerInfo> blueTeam, bool isForcedBalance)
+        /// <param name="isForcedBalance">
+        ///     if set to <c>true</c> then a user with required permissions is forcing balance; vote will
+        ///     be bypassed.
+        /// </param>
+        private async Task InitiateBalance(List<PlayerInfo> redTeam, List<PlayerInfo> blueTeam,
+            bool isForcedBalance)
         {
             try
             {
@@ -162,14 +207,17 @@ namespace SSB.Core.Commands.None
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Could not verify all players' Elo data. Will skip team suggestion." + ex.Message);
+                Debug.WriteLine("Could not verify all players' Elo data. Will skip team suggestion." +
+                                ex.Message);
             }
 
             var allPlayers = redTeam;
             allPlayers.AddRange(blueTeam);
-            _balancedRedTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType, Team.Red);
-            _balancedBlueTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType, Team.Blue);
-            await DisplayBalanceResults(_balancedRedTeam, _balancedBlueTeam, _ssb.ServerInfo.CurrentServerGameType);
+            _balancedRedTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType,
+                Team.Red);
+            _balancedBlueTeam = _teamBalancer.DoBalance(allPlayers, _ssb.ServerInfo.CurrentServerGameType,
+                Team.Blue);
+            await DisplayBalanceResults(_balancedRedTeam, _balancedBlueTeam);
             if (!isForcedBalance)
             {
                 await StartTeamSuggestionVote();
@@ -184,14 +232,34 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Starts the team suggestion vote and associated timer.
+        ///     Moves the players to the suggested teams.
+        /// </summary>
+        private async Task MovePlayersToBalancedTeams()
+        {
+            await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
+            foreach (var player in _balancedBlueTeam)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Blue);
+            }
+            foreach (var player in _balancedRedTeam)
+            {
+                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Red);
+            }
+        }
+
+        /// <summary>
+        ///     Starts the team suggestion vote and associated timer.
         /// </summary>
         private async Task StartTeamSuggestionVote()
         {
             double interval = 20000;
 
-            await _ssb.QlCommands.QlCmdSay(string.Format("^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
-                (interval / 1000), CommandProcessor.BotCommandPrefix, CommandProcessor.CmdAcceptTeamSuggestion, CommandProcessor.CmdRejectTeamSuggestion));
+            await
+                _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
+                        (interval/1000), CommandProcessor.BotCommandPrefix,
+                        CommandProcessor.CmdAcceptTeamSuggestion, CommandProcessor.CmdRejectTeamSuggestion));
             _suggestionTimer.Interval = interval;
             _suggestionTimer.Elapsed += TeamSuggestionTimerElapsed;
             _suggestionTimer.AutoReset = false;
@@ -200,10 +268,10 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Method called when the teams suggestion vote timer has elapsed.
+        ///     Method called when the teams suggestion vote timer has elapsed.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
         private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
         {
             // Do balance if enough votes
@@ -229,76 +297,28 @@ namespace SSB.Core.Commands.None
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Caught exception in TeamSuggestionTimerElapsed asynchronous void (event handler) method: " + ex.Message);
+                Debug.WriteLine(
+                    "Caught exception in TeamSuggestionTimerElapsed asynchronous void (event handler) method: " +
+                    ex.Message);
             }
         }
 
         /// <summary>
-        /// Moves the players to the suggested teams.
-        /// </summary>
-        private async Task MovePlayersToBalancedTeams()
-        {
-            await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
-            foreach (var player in _balancedBlueTeam)
-            {
-                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Blue);
-            }
-            foreach (var player in _balancedRedTeam)
-            {
-                await _ssb.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Red);
-            }
-        }
-
-        /// <summary>
-        /// Gets and displays the results.
-        /// </summary>
-        /// <param name="teamRed">The red team.</param>
-        /// <param name="teamBlue">The blue team.</param>
-        /// <param name="gametype">The gametype.</param>
-        private async Task DisplayBalanceResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue, QlGameTypes gametype)
-        {
-            //long redTeamElo = teamRed.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            //long redTeamAvgElo = (redTeamElo / teamRed.Count);
-            //long blueTeamElo = teamBlue.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            //long blueTeamAvgElo = (blueTeamElo / teamBlue.Count);
-            var red = new StringBuilder();
-            var blue = new StringBuilder();
-
-            foreach (var player in teamRed)
-            {
-                //red.Append(string.Format("^1{0} [{1}]^7, ", player.ShortName,
-                    //player.EloData.GetEloFromGameType(gametype)));
-                red.Append(string.Format("^1{0}^7, ", player.ShortName));
-            }
-            foreach (var player in teamBlue)
-            {
-                //blue.Append(string.Format("^5{0} [{1}]^7, ", player.ShortName,
-                    //player.EloData.GetEloFromGameType(gametype)));
-                blue.Append(string.Format("^5{0}^7, ", player.ShortName));
-            }
-
-            await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:");
-            await
-                _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^1[RED]: {0}", red.ToString().TrimEnd(',', ' ')));
-
-            await
-                _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^5[BLUE]: {0}", blue.ToString().TrimEnd(',', ' ')));
-        }
-
-        /// <summary>
-        /// Verify all player elo data.
+        ///     Verify all player elo data.
         /// </summary>
         /// <param name="players">The players.</param>
         /// <returns></returns>
         /// <exception cref="System.Exception">Unable to verify player Elo data</exception>
         private async Task VerifyElo(Dictionary<string, PlayerInfo> players)
         {
-            var update = (from player in players where _qlrHelper.PlayerHasInvalidEloData(player.Value) select player.Key).ToList();
+            var update =
+                (from player in players
+                    where _qlrHelper.PlayerHasInvalidEloData(player.Value)
+                    select player.Key).ToList();
             if (update.Any())
             {
-                var qlrData = await _qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, update);
+                var qlrData =
+                    await _qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, update);
                 if (qlrData == null)
                 {
                     await _ssb.QlCommands.QlCmdSay(

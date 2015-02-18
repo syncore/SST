@@ -11,6 +11,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class PickupSubCmd : IBotCommand
     {
+        private bool _isIrcAccessAllowed = false;
         private readonly SynServerBot _ssb;
         private int _minArgs = 2;
         private UserLevel _userLevel = UserLevel.None;
@@ -22,6 +23,17 @@ namespace SSB.Core.Commands.None
         public PickupSubCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
