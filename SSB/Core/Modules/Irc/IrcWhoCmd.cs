@@ -75,23 +75,23 @@ namespace SSB.Core.Modules.Irc
             {
                 if (player.Value.Team == Team.Blue)
                 {
-                    sb.Append(string.Format("\u000311{0}\u00030,", player.Key));
+                    sb.Append(string.Format("\u000311{0}\u00030, ", player.Key));
                 }
                 if (player.Value.Team == Team.Red)
                 {
-                    sb.Append(string.Format("\u000304{0}\u00030,", player.Key));
+                    sb.Append(string.Format("\u000304{0}\u00030, ", player.Key));
                 }
                 if (player.Value.Team == Team.Spec)
                 {
-                    sb.Append(string.Format("\u000314{0}\u00030,", player.Key));
+                    sb.Append(string.Format("\u000314{0}\u00030, ", player.Key));
                 }
                 if (player.Value.Team == Team.None)
                 {
-                    sb.Append(string.Format("\u00030{0}\u00030,", player.Key));
+                    sb.Append(string.Format("\u00030{0}\u00030, ", player.Key));
                 }
             }
 
-            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003[\u0002{0}\u0002 players] {1}",
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003[\u0002{0}\u0002 players currently on server] {1}",
                 _ssb.ServerInfo.CurrentPlayers.Count, sb.ToString().TrimEnd(',', ' ')));
         }
 

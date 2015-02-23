@@ -73,7 +73,7 @@ namespace SSB.Core.Modules.Irc
             _irc.SendIrcNotice(c.FromUser,
                 string.Format(
                     "\u0003[COMMANDS]: \u0002{0}\u0002 - for more information, visit: http://ssb.syncore.org/help",
-                    string.Join(",", cmdList)));
+                    string.Join(", ", cmdList)));
         }
 
         /// <summary>

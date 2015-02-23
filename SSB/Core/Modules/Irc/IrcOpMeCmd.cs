@@ -11,6 +11,8 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcOpMeCmd : IIrcCommand
     {
+        private int _minArgs = 0;
+        private bool _isAsync = false;
         private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
 
@@ -20,15 +22,16 @@ namespace SSB.Core.Modules.Irc
         /// <param name="irc">The IRC interface.</param>
         public IrcOpMeCmd(IrcManager irc)
         {
-            MinArgs = 0;
-            IsAsync = false;
             _irc = irc;
         }
 
         /// <summary>
         ///     Gets a value that determines whether this command is to be executed asynchronously.
         /// </summary>
-        public bool IsAsync { get; private set; }
+        public bool IsAsync 
+        {
+            get { return _isAsync; } 
+        }
 
         /// <summary>
         ///     Gets the minimum arguments.
@@ -36,7 +39,10 @@ namespace SSB.Core.Modules.Irc
         /// <value>
         ///     The minimum arguments.
         /// </value>
-        public int MinArgs { get; private set; }
+        public int MinArgs
+        {
+            get { return _minArgs; }
+        }
 
         /// <summary>
         ///     Gets the user level.

@@ -19,7 +19,6 @@ namespace SSB.Core.Modules.Irc
         /// <param name="ircSettings">The irc settings.</param>
         /// <param name="ircCommandProcessor">The irc command processor.</param>
         public IrcEvents(IrcOptions ircSettings, IrcCommandProcessor ircCommandProcessor)
-            : base(ircSettings, ircCommandProcessor)
         {
             _ircSettings = ircSettings;
             _ircCommandProcessor = ircCommandProcessor;
@@ -85,8 +84,11 @@ namespace SSB.Core.Modules.Irc
         /// <param name="client">The client.</param>
         protected override void OnClientConnect(IrcClient client)
         {
-            Debug.WriteLine("IRC client with name {0} connected to {1}",
-                client.LocalUser.NickName, client.ServerName);
+            if (client.LocalUser != null)
+            {
+                Debug.WriteLine("IRC client with name {0} connected to IRC {1}",
+                    client.LocalUser.NickName, client.LocalUser.ServerName);
+            }
         }
 
         /// <summary>
@@ -95,8 +97,11 @@ namespace SSB.Core.Modules.Irc
         /// <param name="client">The client.</param>
         protected override void OnClientDisconnect(IrcClient client)
         {
-            Debug.WriteLine("IRC client with name {0} disconnected from {1}",
-                client.LocalUser.NickName, client.ServerName);
+            if (client.LocalUser != null && client.ServerName != null)
+            {
+                Debug.WriteLine("IRC client with name {0} disconnected from {1}",
+                    client.LocalUser.NickName, client.ServerName);
+            }
         }
 
         /// <summary>

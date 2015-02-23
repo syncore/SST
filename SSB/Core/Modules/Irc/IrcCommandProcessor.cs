@@ -40,7 +40,6 @@ namespace SSB.Core.Modules.Irc
             {
                 {IrcCmdSay, new IrcSayCmd(_ssb, _irc)},
                 {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
-                {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
                 {IrcCmdWho, new IrcWhoCmd(_ssb, _irc)},
                 {IrcCmdStatus, new IrcStatusCmd(_ssb, _irc)},
                 {IrcCmdMods, new IrcModsCmd(_ssb, _irc)},

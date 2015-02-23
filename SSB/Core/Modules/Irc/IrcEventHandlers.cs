@@ -1,32 +1,13 @@
 ﻿using System;
 using IrcDotNet;
-using SSB.Config.Modules;
 
 namespace SSB.Core.Modules.Irc
 {
     /// <summary>
-    /// Class that specifies various IRC-related event handlers.
+    ///     Class that specifies various IRC-related event handlers.
     /// </summary>
     public class IrcEventHandlers
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IrcEventHandlers"/> class.
-        /// </summary>
-        /// <param name="ircSettings">The irc settings.</param>
-        /// <param name="ircCommandProcessor">The irc command processor.</param>
-        public IrcEventHandlers(IrcOptions ircSettings, IrcCommandProcessor ircCommandProcessor)
-        {
-            Events = new IrcEvents(ircSettings, ircCommandProcessor);
-        }
-
-        /// <summary>
-        /// Gets the events.
-        /// </summary>
-        /// <value>
-        /// The events.
-        /// </value>
-        public IrcEvents Events { get; private set; }
-
         /// <summary>
         ///     Handles the Connected event of the IrcClient. Occurs when the client (bot) has
         ///     connected to the server. The <see cref="IrcClient_Registered" /> event is what actually

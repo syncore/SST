@@ -1,4 +1,5 @@
 ﻿using System;
+// ReSharper disable InconsistentNaming
 
 namespace SSB.Config.Modules
 {
@@ -20,7 +21,6 @@ namespace SSB.Config.Modules
         ///  user name specified by <see cref="ircNickServiceUsername"/>
         /// and the password specified by <see cref="ircNickServicePassword" />.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public bool autoAuthWithNickService { get; set; }
 
         /// <summary>
@@ -32,7 +32,6 @@ namespace SSB.Config.Modules
         ///     <c>true</c> if an IRC connection should be made on start,
         ///     otherwise, <c>false</c>.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public bool autoConnectOnStart { get; set; }
 
         /// <summary>
@@ -43,7 +42,6 @@ namespace SSB.Config.Modules
         ///     <c>true</c> if the bot's hostname should be hidden when identified with
         ///     the QuakeNet Q nickname service, otherwise <c>false</c>.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public bool hideHostnameOnQuakeNet { get; set; }
 
         /// <summary>
@@ -59,7 +57,6 @@ namespace SSB.Config.Modules
         ///     The nickname of the main IRC admin. Note: there is no hostname
         ///     verification, so this is to be used with caution, if at all.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircAdminNickname { get; set; }
 
         /// <summary>
@@ -68,7 +65,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The name of the main IRC channel.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircChannel { get; set; }
 
         /// <summary>
@@ -77,7 +73,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The key to the main IRC channel, if required.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircChannelKey { get; set; }
 
         /// <summary>
@@ -86,7 +81,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The IRC nickname.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircNickName { get; set; }
 
         /// <summary>
@@ -98,7 +92,6 @@ namespace SSB.Config.Modules
         ///     The name of the IRC nickname services bot, used for
         ///     nickname authentication.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircNickServiceBot { get; set; }
 
         /// <summary>
@@ -109,7 +102,6 @@ namespace SSB.Config.Modules
         ///     The password used for nickname authentication with the IRC
         ///     service's nickname bot.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircNickServicePassword { get; set; }
 
         /// <summary>
@@ -120,7 +112,6 @@ namespace SSB.Config.Modules
         ///     The username used for nickname authentication with the IRC
         ///     service's nickname bot.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircNickServiceUsername { get; set; }
 
         /// <summary>
@@ -129,7 +120,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The IRC real name.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircRealName { get; set; }
 
         /// <summary>
@@ -138,7 +128,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The address of the IRC server.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircServerAddress { get; set; }
 
         /// <summary>
@@ -148,7 +137,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The password of the IRC server. Empty by default.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircServerPassword { get; set; }
 
         /// <summary>
@@ -158,7 +146,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The port of the IRC server. The default is 6667.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public uint ircServerPort { get; set; }
 
         /// <summary>
@@ -167,7 +154,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     The IRC user name (ident).
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string ircUserName { get; set; }
 
         /// <summary>
@@ -176,7 +162,6 @@ namespace SSB.Config.Modules
         /// <value>
         ///     <c>true</c> if this module is active; otherwise, <c>false</c>.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public bool isActive { get; set; }
 
         /// <summary>
@@ -186,7 +171,7 @@ namespace SSB.Config.Modules
         {
             isActive = false;
             autoAuthWithNickService = false;
-            autoConnectOnStart = false;
+            autoConnectOnStart = true;
             hideHostnameOnQuakeNet = true;
             ircAdminNickname = string.Empty;
             ircChannel = string.Empty;
@@ -199,7 +184,7 @@ namespace SSB.Config.Modules
             ircServerAddress = string.Empty;
             ircServerPassword = string.Empty;
             ircServerPort = 6667;
-            ircUserName = string.Format("SSBQuakeLive{0}", GenerateRandomIdentifier());
+            ircUserName = string.Format("ssbQL{0}", GenerateRandomIdentifier());
         }
 
         /// <summary>

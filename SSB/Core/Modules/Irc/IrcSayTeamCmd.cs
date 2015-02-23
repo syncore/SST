@@ -83,12 +83,11 @@ namespace SSB.Core.Modules.Irc
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        /// <returns></returns>
         public async Task ExecAsync(CmdArgs c)
         {
             await _ssb.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}",
                 c.FromUser,
-                c.Text.Substring((IrcCommandProcessor.IrcCommandPrefix.Length + c.CmdName.Length) - 1)));
+                c.Text.Substring((IrcCommandProcessor.IrcCommandPrefix.Length + c.CmdName.Length) + 1)));
         }
     }
 }

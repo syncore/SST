@@ -89,8 +89,8 @@ namespace SSB.Core.Modules.Irc
                 sb.Append(string.Format("\u00033{0}\u0003, ", mod.ModuleName));
             }
 
-            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003My server has \u0002{0}\u0002 active modules loaded: {1}",
-                activeMods.Count, sb.ToString().TrimEnd(',', ' ')));
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003My server has \u0002{0}\u0002 active {1} loaded: {2}",
+                activeMods.Count, (activeMods.Count > 1 ? "modules" : "module"), sb.ToString().TrimEnd(',', ' ')));
         }
 
         /// <summary>

@@ -81,64 +81,28 @@ namespace SSB.Core.Commands.Modules
         /// <returns></returns>
         public async Task EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < _minModuleArgs || c.Args.Length != 3)
             {
                 await DisplayArgLengthError(c);
                 return;
             }
-            if (!c.Args[2].Equals("off") && !c.Args[2].Equals("connect") && !c.Args[2].Equals("disconnect"))
-            {
-                await DisplayArgLengthError(c);
-                return;
-            }
-            if (c.Args.Length != 3)
+            if (!c.Args[2].Equals("off") && !c.Args[2].Equals("connect") && !c.Args[2].Equals("disconnect")
+                && !c.Args[2].Equals("reconnect"))
             {
                 await DisplayArgLengthError(c);
                 return;
             }
             if (c.Args[2].Equals("off"))
-            {
-                await DisableIrc(c);
-                return;
-            }
-            if (c.Args[2].Equals("connect"))
-            {
-                // Active check: prevent another IRC client from being instantiated
-                if (Active)
-                {
-                    await
-                        _ssb.QlCommands.QlCmdTell(
-                            string.Format(
-                                "^1[ERROR]^3 IRC module is already enabled. To disable: {0}{1} {2} off ",
-                                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
-                    return;
-                }
-                // Validity check
+                await ProcessOffArg(c);
 
-                if (_irc.RequiredIrcSettingsAreValid())
-                {
-                    await EnableIrc(c);
-                }
-                else
-                {
-                    await
-                        _ssb.QlCommands.QlCmdTell(
-                            "^1[ERROR]^3 Invalid IRC setting(s) found in config. Cannot load.", c.FromUser);
-                }
-            }
+            if (c.Args[2].Equals("connect"))
+                await ProcessConnectArg(c);
+
             if (c.Args[2].Equals("disconnect"))
-            {
-                if (!Active)
-                {
-                    await
-                        _ssb.QlCommands.QlCmdTell(
-                            string.Format(
-                                "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
-                                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
-                    return;
-                }
-                _irc.Disconnect();
-            }
+                await ProcessDisconnectArg(c);
+
+            if (c.Args[2].Equals("reconnect"))
+                await ProcessReconnectArg(c);
         }
 
         /// <summary>
@@ -200,10 +164,6 @@ namespace SSB.Core.Commands.Modules
         private async Task EnableIrc(CmdArgs c)
         {
             _configHandler.ReadConfiguration();
-            var channel = _configHandler.Config.IrcOptions.ircChannel;
-            var nick = _configHandler.Config.IrcOptions.ircNickName;
-            var ircServer = _configHandler.Config.IrcOptions.ircServerAddress;
-            var ircServerPort = _configHandler.Config.IrcOptions.ircServerPort;
 
             // Set the module to active
             UpdateConfig(true);
@@ -213,10 +173,11 @@ namespace SSB.Core.Commands.Modules
             await
                 _ssb.QlCommands.QlCmdTell(string.Format(
                     "^6[IRC]^7 Attempting to connect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
-                    ircServer, ircServerPort, nick, channel), c.FromUser);
+                    _configHandler.Config.IrcOptions.ircServerAddress, _configHandler.Config.IrcOptions.ircServerPort,
+                    _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel), c.FromUser);
 
             // Attempt to make the connection
-            _irc.Connect();
+            _irc.StartIrcThread();
         }
 
         /// <summary>
@@ -229,7 +190,101 @@ namespace SSB.Core.Commands.Modules
         private void Init()
         {
             Debug.WriteLine("Active flag detected in saved configuration; auto-initializing IRC module.");
-            _irc.Connect();
+            _irc.StartIrcThread();
+        }
+
+        /// <summary>
+        ///     Processes the "connect" argument.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task ProcessConnectArg(CmdArgs c)
+        {
+            // Active check: prevent another IRC client from being instantiated
+            if (Active)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^1[ERROR]^3 IRC module is already enabled. To disable: {0}{1} {2} off -" +
+                            " To reconnect: {0}{1} {2} reconnect",
+                            CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
+                return;
+            }
+            // Validity check
+            if (_irc.RequiredIrcSettingsAreValid())
+            {
+                await EnableIrc(c);
+            }
+            else
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 Invalid IRC setting(s) found in config. Cannot load.", c.FromUser);
+            }
+        }
+
+        /// <summary>
+        ///     Processes the "disconnect" argument.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task ProcessDisconnectArg(CmdArgs c)
+        {
+            if (!Active)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
+                            CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
+                return;
+            }
+            _irc.Disconnect();
+        }
+
+        /// <summary>
+        ///     Processes the "off" argument.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        private async Task ProcessOffArg(CmdArgs c)
+        {
+            await DisableIrc(c);
+        }
+
+        /// <summary>
+        /// Processes the "reconnect" argument.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        /// <returns></returns>
+        private async Task ProcessReconnectArg(CmdArgs c)
+        {
+            if (!Active)
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        string.Format(
+                            "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
+                            CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.IrcArg), c.FromUser);
+                return;
+            }
+            // Validity check
+            if (_irc.RequiredIrcSettingsAreValid())
+            {
+                _configHandler.ReadConfiguration();
+
+                await
+                _ssb.QlCommands.QlCmdTell(string.Format(
+                    "^6[IRC]^7 Attempting to reconnect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
+                    _configHandler.Config.IrcOptions.ircServerAddress, _configHandler.Config.IrcOptions.ircServerPort,
+                    _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel), c.FromUser);
+
+                _irc.AttemptReconnection();
+            }
+            else
+            {
+                await
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 Invalid IRC setting(s) found in config. Will not connect.", c.FromUser);
+            }
         }
     }
 }
