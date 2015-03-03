@@ -59,36 +59,86 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name - name does NOT include clan tag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        ///     Gets the argument length error message.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name does NOT include clan tag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        /// Executes the specified command asynchronously.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
             if (id != -1)
             {
                 await _ssb.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+                StatusMessage = string.Format("^2[SUCCESS]^7 Attemped to de-op ^2{0}", c.Args[1]);
+                await SendServerTell(c, StatusMessage);
                 Debug.WriteLine("DEOP: Got player id {0} for player: {1}", id, c.Args[1]);
+                return true;
             }
-            else
-            {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Player not found. Use player name without clan tag.");
 
-                Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
-                    c.Args[1]));
-            }
+            StatusMessage = "^1[ERROR]^3 Player not found. Use player name without clan tag.";
+            await SendServerTell(c, StatusMessage);
+
+            Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
+                c.Args[1]));
+            return false;
         }
     }
 }

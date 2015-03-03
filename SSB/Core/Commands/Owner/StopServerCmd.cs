@@ -58,43 +58,85 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} delay - delay is in seconds.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             int delay;
             var delayIsNum = (int.TryParse(c.Args[1], out delay));
             if (delayIsNum)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
+                StatusMessage = string.Format(
                             "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
-                            delay));
+                            delay);
+                await SendServerSay(c, StatusMessage);
 
                 // ReSharper disable once UnusedVariable
                 var s = Task.Run(async delegate
                 {
-                    await Task.Delay(delay*1000);
+                    await Task.Delay(delay * 1000);
                     await _ssb.QlCommands.SendToQlAsync("stopserver", false);
                 });
+                return true;
             }
-            else
-            {
-                await DisplayArgLengthError(c);
-            }
+            await DisplayArgLengthError(c);
+            return false;
         }
     }
 }

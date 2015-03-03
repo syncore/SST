@@ -11,10 +11,10 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class PickupPickCmd : IBotCommand
     {
-        private bool _isIrcAccessAllowed = false;
         private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
+        private bool _isIrcAccessAllowed = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupCapCmd" /> class.
@@ -31,11 +31,12 @@ namespace SSB.Core.Commands.None
         /// <value>
         ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed {
+        public bool IsIrcAccessAllowed
+        {
             get
             {
                 return _isIrcAccessAllowed;
-            } 
+            }
         }
 
         /// <summary>
@@ -48,6 +49,14 @@ namespace SSB.Core.Commands.None
         {
             get { return _minArgs; }
         }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
 
         /// <summary>
         ///     Gets the user level.
@@ -63,35 +72,67 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
-        /// <remarks>
-        ///     Not implemented because the cmd in this class requires no args.
-        /// </remarks>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Pickup.Active)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
+                StatusMessage = string.Format(
                             "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdModule,
-                            ModuleCmd.PickupArg));
-                return;
+                            CommandList.GameCommandPrefix, CommandList.CmdModule,
+                            ModuleCmd.PickupArg);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
-            await _ssb.Mod.Pickup.Manager.Captains.ProcessPlayerPick(c.FromUser, c.Args[1]);
+            return await _ssb.Mod.Pickup.Manager.Captains.ProcessPlayerPick(c);
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
     }
 }

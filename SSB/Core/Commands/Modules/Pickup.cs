@@ -18,9 +18,10 @@ namespace SSB.Core.Commands.Modules
         private const int TeamMaxSize = 8;
         private const int TeamMinSize = 2;
         private readonly ConfigHandler _configHandler;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minModuleArgs = 3;
         private readonly PickupManager _pickupManager;
         private readonly SynServerBot _ssb;
-        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Pickup" /> class.
@@ -33,14 +34,6 @@ namespace SSB.Core.Commands.Modules
             LoadConfig();
             _pickupManager = new PickupManager(_ssb);
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets or sets a numeric value representing the time to ban excessive substitutes.
@@ -117,6 +110,33 @@ namespace SSB.Core.Commands.Modules
         public uint MaxSubsPerPlayer { get; set; }
 
         /// <summary>
+        ///     Gets or sets the teamsize.
+        /// </summary>
+        /// <value>
+        ///     The teamsize.
+        /// </value>
+        public uint Teamsize { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -139,70 +159,92 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the teamsize.
+        ///     Gets the command's status message.
         /// </summary>
         /// <value>
-        ///     The teamsize.
+        ///     The command's status message.
         /// </value>
-        public uint Teamsize { get; set; }
+        public string StatusMessage { get; set; }
 
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <teamsize> [noshowbans] [subbans] - teamsize is a number",
-                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.PickupArg));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified module command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task EvalModuleCmdAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             if (c.Args[2].Equals("off"))
             {
-                await DisablePickup();
-                return;
+                await DisablePickup(c);
+                return false;
             }
             if (c.Args[2].Equals("noshowbans") || c.Args[2].Equals("subbans"))
             {
-                await EvalSetBanSettings(c);
-                return;
+                return await EvalSetBanSettings(c);
             }
             uint teamsize;
             if (!uint.TryParse(c.Args[2], out teamsize))
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
-                    TeamMinSize, TeamMaxSize));
-                return;
+                StatusMessage =
+                    string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
+                        TeamMinSize, TeamMaxSize);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (teamsize < TeamMinSize || teamsize > TeamMaxSize)
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
-                    TeamMinSize, TeamMaxSize));
-                return;
+                StatusMessage =
+                    string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
+                        TeamMinSize, TeamMaxSize);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (!_ssb.ServerInfo.IsATeamGame())
             {
                 // Might have not gotten it the first time, so request again, in a few seconds.
                 await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", false, 3);
                 _ssb.QlCommands.ClearQlWinConsole();
-                
-                    await
-                        _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is an error, try again in a few seconds.");
-                    return;
+                StatusMessage =
+                    "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is" +
+                    " an error, try again in a few seconds.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
-            await EnablePickup(teamsize);
+            await EnablePickup(c, teamsize);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <teamsize> [noshowbans] [subbans] - teamsize is a number",
+                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.PickupArg);
         }
 
         /// <summary>
@@ -254,6 +296,28 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
         ///     Updates the configuration.
         /// </summary>
         /// <param name="active">
@@ -284,21 +348,23 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         ///     Disables the pickup module.
         /// </summary>
-        private async Task DisablePickup()
+        /// <param name="c">The command argument information.</param>
+        private async Task DisablePickup(CmdArgs c)
         {
             UpdateConfig(false);
             // Unlock the teams and clear eligible players if any
             _ssb.QlCommands.SendToQl("unlock", false);
             Manager.ResetPickupStatus();
-            await
-                _ssb.QlCommands.QlCmdSay("^2[SUCCESS]^7 Pickup game module has been disabled.");
+            StatusMessage = "^2[SUCCESS]^7 Pickup game module has been disabled.";
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         ///     Enables the pickup module.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="teamsize">The teamsize.</param>
-        private async Task EnablePickup(uint teamsize)
+        private async Task EnablePickup(CmdArgs c, uint teamsize)
         {
             // Note: notice the missing ban settings here.
             // The configuration has some pretty sane defaults, so unless the admin specifically
@@ -308,20 +374,23 @@ namespace SSB.Core.Commands.Modules
             Teamsize = teamsize;
             // Activate the module, overriding the default of active = false
             UpdateConfig(true);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format("^2[SUCCESS]^7 Pickup game module has been enabled with" +
-                                  " initial teamsize of ^2{0}^7 - To start: ^2{1}{2} start",
-                        teamsize, CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+            StatusMessage = string.Format("^2[SUCCESS]^7 Pickup game module has been enabled with" +
+                                          " initial teamsize of ^2{0}^7 - To start: ^2{1}{2} start",
+                teamsize, CommandList.GameCommandPrefix, CommandList.CmdPickup);
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         ///     Evaluates whether the noshow or sub ban settings can be set based on the user's input.
         /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task EvalSetBanSettings(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the noshow or sub ban settings could be set; otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        private async Task<bool> EvalSetBanSettings(CmdArgs c)
         {
-            string settingsType = string.Empty;
+            var settingsType = string.Empty;
             if (c.Args[2].Equals("noshowbans"))
             {
                 settingsType = "noshows";
@@ -332,82 +401,83 @@ namespace SSB.Core.Commands.Modules
             }
             if (c.Args.Length != 6)
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format(
+                StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} {2} {3} <max> <bantime> <banscale> - max: max # {4}, bantime: #, banscale: secs," +
                     " mins, hours, days, months, OR years",
-                    CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.PickupArg, c.Args[2], settingsType));
-                return;
+                    CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.PickupArg, c.Args[2], settingsType);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             uint maxNum;
             if (!uint.TryParse(c.Args[3], out maxNum))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
-                            "^1[ERROR]^3 Max # of {0} to allow must be a number greater than zero.",
-                            settingsType));
-                return;
+                StatusMessage = string.Format(
+                    "^1[ERROR]^3 Max # of {0} to allow must be a number greater than zero.",
+                    settingsType);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             double timeNum;
             if (!double.TryParse(c.Args[4], out timeNum))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 The time to ban must be a number greater than zero.");
-                return;
+                StatusMessage = "^1[ERROR]^3 The time to ban must be a number greater than zero.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (timeNum <= 0)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 The time to ban must be a number greater than zero.");
-                return;
+                StatusMessage = "^1[ERROR]^3 The time to ban must be a number greater than zero.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
-            bool isValidScale = Helpers.ValidTimeScales.Contains(c.Args[5]);
+            var isValidScale = Helpers.ValidTimeScales.Contains(c.Args[5]);
             if (!isValidScale)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Scale must be: secs, mins, hours, days, months OR years.");
-                return;
+                StatusMessage = "^1[ERROR]^3 Scale must be: secs, mins, hours, days, months OR years.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
-            await SetBanSettings(settingsType, maxNum, timeNum, c.Args[5]);
+            await SetBanSettings(c, settingsType, maxNum, timeNum, c.Args[5]);
+            return true;
         }
 
         /// <summary>
         ///     Sets the no-show or excessive subs ban settings.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="bType">Type of ban to set (noshows or subs).</param>
         /// <param name="maxNum">The maximum number of noshows or subs used.</param>
         /// <param name="timeToBan">The time to ban.</param>
         /// <param name="scaleToBan">The scale to ban.</param>
-        private async Task SetBanSettings(string bType, uint maxNum, double timeToBan, string scaleToBan)
+        /// <returns></returns>
+        private async Task SetBanSettings(CmdArgs c, string bType, uint maxNum, double timeToBan,
+            string scaleToBan)
         {
             if (bType.Equals("noshows"))
             {
                 MaxNoShowsPerPlayer = maxNum;
                 ExcessiveNoShowBanTime = timeToBan;
                 ExcessiveNoShowBanTimeScale = scaleToBan;
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
-                            "^2[SUCCESS]^7 Players leaving without a sub more than ^3{0}^7 times will be banned for^1 {1} {2}.",
-                            maxNum, timeToBan, scaleToBan));
+                StatusMessage = string.Format(
+                    "^2[SUCCESS]^7 Players leaving without a sub more than ^3{0}^7 times will be banned for^1 {1} {2}.",
+                    maxNum, timeToBan, scaleToBan);
+                await SendServerSay(c, StatusMessage);
             }
             else if (bType.Equals("subs"))
             {
                 MaxSubsPerPlayer = maxNum;
                 ExcessiveSubUseBanTime = timeToBan;
                 ExcessiveSubUseBanTimeScale = scaleToBan;
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
-                            "^2[SUCCESS]^7 Players who've requested subs more than ^3{0}^7 times will be banned for^1 {1} {2}.",
-                            maxNum, timeToBan, scaleToBan));
+                StatusMessage = string.Format(
+                    "^2[SUCCESS]^7 Players who've requested subs more than ^3{0}^7 times will be banned for^1 {1} {2}.",
+                    maxNum, timeToBan, scaleToBan);
+                await SendServerSay(c, StatusMessage);
             }
             UpdateConfig(true);
         }
 
         /// <summary>
-        /// Uses the pickup defaults when enabling the pickup module.
+        ///     Uses the pickup defaults when enabling the pickup module.
         /// </summary>
         private void UsePickupDefaults()
         {

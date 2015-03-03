@@ -65,7 +65,6 @@ namespace SSB.Core.Modules.Irc
                     UserName = IrcSettings.ircUserName,
                     RealName = IrcSettings.ircRealName,
                     Password = IrcSettings.ircServerPassword,
-                    //UserModes = { 'i' }
                 };
             }
         }
@@ -142,9 +141,9 @@ namespace SSB.Core.Modules.Irc
         public void Disconnect()
         {
             StopIrcThread();
-            // Wait 3 seconds before forcibly disconnecting
             try
             {
+                // Wait 3 seconds before forcibly disconnecting
                 _client.Quit(3000, _quitMessage);
             }
             catch (Exception ex)

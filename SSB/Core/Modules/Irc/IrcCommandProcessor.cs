@@ -14,18 +14,10 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcCommandProcessor
     {
-        public const string IrcCommandPrefix = "!";
         private readonly IrcManager _irc;
+        private readonly IrcCommandList _ircCmds;
         private readonly Dictionary<string, DateTime> _ircCommandUserTime;
         private readonly SynServerBot _ssb;
-        private readonly string IrcCmdHelp = "help";
-        private readonly string IrcCmdMods = "mods";
-        private readonly string IrcCmdOpMe = "opme";
-        private readonly string IrcCmdSay = "say";
-        private readonly string IrcCmdSayTeam = "sayteam";
-        private readonly string IrcCmdStatus = "status";
-        private readonly string IrcCmdUsers = "users";
-        private readonly string IrcCmdWho = "who";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcCommandProcessor" /> class.
@@ -36,27 +28,23 @@ namespace SSB.Core.Modules.Irc
         {
             _ssb = ssb;
             _irc = irc;
-            IrcCommandList = new Dictionary<string, IIrcCommand>
-            {
-                {IrcCmdSay, new IrcSayCmd(_ssb, _irc)},
-                {IrcCmdSayTeam, new IrcSayTeamCmd(_ssb, _irc)},
-                {IrcCmdWho, new IrcWhoCmd(_ssb, _irc)},
-                {IrcCmdStatus, new IrcStatusCmd(_ssb, _irc)},
-                {IrcCmdMods, new IrcModsCmd(_ssb, _irc)},
-                {IrcCmdUsers, new IrcUsersCmd(_ssb, _irc)},
-                {IrcCmdOpMe, new IrcOpMeCmd(_irc)},
-                {IrcCmdHelp, new IrcHelpCmd(_irc)}
-            };
+            _ircCmds = new IrcCommandList(_ssb, _irc);
             _ircCommandUserTime = new Dictionary<string, DateTime>();
         }
 
         /// <summary>
-        ///     Gets the IRC command list.
+        ///     Gets the commands.
         /// </summary>
         /// <value>
-        ///     The IRC command list.
+        ///     The Commands.
         /// </value>
-        public static Dictionary<string, IIrcCommand> IrcCommandList { get; private set; }
+        /// <remarks>
+        ///     This is used by the IrcHelpCmd.
+        /// </remarks>
+        public Dictionary<string, IIrcCommand> Cmds
+        {
+            get { return _ircCmds.Commands; }
+        }
 
         /// <summary>
         ///     Processes the IRC command.
@@ -66,7 +54,7 @@ namespace SSB.Core.Modules.Irc
         public async Task ProcessIrcCommand(string fromUser, string msg)
         {
             char[] sep = {' '};
-            var args = msg.Split(sep, 6);
+            var args = msg.Split(sep);
             var cmdName = args[0].Substring(1);
             if (!_ssb.IsInitComplete)
             {
@@ -79,38 +67,38 @@ namespace SSB.Core.Modules.Irc
             {
                 Debug.WriteLine(
                     "Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
-                    fromUser, IrcCommandPrefix, cmdName);
+                    fromUser, IrcCommandList.IrcCommandPrefix, cmdName);
                 return;
             }
             _ircCommandUserTime[fromUser] = DateTime.Now;
-            if (msg.Equals(IrcCommandPrefix))
+            if (msg.Equals(IrcCommandList.IrcCommandPrefix))
             {
                 return;
             }
-            if (!Helpers.KeyExists(cmdName, IrcCommandList))
+            if (!Helpers.KeyExists(cmdName, _ircCmds.Commands))
             {
                 return;
             }
-            if (!UserHasReqLevel(fromUser, IrcCommandList[cmdName].UserLevel))
+            if (!UserHasReqLevel(fromUser, _ircCmds.Commands[cmdName].UserLevel))
             {
                 _irc.SendIrcNotice(fromUser,
                     "\u0002[ERROR]\u0002 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, fromUser, msg);
-            if (args.Length < IrcCommandList[cmdName].MinArgs)
+            var c = new CmdArgs(args, cmdName, fromUser, msg, true);
+            if (args.Length < _ircCmds.Commands[cmdName].MinArgs)
             {
-                IrcCommandList[cmdName].DisplayArgLengthError(c);
+                _ircCmds.Commands[cmdName].DisplayArgLengthError(c);
                 return;
             }
             // Execute
-            if (IrcCommandList[cmdName].IsAsync)
+            if (_ircCmds.Commands[cmdName].IsAsync)
             {
-                await IrcCommandList[cmdName].ExecAsync(c);
+                await _ircCmds.Commands[cmdName].ExecAsync(c);
             }
             else
             {
-                IrcCommandList[cmdName].Exec(c);
+                _ircCmds.Commands[cmdName].Exec(c);
             }
         }
 
@@ -127,11 +115,7 @@ namespace SSB.Core.Modules.Irc
                 return true;
             }
             // 5 seconds between commands
-            if (_ircCommandUserTime[user].AddSeconds(5) < DateTime.Now)
-            {
-                return true;
-            }
-            return false;
+            return _ircCommandUserTime[user].AddSeconds(5) < DateTime.Now;
         }
 
         /// <summary>

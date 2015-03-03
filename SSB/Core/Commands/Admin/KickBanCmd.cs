@@ -10,10 +10,10 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class KickBanCmd : IBotCommand
     {
-        private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 2;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="KickBanCmd" /> class.
@@ -47,6 +47,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -63,18 +71,62 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c"></param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdTell(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
+            StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to kickban player^2 {0}",
+                c.Args[1]);
             await _ssb.QlCommands.CustCmdKickban(c.Args[1]);
+            await SendServerSay(c, StatusMessage);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
     }
 }

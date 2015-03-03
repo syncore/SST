@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using SSB.Config;
 using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enum;
@@ -76,6 +77,14 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        ///     Gets or sets the players that are eligible to be picked for a pickup game.
+        /// </summary>
+        /// <value>
+        ///     The players that are eligible to be picked for a pickup game.
+        /// </value>
+        public List<string> AvailablePlayers { get; set; }
+
+        /// <summary>
         ///     Gets the pickup captains class.
         /// </summary>
         /// <value>
@@ -85,14 +94,6 @@ namespace SSB.Core.Modules
         {
             get { return _captains; }
         }
-
-        /// <summary>
-        ///     Gets or sets the players that are eligible to be picked for a pickup game.
-        /// </summary>
-        /// <value>
-        ///     The players that are eligible to be picked for a pickup game.
-        /// </value>
-        public List<string> AvailablePlayers { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the captain selection process has started.
@@ -109,14 +110,6 @@ namespace SSB.Core.Modules
         ///     <c>true</c> if the team selection process started; otherwise, <c>false</c>.
         /// </value>
         public bool HasTeamSelectionStarted { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the players who are substitute players.
-        /// </summary>
-        /// <value>
-        ///     The list of players who are eligible to be subbed in.
-        /// </value>
-        public List<string> SubCandidates { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the is bot currently setting up teams (locking server down).
@@ -221,6 +214,22 @@ namespace SSB.Core.Modules
         {
             get { return _players; }
         }
+
+        /// <summary>
+        ///     Gets or sets the status message.
+        /// </summary>
+        /// <value>
+        ///     The status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the players who are substitute players.
+        /// </summary>
+        /// <value>
+        ///     The list of players who are eligible to be subbed in.
+        /// </value>
+        public List<string> SubCandidates { get; set; }
 
         /// <summary>
         ///     Gets or sets the substitite players for purposes of record keeping.
@@ -371,121 +380,131 @@ namespace SSB.Core.Modules
         /// <summary>
         ///     Evaluates whether the current pickup can be reset, and if so, resets it.
         /// </summary>
-        /// <returns></returns>
-        public async Task EvalPickupReset()
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the evaluation passes;
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalPickupReset(CmdArgs c)
         {
             if (IsQlGameInProgress)
             {
-                await ShowProgressInError();
-                return;
+                await ShowProgressInError(c);
+                return false;
             }
             await DoResetPickup();
+            return true;
         }
 
         /// <summary>
         ///     Evaluates whether the server can be put into pickup pre-game mode when the pickup start command is issued,
         ///     and if it can be, then puts the servers into the pickup pre-game mode.
         /// </summary>
-        public async Task EvalPickupStart()
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the evaluation passes;
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalPickupStart(CmdArgs c)
         {
             if (!_ssb.ServerInfo.IsATeamGame())
             {
                 // Might have not gotten it the first time, so request again, in a few seconds.
                 await _ssb.QlCommands.SendToQlDelayedAsync("serverinfo", true, 5);
                 _ssb.QlCommands.ClearQlWinConsole();
-                await
-                        _ssb.QlCommands.QlCmdSay(
-                            "^1[ERROR]^3 Pickup can only be started for team-based games. If this is an error, try again in 5 seconds.");
-                return;
+                StatusMessage =
+                    "^1[ERROR]^3 Pickup can only be started for team-based games. If this is an error, try again in 5 seconds.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (IsQlGameInProgress)
             {
-                await ShowProgressInError();
-                return;
+                await ShowProgressInError(c);
+                return false;
             }
             if (IsPickupInProgress)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Another pickup game is already pending!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Another pickup game is already pending!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             await StartPickupPreGame();
+            return true;
         }
 
         /// <summary>
         ///     Evaluates whether the current pickup can be stopped, and if so, stops it.
         /// </summary>
-        public async Task EvalPickupStop()
+        /// <param name="c">The command argument information.</param>
+        /// <returns></returns>
+        public async Task<bool> EvalPickupStop(CmdArgs c)
         {
             if (IsQlGameInProgress)
             {
-                await ShowProgressInError();
-                return;
+                await ShowProgressInError(c);
+                return false;
             }
-            await StopPickup();
+            await StopPickup(c);
+            return true;
         }
 
         /// <summary>
         ///     Evaluates whether a user can be removed for no-show/sub abuse.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The arguments.</param>
-        /// <returns></returns>
-        public async Task EvalPickupUnban(string sender, string[] args)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the user can be removed; otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalPickupUnban(CmdArgs c)
         {
-            if (args.Length == 1)
+            if (c.Args.Length == 1)
             {
-                await
-                    _ssb.QlCommands.QlCmdTell(
-                        string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup),
-                        sender);
-                return;
+                StatusMessage = string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>",
+                    CommandList.GameCommandPrefix, CommandList.CmdPickup);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             var banDb = new DbBans();
-            var bInfo = banDb.GetBanInfo(args[1]);
+            var bInfo = banDb.GetBanInfo(c.Args[1]);
             if (bInfo == null)
             {
-                await
-                    _ssb.QlCommands.QlCmdTell(
-                        string.Format("^5[PICKUP]^7 Ban information not found for {0}",
-                            args[1]), sender);
-                return;
+                StatusMessage = string.Format("^5[PICKUP]^7 Ban information not found for {0}",
+                    c.Args[1]);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (bInfo.BanType != BanType.AddedByPickupSubs ||
                 bInfo.BanType != BanType.AddedByPickupNoShows)
             {
-                var senderLevel = _userDb.GetUserLevel(sender);
+                var senderLevel = IsIrcOwner(c) ? UserLevel.Owner : _userDb.GetUserLevel(c.FromUser);
                 // Don't allow SuperUsers to remove non pickup-related bans
                 if (senderLevel == UserLevel.SuperUser)
                 {
-                    await
-                        _ssb.QlCommands.QlCmdTell(
-                            string.Format(
-                                "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. Cannot remove.",
-                                args[1]), sender);
-                    return;
+                    StatusMessage = string.Format(
+                        "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. Cannot remove.",
+                        c.Args[1]);
+                    await SendServerTell(c, StatusMessage);
+                    return false;
                 }
                 // Notify admins and higher that they should use timeban del command to remove non-pickup related ban
                 if (senderLevel > UserLevel.SuperUser)
                 {
-                    await
-                        _ssb.QlCommands.QlCmdTell(
-                            string.Format(
-                                "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. To remove: ^3{1}{2} del {0}",
-                                args[1], CommandProcessor.BotCommandPrefix,
-                                CommandProcessor.CmdTimeBan), sender);
-                    return;
+                    StatusMessage = string.Format(
+                        "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. To remove: ^3{1}{2} del {0}",
+                        c.Args[1], CommandList.GameCommandPrefix,
+                        CommandList.CmdTimeBan);
+                    await SendServerTell(c, StatusMessage);
+                    return false;
                 }
             }
             // Remove the ban and reset the count, depending on type of ban.
             var pAutoBanner = new PlayerAutoBanner(_ssb);
-            await pAutoBanner.RemoveBan(args[1], bInfo);
-            await
-                _ssb.QlCommands.QlCmdTell(
-                    string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
-                        args[1]), sender);
+            await pAutoBanner.RemoveBan(c.Args[1], bInfo);
+            StatusMessage = string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
+                c.Args[1]);
+            await SendServerSay(c, StatusMessage);
+            return true;
         }
 
         /// <summary>
@@ -528,10 +547,10 @@ namespace SSB.Core.Modules
             if (HasTeamSelectionStarted)
             {
                 // ReSharper disable once UnusedVariable
-                Task r = DoResetPickup();
+                var r = DoResetPickup();
                 return;
             }
-            
+
             // Pickup pre-game extends from !pickup start to the game actually launching
             // So do nothing if for some reason we are not at this point
             if (!IsPickupPreGame) return;
@@ -590,7 +609,7 @@ namespace SSB.Core.Modules
                     _ssb.QlCommands.QlCmdDelayedTell(
                         string.Format(
                             "^7This server is in pickup game mode. Type ^5{0}{1}^7 to sign up for the next game.",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd),
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd),
                         user, 25);
             }
             else if (IsPickupInProgress)
@@ -599,7 +618,7 @@ namespace SSB.Core.Modules
                     _ssb.QlCommands.QlCmdDelayedTell(
                         string.Format(
                             "^7A pickup game is in progress. Type ^5{0}{1}^7 to sign up as a susbstitute player.",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd),
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd),
                         user, 25);
             }
         }
@@ -622,16 +641,18 @@ namespace SSB.Core.Modules
         /// </summary>
         /// <param name="fromPlayer">The player/captain sending the substitution request (the outgoing player/captain).</param>
         /// <param name="playerToSub">The player/captain to sub in.</param>
-        public async Task ProcessSub(string fromPlayer, string playerToSub)
+        /// <returns>
+        ///     <c>true</c> if the sub was successfully processed; otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> ProcessSub(string fromPlayer, string playerToSub)
         {
             if (!IsPickupInProgress && !IsPickupPreGame)
             {
                 await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 You may not request a sub at this time.");
-                return;
+                    _ssb.QlCommands.QlCmdTell(
+                        "^1[ERROR]^3 You may not request a sub at this time.", fromPlayer);
+                return false;
             }
-
             if (_ssb.ServerInfo.IsActivePlayer(playerToSub) ||
                 ActivePickupPlayers.Contains(playerToSub))
             {
@@ -639,43 +660,46 @@ namespace SSB.Core.Modules
                     _ssb.QlCommands.QlCmdTell(
                         "^1[ERROR]^3 Your replacement cannot already be in the pickup.",
                         fromPlayer);
-                return;
+                return false;
             }
-
             if (!Helpers.KeyExists(playerToSub, _ssb.ServerInfo.CurrentPlayers))
             {
                 await
                     _ssb.QlCommands.QlCmdTell(
                         string.Format("^1[ERROR]^3 {0} is not currently on the server!",
                             playerToSub), fromPlayer);
-                return;
+                return false;
             }
             if (IsPickupPreGame && !AvailablePlayers.Contains(playerToSub))
             {
+                // use a /say here, instead of the usual /tell for errors,
+                // so new people know how to sign up
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
                             "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
                             playerToSub,
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
-                return;
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+                return false;
             }
             if (IsPickupInProgress && !SubCandidates.Contains(playerToSub))
             {
+                // use a /say here, instead of the usual /tell for errors,
+                // so new people know how to sign up
                 await
                     _ssb.QlCommands.QlCmdSay(
                         string.Format(
                             "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
                             playerToSub,
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
-                return;
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+                return false;
             }
             if (!_ssb.ServerInfo.IsActivePlayer(fromPlayer) && !ActivePickupPlayers.Contains(fromPlayer))
             {
                 await
                     _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 You may not request a sub.",
                         fromPlayer);
-                return;
+                return false;
             }
             if (_captains.RedCaptain.Equals(fromPlayer) ||
                 _captains.BlueCaptain.Equals(fromPlayer))
@@ -684,24 +708,33 @@ namespace SSB.Core.Modules
                 if (IsPickupPreGame)
                 {
                     await
-                    _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 Captains can't request subs before the game starts!",
-                        fromPlayer);
-                    return;
+                        _ssb.QlCommands.QlCmdTell(
+                            "^1[ERROR]^3 Captains can't request subs before the game starts!",
+                            fromPlayer);
+                    return false;
                 }
                 // However, captains CAN requests sub during the game, treat as a regular sub
                 if (IsPickupInProgress)
                 {
-                    Debug.WriteLine("PICKUP SUB: {0} on TEAM: {1} is requesting that {2} play as his substitute",
-                fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
-                    await _players.DoPlayerSub(fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
+                    Debug.WriteLine(
+                        "PICKUP SUB: {0} on TEAM: {1} is requesting that {2} play as his substitute",
+                        fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
+                    await
+                        _players.DoPlayerSub(fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team,
+                            playerToSub);
+                    return true;
                 }
             }
             else
             {
                 Debug.WriteLine("PICKUP SUB: {0} on TEAM: {1} is requesting that {2} play as his substitute",
-                fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
-                await _players.DoPlayerSub(fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
+                    fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team, playerToSub);
+                await
+                    _players.DoPlayerSub(fromPlayer, _ssb.ServerInfo.CurrentPlayers[fromPlayer].Team,
+                        playerToSub);
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -728,7 +761,6 @@ namespace SSB.Core.Modules
         /// <param name="player">The player to remove.</param>
         public void RemoveEligibility(string player)
         {
-            
             if (AvailablePlayers.Remove(player.ToLowerInvariant()))
             {
                 Debug.WriteLine(string.Format("Removed {0} from eligible players",
@@ -786,7 +818,7 @@ namespace SSB.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
         }
 
         /// <summary>
@@ -803,7 +835,7 @@ namespace SSB.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
         }
 
         /// <summary>
@@ -820,7 +852,7 @@ namespace SSB.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
         }
 
         /// <summary>
@@ -841,8 +873,8 @@ namespace SSB.Core.Modules
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[PICKUP]^7 You have ^5{0}^7 seconds to type^2 {1}{2}^7 to become a captain!",
-                        (CaptainSelectionTimeLimit/1000), CommandProcessor.BotCommandPrefix,
-                        CommandProcessor.CmdPickupCap));
+                        (CaptainSelectionTimeLimit/1000), CommandList.GameCommandPrefix,
+                        CommandList.CmdPickupCap));
         }
 
         /// <summary>
@@ -963,6 +995,25 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        ///     Determines whether the command was sent from the owner of
+        ///     the bot via IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was sent from IRC and from
+        ///     an the IRC owner.
+        /// </returns>
+        private bool IsIrcOwner(CmdArgs c)
+        {
+            if (!c.FromIrc) return false;
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            return
+                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                    StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        /// <summary>
         ///     Determines whether to perform the no-show evaluation for the specified player.
         /// </summary>
         /// <param name="player">The player.</param>
@@ -1029,6 +1080,28 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        private async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        private async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
         ///     Prepares the teams so that captains and players can be picked.
         /// </summary>
         private async Task SetupTeams()
@@ -1053,11 +1126,12 @@ namespace SSB.Core.Modules
         /// <summary>
         ///     Shows the in-progress error.
         /// </summary>
-        private async Task ShowProgressInError()
+        /// <param name="c">The command argument information.</param>
+        private async Task ShowProgressInError(CmdArgs c)
         {
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    "^1[ERROR]^3 Pickup games can only be started, stopped or reset from warm-up mode!");
+            StatusMessage =
+                "^1[ERROR]^3 Pickup games can only be started, stopped or reset from warm-up mode!";
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
@@ -1084,16 +1158,13 @@ namespace SSB.Core.Modules
 
             // Lock down the server
             await SetupTeams();
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^5[PICKUP]^7 Pickup mode is enabled. To be eligible to play, type: ^2{0}{1}",
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd));
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
-                        (_ssb.Mod.Pickup.Teamsize*2)));
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^5[PICKUP]^7 Pickup mode is enabled. To be eligible to play, type: ^2{0}{1}",
+                CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+
+            await _ssb.QlCommands.QlCmdSay(string.Format(
+                "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
+                (_ssb.Mod.Pickup.Teamsize*2)));
 
             IsPickupPreGame = true;
         }
@@ -1129,13 +1200,14 @@ namespace SSB.Core.Modules
         /// <summary>
         ///     Stops (cancels) the pickup and unlocks the teams so that anyone can join.
         /// </summary>
-        private async Task StopPickup()
+        /// <param name="c">The command argument information.</param>
+        private async Task StopPickup(CmdArgs c)
         {
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3[PICKUP]^7 Canceling pickup. Teams unlocked so anyone can join. ^2{0}{1} start^7 to start another.",
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup));
+            StatusMessage = string.Format(
+                "^3[PICKUP]^7 Canceling pickup. Teams unlocked so anyone can join. ^2{0}{1} start^7 to start another.",
+                CommandList.GameCommandPrefix, CommandList.CmdPickup);
+            await SendServerSay(c, StatusMessage);
+
             ResetPickupStatus();
             await _ssb.QlCommands.SendToQlAsync("unlock", false);
         }

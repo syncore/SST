@@ -80,6 +80,7 @@
     <Compile Include="Config\Modules\MotdOptions.cs" />
     <Compile Include="Config\Modules\PickupOptions.cs" />
     <Compile Include="Config\Modules\ServersOptions.cs" />
+    <Compile Include="Core\CommandList.cs" />
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\MapCmd.cs" />
@@ -137,10 +138,12 @@
     <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
     <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
     <Compile Include="Core\Modules\EarlyQuitHandler.cs" />
+    <Compile Include="Core\Modules\Irc\IrcCommandList.cs" />
     <Compile Include="Core\Modules\Irc\IrcEventHandlers.cs" />
     <Compile Include="Core\Modules\Irc\IrcHelpCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcModsCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcOpMeCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcQlCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcSayCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcCommandProcessor.cs" />
     <Compile Include="Core\Modules\Irc\IrcEvents.cs" />
@@ -224,6 +227,7 @@
     <Compile Include="Database\DbUsers.cs" />
     <Compile Include="Util\RestApiQuery.cs" />
     <Compile Include="Util\Helpers.cs" />
+    <Compile Include="Util\TextColor.cs" />
     <Compile Include="Util\Win32Api.cs" />
     <EmbeddedResource Include="Ui\GUI.resx">
       <DependentUpon>Gui.cs</DependentUpon>

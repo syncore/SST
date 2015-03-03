@@ -58,24 +58,72 @@ namespace SSB.Core.Commands.SuperUser
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
-        /// <remarks>
-        ///     Not implemented because the cmd in this class requires no args.
-        /// </remarks>
-        public Task DisplayArgLengthError(CmdArgs c)
+        /// <param name="c">The command args</param>
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            return null;
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        ///     Gets the argument length error message.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        /// Executes the specified command asynchronously.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed, otherwise
+        /// <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             await _ssb.QlCommands.SendToQlAsync("allready", false);
+            StatusMessage = "^2[SUCCESS]^7 Attempted to send allready command.";
+            await SendServerTell(c, StatusMessage);
+            return true;
         }
     }
 }

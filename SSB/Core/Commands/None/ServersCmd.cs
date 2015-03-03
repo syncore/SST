@@ -63,6 +63,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -76,58 +84,100 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <gametype> <region>",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         /// Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed, otherwise
+        /// <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Servers.Active)
             {
-                await
-                     _ssb.QlCommands.QlCmdSay(
-                         string.Format(
+                StatusMessage = string.Format(
                              "^1[ERROR]^3 Servers module has not been loaded. An admin must first load it with:^7 {0}{1} {2}",
-                             CommandProcessor.BotCommandPrefix, CommandProcessor.CmdModule,
-                             ModuleCmd.ServersArg));
-                return;
+                             CommandList.GameCommandPrefix, CommandList.CmdModule,
+                             ModuleCmd.ServersArg);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             if (_ssb.Mod.Servers.LastQueryTime.AddSeconds(_ssb.Mod.Servers.TimeBetweenQueries) > DateTime.Now)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^1[ERROR]^3 Server request was already made in the past {0} seconds. Ignoring.", _ssb.Mod.Servers.TimeBetweenQueries));
-                return;
+                StatusMessage = string.Format(
+                        "^1[ERROR]^3 Server request was already made in the past {0} seconds. Ignoring.",
+                        _ssb.Mod.Servers.TimeBetweenQueries);
+                // Send as a /say (success) so everyone becomes aware of the time limitation of this cmd
+                await SendServerSay(c, StatusMessage);
+                return false;
             }
 
             bool validGametype = _validGameTypes.Contains(c.Args[1]);
             if (!validGametype)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^1[ERROR]^3 Valid gametypes are: {0}", string.Join(", ", _validGameTypes)));
-                return;
+                StatusMessage = string.Format(
+                        "^1[ERROR]^3 Valid gametypes are: {0}", string.Join(", ", _validGameTypes));
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             bool validRegion = _validRegions.Contains(c.Args[2]);
             if (!validRegion)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format(
-                        "^1[ERROR]^3 Valid regions are: {0}", string.Join(", ", _validRegions)));
-                return;
+                StatusMessage = string.Format(
+                        "^1[ERROR]^3 Valid regions are: {0}", string.Join(", ", _validRegions));
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             await ListActiveServers(c);
             // Impose limit
             _ssb.Mod.Servers.LastQueryTime = DateTime.Now;
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} <gametype> <region>",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>
@@ -219,7 +269,7 @@ namespace SSB.Core.Commands.None
         /// <summary>
         /// Lists the active servers.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="c">The command argument information.</param>
         private async Task ListActiveServers(CmdArgs c)
         {
             string[] gameTypeInfo = GetGameTypesFromAbreviation(c.Args[1]);
@@ -237,27 +287,31 @@ namespace SSB.Core.Commands.None
             var fObj = await qlInfoRetriever.GetServerDataFromFilter(encodedFilter);
             if (fObj == null)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Problem retrieving server list, try again later.");
+                StatusMessage = "^1[ERROR]^3 Problem retrieving server list, try again later.";
+                // send as /say (success) to let everyone know in this case
+                await SendServerSay(c, StatusMessage);
                 return;
             }
             if (fObj.servers.Count == 0)
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^4[ACTIVESERVERS]^7 There are ^1NO^7 active ^2{0}^7 servers in ^2{1}",
-                    c.Args[1], location));
+                StatusMessage = string.Format("^4[ACTIVESERVERS]^7 There are ^1NO^7 active ^2{0}^7 servers in ^2{1}",
+                    c.Args[1], location);
+                await SendServerSay(c, StatusMessage);
                 return;
             }
 
-            await _ssb.QlCommands.QlCmdSay(string.Format("^4[ACTIVESERVERS]^7 Showing up to ^2{0}^7 active ^2{1}^7 servers in ^2{2}:",
-                _ssb.Mod.Servers.MaxServersToDisplay, c.Args[1].ToUpper(), location));
+            StatusMessage = string.Format("^4[ACTIVESERVERS]^7 Showing up to ^2{0}^7 active ^2{1}^7 servers in ^2{2}:",
+                _ssb.Mod.Servers.MaxServersToDisplay, c.Args[1].ToUpper(), location);
+            await SendServerSay(c, StatusMessage);
             var qlLoc = new QlLocations();
             for (int i = 0; i < fObj.servers.Count; i++)
             {
                 if (i == _ssb.Mod.Servers.MaxServersToDisplay) break;
                 string country = qlLoc.GetLocationNameFromId(fObj.servers[i].location_id);
-                await _ssb.QlCommands.QlCmdSay(string.Format("^7{0} [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
+                StatusMessage = string.Format("^7{0} [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
                     (fObj.servers[i].g_needpass == 1 ? "[PW]" : string.Empty), country,
-                    fObj.servers[i].map, fObj.servers[i].num_clients, fObj.servers[i].max_clients, fObj.servers[i].host_address));
+                    fObj.servers[i].map, fObj.servers[i].num_clients, fObj.servers[i].max_clients, fObj.servers[i].host_address);
+                await SendServerSay(c, StatusMessage);
             }
         }
     }

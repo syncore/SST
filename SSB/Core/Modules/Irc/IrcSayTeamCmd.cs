@@ -65,7 +65,7 @@ namespace SSB.Core.Modules.Irc
         {
             _irc.SendIrcNotice(c.FromUser,
                 string.Format("\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 message",
-                    IrcCommandProcessor.IrcCommandPrefix, c.CmdName));
+                    IrcCommandList.IrcCommandPrefix, c.CmdName));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace SSB.Core.Modules.Irc
         {
             await _ssb.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}",
                 c.FromUser,
-                c.Text.Substring((IrcCommandProcessor.IrcCommandPrefix.Length + c.CmdName.Length) + 1)));
+                c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1)));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
@@ -19,7 +18,7 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "earlyquit";
         private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
-
+        private bool _isIrcAccessAllowed = true;
         private int _minModuleArgs = 3;
 
         /// <summary>
@@ -61,6 +60,14 @@ namespace SSB.Core.Commands.Modules
         public string BanTimeScale { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
+
+        /// <summary>
         ///     Gets or sets the maximum quits allowed before a user is banned.
         /// </summary>
         /// <value>
@@ -91,45 +98,69 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Gets the command's status message.
+        /// </summary>
+        /// <value>
+        /// The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] [clear] [forgive] <# of early quits> <time> <scale> ^7 - time is a number, scale is: secs, mins, hours, days, months, or years.",
-                CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        /// <returns></returns>
-        public async Task EvalModuleCmdAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c>if the command evaluation was successful,
+        /// otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             if (c.Args[2].Equals("off"))
             {
-                await DisableEarlyQuit();
-                return;
+                await DisableEarlyQuit(c);
+                return true;
             }
             if (c.Args[2].Equals("clear"))
             {
-                await EvalEarlyQuitClear(c);
-                return;
+                return await EvalEarlyQuitClear(c);
             }
             if (c.Args[2].Equals("forgive"))
             {
-                await EvalEarlyQuitForgive(c);
-                return;
+                return await EvalEarlyQuitForgive(c);
             }
             // In the case of enable, evaluate parameters to see if we can enable the module
-            await EvalEarlyQuitEnable(c);
+            return await EvalEarlyQuitEnable(c);
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] [clear] [forgive] <# of early quits> <time> <scale> ^7 - time is a " +
+                "number, scale is: secs, mins, hours, days, months, or years.",
+                CommandList.GameCommandPrefix, c.CmdName, NameModule);
         }
 
         /// <summary>
@@ -166,6 +197,28 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
         ///     Updates the configuration.
         /// </summary>
         /// <param name="active">
@@ -193,13 +246,13 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         /// Clears the early quits for a given user.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="c">The command argument information.</param>
         /// <param name="qdb">The quit database.</param>
         private async Task ClearEarlyQuits(CmdArgs c, DbQuits qdb)
         {
             qdb.DeleteUserFromDb(c.Args[3]);
-            await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}", c.Args[3]));
+            StatusMessage = string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}", c.Args[3]);
+            await SendServerSay(c, StatusMessage);
             Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.", c.Args[3]));
             // See if there is an early quit-related ban and remove it as well
             var banDb = new DbBans();
@@ -216,173 +269,189 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the early quitter module.
+        /// Disables the early quitter module.
         /// </summary>
-        private async Task DisableEarlyQuit()
+        /// <param name="c">The command argument information.</param>
+        /// <returns></returns>
+        private async Task DisableEarlyQuit(CmdArgs c)
         {
             UpdateConfig(false);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    "^2[SUCCESS]^7 Early quit tracker ^1disabled^7. Players may quit early without incurring a ban penalty.");
+            StatusMessage = "^2[SUCCESS]^7 Early quit tracker ^1disabled^7. Players may quit" +
+                            " early without incurring a ban penalty.";
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Enables the early quitter module.
+        /// Enables the early quitter module.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="maxQuits">The maximum number of quits allowed.</param>
         /// <param name="time">The time to ban for if max quits is exceeded.</param>
         /// <param name="scale">The time scale to be used with the time.</param>
         /// <returns></returns>
-        private async Task EnableEarlyQuit(uint maxQuits, double time, string scale)
+        private async Task EnableEarlyQuit(CmdArgs c, uint maxQuits, double time, string scale)
         {
             MaxQuitsAllowed = maxQuits;
             BanTime = time;
             BanTimeScale = scale;
             UpdateConfig(true);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^5[EARLYQUIT]^7 Early quit tracker is now ^2ON^7. Players who spectate or quit more than ^2{0}^7 times before the game is over will be banned for ^1{1}^7 {2}.",
-                        maxQuits, time, scale));
+            StatusMessage = string.Format(
+                        "^5[EARLYQUIT]^7 Early quit tracker is now ^2ON^7. Players who spectate or quit " +
+                        "more than ^2{0}^7 times before the game is over will be banned for ^1{1}^7 {2}.",
+                        maxQuits, time, scale);
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         /// Evaluates the early quit clear command to see if it can be successfully processed.
         /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task EvalEarlyQuitClear(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
+        private async Task<bool> EvalEarlyQuitClear(CmdArgs c)
         {
             if (c.Args.Length != 4)
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format(
-                 "^1[ERROR]^3 Usage: {0}{1} {2} clear <name> ^7 - name is without the clan tag",
-                 CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
-                return;
+                StatusMessage = string.Format("^1[ERROR]^3 Usage: {0}{1} {2} clear <name> ^7 - name is without the clan tag",
+                 CommandList.GameCommandPrefix, c.CmdName, NameModule);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             var quitDb = new DbQuits();
             if (!quitDb.UserExistsInDb(c.Args[3]))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 {0}^3 has no early quits.", c.Args[3]));
-                return;
+                StatusMessage = string.Format("^1[ERROR] {0}^3 has no early quits.", c.Args[3]);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             await ClearEarlyQuits(c, quitDb);
+            return true;
         }
 
         /// <summary>
-        ///     Evaluates the parameters passed to the early quit module to see if it can be enabled and enables if parameters are
+        ///     Evaluates the parameters passed to the early quit module to see if
+        ///  it can be enabled and enables if parameters are
         ///     valid.
         /// </summary>
-        /// <param name="c">The c.</param>
-        /// <returns></returns>
-        private async Task EvalEarlyQuitEnable(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise
+        /// <c>false</c>.</returns>
+        private async Task<bool> EvalEarlyQuitEnable(CmdArgs c)
         {
             // !mod earlyquit numquits time scale
             // [0]  [1]       [2]      [3]  [4]
             if (c.Args.Length != 5)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             uint numQuits;
             if (!uint.TryParse(c.Args[2], out numQuits))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 The maximum number of quits must be a positive number!");
-                return;
+                StatusMessage = "^1[ERROR]^3 The maximum number of quits must be a positive number!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (numQuits > int.MaxValue)
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 The maximum number of quits is too large!");
-                return;
+                StatusMessage = "^1[ERROR]^3 The maximum number of quits is too large!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             double time;
             if (!double.TryParse(c.Args[3], out time))
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time must be a positive number!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Time must be a positive number!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (time <= 0)
             {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time must be a positive number!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Time must be a positive number!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (time > int.MaxValue)
             {
                 // Just compare to int type's max size because in the case of month and year
                 // it has to be converted to int and can't be double anyway
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Time is too large!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Time is too large!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             bool validScale = Helpers.ValidTimeScales.Contains(c.Args[4]);
             if (!validScale)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Scale must be: secs, mins, hours, days, months, OR years");
-                return;
+                StatusMessage = "^1[ERROR]^3 Scale must be: secs, mins, hours, days, months, OR years";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
-            await EnableEarlyQuit(numQuits, time, c.Args[4]);
+            await EnableEarlyQuit(c, numQuits, time, c.Args[4]);
+            return true;
         }
 
         /// <summary>
-        /// Evaluates teh early quit forgive command to see if it can be successfully processed.
+        /// Evaluates the early quit forgive command to see if it can be successfully processed.
         /// </summary>
-        /// <param name="c">The c.</param>
-        private async Task EvalEarlyQuitForgive(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.
+        /// </returns>
+        private async Task<bool> EvalEarlyQuitForgive(CmdArgs c)
         {
             if (c.Args.Length != 5)
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format(
-                  "^1[ERROR]^3 Usage: {0}{1} {2} forgive <name> <# of quits> ^7 - name is without the clan tag. # quits is amount to forgive",
-                  CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
-                return;
+                StatusMessage = string.Format(
+                  "^1[ERROR]^3 Usage: {0}{1} {2} forgive <name> <# of quits> ^7 - name is without the clan" +
+                  " tag. # quits is amount to forgive",
+                  CommandList.GameCommandPrefix, c.CmdName, NameModule);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             var quitDb = new DbQuits();
             if (!quitDb.UserExistsInDb(c.Args[3]))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 {0}^3 has no early quits.", c.Args[3]));
-                return;
+                StatusMessage = string.Format("^1[ERROR]^7 {0}^3 has no early quits.", c.Args[3]);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             int numQuitsToForgive;
             if (!int.TryParse(c.Args[4], out numQuitsToForgive))
             {
-                await
-                      _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 # of quits must be a number greater than zero!");
-                return;
+                StatusMessage = "^1[ERROR]^3 # of quits must be a number greater than zero!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (numQuitsToForgive == 0)
             {
-                await
-                      _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 # of quits must be greater than zero.");
-                return;
+                StatusMessage = "^1[ERROR]^3 # of quits must be greater than zero.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             long userTotalQuits = quitDb.GetUserQuitCount(c.Args[3]);
             if (numQuitsToForgive >= userTotalQuits)
             {
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^1[ERROR] ^7{0}^3 has {1} total quits. This would remove all. If that's what you want: ^7{2}{3} {4} clear {0}",
-                    c.Args[3], userTotalQuits, CommandProcessor.BotCommandPrefix, c.CmdName, NameModule));
-                return;
+                StatusMessage = string.Format("^1[ERROR]^3 {0} has^1 {1}^3 total quits. This would remove all. If that's" +
+                                              " what you want: ^1{2}{3} {4} clear {0}",
+                    c.Args[3], userTotalQuits, CommandList.GameCommandPrefix, c.CmdName, NameModule);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
-            await ForgiveEarlyQuits(numQuitsToForgive, c.Args[3], quitDb);
+            await ForgiveEarlyQuits(c, numQuitsToForgive, c.Args[3], quitDb);
+            return true;
         }
 
         /// <summary>
         /// Forgives a given numer of early quits for a user.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="num">The number of quits to forgive.</param>
         /// <param name="player">The player.</param>
         /// <param name="qdb">The quit database.</param>
-        /// <returns></returns>
-        private async Task ForgiveEarlyQuits(int num, string player, DbQuits qdb)
+        private async Task ForgiveEarlyQuits(CmdArgs c, int num, string player, DbQuits qdb)
         {
             qdb.DecrementUserQuitCount(player, num);
-            await
-                   _ssb.QlCommands.QlCmdSay(string.Format("^5[EARLYQUIT]^7 Forgave ^3{0}^7 of ^3{1}^7's early quits.", num, player));
+            StatusMessage = string.Format("^5[EARLYQUIT]^7 Forgave ^3{0}^7 of ^3{1}^7's early quits.", num, player);
+            await SendServerSay(c, StatusMessage);
         }
     }
 }

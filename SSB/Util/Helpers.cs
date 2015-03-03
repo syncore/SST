@@ -18,26 +18,28 @@ namespace SSB.Util
         };
 
         /// <summary>
-        /// Gets the name of player with the clan tag stripped away, if it exists.
+        ///     Gets the name of player with the clan tag stripped away, if it exists.
         /// </summary>
         /// <param name="name">The input name.</param>
         /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
         /// <remarks>
-        /// This is necessary because certain events, namely player connections and when the player spectates,
-        /// use the full name with the clan tag included, but internally the bot always uses the short name.
+        ///     This is necessary because certain events, namely player connections and when the player spectates,
+        ///     use the full name with the clan tag included, but internally the bot always uses the short name.
         /// </remarks>
         public static string GetStrippedName(string name)
         {
-            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1 ?
-                name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
+            return name.LastIndexOf(" ", StringComparison.Ordinal) != -1
+                ? name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
                 : name.ToLowerInvariant();
         }
 
         /// <summary>
-        /// Determines whether the specified gametype is a team-based game.
+        ///     Determines whether the specified gametype is a team-based game.
         /// </summary>
-        /// <returns><c>true</c> if the specified gametype is a team-based game; otherwise
-        ///  <c>false</c></returns>
+        /// <returns>
+        ///     <c>true</c> if the specified gametype is a team-based game; otherwise
+        ///     <c>false</c>
+        /// </returns>
         public static bool IsQuakeLiveTeamGame(QlGameTypes gametype)
         {
             switch (gametype)
@@ -119,7 +121,7 @@ namespace SSB.Util
         /// </remarks>
         public static int NthIndexOf(string input, string value, int n)
         {
-            Match m = Regex.Match(input, "((" + value + ").*?){" + n + "}");
+            var m = Regex.Match(input, "((" + value + ").*?){" + n + "}");
 
             if (m.Success)
             {

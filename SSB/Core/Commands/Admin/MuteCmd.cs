@@ -11,10 +11,10 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class MuteCmd : IBotCommand
     {
-        private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 2;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MuteCmd" /> class.
@@ -48,6 +48,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -61,35 +69,78 @@ namespace SSB.Core.Commands.Admin
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdTell(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
             if (id != -1)
             {
+                StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to mute player ^2{0}",
+                    c.Args[1]);
                 await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
+                await SendServerSay(c, StatusMessage);
                 Debug.WriteLine("MUTE: Got player id {0} for player: {1}", id, c.Args[1]);
+                return true;
             }
-            else
-            {
-                await
-                    _ssb.QlCommands.QlCmdTell(
-                        "^1[ERROR]^3 MUTE: Player not found. Use player name without clan tag.",
-                        c.FromUser);
-                Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
-                    c.Args[1]));
-            }
+
+            StatusMessage =
+                string.Format("^1[ERROR]^3 MUTE: Player ^1{0}^3 not found. Use player name without clan tag.",
+                    c.Args[1]);
+            await SendServerTell(c, StatusMessage);
+            Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
+                c.Args[1]));
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
     }
 }

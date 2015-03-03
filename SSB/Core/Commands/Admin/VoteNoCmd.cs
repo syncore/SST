@@ -10,8 +10,8 @@ namespace SSB.Core.Commands.Admin
     /// </summary>
     public class VoteNoCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
         private readonly SynServerBot _ssb;
-        private bool _isIrcAccessAllowed = true;
         private int _minArgs = 0;
         private UserLevel _userLevel = UserLevel.Admin;
 
@@ -47,6 +47,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -72,11 +80,55 @@ namespace SSB.Core.Commands.Admin
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
+            StatusMessage = "^2[SUCCESS]^7 Attempted to reject the vote.";
             await _ssb.QlCommands.SendToQlAsync("vote no", false);
+            await SendServerSay(c, StatusMessage);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        /// <remarks>
+        ///     Not implemented because the cmd in this class requires no args.
+        /// </remarks>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
     }
 }

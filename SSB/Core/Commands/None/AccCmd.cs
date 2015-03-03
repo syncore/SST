@@ -51,6 +51,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the command's status message.
+        /// </summary>
+        /// <value>
+        /// The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -64,53 +72,93 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed, otherwise
+        /// <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Accuracy.Active)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
+                StatusMessage = string.Format(
                             "^1[ERROR]^3 Accuracy module has not been loaded. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdModule,
-                            ModuleCmd.AccuracyArg));
-                return;
+                            CommandList.GameCommandPrefix, CommandList.CmdModule,
+                            ModuleCmd.AccuracyArg);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             if (!Helpers.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^3 {0} is not currently on the server!",
-                        c.Args[1]));
-                return;
+                StatusMessage = string.Format("^1[ERROR]^3 {0} is not currently on the server!",
+                        c.Args[1]);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             if (!Helpers.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
-                return;
+                return false;
             }
             if (IsBotPlayer())
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Accuracies are unavailable because bot owner is currently playing on same account as bot.");
-                return;
+                StatusMessage = "^1[ERROR]^3 Accuracies are unavailable because bot owner is" +
+                                " currently playing on same account as bot.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             await ShowAccSinglePlayer(c);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>
@@ -144,7 +192,8 @@ namespace SSB.Core.Commands.None
             {
                 Debug.WriteLine(
                     string.Format(
-                        "Accuracy object is null or no accuracies other than defaults detected for {0}. Skipping acc string formation.",
+                        "Accuracy object is null or no accuracies other than defaults detected for {0}." +
+                        " Skipping acc string formation.",
                         player));
                 return string.Empty;
             }
@@ -231,7 +280,7 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Retrieves the accuracy.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="c">The command argument information.</param>
         private async Task RetrieveAccuracy(CmdArgs c)
         {
             var player = c.Args[1];
@@ -251,14 +300,15 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Shows the accuracy of a single player.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="c">The command argument information.</param>
         private async Task ShowAccSinglePlayer(CmdArgs c)
         {
             var player = c.Args[1];
             await RetrieveAccuracy(c);
             var accStr = FormatAccString(player);
-            await _ssb.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 accuracy: {1}",
-                player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr)));
+            StatusMessage = string.Format("^3{0}'s^7 accuracy: {1}",
+                player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr));
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
@@ -266,7 +316,6 @@ namespace SSB.Core.Commands.None
         /// </summary>
         private async Task StartAccuracyRead()
         {
-            //_ssb.QlCommands.SendToQl("+acc", true);
             await _ssb.QlCommands.SendToQlAsync("+acc", true);
             Debug.WriteLine("Starting accuracy read.");
         }

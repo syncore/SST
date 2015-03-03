@@ -195,7 +195,7 @@ namespace SSB.Core
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
             // Check to see if chat message is a valid command
-            if (msgContent.StartsWith(CommandProcessor.BotCommandPrefix))
+            if (msgContent.StartsWith(CommandList.GameCommandPrefix))
             {
                 // Synchronous
                 // ReSharper disable once UnusedVariable

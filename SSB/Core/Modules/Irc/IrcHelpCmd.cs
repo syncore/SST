@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -13,16 +14,19 @@ namespace SSB.Core.Modules.Irc
     {
         private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
+        private readonly Dictionary<string, IIrcCommand> _cmdList;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrcHelpCmd" /> class.
+        /// Initializes a new instance of the <see cref="IrcHelpCmd" /> class.
         /// </summary>
         /// <param name="irc">The IRC interface.</param>
-        public IrcHelpCmd(IrcManager irc)
+        /// <param name="cmdList">The command list.</param>
+        public IrcHelpCmd(IrcManager irc, Dictionary<string, IIrcCommand> cmdList)
         {
             MinArgs = 0;
             IsAsync = false;
             _irc = irc;
+            _cmdList = cmdList;
         }
 
         /// <summary>
@@ -66,14 +70,14 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public void Exec(CmdArgs c)
         {
-            var cmdList = IrcCommandProcessor.IrcCommandList.Select(cmd =>
-                string.Format("{0}{1}", IrcCommandProcessor.IrcCommandPrefix, cmd.Key)).ToList();
+            var cmds = _cmdList.Select(cmd =>
+                string.Format("{0}{1}", IrcCommandList.IrcCommandPrefix, cmd.Key)).ToList();
 
             //TODO: update the URL
             _irc.SendIrcNotice(c.FromUser,
                 string.Format(
                     "\u0003[COMMANDS]: \u0002{0}\u0002 - for more information, visit: http://ssb.syncore.org/help",
-                    string.Join(", ", cmdList)));
+                    string.Join(", ", cmds)));
         }
 
         /// <summary>

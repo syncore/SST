@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SSB.Config;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -51,6 +52,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -67,46 +76,107 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdTell(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} name access#^7 - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
-                CommandProcessor.BotCommandPrefix, c.CmdName), c.FromUser);
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        /// <remarks>
-        ///     c.Args[1]: userToAdd, c.Args[2]: accessLevel
-        /// </remarks>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!c.Args[2].Equals("1") && !c.Args[2].Equals("2") && !c.Args[2].Equals("3"))
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
-            if ((c.Args[2].Equals("3")) && ((_users.GetUserLevel(c.FromUser) != UserLevel.Owner)))
+            if ((c.Args[2].Equals("3")))
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^1[ERROR]^7 Only owners can add admins."));
-                return;
+                var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _users.GetUserLevel(c.FromUser);
+                if (userLevel != UserLevel.Owner)
+                {
+                    StatusMessage = string.Format("^1[ERROR]^3 Only owners can add admins.");
+                    await SendServerTell(c, StatusMessage);
+                    return false;
+                }
             }
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
                 date);
             if (result == UserDbResult.Success)
             {
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the^2 [{1}] ^7group.", c.Args[1],
-                        (UserLevel) Convert.ToInt32(c.Args[2])));
+                StatusMessage = string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the ^2[{1}] ^7group.",
+                    c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]));
+                await SendServerSay(c, StatusMessage);
+                return true;
             }
-            else
-            {
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^1[ERROR]^7 Unable to add user^1 {0}^7 to the^1 [{1}] ^7group. Code:^1 {2}",
-                        c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), result));
-            }
+
+            StatusMessage = string.Format(
+                "^1[ERROR]^3 Unable to add user ^1{0}^3 to the ^1[{1}] ^3group. Code:^1 {2}",
+                c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), result);
+            await SendServerTell(c, StatusMessage);
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name access# - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Determines whether the command was sent from the owner of
+        ///     the bot via IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was sent from IRC and from
+        ///     an the IRC owner.
+        /// </returns>
+        private bool IsIrcOwner(CmdArgs c)
+        {
+            if (!c.FromIrc) return false;
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            return
+                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                    StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

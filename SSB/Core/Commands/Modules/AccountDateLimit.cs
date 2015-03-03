@@ -1,5 +1,4 @@
 ﻿using System;
-
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,8 +18,9 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "accountdate";
         private readonly ConfigHandler _configHandler;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _minModuleArgs = 3;
         private readonly SynServerBot _ssb;
-        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccountDateLimit" /> class.
@@ -50,6 +50,17 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
+
+        /// <summary>
         ///     Gets the minimum arguments.
         /// </summary>
         /// <value>
@@ -72,43 +83,71 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
-                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.AccountDateLimitArg));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Evaluates the account date limit command.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task EvalModuleCmdAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
 
             // Disable account date limiter
             if (c.Args[2].Equals("off"))
             {
-                await DisableAccountDateLimiter();
-                return;
+                await DisableAccountDateLimiter(c);
+                return true;
             }
             int days;
-            bool isValidNum = ((int.TryParse(c.Args[2], out days) && days > 0));
+            var isValidNum = ((int.TryParse(c.Args[2], out days) && days > 0));
             if ((!isValidNum))
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
 
-            await EnableAccountDateLimiter(days);
+            await EnableAccountDateLimiter(c, days);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return (string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
+                CommandList.GameCommandPrefix, c.CmdName,
+                ModuleCmd.AccountDateLimitArg));
         }
 
         /// <summary>
@@ -126,28 +165,8 @@ namespace SSB.Core.Commands.Modules
             {
                 // ReSharper disable once UnusedVariable
                 // Synchronous; initialization
-                Task i = Init();
+                var i = Init();
             }
-        }
-
-        /// <summary>
-        ///     Updates the configuration.
-        /// </summary>
-        public void UpdateConfig(bool active)
-        {
-            Active = active;
-
-            if (active)
-            {
-                _configHandler.Config.AccountDateOptions.isActive = true;
-                _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
-            }
-            else
-            {
-                _configHandler.Config.AccountDateOptions.SetDefaults();
-            }
-
-            _configHandler.WriteConfiguration();
         }
 
         /// <summary>
@@ -173,33 +192,90 @@ namespace SSB.Core.Commands.Modules
         public async Task RunUserDateCheck(string user)
         {
             var qlDateChecker = new QlAccountDateChecker();
-            DateTime date = await qlDateChecker.GetUserRegistrationDate(user);
+            var date = await qlDateChecker.GetUserRegistrationDate(user);
             await VerifyUserDate(user, date);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        public void UpdateConfig(bool active)
+        {
+            Active = active;
+
+            if (active)
+            {
+                _configHandler.Config.AccountDateOptions.isActive = true;
+                _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
+            }
+            else
+            {
+                _configHandler.Config.AccountDateOptions.SetDefaults();
+            }
+
+            _configHandler.WriteConfiguration();
         }
 
         /// <summary>
         ///     Disables the account date limiter.
         /// </summary>
-        private async Task DisableAccountDateLimiter()
+        private async Task DisableAccountDateLimiter(CmdArgs c)
         {
             UpdateConfig(false);
-            await _ssb.QlCommands.QlCmdSay(
-                "^2[SUCCESS]^7 Account date limit ^1OFF^7. Players who registered on any date can play.");
+            StatusMessage =
+                "^2[SUCCESS]^7 Account date limit ^2OFF.^7 Players who registered on any date ^2CAN^7 play.";
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         ///     Enables the account date limiter.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="days">The minimum amount of days.</param>
+        private async Task EnableAccountDateLimiter(CmdArgs c, int days)
+        {
+            MinimumDaysRequired = days;
+            UpdateConfig(true);
+            StatusMessage = string.Format(
+                "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last ^1{0}^7 days ^1CANNOT^7 play.",
+                days);
+            await SendServerSay(c, StatusMessage);
+            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
+        ///     Enables the account date limiter.
+        /// </summary>
+        /// <param name="days">The days.</param>
+        /// <remarks>
+        ///     This is for use with the auto Init() method and does not produce a message.
+        /// </remarks>
         private async Task EnableAccountDateLimiter(int days)
         {
             MinimumDaysRequired = days;
             UpdateConfig(true);
-            await _ssb.QlCommands.QlCmdSay(
-                string.Format(
-                    "^2[SUCCESS]^7 Account date limit ^2ON.^7 Players with accounts registered in the last^1 {0}^7 days may not play.",
-                    days));
-
             await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
         }
 
@@ -230,10 +306,9 @@ namespace SSB.Core.Commands.Modules
                     "User {0} has created account within the last {1} days. Date created: {2}. Kicking...",
                     user, MinimumDaysRequired, regDate);
                 await _ssb.QlCommands.CustCmdKickban(user);
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2}^7 days",
-                        user, regDate.ToString("d"), MinimumDaysRequired));
+                await _ssb.QlCommands.QlCmdSay(string.Format(
+                    "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2}^7 days",
+                    user, regDate.ToString("d"), MinimumDaysRequired));
             }
         }
     }

@@ -15,10 +15,10 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class FindPlayerCmd : IBotCommand
     {
-        private bool _isIrcAccessAllowed = true;
         private readonly int _minArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
+        private bool _isIrcAccessAllowed = true;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FindPlayerCmd" /> class.
@@ -52,6 +52,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -65,27 +73,29 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed, otherwise
+        /// <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!Helpers.IsValidQlUsernameFormat(c.Args[1], false))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
-                            c.Args[1]));
-                return;
+                StatusMessage = string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
+                            c.Args[1]);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             // Search all the public servers (private "0")
@@ -93,9 +103,9 @@ namespace SSB.Core.Commands.None
             FilterObject secondQuery;
             if (firstQuery == null)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Problem querying servers, try again later.");
-                return;
+                StatusMessage = "^1[ERROR]^3 Problem querying servers, try again later.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             // Player was NOT found on public servers
             if (firstQuery.servers.Count == 0)
@@ -106,44 +116,78 @@ namespace SSB.Core.Commands.None
             // Player WAS found on the public servers
             else
             {
-                await DisplaySearchResults(c.Args[1], firstQuery.servers.First());
-                return;
+                await DisplaySearchResults(c, firstQuery.servers.First());
+                return true;
             }
             if (secondQuery == null)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 Problem querying servers, try again later.");
-                return;
+                StatusMessage = "^1[ERROR]^3 Problem querying servers, try again later.";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             // Player was NOT found on the private servers either, thus player is not playing at all
             if (secondQuery.servers.Count == 0)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
-                            "^6[PLAYERFINDER] ^3{0}^7 was not found on any Quake Live servers.", c.Args[1]));
+                StatusMessage = string.Format("^6[PLAYERFINDER] ^3{0}^7 was not" +
+                                              " found on any Quake Live servers.", c.Args[1]);
+                await SendServerSay(c, StatusMessage);
+                return true;
             }
             // Player WAS found on a private server.
-            else
-            {
-                await DisplaySearchResults(c.Args[1], secondQuery.servers.First());
-            }
+            await DisplaySearchResults(c, secondQuery.servers.First());
+            return true;
         }
 
         /// <summary>
-        ///     Displays the search results.
+        ///     Gets the argument length error message.
         /// </summary>
-        /// <param name="player">The player.</param>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        /// Displays the search results.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="server">The server.</param>
-        private async Task DisplaySearchResults(string player, Server server)
+        private async Task DisplaySearchResults(CmdArgs c, Server server)
         {
             var qlLoc = new QlLocations();
             var country = qlLoc.GetLocationNameFromId(server.location_id);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format("^6[PLAYERFINDER] ^7Found ^3{0}^7 on [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
-                        player, country, server.map, server.num_clients, server.max_clients,
-                        server.host_address));
+            StatusMessage = string.Format("^6[PLAYERFINDER] ^7Found ^3{0}^7 on [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
+                        c.Args[1], country, server.map, server.num_clients, server.max_clients,
+                        server.host_address);
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>

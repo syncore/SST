@@ -15,6 +15,7 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "servers";
         private readonly ConfigHandler _configHandler;
         private readonly SynServerBot _ssb;
+        private bool _isIrcAccessAllowed = true;
         private int _minModuleArgs = 3;
 
         public Servers(SynServerBot ssb)
@@ -33,13 +34,21 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
+
+        /// <summary>
         /// Gets or sets the date and time that the query command was last used.
         /// </summary>
         /// <value>
         /// The date and time that the query command was last used.
         /// </value>
         public DateTime LastQueryTime { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the maximum servers to display.
         /// </summary>
@@ -71,6 +80,14 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Gets the command's status message.
+        /// </summary>
+        /// <value>
+        /// The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         /// Gets or sets the time between queries.
         /// </summary>
         /// <value>
@@ -81,91 +98,111 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         /// Disables the active servers module.
         /// </summary>
-        public async Task DisableServers()
+        /// <param name="c">The command argument information.</param>
+        public async Task DisableServers(CmdArgs c)
         {
             UpdateConfig(false);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    "^2[SUCCESS]^7 Active server list display is ^1disabled^7.");
+            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <maxservers> <timebetween> -^7 max servers to show, time between queries",
-                CommandProcessor.BotCommandPrefix, c.CmdName, ModuleCmd.ServersArg));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         /// Enables the active servers module.
         /// </summary>
+        /// <param name="c">The command argument information.</param>
         /// <param name="maxServers">The maximum servers to display.</param>
         /// <param name="timeBetween">The time in seconds that must elapse between users issuing the
-        ///  query command.</param>
-        public async Task EnableServers(uint maxServers, double timeBetween)
+        /// query command.</param>
+        public async Task EnableServers(CmdArgs c, uint maxServers, double timeBetween)
         {
             MaxServersToDisplay = maxServers;
             TimeBetweenQueries = timeBetween;
             UpdateConfig(true);
-            await
-                _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can see up to ^5{0}^7 active servers every ^5{1}^7 seconds.",
-                        maxServers, timeBetween));
+            StatusMessage = string.Format(
+                        "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
+                        " see up to ^5{0}^7 active servers every ^5{1}^7 seconds.",
+                        maxServers, timeBetween);
+            await SendServerSay(c, StatusMessage);
         }
 
         /// <summary>
         /// Executes the specified module command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        /// <returns></returns>
-        public async Task EvalModuleCmdAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        /// <c>true</c>if the command evaluation was successful,
+        /// otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < _minModuleArgs)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             if (c.Args[2].Equals("off"))
             {
-                await DisableServers();
-                return;
+                await DisableServers(c);
+                return true;
             }
             if (c.Args.Length != 4)
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             uint maxNum;
             if (!uint.TryParse(c.Args[2], out maxNum))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 The maximum servers to display must be a number greater than zero!");
-                return;
+                StatusMessage = "^1[ERROR]^3 The maximum servers to display must be a number greater than zero!";
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             double timebtNum;
             if (!double.TryParse(c.Args[3], out timebtNum))
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format(
+                StatusMessage = string.Format(
                         "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number.",
-                        CommandProcessor.CmdServers));
-                return;
+                        CommandList.CmdServers);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
             if (timebtNum < 0)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(string.Format(
+                StatusMessage = string.Format(
                         "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number greater than zero.",
-                        CommandProcessor.CmdServers));
-                return;
+                        CommandList.CmdServers);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
-            await EnableServers(maxNum, timebtNum);
+
+            await EnableServers(c, maxNum, timebtNum);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <maxservers> <timebetween> -^7 max servers to" +
+                " show, limit in secs between queries",
+                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.ServersArg);
         }
 
         /// <summary>
@@ -186,6 +223,28 @@ namespace SSB.Core.Commands.Modules
             Active = _configHandler.Config.ServersOptions.isActive;
             MaxServersToDisplay = _configHandler.Config.ServersOptions.maxServers;
             TimeBetweenQueries = _configHandler.Config.ServersOptions.timeBetweenQueries;
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SSB.Core.Commands.Admin;
-using SSB.Core.Commands.None;
-using SSB.Core.Commands.Owner;
-using SSB.Core.Commands.SuperUser;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -19,53 +15,7 @@ namespace SSB.Core
     /// </summary>
     public class CommandProcessor
     {
-        public const string BotCommandPrefix = "!";
-        public const string CmdAbort = "abort";
-        public const string CmdAcc = "acc";
-        public const string CmdAcceptTeamSuggestion = "accept";
-        public const string CmdAccess = "access";
-        public const string CmdAccountDate = "date";
-        public const string CmdAddUser = "adduser";
-        public const string CmdAllReady = "allready";
-        public const string CmdDelUser = "deluser";
-        public const string CmdDeOp = "deop";
-        public const string CmdEarlyQuit = "earlyquit";
-        public const string CmdElo = "elo";
-        public const string CmdFindPlayer = "findplayer";
-        public const string CmdForceJoinBlue = "blue";
-        public const string CmdForceJoinRed = "red";
-        public const string CmdForceJoinSpec = "spec";
-        public const string CmdHelp = "help";
-        public const string CmdInvite = "invite";
-        public const string CmdKickBan = "kickban";
-        public const string CmdLock = "lock";
-        public const string CmdMap = "map";
-        public const string CmdModule = "mod";
-        public const string CmdMute = "mute";
-        public const string CmdOp = "op";
-        public const string CmdPickup = "pickup";
-        public const string CmdPickupAdd = "a";
-        public const string CmdPickupCap = "cap";
-        public const string CmdPickupPick = "pick";
-        public const string CmdPickupRemove = "r";
-        public const string CmdPickupSub = "sub";
-        public const string CmdPickupWho = "who";
-        public const string CmdPause = "pause";
-        public const string CmdReload = "reload";
-        public const string CmdRejectTeamSuggestion = "reject";
-        public const string CmdSeen = "seen";
-        public const string CmdServers = "servers";
-        public const string CmdShutdown = "shutdown";
-        public const string CmdStopServer = "stopserver";
-        public const string CmdSuggestTeams = "suggest";
-        public const string CmdTimeBan = "timeban";
-        public const string CmdUnban = "unban";
-        public const string CmdUnlock = "unlock";
-        public const string CmdUnmute = "unmute";
-        public const string CmdUnpause = "unpause";
-        public const string CmdVoteNo = "no";
-        public const string CmdVoteYes = "yes";
-        private readonly Dictionary<string, IBotCommand> _commands;
+        private readonly CommandList _cmdList;
         private readonly Dictionary<string, DateTime> _playerCommandTime;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
@@ -78,55 +28,19 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _users = new DbUsers();
+            _cmdList = new CommandList(_ssb);
             _playerCommandTime = new Dictionary<string, DateTime>();
-            _commands = new Dictionary<string, IBotCommand>
-            {
-                {CmdAbort, new AbortCmd(_ssb)},
-                {CmdAcc, new AccCmd(_ssb)},
-                {CmdAccess, new AccessCmd(_ssb)},
-                {CmdAccountDate, new AccountDateCmd(_ssb)},
-                {CmdAddUser, new AddUserCmd(_ssb)},
-                {CmdAllReady, new AllReadyCmd(_ssb)},
-                {CmdForceJoinBlue, new ForceJoinBlueCmd(_ssb)},
-                {CmdFindPlayer, new FindPlayerCmd(_ssb)},
-                {CmdDelUser, new DelUserCmd(_ssb)},
-                {CmdDeOp, new DeOpCmd(_ssb)},
-                {CmdEarlyQuit, new EarlyQuitCmd(_ssb)},
-                {CmdElo, new EloCmd(_ssb)},
-                {CmdHelp, new HelpCmd(_ssb)},
-                {CmdInvite, new InviteCmd(_ssb)},
-                {CmdMap, new MapCmd(_ssb)},
-                {CmdModule, new ModuleCmd(_ssb)},
-                {CmdLock, new LockCmd(_ssb)},
-                {CmdOp, new OpCmd(_ssb)},
-                {CmdMute, new MuteCmd(_ssb)},
-                {CmdVoteNo, new VoteNoCmd(_ssb)},
-                {CmdKickBan, new KickBanCmd(_ssb)},
-                {CmdPause, new PauseCmd(_ssb)},
-                {CmdPickup, new PickupCmd(_ssb)},
-                {CmdPickupAdd, new PickupAddCmd(_ssb)},
-                {CmdPickupCap, new PickupCapCmd(_ssb)},
-                {CmdPickupRemove, new PickupRemoveCmd(_ssb)},
-                {CmdPickupPick, new PickupPickCmd(_ssb)},
-                {CmdPickupSub, new PickupSubCmd(_ssb)},
-                {CmdPickupWho, new PickupWhoCmd(_ssb)},
-                {CmdForceJoinRed, new ForceJoinRedCmd(_ssb)},
-                {CmdForceJoinSpec, new ForceJoinSpecCmd(_ssb)},
-                {CmdServers, new ServersCmd(_ssb)},
-                {CmdSuggestTeams, new SuggestTeamsCmd(_ssb)},
-                {CmdTimeBan, new TimeBanCmd(_ssb)},
-                {CmdUnban, new UnbanCmd(_ssb)},
-                {CmdUnlock, new UnlockCmd(_ssb)},
-                {CmdUnmute, new UnmuteCmd(_ssb)},
-                {CmdUnpause, new UnpauseCmd(_ssb)},
-                {CmdReload, new ReloadCmd(_ssb)},
-                {CmdSeen, new SeenCmd(_ssb)},
-                {CmdShutdown, new ShutdownCmd(_ssb)},
-                {CmdStopServer, new StopServerCmd(_ssb)},
-                {CmdVoteYes, new VoteYesCmd(_ssb)},
-                {CmdAcceptTeamSuggestion, new AcceptTeamSuggestCmd(_ssb)},
-                {CmdRejectTeamSuggestion, new RejectTeamSuggestCmd(_ssb)},
-            };
+        }
+
+        /// <summary>
+        /// Gets the commands.
+        /// </summary>
+        /// <value>
+        /// The commands.
+        /// </value>
+        public Dictionary<string, IBotCommand> Commands
+        {
+            get { return _cmdList.Commands; }
         }
 
         /// <summary>
@@ -137,7 +51,7 @@ namespace SSB.Core
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
             char[] sep = { ' ' };
-            string[] args = msg.Split(sep, 5);
+            string[] args = msg.Split(sep);
             string cmdName = args[0].Substring(1);
             if (!_ssb.IsInitComplete)
             {
@@ -150,15 +64,15 @@ namespace SSB.Core
             {
                 Debug.WriteLine(
                     "Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
-                    fromUser, BotCommandPrefix, cmdName);
+                    fromUser, CommandList.GameCommandPrefix, cmdName);
                 return;
             }
             _playerCommandTime[fromUser] = DateTime.Now;
-            if (msg.Equals(BotCommandPrefix))
+            if (msg.Equals(CommandList.GameCommandPrefix))
             {
                 return;
             }
-            if (!Helpers.KeyExists(cmdName, _commands))
+            if (!Helpers.KeyExists(cmdName, _cmdList.Commands))
             {
                 return;
             }
@@ -170,19 +84,19 @@ namespace SSB.Core
                         fromUser, cmdName));
                 return;
             }
-            if (!UserHasReqLevel(fromUser, _commands[cmdName].UserLevel))
+            if (!UserHasReqLevel(fromUser, _cmdList.Commands[cmdName].UserLevel))
             {
                 await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
                 return;
             }
-            var c = new CmdArgs(args, cmdName, fromUser, msg);
-            if (args.Length < _commands[cmdName].MinArgs)
+            var c = new CmdArgs(args, cmdName, fromUser, msg, false);
+            if (args.Length < _cmdList.Commands[cmdName].MinArgs)
             {
-                await _commands[cmdName].DisplayArgLengthError(c);
+                await _cmdList.Commands[cmdName].DisplayArgLengthError(c);
                 return;
             }
             // Execute
-            await _commands[cmdName].ExecAsync(c);
+            await _cmdList.Commands[cmdName].ExecAsync(c);
         }
 
         /// <summary>
@@ -197,11 +111,7 @@ namespace SSB.Core
                 return true;
             }
             // 6.5 seconds between commands
-            if (_playerCommandTime[user].AddSeconds(6.5) < DateTime.Now)
-            {
-                return true;
-            }
-            return false;
+            return _playerCommandTime[user].AddSeconds(6.5) < DateTime.Now;
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ namespace SSB.Core.Modules.Irc
             {
                 Debug.WriteLine("[{0}]({1}): {2}", channel.Name, e.Source.Name, e.Text);
                 // If it's a command, then process it
-                if (e.Text.StartsWith(IrcCommandProcessor.IrcCommandPrefix))
+                if (e.Text.StartsWith(IrcCommandList.IrcCommandPrefix))
                 {
                     // Synchronous
                     // ReSharper disable once UnusedVariable

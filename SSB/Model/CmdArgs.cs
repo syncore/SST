@@ -9,6 +9,7 @@
         public string CmdName;
         public string FromUser;
         public string Text;
+        public bool FromIrc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CmdArgs" /> struct.
@@ -17,12 +18,14 @@
         /// <param name="cmdName">Name of the command.</param>
         /// <param name="fromUser">The user who sent the command.</param>
         /// <param name="text">The full text.</param>
-        public CmdArgs(string[] args, string cmdName, string fromUser, string text)
+        /// <param name="fromIrc">if set to <c>true</c> then the message was sent from IRC.</param>
+        public CmdArgs(string[] args, string cmdName, string fromUser, string text, bool fromIrc)
         {
             Args = args;
             CmdName = cmdName;
             FromUser = fromUser;
             Text = text;
+            FromIrc = fromIrc;
         }
     }
 }

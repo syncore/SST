@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using SSB.Config;
 using SSB.Core.Commands.Admin;
 using SSB.Database;
 using SSB.Enum;
@@ -51,6 +53,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -64,67 +74,105 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSay(string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} <start/stop/reset/unban/help>",
-                CommandProcessor.BotCommandPrefix, c.CmdName));
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <param name="c">The command argument information.</param>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Pickup.Active)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        string.Format(
+                StatusMessage = string.Format(
                             "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandProcessor.BotCommandPrefix, CommandProcessor.CmdModule,
-                            ModuleCmd.PickupArg));
-                return;
+                            CommandList.GameCommandPrefix, CommandList.CmdModule,
+                            ModuleCmd.PickupArg);
+                await SendServerTell(c, StatusMessage);
+                return false;
             }
 
             if (!c.Args[1].Equals("reset") && !c.Args[1].Equals("start") && !c.Args[1].Equals("stop")
                 && !c.Args[1].Equals("unban") && !c.Args[1].Equals("help"))
             {
                 await DisplayArgLengthError(c);
-                return;
+                return false;
             }
             // These arguments to the the pickup command require elevated privileges.
             if (c.Args[1].Equals("reset") || c.Args[1].Equals("start") ||
                 c.Args[1].Equals("stop") || c.Args[1].Equals("unban"))
             {
-                if (_userDb.GetUserLevel(c.FromUser) < UserLevel.SuperUser)
+                var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _userDb.GetUserLevel(c.FromUser);
+                if (userLevel < UserLevel.SuperUser)
                 {
                     await DisplayInsufficientAccessError(c);
-                    return;
+                    return false;
                 }
             }
             if (c.Args[1].Equals("reset"))
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupReset();
+                return await _ssb.Mod.Pickup.Manager.EvalPickupReset(c);
             }
-            else if (c.Args[1].Equals("start"))
+            if (c.Args[1].Equals("start"))
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupStart();
+                await _ssb.Mod.Pickup.Manager.EvalPickupStart(c);
             }
             else if (c.Args[1].Equals("stop"))
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupStop();
+                return await _ssb.Mod.Pickup.Manager.EvalPickupStop(c);
             }
             else if (c.Args[1].Equals("unban"))
             {
-                await _ssb.Mod.Pickup.Manager.EvalPickupUnban(c.FromUser, c.Args);
+                return await _ssb.Mod.Pickup.Manager.EvalPickupUnban(c);
             }
             else if (c.Args[1].Equals("help"))
             {
                 await DisplayPickupHelp(c);
+                return true;
             }
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} <start/stop/reset/unban/help>",
+                CommandList.GameCommandPrefix, c.CmdName);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>
@@ -132,9 +180,8 @@ namespace SSB.Core.Commands.None
         /// </summary>
         private async Task DisplayInsufficientAccessError(CmdArgs c)
         {
-            await
-                _ssb.QlCommands.QlCmdTell("^1[ERROR]^3 You do not have permission to use that command.",
-                    c.FromUser);
+            StatusMessage = "^1[ERROR]^3 You do not have permission to use that command.";
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
@@ -142,24 +189,45 @@ namespace SSB.Core.Commands.None
         /// </summary>
         private async Task DisplayPickupHelp(CmdArgs c)
         {
-            await
-                _ssb.QlCommands.QlCmdTell(
-                    string.Format(
-                        "^5[PICKUP] ^7Commands: ^3{0}{1}^7 sign yourself up, ^3{0}{2}^7 remove yourself, ^3{0}{3}^7 sign up as a captain",
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupAdd,
-                        CommandProcessor.CmdPickupRemove, CommandProcessor.CmdPickupCap), c.FromUser);
-            await
-                _ssb.QlCommands.QlCmdTell(
-                    string.Format(
+            StatusMessage = string.Format(
+                "^5[PICKUP] ^7Commands: ^3{0}{1}^7 sign yourself up, ^3{0}{2}^7 remove yourself, ^3{0}{3}^7 sign up as a captain",
+                CommandList.GameCommandPrefix, CommandList.CmdPickupAdd,
+                CommandList.CmdPickupRemove, CommandList.CmdPickupCap);
+
+            await SendServerSay(c, StatusMessage);
+
+            StatusMessage = string.Format(
                         "^3{0}{1}^7 captains: pick a player, ^3{0}{2}^7 request a substitute for yourself, ^3{0}{3}^7 see who's signed up",
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickupPick,
-                        CommandProcessor.CmdPickupSub, CommandProcessor.CmdPickupWho), c.FromUser);
-            await
-                _ssb.QlCommands.QlCmdTell(
-                    string.Format(
-                        "^5Privileged cmds: ^3{0}{1} start^7 lockdown server & start, ^3{0}{1} reset^7 reset game," +
-                        " ^3{0}{1} stop^7 cancel and unlock server, ^3{0}{1} unban^7 unban no-shows",
-                        CommandProcessor.BotCommandPrefix, CommandProcessor.CmdPickup), c.FromUser);
+                        CommandList.GameCommandPrefix, CommandList.CmdPickupPick,
+                        CommandList.CmdPickupSub, CommandList.CmdPickupWho);
+
+            await SendServerSay(c, StatusMessage);
+
+            StatusMessage = string.Format(
+                "^5Privileged cmds: ^3{0}{1} start^7 lockdown server & start, ^3{0}{1} reset^7 reset game," +
+                " ^3{0}{1} stop^7 cancel and unlock server, ^3{0}{1} unban^7 unban no-shows",
+                CommandList.GameCommandPrefix, CommandList.CmdPickup);
+
+            await SendServerSay(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Determines whether the command was sent from the owner of
+        ///     the bot via IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was sent from IRC and from
+        ///     an the IRC owner.
+        /// </returns>
+        private bool IsIrcOwner(CmdArgs c)
+        {
+            if (!c.FromIrc) return false;
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            return
+                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                    StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

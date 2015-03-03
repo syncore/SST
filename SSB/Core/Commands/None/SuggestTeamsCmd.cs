@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using SSB.Config;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -18,8 +19,6 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class SuggestTeamsCmd : IBotCommand
     {
-        private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 0;
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
         private readonly Timer _suggestionTimer;
@@ -28,6 +27,8 @@ namespace SSB.Core.Commands.None
         private readonly DbUsers _users;
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
+        private bool _isIrcAccessAllowed = true;
+        private int _minArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SuggestTeamsCmd" /> class.
@@ -67,6 +68,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -80,83 +89,120 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Displays the argument length error.
         /// </summary>
-        /// <param name="c"></param>
-        public Task DisplayArgLengthError(CmdArgs c)
+        /// <param name="c">The command args</param>
+        public async Task DisplayArgLengthError(CmdArgs c)
         {
-            return null;
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
-        /// <param name="c">The c.</param>
+        /// <param name="c">The command argument information.</param>
         /// <remarks>
         ///     c.Args[1] if specified: user to check
         /// </remarks>
-        public async Task ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             // Must be a team gametype that is supported by QLRanks
             if (_ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Ca &&
                 _ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Ctf &&
                 _ssb.ServerInfo.CurrentServerGameType != QlGameTypes.Tdm)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Team balancing is not available on this server!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Team balancing is not available on this server!";
+                // send to everyone (/say; success)
+                await SendServerSay(c, StatusMessage);
+                return false;
             }
 
             // Disable this command if the pickup module is active
             if (_ssb.Mod.Pickup.Active)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Team balancing is unavailable when pickup module is active!");
-                return;
+                // send to everyone (/say; success)
+                await SendServerSay(c, StatusMessage);
+                StatusMessage = "^1[ERROR]^3 Team balancing is unavailable when pickup module is active!";
+                return false;
             }
 
             var blueTeam = _ssb.ServerInfo.GetTeam(Team.Blue);
             var redTeam = _ssb.ServerInfo.GetTeam(Team.Red);
             var redAndBlueTotalPlayers = (blueTeam.Count + redTeam.Count);
 
-            if ((redAndBlueTotalPlayers)%2 != 0)
+            if ((redAndBlueTotalPlayers) % 2 != 0)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Teams can only be suggested if there are a total even number of red and blue players!");
-                return;
+                StatusMessage = "^1[ERROR]^3 Teams can only be suggested if there are a total even number of red and blue players!";
+                // send to everyone (/say; success)
+                await SendServerSay(c, StatusMessage);
+                return false;
             }
             if ((redAndBlueTotalPlayers) < 4)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 There must be at least 4 total players for the team suggestion!");
-                return;
+                StatusMessage = "^1[ERROR]^3 There must be at least 4 total players for the team suggestion!";
+                // send to everyone (/say; success)
+                await SendServerSay(c, StatusMessage);
+                return false;
             }
 
             if (_ssb.VoteManager.IsTeamSuggestionVotePending)
             {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 A team balance vote is already pending!");
-                return;
+                StatusMessage = "^1[ERROR]^3 A team balance vote is already pending!";
+                // send to everyone (/say; success)
+                await SendServerSay(c, StatusMessage);
+                return false;
             }
 
             // SuperUser or higher... Force the vote
             if ((c.Args.Length == 2) &&
                 (c.Args[1].Equals("force", StringComparison.InvariantCultureIgnoreCase)))
             {
-                if (_users.GetUserLevel(c.FromUser) < UserLevel.SuperUser)
+                var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _users.GetUserLevel(c.FromUser);
+                if (userLevel < UserLevel.SuperUser)
                 {
-                    await
-                        _ssb.QlCommands.QlCmdSay("^1[ERROR]^7 You do not have permission to use that command.");
-                    return;
+                    StatusMessage = "^1[ERROR]^7 You do not have permission to use that command.";
+                    return false;
                 }
                 await InitiateBalance(redTeam, blueTeam, true);
-                return;
+                return true;
             }
 
             await InitiateBalance(redTeam, blueTeam, false);
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdSay(message);
         }
 
         /// <summary>
@@ -164,6 +210,10 @@ namespace SSB.Core.Commands.None
         /// </summary>
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>
+        /// <remarks>
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
+        /// is requested via IRC, the players on the server can actually see it.
+        /// </remarks>
         private async Task DisplayBalanceResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue)
         {
             var red = new StringBuilder();
@@ -197,6 +247,9 @@ namespace SSB.Core.Commands.None
         ///     if set to <c>true</c> then a user with required permissions is forcing balance; vote will
         ///     be bypassed.
         /// </param>
+        /// <remarks> Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
+        /// is requested via IRC, the players on the server can actually see it.
+        /// </remarks>
         private async Task InitiateBalance(List<PlayerInfo> redTeam, List<PlayerInfo> blueTeam,
             bool isForcedBalance)
         {
@@ -232,8 +285,31 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Determines whether the command was sent from the owner of
+        ///     the bot via IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was sent from IRC and from
+        ///     an the IRC owner.
+        /// </returns>
+        private bool IsIrcOwner(CmdArgs c)
+        {
+            if (!c.FromIrc) return false;
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            return
+                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                    StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        /// <summary>
         ///     Moves the players to the suggested teams.
         /// </summary>
+        /// <remarks>
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
+        /// is requested via IRC, the players on the server can actually see it.
+        /// </remarks>
         private async Task MovePlayersToBalancedTeams()
         {
             await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
@@ -250,6 +326,10 @@ namespace SSB.Core.Commands.None
         /// <summary>
         ///     Starts the team suggestion vote and associated timer.
         /// </summary>
+        /// <remarks>
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
+        /// is requested via IRC, the players on the server can actually see it.
+        /// </remarks>
         private async Task StartTeamSuggestionVote()
         {
             double interval = 20000;
@@ -257,9 +337,10 @@ namespace SSB.Core.Commands.None
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
-                        (interval/1000), CommandProcessor.BotCommandPrefix,
-                        CommandProcessor.CmdAcceptTeamSuggestion, CommandProcessor.CmdRejectTeamSuggestion));
+                        "^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept" +
+                        " the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
+                        (interval / 1000), CommandList.GameCommandPrefix,
+                        CommandList.CmdAcceptTeamSuggestion, CommandList.CmdRejectTeamSuggestion));
             _suggestionTimer.Interval = interval;
             _suggestionTimer.Elapsed += TeamSuggestionTimerElapsed;
             _suggestionTimer.AutoReset = false;
@@ -272,6 +353,10 @@ namespace SSB.Core.Commands.None
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <remarks>
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
+        /// is requested via IRC, the players on the server can actually see it.
+        /// </remarks>
         private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
         {
             // Do balance if enough votes
@@ -313,8 +398,8 @@ namespace SSB.Core.Commands.None
         {
             var update =
                 (from player in players
-                    where _qlrHelper.PlayerHasInvalidEloData(player.Value)
-                    select player.Key).ToList();
+                 where _qlrHelper.PlayerHasInvalidEloData(player.Value)
+                 select player.Key).ToList();
             if (update.Any())
             {
                 var qlrData =
