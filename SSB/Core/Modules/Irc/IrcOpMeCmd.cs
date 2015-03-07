@@ -11,7 +11,7 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcOpMeCmd : IIrcCommand
     {
-        private int _minArgs = 0;
+        private int _ircMinArgs = 0;
         private bool _isAsync = false;
         private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
@@ -34,14 +34,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs
+        public int IrcMinArgs
         {
-            get { return _minArgs; }
+            get { return _ircMinArgs; }
         }
 
         /// <summary>

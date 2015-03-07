@@ -10,6 +10,14 @@ namespace SSB.Interfaces
     public interface IBotCommand
     {
         /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        int IrcMinArgs { get; }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -18,12 +26,12 @@ namespace SSB.Interfaces
         bool IsIrcAccessAllowed { get; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        int MinArgs { get; }
+        int QlMinArgs { get; }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -67,17 +75,17 @@ namespace SSB.Interfaces
         string GetArgLengthErrorMessage(CmdArgs c);
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        Task SendServerTell(CmdArgs c, string message);
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
         Task SendServerSay(CmdArgs c, string message);
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        Task SendServerTell(CmdArgs c, string message);
     }
 }

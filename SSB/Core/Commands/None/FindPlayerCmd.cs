@@ -15,7 +15,7 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class FindPlayerCmd : IBotCommand
     {
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = true;
@@ -30,6 +30,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -41,14 +49,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -90,16 +98,16 @@ namespace SSB.Core.Commands.None
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if (!Helpers.IsValidQlUsernameFormat(c.Args[1], false))
+            if (!Helpers.IsValidQlUsernameFormat(Helpers.GetArgVal(c, 1), false))
             {
                 StatusMessage = string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
-                            c.Args[1]);
+                            Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
             // Search all the public servers (private "0")
-            var firstQuery = await DoServerQuery(c.Args[1], false);
+            var firstQuery = await DoServerQuery(Helpers.GetArgVal(c, 1), false);
             FilterObject secondQuery;
             if (firstQuery == null)
             {
@@ -111,7 +119,7 @@ namespace SSB.Core.Commands.None
             if (firstQuery.servers.Count == 0)
             {
                 // ...so now proceed to now search the private servers (private "1")
-                secondQuery = await DoServerQuery(c.Args[1], true);
+                secondQuery = await DoServerQuery(Helpers.GetArgVal(c, 1), true);
             }
             // Player WAS found on the public servers
             else
@@ -129,7 +137,7 @@ namespace SSB.Core.Commands.None
             if (secondQuery.servers.Count == 0)
             {
                 StatusMessage = string.Format("^6[PLAYERFINDER] ^3{0}^7 was not" +
-                                              " found on any Quake Live servers.", c.Args[1]);
+                                              " found on any Quake Live servers.", Helpers.GetArgVal(c, 1));
                 await SendServerSay(c, StatusMessage);
                 return true;
             }
@@ -150,18 +158,8 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -176,6 +174,17 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
         /// Displays the search results.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -185,7 +194,7 @@ namespace SSB.Core.Commands.None
             var qlLoc = new QlLocations();
             var country = qlLoc.GetLocationNameFromId(server.location_id);
             StatusMessage = string.Format("^6[PLAYERFINDER] ^7Found ^3{0}^7 on [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
-                        c.Args[1], country, server.map, server.num_clients, server.max_clients,
+                        Helpers.GetArgVal(c, 1), country, server.map, server.num_clients, server.max_clients,
                         server.host_address);
             await SendServerSay(c, StatusMessage);
         }

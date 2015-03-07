@@ -10,6 +10,14 @@ namespace SSB.Interfaces
     public interface IIrcCommand
     {
         /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        int IrcMinArgs { get; }
+
+        /// <summary>
         ///     Gets a value that determines whether this command is to be executed asynchronously.
         /// </summary>
         /// <returns>
@@ -17,14 +25,6 @@ namespace SSB.Interfaces
         ///     otherwise <c>false</c>.
         /// </returns>
         bool IsAsync { get; }
-
-        /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        int MinArgs { get; }
 
         /// <summary>
         ///     Gets the user level.

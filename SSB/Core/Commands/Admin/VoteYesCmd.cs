@@ -13,6 +13,7 @@ namespace SSB.Core.Commands.Admin
         private readonly bool _isIrcAccessAllowed = true;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
+        private int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VoteYesCmd" /> class.
@@ -20,9 +21,16 @@ namespace SSB.Core.Commands.Admin
         /// <param name="ssb">The main class.</param>
         public VoteYesCmd(SynServerBot ssb)
         {
-            MinArgs = 0;
             _ssb = ssb;
         }
+
+        /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -36,12 +44,12 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs { get; private set; }
+        public int QlMinArgs { get {return _qlMinArgs;} }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -86,7 +94,7 @@ namespace SSB.Core.Commands.Admin
         {
             StatusMessage = "^2[SUCCESS]^7 Attempted to pass the vote.";
             await _ssb.QlCommands.SendToQlAsync("vote yes", false);
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             return true;
         }
 

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
@@ -14,7 +14,7 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "acc";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minModuleArgs = 3;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -37,6 +37,17 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -48,17 +59,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        public int MinModuleArgs
-        {
-            get { return _minModuleArgs; }
-        }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -67,6 +67,17 @@ namespace SSB.Core.Commands.Modules
         public string ModuleName
         {
             get { return NameModule; }
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
@@ -97,29 +108,33 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await DisableAcc(c);
                 return true;
             }
-            if (c.Args.Length != 3)
+            if (c.Args.Length != (c.FromIrc ? 4 : 3))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("on"))
+            if (Helpers.GetArgVal(c, 2).Equals("on"))
             {
                 // Active check: prevent another timer class from being instantiated
                 if (Active)
                 {
                     StatusMessage = string.Format(
                         "^1[ERROR]^3 Accuracy scanner is already active. To disable: ^1{0}{1} {2} off",
-                        CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.AccuracyArg);
+                        CommandList.GameCommandPrefix, c.CmdName,
+                        ((c.FromIrc)
+                            ? (string.Format("{0} {1}", c.Args[1],
+                                NameModule))
+                            : NameModule));
                     return false;
                 }
                 await EnableAcc(c);
@@ -140,7 +155,10 @@ namespace SSB.Core.Commands.Modules
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} <on/off>",
                 CommandList.GameCommandPrefix, c.CmdName,
-                ModuleCmd.AccuracyArg);
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
@@ -153,17 +171,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -172,6 +179,17 @@ namespace SSB.Core.Commands.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>

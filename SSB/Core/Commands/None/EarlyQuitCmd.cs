@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules.Irc;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -13,7 +15,7 @@ namespace SSB.Core.Commands.None
     public class EarlyQuitCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly DbQuits _quitDb;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
@@ -29,6 +31,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -40,14 +50,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -94,23 +104,27 @@ namespace SSB.Core.Commands.None
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Early quit module has not been loaded. An admin must" +
                     " first load it with:^7 {0}{1} {2}",
-                    CommandList.GameCommandPrefix, CommandList.CmdModule,
+                    CommandList.GameCommandPrefix,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            IrcCommandList.IrcCmdQl, CommandList.CmdModule))
+                        : CommandList.CmdModule),
                     ModuleCmd.EarlyQuitArg);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
-            if ((!c.Args[1].Equals("list")) && (!c.Args[1].Equals("check")))
+            if ((!Helpers.GetArgVal(c, 1).Equals("list")) && (!Helpers.GetArgVal(c, 1).Equals("check")))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[1].Equals("list"))
+            if (Helpers.GetArgVal(c, 1).Equals("list"))
             {
                 await ListQuits(c);
                 return true;
             }
-            if (c.Args[1].Equals("check"))
+            if (Helpers.GetArgVal(c, 1).Equals("check"))
             {
                 return await EvalCheckQuits(c);
             }
@@ -129,18 +143,9 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <list> <check>",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}",
+                c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -155,19 +160,30 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
         ///     Checks the amount of early quits that a given user has.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task CheckQuits(CmdArgs c)
         {
-            var totalQuits = _quitDb.GetUserQuitCount(c.Args[2]);
+            var totalQuits = _quitDb.GetUserQuitCount(Helpers.GetArgVal(c, 2));
             var qStr = totalQuits > 0
-                ? string.Format("^1{0}^7 early quits", totalQuits)
+                ? string.Format("^1 {0} ^7early quits", totalQuits)
                 : "^2no^7 early quits";
             var quitsRemaining = (_ssb.Mod.EarlyQuit.MaxQuitsAllowed - totalQuits);
             StatusMessage = string.Format(
-                "^5[EARLYQUIT] ^3{0}^7 has {1}. ^1{2}^7 remaining before banned for ^1{3} {4}",
-                c.Args[2], qStr, quitsRemaining, _ssb.Mod.EarlyQuit.BanTime,
+                "^5[EARLYQUIT] ^3{0}^7 has {1}. ^1 {2} ^7remaining before banned for ^1{3} {4}",
+                Helpers.GetArgVal(c, 2), qStr, quitsRemaining, _ssb.Mod.EarlyQuit.BanTime,
                 _ssb.Mod.EarlyQuit.BanTimeScale);
             await SendServerSay(c, StatusMessage);
         }
@@ -178,11 +194,13 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         private async Task<bool> EvalCheckQuits(CmdArgs c)
         {
-            if (c.Args.Length != 3)
+            if (c.Args.Length != (c.FromIrc ? 4 : 3))
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} <check> <name> - name is without the clan tag",
-                    CommandList.GameCommandPrefix, c.CmdName);
+                    CommandList.GameCommandPrefix,
+                    ((c.FromIrc) ? (string.Format("{0} {1}"
+                    , c.CmdName, c.Args[1])) : c.CmdName));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -201,7 +219,8 @@ namespace SSB.Core.Commands.None
                 ((!string.IsNullOrEmpty(quits))
                     ? (string.Format(
                         "Early quitters: ^1{0}^7 - To see quits remaining: ^3{1}{2} check <player>",
-                        quits, CommandList.GameCommandPrefix, c.CmdName))
+                        quits, CommandList.GameCommandPrefix,
+                        ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)))
                     : "No players have quit early."));
             await SendServerSay(c, StatusMessage);
         }

@@ -458,7 +458,7 @@ namespace SSB.Core.Modules
         /// </returns>
         public async Task<bool> EvalPickupUnban(CmdArgs c)
         {
-            if (c.Args.Length == 1)
+            if (c.Args.Length == (c.FromIrc ? 2 : 1))
             {
                 StatusMessage = string.Format("^5[PICKUP]^7 Usage: ^3{0}{1} unban <player>",
                     CommandList.GameCommandPrefix, CommandList.CmdPickup);
@@ -466,11 +466,11 @@ namespace SSB.Core.Modules
                 return false;
             }
             var banDb = new DbBans();
-            var bInfo = banDb.GetBanInfo(c.Args[1]);
+            var bInfo = banDb.GetBanInfo(Helpers.GetArgVal(c, 1));
             if (bInfo == null)
             {
                 StatusMessage = string.Format("^5[PICKUP]^7 Ban information not found for {0}",
-                    c.Args[1]);
+                    Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -483,7 +483,7 @@ namespace SSB.Core.Modules
                 {
                     StatusMessage = string.Format(
                         "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. Cannot remove.",
-                        c.Args[1]);
+                        Helpers.GetArgVal(c, 1));
                     await SendServerTell(c, StatusMessage);
                     return false;
                 }
@@ -492,7 +492,7 @@ namespace SSB.Core.Modules
                 {
                     StatusMessage = string.Format(
                         "^5[PICKUP]^3 {0}^7 is banned but not for pickup no-show/sub abuse. To remove: ^3{1}{2} del {0}",
-                        c.Args[1], CommandList.GameCommandPrefix,
+                        Helpers.GetArgVal(c, 1), CommandList.GameCommandPrefix,
                         CommandList.CmdTimeBan);
                     await SendServerTell(c, StatusMessage);
                     return false;
@@ -500,9 +500,9 @@ namespace SSB.Core.Modules
             }
             // Remove the ban and reset the count, depending on type of ban.
             var pAutoBanner = new PlayerAutoBanner(_ssb);
-            await pAutoBanner.RemoveBan(c.Args[1], bInfo);
+            await pAutoBanner.RemoveBan(Helpers.GetArgVal(c, 1), bInfo);
             StatusMessage = string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
-                c.Args[1]);
+                Helpers.GetArgVal(c, 1));
             await SendServerSay(c, StatusMessage);
             return true;
         }

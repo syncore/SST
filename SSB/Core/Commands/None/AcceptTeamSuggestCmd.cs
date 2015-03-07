@@ -14,7 +14,7 @@ namespace SSB.Core.Commands.None
     {
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
-        private int _minArgs = 0;
+        private int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AcceptTeamSuggestCmd" /> class.
@@ -27,6 +27,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -35,13 +43,14 @@ namespace SSB.Core.Commands.None
         public bool IsIrcAccessAllowed { get; private set; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs {
-            get { return _minArgs; }
+        public int QlMinArgs
+        {
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -131,17 +140,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -150,6 +148,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

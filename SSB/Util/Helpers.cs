@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SSB.Enum;
+using SSB.Model;
 
 namespace SSB.Util
 {
@@ -16,6 +17,23 @@ namespace SSB.Util
             "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
             "month", "months", "year", "years"
         };
+
+        /// <summary>
+        ///     Gets the argument value.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="argNum">The argument's index.</param>
+        /// <returns>The string value at a given index.</returns>
+        /// <remarks>
+        ///     This method shifts the value to the right by one if the
+        ///     command was initiated from IRC, to take into account the fact
+        ///     that IRC commands will always have a first value, c[0], of the
+        ///     IrcToQl command name (i.e. c[0] = "!ql")
+        /// </remarks>
+        public static string GetArgVal(CmdArgs c, int argNum)
+        {
+            return c.FromIrc ? c.Args[argNum + 1] : c.Args[argNum];
+        }
 
         /// <summary>
         ///     Gets the name of player with the clan tag stripped away, if it exists.

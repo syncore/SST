@@ -15,7 +15,7 @@ namespace SSB.Core.Modules.Irc
         private readonly string IrcCmdHelp = "help";
         private readonly string IrcCmdMods = "mods";
         private readonly string IrcCmdOpMe = "opme";
-        private readonly string IrcCmdQl = "ql";
+        public const string IrcCmdQl = "ql";
         private readonly string IrcCmdSay = "say";
         private readonly string IrcCmdSayTeam = "sayteam";
         private readonly string IrcCmdStatus = "status";

@@ -5,6 +5,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -14,7 +15,7 @@ namespace SSB.Core.Commands.Admin
     public class AddUserCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private readonly DbUsers _users;
@@ -30,6 +31,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -41,14 +50,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -90,12 +99,13 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if (!c.Args[2].Equals("1") && !c.Args[2].Equals("2") && !c.Args[2].Equals("3"))
+            if (!Helpers.GetArgVal(c, 2).Equals("1") && !Helpers.GetArgVal(c, 2).Equals("2") &&
+                !Helpers.GetArgVal(c, 2).Equals("3"))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if ((c.Args[2].Equals("3")))
+            if ((Helpers.GetArgVal(c, 2).Equals("3")))
             {
                 var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _users.GetUserLevel(c.FromUser);
                 if (userLevel != UserLevel.Owner)
@@ -106,19 +116,19 @@ namespace SSB.Core.Commands.Admin
                 }
             }
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            var result = _users.AddUserToDb(c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), c.FromUser,
+            var result = _users.AddUserToDb(Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)), c.FromUser,
                 date);
             if (result == UserDbResult.Success)
             {
                 StatusMessage = string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the ^2[{1}] ^7group.",
-                    c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]));
+                    Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)));
                 await SendServerSay(c, StatusMessage);
                 return true;
             }
 
             StatusMessage = string.Format(
                 "^1[ERROR]^3 Unable to add user ^1{0}^3 to the ^1[{1}] ^3group. Code:^1 {2}",
-                c.Args[1], (UserLevel) Convert.ToInt32(c.Args[2]), result);
+                Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)), result);
             await SendServerTell(c, StatusMessage);
             return false;
         }
@@ -135,7 +145,8 @@ namespace SSB.Core.Commands.Admin
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name access# - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
-                CommandList.GameCommandPrefix, c.CmdName);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>

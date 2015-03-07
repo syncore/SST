@@ -80,8 +80,8 @@ namespace SSB.Core
             {
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format(
-                        "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then retry your {1} request.",
-                        fromUser, cmdName));
+                        "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then retry your {1} request in^1 {2} ^3secs.",
+                        fromUser, cmdName, _ssb.InitDelay));
                 return;
             }
             if (!UserHasReqLevel(fromUser, _cmdList.Commands[cmdName].UserLevel))
@@ -90,7 +90,7 @@ namespace SSB.Core
                 return;
             }
             var c = new CmdArgs(args, cmdName, fromUser, msg, false);
-            if (args.Length < _cmdList.Commands[cmdName].MinArgs)
+            if (args.Length < _cmdList.Commands[cmdName].QlMinArgs)
             {
                 await _cmdList.Commands[cmdName].DisplayArgLengthError(c);
                 return;

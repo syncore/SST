@@ -16,7 +16,7 @@ namespace SSB.Core.Commands.None
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
         private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 0;
+        private int _qlMinArgs = 0;
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
@@ -31,6 +31,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -42,14 +50,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -90,31 +98,31 @@ namespace SSB.Core.Commands.None
         /// <c>false</c>.
         /// </returns>
         /// <remarks>
-        /// c.Args[1] if specified: user to check
+        /// Helpers.GetArgVal(c, 1) if specified: user to check
         /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if (c.Args.Length > 2)
+            if (c.Args.Length > (c.FromIrc ? 3 : 2))
             {
                 // List of names to check with spaces after commas would be treated as additional args
                 await DisplayArgLengthError(c);
                 return false;
             }
-            string user = c.Args.Length == 1 ? c.FromUser : c.Args[1];
+            string user = c.Args.Length == (c.FromIrc ? 2 : 1) ? c.FromUser : Helpers.GetArgVal(c, 1);
             if (!Helpers.IsValidQlUsernameFormat(user, true))
             {
                 StatusMessage = string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
-                            c.Args[1]);
+                            Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            // We will need to retrieve the elo from the API
+            // We will need to retrieve the Elo from the API
             if (!Helpers.KeyExists(user, _ssb.ServerInfo.CurrentPlayers))
             {
                 await GetAndSayElo(c, user);
                 return true;
             }
-            // Use existing elo data if it exists and is not invalid
+            // Use existing Elo data if it exists and is not invalid
             if ((Helpers.KeyExists(user, _ssb.ServerInfo.CurrentPlayers)
                       &&
                       (!_qlrHelper.PlayerHasInvalidEloData(_ssb.ServerInfo.CurrentPlayers[user]))))
@@ -144,18 +152,8 @@ namespace SSB.Core.Commands.None
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} [name1,name2,name3] ^7- Comma sep list of" +
                 " names with ^1NO^7 spaces checks up to 3 names",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -167,6 +165,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>

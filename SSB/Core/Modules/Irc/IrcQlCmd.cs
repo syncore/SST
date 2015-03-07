@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -18,12 +19,11 @@ namespace SSB.Core.Modules.Irc
     {
         private readonly SynServerBot _ssb;
         private readonly IrcManager _irc;
+        private CommandList _cmds;
         private Dictionary<string, IBotCommand> _cmdList; 
         private readonly IrcUserLevel _userLevel = IrcUserLevel.Operator;
         private bool _isAsync = true;
-        // For now only require the QL cmd name as an arg. Need to figure out how to show the
-        // actual command args on IRC, however.
-        private int _minArgs = 1;
+        private int _ircMinArgs = 2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IrcQlCmd" /> class.
@@ -34,7 +34,9 @@ namespace SSB.Core.Modules.Irc
         {
             _ssb = ssb;
             _irc = irc;
-            _cmdList = _ssb.CommandProcessor.Commands;
+            //_cmdList = _ssb.CommandProcessor.Commands;
+            _cmds = new CommandList(_ssb);
+            _cmdList = _cmds.Commands;
         }
 
         /// <summary>
@@ -46,14 +48,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets the minimum arguments.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments.
+        /// The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs
+        public int IrcMinArgs
         {
-            get { return _minArgs; }
+            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -95,37 +97,79 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            if (Helpers.KeyExists(c.Args[1], _cmdList))
+            if (!Helpers.KeyExists(c.Args[1], _cmdList))
             {
                 _irc.SendIrcNotice(c.FromUser, "\u0002[ERROR]\u0002 That is not valid command.");
                 return;
             }
-            if (_cmdList[c.Args[1]].IsIrcAccessAllowed)
+            if (!_cmdList[c.Args[1]].IsIrcAccessAllowed)
             {
                 _irc.SendIrcNotice(c.FromUser, "\u0002[ERROR]\u0002 That command can only be accessed from in-game.");
                 return;
             }
             // See if the c passed here meets the actual IBotCommand's MinArgs
-            // -2 to account for !ql in-game-cmd
-            if ((c.Args.Length - 2) < _cmdList[c.Args[1]].MinArgs)
+            if ((c.Args.Length) < _cmdList[c.Args[1]].IrcMinArgs)
             {
-                _irc.SendIrcNotice(c.FromUser, _cmdList[c.Args[1]].GetArgLengthErrorMessage(c));
+                _irc.SendIrcNotice(c.FromUser,
+                    ReplaceQlColorsWithIrcColors(_cmdList[c.Args[1]].GetArgLengthErrorMessage(c)));
                 return;
             }
 
             var success = await _cmdList[c.Args[1]].ExecAsync(c);
             if (success)
             {
-                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                // Some commands send multiple lines; IRC messages cannot contain \r, \n, etc.
+                if (_cmdList[c.Args[1]].StatusMessage.Contains(Environment.NewLine))
+                {
+                    SendSplitMessage(c, _cmdList[c.Args[1]].StatusMessage.Split(new[] { Environment.NewLine },
+                         StringSplitOptions.RemoveEmptyEntries), true);
+                }
+                else
+                {
+                    _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     ReplaceQlColorsWithIrcColors(_cmdList[c.Args[1]].StatusMessage));
+                }  
             }
             else
             {
-                _irc.SendIrcNotice(c.FromUser,
+                if (_cmdList[c.Args[1]].StatusMessage.Contains(Environment.NewLine))
+                {
+                    SendSplitMessage(c, _cmdList[c.Args[1]].StatusMessage.Split(new[] {Environment.NewLine},
+                        StringSplitOptions.RemoveEmptyEntries), false);
+                }
+                else
+                {
+                    _irc.SendIrcNotice(c.FromUser,
                     ReplaceQlColorsWithIrcColors(_cmdList[c.Args[1]].StatusMessage));
+                }
             }
 
         }
+
+        /// <summary>
+        /// Handles the sending of messages containing newline characters.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="msg">The array containing the messages, split by a newline character.
+        /// </param>
+        /// <param name="toChannel">if set to <c>true</c> then send the message to the IRC
+        /// channel, otherwise send the message as an IRC notice to the user.</param>
+        private void SendSplitMessage(CmdArgs c, string[] msg, bool toChannel)
+        {
+            foreach (var m in msg)
+            {
+                if (toChannel)
+                {
+                    _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                        ReplaceQlColorsWithIrcColors(m));
+                }
+                else
+                {
+                    _irc.SendIrcNotice(c.FromUser, ReplaceQlColorsWithIrcColors(m));
+                }
+                
+            }
+        } 
 
         /// <summary>
         /// Removes the QL color characters from the input string.

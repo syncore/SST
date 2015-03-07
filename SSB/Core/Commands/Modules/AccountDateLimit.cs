@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -19,7 +18,7 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "accountdate";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minModuleArgs = 3;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -50,6 +49,17 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -61,17 +71,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        public int MinModuleArgs
-        {
-            get { return _minModuleArgs; }
-        }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -80,6 +79,17 @@ namespace SSB.Core.Commands.Modules
         public string ModuleName
         {
             get { return NameModule; }
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
@@ -110,20 +120,20 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
 
             // Disable account date limiter
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await DisableAccountDateLimiter(c);
                 return true;
             }
             int days;
-            var isValidNum = ((int.TryParse(c.Args[2], out days) && days > 0));
+            var isValidNum = ((int.TryParse(Helpers.GetArgVal(c, 2), out days) && days > 0));
             if ((!isValidNum))
             {
                 await DisplayArgLengthError(c);
@@ -147,7 +157,10 @@ namespace SSB.Core.Commands.Modules
             return (string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
                 CommandList.GameCommandPrefix, c.CmdName,
-                ModuleCmd.AccountDateLimitArg));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule)));
         }
 
         /// <summary>
@@ -197,17 +210,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -216,6 +218,17 @@ namespace SSB.Core.Commands.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -259,7 +272,7 @@ namespace SSB.Core.Commands.Modules
             MinimumDaysRequired = days;
             UpdateConfig(true);
             StatusMessage = string.Format(
-                "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last ^1{0}^7 days ^1CANNOT^7 play.",
+                "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last^1 {0} ^7days ^1CANNOT^7 play.",
                 days);
             await SendServerSay(c, StatusMessage);
             await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
@@ -307,7 +320,7 @@ namespace SSB.Core.Commands.Modules
                     user, MinimumDaysRequired, regDate);
                 await _ssb.QlCommands.CustCmdKickban(user);
                 await _ssb.QlCommands.QlCmdSay(string.Format(
-                    "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2}^7 days",
+                    "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2} ^7days",
                     user, regDate.ToString("d"), MinimumDaysRequired));
             }
         }

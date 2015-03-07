@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
@@ -17,9 +17,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "irc";
         private readonly ConfigHandler _configHandler;
         private readonly IrcManager _irc;
-        private readonly int _minModuleArgs = 3;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
-        private bool _isIrcAccessAllowed = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Irc" /> class.
@@ -27,6 +26,7 @@ namespace SSB.Core.Commands.Modules
         /// <param name="ssb">The main class.</param>
         public Irc(SynServerBot ssb)
         {
+            IsIrcAccessAllowed = false;
             _ssb = ssb;
             _configHandler = new ConfigHandler();
             _irc = new IrcManager(_ssb);
@@ -42,23 +42,39 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets the IRC manager.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// The IRC manager.
         /// </value>
-        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
+        public IrcManager IrcManager { get { return _irc; } }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum module arguments for the IRC command.
         /// </value>
-        public int MinModuleArgs
+        public int IrcMinModuleArgs
         {
-            get { return _minModuleArgs; }
+            get { return _qlMinModuleArgs + 1; }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the bot is connected to IRC.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnectedToIrc { get { return _irc.IsConnectedToIrc; } }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed { get; private set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -72,10 +88,21 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets the command's status message.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        /// The command's status message.
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
+        }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
 
@@ -90,12 +117,12 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Executes the specified module command asynchronously.
+        ///     Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c>if the command evaluation was successful,
-        /// otherwise <c>false</c>.
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
@@ -106,31 +133,32 @@ namespace SSB.Core.Commands.Modules
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            if (c.Args.Length < _minModuleArgs || c.Args.Length != 3)
+            if ((c.Args.Length < _qlMinModuleArgs) || (c.Args.Length != 3))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (!c.Args[2].Equals("off") && !c.Args[2].Equals("connect") && !c.Args[2].Equals("disconnect")
-                && !c.Args[2].Equals("reconnect"))
+            if (!Helpers.GetArgVal(c, 2).Equals("off") &&
+                !Helpers.GetArgVal(c, 2).Equals("connect") && !Helpers.GetArgVal(c, 2).Equals("disconnect")
+                && !Helpers.GetArgVal(c, 2).Equals("reconnect"))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await ProcessOffArg(c);
                 return true;
             }
-            if (c.Args[2].Equals("connect"))
+            if (Helpers.GetArgVal(c, 2).Equals("connect"))
             {
                 return await ProcessConnectArg(c);
             }
-            if (c.Args[2].Equals("disconnect"))
+            if (Helpers.GetArgVal(c, 2).Equals("disconnect"))
             {
                 return await ProcessDisconnectArg(c);
             }
-            if (c.Args[2].Equals("reconnect"))
+            if (Helpers.GetArgVal(c, 2).Equals("reconnect"))
             {
                 return await ProcessReconnectArg(c);
             }
@@ -148,8 +176,13 @@ namespace SSB.Core.Commands.Modules
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
             return string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect> ^7 - this uses server info from config file!",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.IrcArg);
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect|reconnect> ^7 - this uses" +
+                " server info from config file!",
+                CommandList.GameCommandPrefix, c.CmdName,
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
@@ -175,17 +208,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -194,6 +216,17 @@ namespace SSB.Core.Commands.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -208,7 +241,8 @@ namespace SSB.Core.Commands.Modules
             }
             else
             {
-                _configHandler.Config.IrcOptions.SetDefaults();
+                //_configHandler.Config.IrcOptions.SetDefaults();
+                _configHandler.Config.IrcOptions.isActive = false;
             }
             _configHandler.WriteConfiguration();
         }
@@ -220,7 +254,8 @@ namespace SSB.Core.Commands.Modules
         {
             _irc.Disconnect();
             UpdateConfig(false);
-            StatusMessage = "^2[SUCCESS]^7 Internet Relay Chat module disabled. Existing connection has been terminated.";
+            StatusMessage =
+                "^2[SUCCESS]^7 Internet Relay Chat module disabled. Existing connection has been terminated.";
             await SendServerSay(c, StatusMessage);
         }
 
@@ -239,9 +274,10 @@ namespace SSB.Core.Commands.Modules
             await SendServerSay(c, StatusMessage);
 
             StatusMessage = string.Format(
-                    "^6[IRC]^7 Attempting to connect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
-                    _configHandler.Config.IrcOptions.ircServerAddress, _configHandler.Config.IrcOptions.ircServerPort,
-                    _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel);
+                "^6[IRC]^7 Attempting to connect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
+                _configHandler.Config.IrcOptions.ircServerAddress,
+                _configHandler.Config.IrcOptions.ircServerPort,
+                _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel);
             // This was successful, but send as a /tell msg (error) to hide IRC server info.
             await SendServerTell(c, StatusMessage);
 
@@ -272,9 +308,13 @@ namespace SSB.Core.Commands.Modules
             if (Active)
             {
                 StatusMessage = string.Format(
-                            "^1[ERROR]^3 IRC module is already enabled. To disable: {0}{1} {2} off -" +
-                            " To reconnect: {0}{1} {2} reconnect",
-                            CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.IrcArg);
+                    "^1[ERROR]^3 IRC module is already enabled. To disable: {0}{1} {2} off -" +
+                    " To reconnect: {0}{1} {2} reconnect",
+                    CommandList.GameCommandPrefix, c.CmdName,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}", c.Args[1],
+                            NameModule))
+                        : NameModule));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -291,24 +331,30 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Processes the "disconnect" argument.
+        ///     Processes the "disconnect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the disconnect attempt was successful; otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the disconnect attempt was successful; otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> ProcessDisconnectArg(CmdArgs c)
         {
             if (!Active)
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
-                    CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.IrcArg);
+                    CommandList.GameCommandPrefix, c.CmdName,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}", c.Args[1],
+                            NameModule))
+                        : NameModule));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
             StatusMessage = "^6[IRC]^7 Attempting to disconnect from IRC.";
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             _irc.Disconnect();
             return true;
         }
@@ -323,18 +369,24 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Processes the "reconnect" argument.
+        ///     Processes the "reconnect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the reconnect attempt was successful; otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the reconnect attempt was successful; otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> ProcessReconnectArg(CmdArgs c)
         {
             if (!Active)
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 IRC module is not active. To enable: {0}{1} {2} connect",
-                    CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.IrcArg);
+                    CommandList.GameCommandPrefix, c.CmdName,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}", c.Args[1],
+                            NameModule))
+                        : NameModule));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -351,7 +403,7 @@ namespace SSB.Core.Commands.Modules
 
                 // This was successful, but send as a /tell msg (error) to hide IRC server info.
                 await SendServerTell(c, StatusMessage);
-                _irc.AttemptReconnection();
+                _irc.AttemptReconnection(true);
                 return true;
             }
 

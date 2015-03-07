@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules.Irc;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -28,7 +29,7 @@ namespace SSB.Core.Commands.None
         };
 
         private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 3;
+        private int _qlMinArgs = 3;
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
@@ -39,6 +40,14 @@ namespace SSB.Core.Commands.None
         {
             _ssb = ssb;
         }
+
+        /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -52,14 +61,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -105,8 +114,12 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = string.Format(
                              "^1[ERROR]^3 Servers module has not been loaded. An admin must first load it with:^7 {0}{1} {2}",
-                             CommandList.GameCommandPrefix, CommandList.CmdModule,
-                             ModuleCmd.ServersArg);
+                             CommandList.GameCommandPrefix,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            IrcCommandList.IrcCmdQl, CommandList.CmdModule))
+                        : CommandList.CmdModule),
+                    ModuleCmd.ServersArg);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -121,7 +134,7 @@ namespace SSB.Core.Commands.None
                 return false;
             }
 
-            bool validGametype = _validGameTypes.Contains(c.Args[1]);
+            bool validGametype = _validGameTypes.Contains(Helpers.GetArgVal(c, 1));
             if (!validGametype)
             {
                 StatusMessage = string.Format(
@@ -129,7 +142,7 @@ namespace SSB.Core.Commands.None
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            bool validRegion = _validRegions.Contains(c.Args[2]);
+            bool validRegion = _validRegions.Contains(Helpers.GetArgVal(c, 2));
             if (!validRegion)
             {
                 StatusMessage = string.Format(
@@ -155,18 +168,8 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <gametype> <region>",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -176,8 +179,53 @@ namespace SSB.Core.Commands.None
         /// <param name="message">The message.</param>
         public async Task SendServerSay(CmdArgs c, string message)
         {
-            if (!c.FromIrc)
+            if (c.FromIrc)
+                return;
+
+            // With the <see cref="ServersCmd"/> there will very likely be
+            // newline characters; QL doesn't automatically split on these,
+            // so each msg will need to be sent individually.
+            if (message.Contains(Environment.NewLine))
+            {
+                var msg = message.Split(new[] {Environment.NewLine},
+                    StringSplitOptions.RemoveEmptyEntries);
+                foreach (var m in msg)
+                {
+                    await _ssb.QlCommands.QlCmdSay(m);
+                }
+            }
+            else
+            {
                 await _ssb.QlCommands.QlCmdSay(message);
+            }
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (c.FromIrc)
+                return;
+
+            // With the <see cref="ServersCmd"/> there will very likely be
+            // newline characters; QL doesn't automatically split on these,
+            // so each msg will need to be sent individually.
+            if (message.Contains(Environment.NewLine))
+            {
+                var msg = message.Split(new[] {Environment.NewLine},
+                    StringSplitOptions.RemoveEmptyEntries);
+                foreach (var m in msg)
+                {
+                    await _ssb.QlCommands.QlCmdTell(m, c.FromUser);
+                }
+            }
+            else
+            {
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+            }
         }
 
         /// <summary>
@@ -272,8 +320,9 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         private async Task ListActiveServers(CmdArgs c)
         {
-            string[] gameTypeInfo = GetGameTypesFromAbreviation(c.Args[1]);
-            string location = GetLocationFromRegion(c.Args[2]);
+            // StringBuilder so we can send multiple servers to IRC
+            string[] gameTypeInfo = GetGameTypesFromAbreviation(Helpers.GetArgVal(c, 1));
+            string location = GetLocationFromRegion(Helpers.GetArgVal(c, 2));
             string encodedFilter =
                 Convert.ToBase64String(
                     Encoding.UTF8.GetBytes("{\"filters\":{\"group\":\"any\",\"game_type\":\"" +
@@ -295,24 +344,29 @@ namespace SSB.Core.Commands.None
             if (fObj.servers.Count == 0)
             {
                 StatusMessage = string.Format("^4[ACTIVESERVERS]^7 There are ^1NO^7 active ^2{0}^7 servers in ^2{1}",
-                    c.Args[1], location);
+                    Helpers.GetArgVal(c, 1), location);
                 await SendServerSay(c, StatusMessage);
                 return;
             }
 
-            StatusMessage = string.Format("^4[ACTIVESERVERS]^7 Showing up to ^2{0}^7 active ^2{1}^7 servers in ^2{2}:",
-                _ssb.Mod.Servers.MaxServersToDisplay, c.Args[1].ToUpper(), location);
-            await SendServerSay(c, StatusMessage);
             var qlLoc = new QlLocations();
+            // StringBuilder so we can send multiple servers to IRC
+            var sb = new StringBuilder();
+            sb.Append(
+                string.Format("^4[ACTIVESERVERS]^7 Showing up to^2 {0} ^7active ^2{1}^7 servers in ^2{2}:{3}",
+                    _ssb.Mod.Servers.MaxServersToDisplay, Helpers.GetArgVal(c, 1).ToUpper(), location,
+                    Environment.NewLine));
             for (int i = 0; i < fObj.servers.Count; i++)
             {
                 if (i == _ssb.Mod.Servers.MaxServersToDisplay) break;
                 string country = qlLoc.GetLocationNameFromId(fObj.servers[i].location_id);
-                StatusMessage = string.Format("^7{0} [^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}",
+                sb.Append(string.Format("^7{0}[^5{1}^7] {2} (^2{3}/{4}^7) @ ^4{5}{6}",
                     (fObj.servers[i].g_needpass == 1 ? "[PW]" : string.Empty), country,
-                    fObj.servers[i].map, fObj.servers[i].num_clients, fObj.servers[i].max_clients, fObj.servers[i].host_address);
-                await SendServerSay(c, StatusMessage);
+                    fObj.servers[i].map, fObj.servers[i].num_clients, fObj.servers[i].max_clients,
+                    fObj.servers[i].host_address, Environment.NewLine));
             }
+            StatusMessage = sb.ToString();
+            await SendServerSay(c, StatusMessage);
         }
     }
 }

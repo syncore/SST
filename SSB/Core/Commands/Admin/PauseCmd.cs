@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
-using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -14,8 +12,7 @@ namespace SSB.Core.Commands.Admin
     {
         private readonly bool _isIrcAccessAllowed = true;
         private readonly SynServerBot _ssb;
-        private int _minArgs = 0;
-        private UserLevel _userLevel = UserLevel.Admin;
+        private readonly UserLevel _userLevel = UserLevel.Admin;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PauseCmd" /> class.
@@ -23,7 +20,19 @@ namespace SSB.Core.Commands.Admin
         /// <param name="ssb">The main class.</param>
         public PauseCmd(SynServerBot ssb)
         {
+            QlMinArgs = 0;
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs
+        {
+            get { return QlMinArgs + 1; }
         }
 
         /// <summary>
@@ -38,15 +47,12 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
-        {
-            get { return _minArgs; }
-        }
+        public int QlMinArgs { get; private set; }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -89,16 +95,12 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if (GetGameState().Result != QlGameStates.InProgress)
-            {
-                StatusMessage = "^1[ERROR]^3 Game is not in progress.";
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
-            StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to indefinitely pause game. Use ^2{0}{1}^7 to un-pause.",
-                CommandList.GameCommandPrefix, CommandList.CmdUnpause);
+            StatusMessage =
+                string.Format(
+                    "^2[SUCCESS]^7 Attempted to indefinitely pause game. Use ^2{0}{1}^7 to un-pause.",
+                    CommandList.GameCommandPrefix, CommandList.CmdUnpause);
             await _ssb.QlCommands.SendToQlAsync("pause", false);
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             return true;
         }
 
@@ -119,17 +121,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -141,20 +132,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the state of the game.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
-        /// <returns>The state of the game.</returns>
-        private async Task<QlGameStates> GetGameState()
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
         {
-            var serverId = _ssb.ServerInfo.CurrentServerId;
-            if (string.IsNullOrEmpty(serverId))
-            {
-                Debug.WriteLine("PAUSE: Server id is empty. Now trying to request serverinfo...");
-                await _ssb.QlCommands.QlCmdServerInfo();
-            }
-            var qlApiQuery = new QlRemoteInfoRetriever();
-            var gs = await qlApiQuery.GetGameState(serverId);
-            return gs;
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

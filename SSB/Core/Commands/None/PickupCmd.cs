@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules.Irc;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -19,7 +21,7 @@ namespace SSB.Core.Commands.None
     public class PickupCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _userDb;
         private readonly UserLevel _userLevel = UserLevel.None;
@@ -29,6 +31,14 @@ namespace SSB.Core.Commands.None
             _ssb = ssb;
             _userDb = new DbUsers();
         }
+
+        /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -42,14 +52,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -91,21 +101,25 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = string.Format(
                             "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix, CommandList.CmdModule,
-                            ModuleCmd.PickupArg);
+                            CommandList.GameCommandPrefix,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            IrcCommandList.IrcCmdQl, CommandList.CmdModule))
+                        : CommandList.CmdModule),
+                    ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
-            if (!c.Args[1].Equals("reset") && !c.Args[1].Equals("start") && !c.Args[1].Equals("stop")
-                && !c.Args[1].Equals("unban") && !c.Args[1].Equals("help"))
+            if (!Helpers.GetArgVal(c, 1).Equals("reset") && !Helpers.GetArgVal(c, 1).Equals("start") && !Helpers.GetArgVal(c, 1).Equals("stop")
+                && !Helpers.GetArgVal(c, 1).Equals("unban") && !Helpers.GetArgVal(c, 1).Equals("help"))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
             // These arguments to the the pickup command require elevated privileges.
-            if (c.Args[1].Equals("reset") || c.Args[1].Equals("start") ||
-                c.Args[1].Equals("stop") || c.Args[1].Equals("unban"))
+            if (Helpers.GetArgVal(c, 1).Equals("reset") || Helpers.GetArgVal(c, 1).Equals("start") ||
+                Helpers.GetArgVal(c, 1).Equals("stop") || Helpers.GetArgVal(c, 1).Equals("unban"))
             {
                 var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _userDb.GetUserLevel(c.FromUser);
                 if (userLevel < UserLevel.SuperUser)
@@ -114,23 +128,23 @@ namespace SSB.Core.Commands.None
                     return false;
                 }
             }
-            if (c.Args[1].Equals("reset"))
+            if (Helpers.GetArgVal(c, 1).Equals("reset"))
             {
                 return await _ssb.Mod.Pickup.Manager.EvalPickupReset(c);
             }
-            if (c.Args[1].Equals("start"))
+            if (Helpers.GetArgVal(c, 1).Equals("start"))
             {
                 await _ssb.Mod.Pickup.Manager.EvalPickupStart(c);
             }
-            else if (c.Args[1].Equals("stop"))
+            else if (Helpers.GetArgVal(c, 1).Equals("stop"))
             {
                 return await _ssb.Mod.Pickup.Manager.EvalPickupStop(c);
             }
-            else if (c.Args[1].Equals("unban"))
+            else if (Helpers.GetArgVal(c, 1).Equals("unban"))
             {
                 return await _ssb.Mod.Pickup.Manager.EvalPickupUnban(c);
             }
-            else if (c.Args[1].Equals("help"))
+            else if (Helpers.GetArgVal(c, 1).Equals("help"))
             {
                 await DisplayPickupHelp(c);
                 return true;
@@ -150,18 +164,9 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <start/stop/reset/unban/help>",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}",
+                c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -173,6 +178,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -206,7 +222,9 @@ namespace SSB.Core.Commands.None
             StatusMessage = string.Format(
                 "^5Privileged cmds: ^3{0}{1} start^7 lockdown server & start, ^3{0}{1} reset^7 reset game," +
                 " ^3{0}{1} stop^7 cancel and unlock server, ^3{0}{1} unban^7 unban no-shows",
-                CommandList.GameCommandPrefix, CommandList.CmdPickup);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}",
+                IrcCommandList.IrcCmdQl, CommandList.CmdPickup)) : CommandList.CmdPickup));
 
             await SendServerSay(c, StatusMessage);
         }

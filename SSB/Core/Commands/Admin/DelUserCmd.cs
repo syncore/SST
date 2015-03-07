@@ -3,6 +3,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -12,7 +13,7 @@ namespace SSB.Core.Commands.Admin
     public class DelUserCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 1;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private readonly DbUsers _users;
@@ -28,6 +29,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -39,14 +48,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -88,19 +97,19 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var todelUserLevel = _users.GetUserLevel(c.Args[1]);
-            var result = _users.DeleteUserFromDb(c.Args[1], c.FromUser, _users.GetUserLevel(c.FromUser));
+            var todelUserLevel = _users.GetUserLevel(Helpers.GetArgVal(c, 1));
+            var result = _users.DeleteUserFromDb(Helpers.GetArgVal(c, 1), c.FromUser, _users.GetUserLevel(c.FromUser));
             if (result == UserDbResult.Success)
             {
                 StatusMessage = string.Format("^2[SUCCESS]^7 Removed user^2 {0}^7 from the^2 [{1}] ^7group.",
-                    c.Args[1], todelUserLevel);
+                    Helpers.GetArgVal(c, 1), todelUserLevel);
                 await SendServerSay(c, StatusMessage);
                 return true;
             }
 
             StatusMessage = string.Format(
                 "^1[ERROR]^3 Unable to remove user^1 {0}^3 from the ^1[{1}]^3 group. Code:^1 {2}",
-                c.Args[1], todelUserLevel, result);
+                Helpers.GetArgVal(c, 1), todelUserLevel, result);
             await SendServerTell(c, StatusMessage);
             return false;
         }
@@ -117,7 +126,8 @@ namespace SSB.Core.Commands.Admin
         {
             return (string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} user - user is without clantag",
-                CommandList.GameCommandPrefix, c.CmdName));
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) :  c.CmdName)));
         }
 
         /// <summary>

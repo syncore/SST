@@ -2,6 +2,7 @@
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -11,7 +12,7 @@ namespace SSB.Core.Commands.Admin
     public class UnbanCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
 
@@ -25,6 +26,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -36,14 +45,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -87,8 +96,8 @@ namespace SSB.Core.Commands.Admin
         {
             StatusMessage =
                 string.Format("^2[SUCCESS]^7 Attempted to remove ^2{0}^7 from QL banlist if ban existed.",
-                    c.Args[1]);
-            await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", c.Args[1]), false);
+                    Helpers.GetArgVal(c, 1));
+            await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", Helpers.GetArgVal(c, 1)), false);
             await SendServerSay(c, StatusMessage);
             return true;
         }
@@ -105,7 +114,8 @@ namespace SSB.Core.Commands.Admin
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandList.GameCommandPrefix, c.CmdName);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>

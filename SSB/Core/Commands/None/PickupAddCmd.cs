@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules.Irc;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -14,7 +15,7 @@ namespace SSB.Core.Commands.None
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = false;
-        private int _minArgs = 0;
+        private int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupAddCmd" /> class.
@@ -24,6 +25,14 @@ namespace SSB.Core.Commands.None
         {
             _ssb = ssb;
         }
+
+        /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -37,14 +46,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -90,8 +99,12 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = string.Format(
                             "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix, CommandList.CmdModule,
-                            ModuleCmd.PickupArg);
+                            CommandList.GameCommandPrefix,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            IrcCommandList.IrcCmdQl, CommandList.CmdModule))
+                        : CommandList.CmdModule),
+                    ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -113,17 +126,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -132,6 +134,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

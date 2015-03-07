@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
@@ -18,10 +18,10 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "autovote";
         private readonly ConfigHandler _configHandler;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly List<string> _validCallVotes;
-        private bool _isIrcAccessAllowed = true;
-        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AutoVoter" /> class.
@@ -50,14 +50,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets the automatic votes.
         /// </summary>
         /// <value>
@@ -66,37 +58,62 @@ namespace SSB.Core.Commands.Modules
         public List<AutoVote> AutoVotes { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this command can be accessed from IRC.
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
+        public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum module arguments for the IRC command.
         /// </value>
-        public int MinModuleArgs
+        public int IrcMinModuleArgs
         {
-            get { return _minModuleArgs; }
+            get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        /// Gets the name of the module.
+        ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
-        /// The name of the module.
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public string ModuleName { get { return NameModule; } }
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
 
         /// <summary>
-        /// Gets the command's status message.
+        ///     Gets the name of the module.
         /// </summary>
         /// <value>
-        /// The command's status message.
+        ///     The name of the module.
+        /// </value>
+        public string ModuleName
+        {
+            get { return NameModule; }
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
+        }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
 
@@ -111,28 +128,28 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Executes the specified module command asynchronously.
+        ///     Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c>if the command evaluation was successful,
-        /// otherwise <c>false</c>.
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args.Length == 3)
+            if (c.Args.Length == ((c.FromIrc) ? 4 : 3))
             {
-                if (c.Args[2].Equals("off"))
+                if (Helpers.GetArgVal(c, 2).Equals("off"))
                 {
                     await DisableAutoVoter(c);
                     return true;
                 }
-                if (c.Args[2].Equals("clear"))
+                if (Helpers.GetArgVal(c, 2).Equals("clear"))
                 {
                     AutoVotes.Clear();
                     StatusMessage = "^2[SUCCESS]^7 Cleared list of votes to automatically pass or reject.";
@@ -140,7 +157,7 @@ namespace SSB.Core.Commands.Modules
                     UpdateConfig(false);
                     return true;
                 }
-                if (c.Args[2].Equals("list"))
+                if (Helpers.GetArgVal(c, 2).Equals("list"))
                 {
                     await ListAutoVotes(c);
                     return true;
@@ -148,13 +165,13 @@ namespace SSB.Core.Commands.Modules
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args.Length >= 4)
+            if (c.Args.Length >= ((c.FromIrc) ? 5 : 4))
             {
-                if (c.Args[2].Equals("del"))
+                if (Helpers.GetArgVal(c, 2).Equals("del"))
                 {
                     return await HandleAutoVoteDeletion(c);
                 }
-                if (c.Args[2].Equals("yes") || c.Args[2].Equals("no"))
+                if (Helpers.GetArgVal(c, 2).Equals("yes") || Helpers.GetArgVal(c, 2).Equals("no"))
                 {
                     return await HandleAutoVoteAddition(c);
                 }
@@ -177,29 +194,21 @@ namespace SSB.Core.Commands.Modules
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <no vote|yes vote|del #|list|clear>",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.AutoVoteArg);
+                CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
-        /// Loads the configuration.
+        ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
             _configHandler.ReadConfiguration();
             Active = _configHandler.Config.AutoVoterOptions.autoVotes.Count != 0 &&
-                _configHandler.Config.AutoVoterOptions.isActive;
+                     _configHandler.Config.AutoVoterOptions.isActive;
             AutoVotes = _configHandler.Config.AutoVoterOptions.autoVotes;
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -214,10 +223,23 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Updates the configuration.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
-        /// <param name="active">if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        /// updating the configuration.</param>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        /// <param name="active">
+        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
+        ///     updating the configuration.
+        /// </param>
         public void UpdateConfig(bool active)
         {
             Active = active;
@@ -236,70 +258,80 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Adds the automatic vote with arguments
+        ///     Adds the automatic vote with arguments
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the argumented automatic vote was successfully added;
-        /// otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the argumented automatic vote was successfully added;
+        ///     otherwise <c>false</c>.
+        /// </returns>
         /// <remarks>
-        /// This method is for auto-votes where a second parameter is specified in addition to
-        /// the generic type of vote. Example: 'map campgrounds'
+        ///     This method is for auto-votes where a second parameter is specified in addition to
+        ///     the generic type of vote. Example: 'map campgrounds'
         /// </remarks>
         private async Task<bool> AddAutoVoteWithArgs(CmdArgs c)
         {
-            string fullVote = string.Format("{0} {1}", c.Args[3], c.Args[4]);
+            var fullVote = string.Format("{0} {1}", Helpers.GetArgVal(c, 3), Helpers.GetArgVal(c, 4));
             foreach (var av in AutoVotes.Where(av => av.VoteText.Equals(fullVote,
                 StringComparison.InvariantCultureIgnoreCase)))
             {
-                StatusMessage = string.Format("^1[ERROR]^3 AUTO {0} vote for ^1{1}^3 was already added by ^1{2}",
-                            (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), fullVote, av.AddedBy);
+                StatusMessage =
+                    string.Format("^1[ERROR]^3 AUTO {0} vote for ^1{1}^3 was already added by ^1{2}",
+                        (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"), fullVote, av.AddedBy);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
-            AutoVotes.Add(new AutoVote(fullVote, true, (c.Args[2].Equals("yes") ?
-                IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            AutoVotes.Add(new AutoVote(fullVote, true, (Helpers.GetArgVal(c, 2).Equals("yes")
+                ? IntendedVoteResult.Yes
+                : IntendedVoteResult.No), c.FromUser));
             UpdateConfig(true);
             StatusMessage = string.Format("^2[SUCCESS]^7 Any vote matching: ^2{0}^7 will automatically {1}",
-                    fullVote, (c.Args[2].Equals("yes") ? "^2pass." : "^1fail."));
+                fullVote, (Helpers.GetArgVal(c, 2).Equals("yes") ? "^2pass." : "^1fail."));
             return true;
         }
 
         /// <summary>
-        /// Adds the no argument automatic vote.
+        ///     Adds the no argument automatic vote.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the no-argument automatic vote was successfully added;
-        /// otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the no-argument automatic vote was successfully added;
+        ///     otherwise <c>false</c>.
+        /// </returns>
         /// <remarks>
-        /// This method is for auto-votes where a second parameter is not specified
-        /// in addition to the generic type of vote. Example: 'map'
+        ///     This method is for auto-votes where a second parameter is not specified
+        ///     in addition to the generic type of vote. Example: 'map'
         /// </remarks>
         private async Task<bool> AddNoArgAutoVote(CmdArgs c)
         {
-            foreach (var av in AutoVotes.Where(av => av.VoteText.Equals(c.Args[3],
+            foreach (var av in AutoVotes.Where(av => av.VoteText.Equals(Helpers.GetArgVal(c, 3),
                 StringComparison.InvariantCultureIgnoreCase)))
             {
-                StatusMessage = string.Format("^1[ERROR]^3 AUTO {0} vote for ^1{1}^3 was already added by ^1{2}",
-                    (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"),
-                    c.Args[3], av.AddedBy);
+                StatusMessage =
+                    string.Format("^1[ERROR]^3 AUTO {0} vote for ^1{1}^3 was already added by ^1{2}",
+                        (av.IntendedResult == IntendedVoteResult.Yes ? "YES" : "NO"),
+                        Helpers.GetArgVal(c, 3), av.AddedBy);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
-            AutoVotes.Add(new AutoVote(c.Args[3], false, (c.Args[2].Equals("yes") ?
-                IntendedVoteResult.Yes : IntendedVoteResult.No), c.FromUser));
+            AutoVotes.Add(new AutoVote(Helpers.GetArgVal(c, 3), false,
+                (Helpers.GetArgVal(c, 2).Equals("yes")
+                    ? IntendedVoteResult.Yes
+                    : IntendedVoteResult.No), c.FromUser));
             UpdateConfig(true);
             StatusMessage = string.Format("^2[SUCCESS]^7 Any vote matching: ^2{0}^7 will automatically {1}",
-                         c.Args[3], (c.Args[2].Equals("yes") ? "^2pass." : "^1fail."));
+                Helpers.GetArgVal(c, 3), (Helpers.GetArgVal(c, 2).Equals("yes") ? "^2pass." : "^1fail."));
             await SendServerSay(c, StatusMessage);
             return true;
         }
 
         /// <summary>
-        /// Disables the automatic voter.
+        ///     Disables the automatic voter.
         /// </summary>
-        /// <param name="c">The command argument information.
+        /// <param name="c">
+        ///     The command argument information.
         /// </param>
         private async Task DisableAutoVoter(CmdArgs c)
         {
@@ -317,7 +349,10 @@ namespace SSB.Core.Commands.Modules
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 Auto-vote to remove must be a number. To see #s: ^1{0}{1} {2} list",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.AutoVoteArg));
+                CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule)));
         }
 
         /// <summary>
@@ -328,33 +363,38 @@ namespace SSB.Core.Commands.Modules
         {
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^1[ERROR]^3 No auto-vote exists with that #. To see #s: ^1{0}{1} {2} list",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.AutoVoteArg));
+                CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule)));
         }
 
         /// <summary>
-        /// Handles the automatic vote addition.
+        ///     Handles the automatic vote addition.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the vote addition was attempted, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the vote addition was attempted, otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> HandleAutoVoteAddition(CmdArgs c)
         {
-            if (!_validCallVotes.Contains(c.Args[3]))
+            if (!_validCallVotes.Contains(Helpers.GetArgVal(c, 3)))
             {
                 StatusMessage = string.Format(
-                        "^1[ERROR]^3 {0} isn't valid or applicable. In console: /callvote to see valid types.",
-                        c.Args[3]);
+                    "^1[ERROR]^3 {0} isn't valid or applicable. In console: /callvote to see valid types.",
+                    Helpers.GetArgVal(c, 3));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            if (c.Args[2].Equals("yes") || c.Args[2].Equals("no"))
+            if (Helpers.GetArgVal(c, 2).Equals("yes") || Helpers.GetArgVal(c, 2).Equals("no"))
             {
-                if (c.Args.Length == 4)
+                if (c.Args.Length == ((c.FromIrc) ? 5 : 4))
                 {
                     // Generic vote type w/o additional parameter
                     return await AddNoArgAutoVote(c);
                 }
-                if (c.Args.Length == 5)
+                if (c.Args.Length == ((c.FromIrc) ? 6 : 5))
                 {
                     // Generic vote type with additional parameter
                     return await AddAutoVoteWithArgs(c);
@@ -364,15 +404,17 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Handles the automatic vote deletion.
+        ///     Handles the automatic vote deletion.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the vote deletion was successful, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the vote deletion was successful, otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> HandleAutoVoteDeletion(CmdArgs c)
         {
             int voteNum;
-            if (!int.TryParse(c.Args[3], out voteNum))
+            if (!int.TryParse(Helpers.GetArgVal(c, 3), out voteNum))
             {
                 await DisplayNotNumError(c);
                 return false;
@@ -384,7 +426,7 @@ namespace SSB.Core.Commands.Modules
             }
             await RemoveAutoVote(c, voteNum);
             // Disable if there are no rules specified
-            bool disable = AutoVotes.Count == 0;
+            var disable = AutoVotes.Count == 0;
 
             UpdateConfig(disable);
             return true;
@@ -399,7 +441,11 @@ namespace SSB.Core.Commands.Modules
             {
                 StatusMessage = string.Format("^7No automatic pass/reject votes are set. Use ^2{0}{1} {2}" +
                                               " yes vote ^7OR^1 no vote^7 to add.",
-                    CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.AutoVoteArg);
+                    CommandList.GameCommandPrefix, c.CmdName,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}", c.Args[1],
+                            NameModule))
+                        : NameModule));
                 await SendServerSay(c, StatusMessage);
                 return;
             }
@@ -407,18 +453,20 @@ namespace SSB.Core.Commands.Modules
             var no = new StringBuilder();
             if (AutoVotes.Any(av => av.IntendedResult == IntendedVoteResult.Yes))
             {
-                foreach (AutoVote a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.Yes))
+                foreach (var a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.Yes))
                 {
-                    yes.Append(string.Format("^7#{0}:^2 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText, a.AddedBy));
+                    yes.Append(string.Format("^7#{0}:^2 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText,
+                        a.AddedBy));
                 }
                 StatusMessage = string.Format("^2[AUTO YES]^7 " + yes.ToString().TrimEnd(',', ' '));
                 await SendServerSay(c, StatusMessage);
             }
             if (AutoVotes.Any(av => av.IntendedResult == IntendedVoteResult.No))
             {
-                foreach (AutoVote a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.No))
+                foreach (var a in AutoVotes.Where(a => a.IntendedResult == IntendedVoteResult.No))
                 {
-                    no.Append(string.Format("^7#{0}:^1 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText, a.AddedBy));
+                    no.Append(string.Format("^7#{0}:^1 {1}^7 ({2}), ", AutoVotes.IndexOf(a), a.VoteText,
+                        a.AddedBy));
                 }
                 StatusMessage = string.Format("^1[AUTO NO]^7 " + no.ToString().TrimEnd(',', ' '));
                 await SendServerSay(c, StatusMessage);
@@ -426,7 +474,7 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Removes the automatic vote.
+        ///     Removes the automatic vote.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="voteNum">The vote number.</param>

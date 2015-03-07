@@ -3,6 +3,7 @@ using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -14,7 +15,7 @@ namespace SSB.Core.Commands.None
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
         private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 0;
+        private int _qlMinArgs = 0;
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
@@ -28,6 +29,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -39,14 +48,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -87,13 +96,13 @@ namespace SSB.Core.Commands.None
         /// <c>false</c>.
         /// </returns>
         /// <remarks>
-        /// c.Args[1] if specified: user to check
+        /// Helpers.GetArgVal(c, 1) if specified: user to check
         /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            StatusMessage = c.Args.Length > 1
-                ? string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.Args[1],
-                    _users.GetUserLevel(c.Args[1]))
+            StatusMessage = c.Args.Length > ((c.FromIrc) ? 2 : 1)
+                ? string.Format("^5{0}'s^7 user level is: ^5[{1}]", Helpers.GetArgVal(c, 1),
+                    _users.GetUserLevel(Helpers.GetArgVal(c, 1)))
                 : string.Format("^5{0}'s^7 user level is: ^5[{1}]", c.FromUser,
                     _users.GetUserLevel(c.FromUser));
             await SendServerSay(c, StatusMessage);

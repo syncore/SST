@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -12,7 +13,7 @@ namespace SSB.Core.Commands.Admin
     public class MuteCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
 
@@ -26,6 +27,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -37,14 +46,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -86,23 +95,23 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
+            var id = _ssb.ServerEventProcessor.GetPlayerId(Helpers.GetArgVal(c, 1));
             if (id != -1)
             {
                 StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to mute player ^2{0}",
-                    c.Args[1]);
+                    Helpers.GetArgVal(c, 1));
                 await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
                 await SendServerSay(c, StatusMessage);
-                Debug.WriteLine("MUTE: Got player id {0} for player: {1}", id, c.Args[1]);
+                Debug.WriteLine("MUTE: Got player id {0} for player: {1}", id, Helpers.GetArgVal(c, 1));
                 return true;
             }
 
             StatusMessage =
                 string.Format("^1[ERROR]^3 MUTE: Player ^1{0}^3 not found. Use player name without clan tag.",
-                    c.Args[1]);
+                    Helpers.GetArgVal(c, 1));
             await SendServerTell(c, StatusMessage);
             Debug.WriteLine(string.Format("Unable to mute player {0} because ID could not be retrieved.",
-                c.Args[1]));
+                Helpers.GetArgVal(c, 1)));
             return false;
         }
 
@@ -118,7 +127,8 @@ namespace SSB.Core.Commands.Admin
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandList.GameCommandPrefix, c.CmdName);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>

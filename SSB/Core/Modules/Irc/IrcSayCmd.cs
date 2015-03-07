@@ -13,7 +13,7 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly SynServerBot _ssb;
         private bool _isAsync = true;
-        private int _minArgs = 2;
+        private int _ircMinArgs = 2;
         private IrcUserLevel _userLevel = IrcUserLevel.None;
 
         /// <summary>
@@ -36,14 +36,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets the minimum arguments.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments.
+        /// The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs
+        public int IrcMinArgs
         {
-            get { return _minArgs; }
+            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public async Task ExecAsync(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}",
+            await _ssb.QlCommands.QlCmdSay(string.Format("^4[IRC]^3 {0}:^7 {1}",
                 c.FromUser,
                 c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1)));
         }

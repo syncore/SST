@@ -18,6 +18,7 @@ namespace SSB.Core.Modules.Irc
         private readonly bool _isAsync = true;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
+        private int _ircMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcStatusCmd" /> class.
@@ -26,7 +27,6 @@ namespace SSB.Core.Modules.Irc
         /// <param name="irc">The IRC interface.</param>
         public IrcStatusCmd(SynServerBot ssb, IrcManager irc)
         {
-            MinArgs = 0;
             _ssb = ssb;
             _irc = irc;
         }
@@ -40,12 +40,12 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs { get; private set; }
+        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets the user level.

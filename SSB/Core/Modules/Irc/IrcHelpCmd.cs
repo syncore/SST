@@ -15,6 +15,7 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private readonly Dictionary<string, IIrcCommand> _cmdList;
+        private int _ircMinArgs = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IrcHelpCmd" /> class.
@@ -23,7 +24,6 @@ namespace SSB.Core.Modules.Irc
         /// <param name="cmdList">The command list.</param>
         public IrcHelpCmd(IrcManager irc, Dictionary<string, IIrcCommand> cmdList)
         {
-            MinArgs = 0;
             IsAsync = false;
             _irc = irc;
             _cmdList = cmdList;
@@ -35,12 +35,12 @@ namespace SSB.Core.Modules.Irc
         public bool IsAsync { get; private set; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs { get; private set; }
+        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets the user level.

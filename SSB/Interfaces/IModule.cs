@@ -17,6 +17,14 @@ namespace SSB.Interfaces
         bool Active { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        int IrcMinModuleArgs { get; }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -25,20 +33,20 @@ namespace SSB.Interfaces
         bool IsIrcAccessAllowed { get; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        int MinModuleArgs { get; }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
         ///     The name of the module.
         /// </value>
         string ModuleName { get; }
+
+        /// <summary>
+        ///     Gets the minimum module arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the QL command.
+        /// </value>
+        int QlMinModuleArgs { get; }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -79,18 +87,18 @@ namespace SSB.Interfaces
         void LoadConfig();
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        Task SendServerTell(CmdArgs c, string message);
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
         Task SendServerSay(CmdArgs c, string message);
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        Task SendServerTell(CmdArgs c, string message);
 
         /// <summary>
         ///     Updates the configuration.

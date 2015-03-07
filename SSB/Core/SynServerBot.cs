@@ -22,6 +22,7 @@ namespace SSB.Core
         private Timer _initTimer;
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
+        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
@@ -48,8 +49,9 @@ namespace SSB.Core
             InitServerInformation();
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
+            
             // Delay some initilization tasks and complete initilization
-            StartDelayedInit(6.5);
+            StartDelayedInit(InitDelay);
             QlCommands.ClearQlWinConsole();
         }
 
@@ -179,7 +181,7 @@ namespace SSB.Core
         {
             IsInitComplete = false;
             InitServerInformation();
-            StartDelayedInit(6.5);
+            StartDelayedInit(InitDelay);
             QlCommands.ClearQlWinConsole();
         }
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Owner
 {
@@ -12,7 +13,7 @@ namespace SSB.Core.Commands.Owner
     public class DeOpCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Owner;
 
@@ -26,6 +27,14 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -37,15 +46,23 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
 
         /// <summary>
         ///     Gets the user level.
@@ -59,14 +76,6 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        ///     Gets the command's status message.
-        /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
-        public string StatusMessage { get; set; }
-
-        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -74,6 +83,34 @@ namespace SSB.Core.Commands.Owner
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        /// Executes the specified command asynchronously.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
+        {
+            var id = _ssb.ServerEventProcessor.GetPlayerId(Helpers.GetArgVal(c, 1));
+            if (id != -1)
+            {
+                await _ssb.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+                StatusMessage = string.Format("^2[SUCCESS]^7 Attemped to de-op ^2{0}", Helpers.GetArgVal(c, 1));
+                await SendServerTell(c, StatusMessage);
+                Debug.WriteLine("DEOP: Got player id {0} for player: {1}", id, Helpers.GetArgVal(c, 1));
+                return true;
+            }
+
+            StatusMessage = "^1[ERROR]^3 Player not found. Use player name without clan tag.";
+            await SendServerTell(c, StatusMessage);
+
+            Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
+                Helpers.GetArgVal(c, 1)));
+            return false;
         }
 
         /// <summary>
@@ -88,18 +125,9 @@ namespace SSB.Core.Commands.Owner
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name does NOT include clan tag.",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}",
+                c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>
@@ -114,31 +142,14 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the command was successfully executed, otherwise
-        ///     <c>false</c>.
-        /// </returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
         {
-            var id = _ssb.ServerEventProcessor.GetPlayerId(c.Args[1]);
-            if (id != -1)
-            {
-                await _ssb.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
-                StatusMessage = string.Format("^2[SUCCESS]^7 Attemped to de-op ^2{0}", c.Args[1]);
-                await SendServerTell(c, StatusMessage);
-                Debug.WriteLine("DEOP: Got player id {0} for player: {1}", id, c.Args[1]);
-                return true;
-            }
-
-            StatusMessage = "^1[ERROR]^3 Player not found. Use player name without clan tag.";
-            await SendServerTell(c, StatusMessage);
-
-            Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
-                c.Args[1]));
-            return false;
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

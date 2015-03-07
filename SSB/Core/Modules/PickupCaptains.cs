@@ -260,10 +260,10 @@ namespace SSB.Core.Modules
         /// <returns></returns>
         private async Task DoPlayerPick(CmdArgs c, Team team)
         {
-            if (!_manager.AvailablePlayers.Contains(c.Args[1]))
+            if (!_manager.AvailablePlayers.Contains(Helpers.GetArgVal(c, 1)))
             {
                 StatusMessage = string.Format("^1[ERROR]^3 {0} is not an eligible player!",
-                    c.Args[1]);
+                    Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
                 await _manager.DisplayAvailablePlayers();
                 await ShowWhosePick(team);
@@ -271,25 +271,25 @@ namespace SSB.Core.Modules
             }
             await _ssb.QlCommands.QlCmdSay(string.Format("^5[PICKUP] {0} ^7({1}{2}^7) picked {1}{3}",
                 ((team == Team.Red) ? "^1RED" : "^5BLUE"), ((team == Team.Red) ? "^1" : "^5"),
-                ((team == Team.Red) ? RedCaptain : BlueCaptain), c.Args[1]));
+                ((team == Team.Red) ? RedCaptain : BlueCaptain), Helpers.GetArgVal(c, 1)));
 
             if (team == Team.Red)
             {
-                _manager.RemoveEligibility(c.Args[1]);
-                await _ssb.QlCommands.CustCmdPutPlayer(c.Args[1], Team.Red);
-                _manager.AddActivePickupPlayer(c.Args[1]);
+                _manager.RemoveEligibility(Helpers.GetArgVal(c, 1));
+                await _ssb.QlCommands.CustCmdPutPlayer(Helpers.GetArgVal(c, 1), Team.Red);
+                _manager.AddActivePickupPlayer(Helpers.GetArgVal(c, 1));
                 await SetPickingTeam(Team.Blue);
             }
             else if (team == Team.Blue)
             {
-                _manager.RemoveEligibility(c.Args[1]);
-                await _ssb.QlCommands.CustCmdPutPlayer(c.Args[1], Team.Blue);
-                _manager.AddActivePickupPlayer(c.Args[1]);
+                _manager.RemoveEligibility(Helpers.GetArgVal(c, 1));
+                await _ssb.QlCommands.CustCmdPutPlayer(Helpers.GetArgVal(c, 1), Team.Blue);
+                _manager.AddActivePickupPlayer(Helpers.GetArgVal(c, 1));
                 await SetPickingTeam(Team.Red);
             }
 
             // Notify player
-            await _manager.NotifyNewPlayer(c.Args[1], team);
+            await _manager.NotifyNewPlayer(Helpers.GetArgVal(c, 1), team);
 
             // Teams are full, we are ready to start
             if (_manager.AreTeamsFull)

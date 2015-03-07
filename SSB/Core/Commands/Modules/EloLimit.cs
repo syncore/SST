@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
-using SSB.Model.QlRanks;
 using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
@@ -21,10 +18,10 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "elo";
         private readonly ConfigHandler _configHandler;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
-        private bool _isIrcAccessAllowed = true;
-        private int _minModuleArgs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EloLimit" /> class.
@@ -55,14 +52,6 @@ namespace SSB.Core.Commands.Modules
         public static int MinimumRequiredElo { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets or sets the type of the game for the server.
         /// </summary>
         /// <value>
@@ -71,22 +60,33 @@ namespace SSB.Core.Commands.Modules
         public QlGameTypes GameType { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this command can be accessed from IRC.
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
+        public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum module arguments for the IRC command.
         /// </value>
-        public int MinModuleArgs
+        public int IrcMinModuleArgs
         {
-            get { return _minModuleArgs; }
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -101,28 +101,109 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets the command's status message.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        /// The command's status message.
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
+        }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
 
         /// <summary>
+        ///     Displays the argument length error.
+        /// </summary>
+        /// <param name="c">The command args</param>
+        public async Task DisplayArgLengthError(CmdArgs c)
+        {
+            StatusMessage = GetArgLengthErrorMessage(c);
+            await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Evaluates the elo limit command.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
+        {
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
+            {
+                await DisplayArgLengthError(c);
+                return false;
+            }
+
+            if (!CouldGetGameType().Result)
+            {
+                StatusMessage = "^1[ERROR]^7 Unable to process gametype information. Try again.";
+                await SendServerTell(c, StatusMessage);
+                return false;
+            }
+            // Disable elo limiter
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
+            {
+                await DisableEloLimiter(c);
+                return true;
+            }
+            if (c.Args.Length == ((c.FromIrc) ? 4 : 3))
+            {
+                // Only the minimum elo is specified...
+                return await EvalMinEloSpecified(c);
+            }
+            if (c.Args.Length == ((c.FromIrc) ? 5 : 4))
+            {
+                // Minimum and maximum elo range is specified...
+                return await EvalEloRangeSpecified(c);
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the argument length error message.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <returns>
+        ///     The argument length error message, correctly color-formatted
+        ///     depending on its destination.
+        /// </returns>
+        public string GetArgLengthErrorMessage(CmdArgs c)
+        {
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <minimumelo> [maximumelo] : minimumelo and" +
+                " maximumelo must be >0. minimumelo must also be less than maximumelo.",
+                CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
+        }
+
+        /// <summary>
         ///     Removes players from server who do not meet the specified Elo
-        ///  requirements immediately after enabling the elo
+        ///     requirements immediately after enabling the elo
         ///     limiter.
         /// </summary>
         public async Task BatchRemoveEloPlayers()
         {
             var qlrHelper = new QlRanksHelper();
             // First make sure that the elo is correct and fetch if not
-            List<string> playersToUpdate = (from player in _ssb.ServerInfo.CurrentPlayers
-                                            where qlrHelper.PlayerHasInvalidEloData(player.Value)
-                                            select player.Key).ToList();
+            var playersToUpdate = (from player in _ssb.ServerInfo.CurrentPlayers
+                where qlrHelper.PlayerHasInvalidEloData(player.Value)
+                select player.Key).ToList();
             if (playersToUpdate.Any())
             {
-                QlRanks qlr =
+                var qlr =
                     await
                         qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, playersToUpdate);
                 if (qlr == null)
@@ -151,80 +232,14 @@ namespace SSB.Core.Commands.Modules
         /// <param name="player">The player.</param>
         public async Task CheckPlayerEloRequirement(string player)
         {
-            long playerElo = GetEloTypeToCompare(player);
+            var playerElo = GetEloTypeToCompare(player);
             // Likely invalid, skip.
             if (playerElo == 0) return;
             await KickPlayerIfEloNotMet(player);
         }
 
         /// <summary>
-        ///     Displays the argument length error.
-        /// </summary>
-        /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
-        {
-            StatusMessage = GetArgLengthErrorMessage(c);
-            await SendServerTell(c, StatusMessage);
-        }
-
-        /// <summary>
-        /// Evaluates the elo limit command.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <returns>
-        /// <c>true</c>if the command evaluation was successful,
-        /// otherwise <c>false</c>.
-        /// </returns>
-        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
-        {
-            if (c.Args.Length < _minModuleArgs)
-            {
-                await DisplayArgLengthError(c);
-                return false;
-            }
-
-            if (!CouldGetGameType().Result)
-            {
-                StatusMessage = "^1[ERROR]^7 Unable to process gametype information. Try again.";
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
-            // Disable elo limiter
-            if (c.Args[2].Equals("off"))
-            {
-                await DisableEloLimiter(c);
-                return true;
-            }
-            switch (c.Args.Length)
-            {
-                // Only the minimum elo is specified...
-                case 3:
-                    return await EvalMinEloSpecified(c);
-                // Minimum and maximum elo range is specified...
-                case 4:
-                    return await EvalEloRangeSpecified(c);
-            }
-            return false;
-        }
-
-        /// <summary>
-        ///     Gets the argument length error message.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
-        /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
-        {
-            return string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <minimumelo> [maximumelo] : minimumelo and" +
-                " maximumelo must be >0. minimumelo must also be less than maximumelo.",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.EloLimitArg);
-        }
-
-        /// <summary>
-        /// Loads the configuration.
+        ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -237,19 +252,20 @@ namespace SSB.Core.Commands.Modules
             }
             // Only min set
             else if (_configHandler.Config.EloLimitOptions.minimumRequiredElo != 0 &&
-                _configHandler.Config.EloLimitOptions.maximumRequiredElo == 0)
+                     _configHandler.Config.EloLimitOptions.maximumRequiredElo == 0)
             {
                 Active = _configHandler.Config.EloLimitOptions.isActive;
             }
             // Range set
             else if (_configHandler.Config.EloLimitOptions.minimumRequiredElo != 0 &&
-                  _configHandler.Config.EloLimitOptions.maximumRequiredElo != 0)
+                     _configHandler.Config.EloLimitOptions.maximumRequiredElo != 0)
             {
                 Active = _configHandler.Config.EloLimitOptions.isActive;
             }
             // Min can't be greater than max
             if ((_configHandler.Config.EloLimitOptions.maximumRequiredElo > 0) &&
-                (_configHandler.Config.EloLimitOptions.minimumRequiredElo > _configHandler.Config.EloLimitOptions.maximumRequiredElo))
+                (_configHandler.Config.EloLimitOptions.minimumRequiredElo >
+                 _configHandler.Config.EloLimitOptions.maximumRequiredElo))
             {
                 Active = false;
                 _configHandler.Config.EloLimitOptions.SetDefaults();
@@ -263,19 +279,8 @@ namespace SSB.Core.Commands.Modules
             {
                 // ReSharper disable once UnusedVariable
                 // Synchronous; initialization
-                Task i = Init();
+                var i = Init();
             }
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -290,10 +295,23 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Updates the configuration.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
-        /// <param name="active">if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        /// updating the configuration.</param>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        /// <param name="active">
+        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
+        ///     updating the configuration.
+        /// </param>
         public void UpdateConfig(bool active)
         {
             Active = active;
@@ -317,7 +335,7 @@ namespace SSB.Core.Commands.Modules
         /// <returns><c>true</c>if the server type could be obtained, otherwise <c>false</c>.</returns>
         private async Task<bool> CouldGetGameType()
         {
-            QlGameTypes gameType = _ssb.ServerInfo.CurrentServerGameType;
+            var gameType = _ssb.ServerInfo.CurrentServerGameType;
             if (gameType == QlGameTypes.Unspecified)
             {
                 Debug.WriteLine("ELOLIMITER: Server's gametype is unspecified. Now trying to retrieve.");
@@ -329,7 +347,7 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Disables the elo limiter.
+        ///     Disables the elo limiter.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisableEloLimiter(CmdArgs c)
@@ -342,17 +360,19 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Evaluates the case in which a minimum and maximum elo range have been specified.
+        ///     Evaluates the case in which a minimum and maximum elo range have been specified.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the evaluation was successful, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the evaluation was successful, otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> EvalEloRangeSpecified(CmdArgs c)
         {
             int min;
             int max;
-            bool minAcceptable = ((int.TryParse(c.Args[2], out min) && min > 0));
-            bool maxAcceptable = ((int.TryParse(c.Args[3], out max) && max > 0));
+            var minAcceptable = ((int.TryParse(Helpers.GetArgVal(c, 2), out min) && min > 0));
+            var maxAcceptable = ((int.TryParse(Helpers.GetArgVal(c, 3), out max) && max > 0));
             if ((!minAcceptable || !maxAcceptable))
             {
                 await DisplayArgLengthError(c);
@@ -369,23 +389,25 @@ namespace SSB.Core.Commands.Modules
             MaximumRequiredElo = max;
             UpdateConfig(true);
             StatusMessage = string.Format(
-                    "^2[SUCCESS]^7 {0} Elo limit ^2ON.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server.",
-                    GameType.ToString().ToUpper(), min, max);
+                "^2[SUCCESS]^7 {0} Elo limit ^2ON.^7 Players must have between^2 {1} ^7and^2 {2}^7 {0} Elo to play on this server.",
+                GameType.ToString().ToUpper(), min, max);
             await SendServerSay(c, StatusMessage);
             await BatchRemoveEloPlayers();
             return true;
         }
 
         /// <summary>
-        /// Evaluates the case where only the minimum elo specified.
+        ///     Evaluates the case where only the minimum elo specified.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns><c>true</c> if the evaluation was successful, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the evaluation was successful, otherwise
+        ///     <c>false</c>.
+        /// </returns>
         private async Task<bool> EvalMinEloSpecified(CmdArgs c)
         {
             int min;
-            bool minAcceptable = ((int.TryParse(c.Args[2], out min) && min > 0));
+            var minAcceptable = ((int.TryParse(Helpers.GetArgVal(c, 2), out min) && min > 0));
             if ((!minAcceptable))
             {
                 await DisplayArgLengthError(c);
@@ -396,8 +418,8 @@ namespace SSB.Core.Commands.Modules
             MaximumRequiredElo = 0;
             UpdateConfig(true);
             StatusMessage = string.Format(
-                    "^2[SUCCESS]^7 {0} Elo limit ^2ON.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server.",
-                    GameType.ToString().ToUpper(), min);
+                "^2[SUCCESS]^7 {0} Elo limit ^2ON.^7 Players must have at least^2 {1} ^7{0} Elo to play on this server.",
+                GameType.ToString().ToUpper(), min);
 
             await SendServerSay(c, StatusMessage);
             await BatchRemoveEloPlayers();
@@ -439,7 +461,7 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Automatically starts the module if an active flag is detected in the configuration.
+        ///     Automatically starts the module if an active flag is detected in the configuration.
         /// </summary>
         private async Task Init()
         {
@@ -451,13 +473,15 @@ namespace SSB.Core.Commands.Modules
             // Minimum Elo only... No max set
             if ((MinimumRequiredElo > 0) && (MaximumRequiredElo == 0))
             {
-                Debug.WriteLine("Auto-detected minimum elo in config file on init. Attempting to scan players...");
+                Debug.WriteLine(
+                    "Auto-detected minimum elo in config file on init. Attempting to scan players...");
                 await BatchRemoveEloPlayers();
             }
             // Elo range specified in config
             else if (MaximumRequiredElo > 0 && MinimumRequiredElo > 0)
             {
-                Debug.WriteLine("Auto-detected min and max elo range in config file on init. Attempting to scan players...");
+                Debug.WriteLine(
+                    "Auto-detected min and max elo range in config file on init. Attempting to scan players...");
                 await BatchRemoveEloPlayers();
             }
         }
@@ -468,8 +492,8 @@ namespace SSB.Core.Commands.Modules
         /// <param name="player">The player.</param>
         private async Task KickPlayerIfEloNotMet(string player)
         {
-            bool hasMaxElo = MaximumRequiredElo != 0;
-            bool hasMinElo = MinimumRequiredElo != 0;
+            var hasMaxElo = MaximumRequiredElo != 0;
+            var hasMinElo = MinimumRequiredElo != 0;
 
             if (!hasMinElo) return;
 
@@ -478,7 +502,7 @@ namespace SSB.Core.Commands.Modules
             // Can't kick ourselves, though QL doesn't allow it anyway, don't show kick msg.
             if (player.Equals(_ssb.BotName, StringComparison.InvariantCultureIgnoreCase)) return;
 
-            long playerElo = GetEloTypeToCompare(player);
+            var playerElo = GetEloTypeToCompare(player);
 
             if (playerElo == 0) return;
             if (playerElo < MinimumRequiredElo)

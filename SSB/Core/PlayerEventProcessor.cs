@@ -194,6 +194,17 @@ namespace SSB.Core
             string msgFrom = Helpers.GetStrippedName(name);
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
+            // If irc module is active, send the message to the IRC channel 
+            if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
+            {
+                // Don't show
+                if (msgContent.StartsWith("[irc]", StringComparison.InvariantCultureIgnoreCase))
+                    return;
+                
+                _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    string.Format("[{0} @ QL]: {1}", msgFrom, msgContent));
+            }
+            
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandList.GameCommandPrefix))
             {

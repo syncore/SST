@@ -15,7 +15,7 @@ namespace SSB.Core.Modules.Irc
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private bool _isAsync = false;
-        private int _minArgs = 0;
+        private int _ircMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcModsCmd" /> class.
@@ -37,14 +37,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int MinArgs
+        public int IrcMinArgs
         {
-            get { return _minArgs; }
+            get { return _ircMinArgs; }
         }
 
         /// <summary>

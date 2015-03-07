@@ -28,7 +28,7 @@ namespace SSB.Core.Commands.None
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
         private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 0;
+        private int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SuggestTeamsCmd" /> class.
@@ -46,6 +46,15 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -57,14 +66,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -101,7 +110,7 @@ namespace SSB.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <remarks>
-        ///     c.Args[1] if specified: user to check
+        ///     Helpers.GetArgVal(c, 1) if specified: user to check
         /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
@@ -153,8 +162,8 @@ namespace SSB.Core.Commands.None
             }
 
             // SuperUser or higher... Force the vote
-            if ((c.Args.Length == 2) &&
-                (c.Args[1].Equals("force", StringComparison.InvariantCultureIgnoreCase)))
+            if ((c.Args.Length == (c.FromIrc ? 3 : 2)) &&
+                (Helpers.GetArgVal(c, 1).Equals("force", StringComparison.InvariantCultureIgnoreCase)))
             {
                 var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _users.GetUserLevel(c.FromUser);
                 if (userLevel < UserLevel.SuperUser)
@@ -262,6 +271,9 @@ namespace SSB.Core.Commands.None
             {
                 Debug.WriteLine("Could not verify all players' Elo data. Will skip team suggestion." +
                                 ex.Message);
+                StatusMessage =
+                    "^1[ERROR]^3 Couldn't verify player data. Team suggestion is not possible at this time.";
+                return;
             }
 
             var allPlayers = redTeam;

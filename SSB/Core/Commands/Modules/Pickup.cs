@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Core.Modules;
 using SSB.Interfaces;
 using SSB.Model;
@@ -19,8 +18,8 @@ namespace SSB.Core.Commands.Modules
         private const int TeamMinSize = 2;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minModuleArgs = 3;
         private readonly PickupManager _pickupManager;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -126,6 +125,17 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -137,17 +147,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        public int MinModuleArgs
-        {
-            get { return _minModuleArgs; }
-        }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -156,6 +155,17 @@ namespace SSB.Core.Commands.Modules
         public string ModuleName
         {
             get { return NameModule; }
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
@@ -186,22 +196,22 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await DisablePickup(c);
                 return false;
             }
-            if (c.Args[2].Equals("noshowbans") || c.Args[2].Equals("subbans"))
+            if (Helpers.GetArgVal(c, 2).Equals("noshowbans") || Helpers.GetArgVal(c, 2).Equals("subbans"))
             {
                 return await EvalSetBanSettings(c);
             }
             uint teamsize;
-            if (!uint.TryParse(c.Args[2], out teamsize))
+            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out teamsize))
             {
                 StatusMessage =
                     string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
@@ -244,7 +254,10 @@ namespace SSB.Core.Commands.Modules
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <teamsize> [noshowbans] [subbans] - teamsize is a number",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.PickupArg);
+                CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
@@ -296,17 +309,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -315,6 +317,17 @@ namespace SSB.Core.Commands.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -375,8 +388,11 @@ namespace SSB.Core.Commands.Modules
             // Activate the module, overriding the default of active = false
             UpdateConfig(true);
             StatusMessage = string.Format("^2[SUCCESS]^7 Pickup game module has been enabled with" +
-                                          " initial teamsize of ^2{0}^7 - To start: ^2{1}{2} start",
-                teamsize, CommandList.GameCommandPrefix, CommandList.CmdPickup);
+                                          " initial teamsize of^2 {0} ^7 - To start: ^2{1}{2} start",
+                teamsize, CommandList.GameCommandPrefix, ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        CommandList.CmdPickup))
+                    : CommandList.CmdPickup));
             await SendServerSay(c, StatusMessage);
         }
 
@@ -391,25 +407,29 @@ namespace SSB.Core.Commands.Modules
         private async Task<bool> EvalSetBanSettings(CmdArgs c)
         {
             var settingsType = string.Empty;
-            if (c.Args[2].Equals("noshowbans"))
+            if (Helpers.GetArgVal(c, 2).Equals("noshowbans"))
             {
                 settingsType = "noshows";
             }
-            else if (c.Args[2].Equals("subbans"))
+            else if (Helpers.GetArgVal(c, 2).Equals("subbans"))
             {
                 settingsType = "subs";
             }
-            if (c.Args.Length != 6)
+            if (c.Args.Length != (c.FromIrc ? 7 : 6))
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} {2} {3} <max> <bantime> <banscale> - max: max # {4}, bantime: #, banscale: secs," +
                     " mins, hours, days, months, OR years",
-                    CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.PickupArg, c.Args[2], settingsType);
+                    CommandList.GameCommandPrefix, c.CmdName,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}", c.Args[1],
+                            NameModule))
+                        : NameModule), Helpers.GetArgVal(c, 2), settingsType);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
             uint maxNum;
-            if (!uint.TryParse(c.Args[3], out maxNum))
+            if (!uint.TryParse(Helpers.GetArgVal(c, 3), out maxNum))
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Max # of {0} to allow must be a number greater than zero.",
@@ -418,7 +438,7 @@ namespace SSB.Core.Commands.Modules
                 return false;
             }
             double timeNum;
-            if (!double.TryParse(c.Args[4], out timeNum))
+            if (!double.TryParse(Helpers.GetArgVal(c, 4), out timeNum))
             {
                 StatusMessage = "^1[ERROR]^3 The time to ban must be a number greater than zero.";
                 await SendServerTell(c, StatusMessage);
@@ -430,14 +450,14 @@ namespace SSB.Core.Commands.Modules
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            var isValidScale = Helpers.ValidTimeScales.Contains(c.Args[5]);
+            var isValidScale = Helpers.ValidTimeScales.Contains(Helpers.GetArgVal(c, 5));
             if (!isValidScale)
             {
                 StatusMessage = "^1[ERROR]^3 Scale must be: secs, mins, hours, days, months OR years.";
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            await SetBanSettings(c, settingsType, maxNum, timeNum, c.Args[5]);
+            await SetBanSettings(c, settingsType, maxNum, timeNum, Helpers.GetArgVal(c, 5));
             return true;
         }
 
@@ -459,7 +479,7 @@ namespace SSB.Core.Commands.Modules
                 ExcessiveNoShowBanTime = timeToBan;
                 ExcessiveNoShowBanTimeScale = scaleToBan;
                 StatusMessage = string.Format(
-                    "^2[SUCCESS]^7 Players leaving without a sub more than ^3{0}^7 times will be banned for^1 {1} {2}.",
+                    "^2[SUCCESS]^7 Players leaving without a sub more than^3 {0} ^7times will be banned for^1 {1} {2}.",
                     maxNum, timeToBan, scaleToBan);
                 await SendServerSay(c, StatusMessage);
             }
@@ -469,7 +489,7 @@ namespace SSB.Core.Commands.Modules
                 ExcessiveSubUseBanTime = timeToBan;
                 ExcessiveSubUseBanTimeScale = scaleToBan;
                 StatusMessage = string.Format(
-                    "^2[SUCCESS]^7 Players who've requested subs more than ^3{0}^7 times will be banned for^1 {1} {2}.",
+                    "^2[SUCCESS]^7 Players who've requested subs more than^3 {0} ^7times will be banned for^1 {1} {2}.",
                     maxNum, timeToBan, scaleToBan);
                 await SendServerSay(c, StatusMessage);
             }

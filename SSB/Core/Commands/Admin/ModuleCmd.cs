@@ -5,6 +5,7 @@ using SSB.Core.Commands.Modules;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -24,7 +25,7 @@ namespace SSB.Core.Commands.Admin
         public const string ServersArg = Servers.NameModule;
         private const string ActiveModuleArg = "active";
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private readonly List<string> _validModuleNames;
@@ -51,6 +52,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -62,14 +71,14 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -111,7 +120,7 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            switch (c.Args[1])
+            switch (Helpers.GetArgVal(c, 1))
             {
                 case ActiveModuleArg:
                     StatusMessage = GetActiveModules(c);
@@ -120,40 +129,52 @@ namespace SSB.Core.Commands.Admin
 
                 case AccountDateLimitArg:
                     await _ssb.Mod.AccountDateLimit.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.AccountDateLimit.StatusMessage;
                     return true;
 
                 case AccuracyArg:
                     await _ssb.Mod.Accuracy.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.Accuracy.StatusMessage;
                     return true;
 
                 case AutoVoteArg:
                     await _ssb.Mod.AutoVoter.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.AutoVoter.StatusMessage;
                     return true;
 
                 case EarlyQuitArg:
                     await _ssb.Mod.EarlyQuit.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.EarlyQuit.StatusMessage;
                     return true;
 
                 case EloLimitArg:
                     await _ssb.Mod.EloLimit.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.EloLimit.StatusMessage;
                     return true;
 
                 case IrcArg:
                     await _ssb.Mod.Irc.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.Irc.StatusMessage;
                     return true;
 
                 case MotdArg:
                     await _ssb.Mod.Motd.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.Motd.StatusMessage;
                     return true;
 
                 case PickupArg:
                     await _ssb.Mod.Pickup.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.Pickup.StatusMessage;
                     return true;
 
                 case ServersArg:
                     await _ssb.Mod.Servers.EvalModuleCmdAsync(c);
+                    StatusMessage = _ssb.Mod.Servers.StatusMessage;
                     return true;
             }
+            StatusMessage = string.Format("^1[ERROR]^3 Invalid module. Valid modules are: ^1{0}",
+                string.Join(", ", _validModuleNames));
+            await SendServerTell(c, StatusMessage);
             return false;
         }
 
@@ -169,7 +190,9 @@ namespace SSB.Core.Commands.Admin
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <type> <args> - types: {2} - For active: {0}{1} {3}",
-                CommandList.GameCommandPrefix, c.CmdName, string.Join(", ", _validModuleNames),
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName),
+                string.Join(", ", _validModuleNames),
                 ActiveModuleArg);
         }
 
@@ -205,7 +228,8 @@ namespace SSB.Core.Commands.Admin
             {
                 return string.Format(
                     "^7[MOD]^1 No modules are active at this time. Use: {0}{1} to activate module(s).",
-                    CommandList.GameCommandPrefix, c.CmdName);
+                    CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
             }
 
             var sb = new StringBuilder();

@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
+using SSB.Core.Modules.Irc;
 using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
@@ -15,7 +16,7 @@ namespace SSB.Core.Commands.None
     public class AccCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minArgs = 2;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
 
@@ -26,6 +27,17 @@ namespace SSB.Core.Commands.None
         public AccCmd(SynServerBot ssb)
         {
             _ssb = ssb;
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
         }
 
         /// <summary>
@@ -40,21 +52,21 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
-        /// Gets the command's status message.
+        ///     Gets the command's status message.
         /// </summary>
         /// <value>
-        /// The command's status message.
+        ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
 
@@ -80,29 +92,34 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Accuracy.Active)
             {
                 StatusMessage = string.Format(
-                            "^1[ERROR]^3 Accuracy module has not been loaded. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix, CommandList.CmdModule,
-                            ModuleCmd.AccuracyArg);
+                    "^1[ERROR]^3 Accuracy module has not been loaded. An admin must first load it with:^7 {0}{1} {2}",
+                    CommandList.GameCommandPrefix,
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            IrcCommandList.IrcCmdQl, CommandList.CmdModule))
+                        : CommandList.CmdModule),
+                    ModuleCmd.AccuracyArg);
+
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
 
-            if (!Helpers.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(Helpers.GetArgVal(c, 1), _ssb.ServerInfo.CurrentPlayers))
             {
                 StatusMessage = string.Format("^1[ERROR]^3 {0} is not currently on the server!",
-                        c.Args[1]);
+                    Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -136,18 +153,10 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
-                CommandList.GameCommandPrefix, c.CmdName);
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+                CommandList.GameCommandPrefix, ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>
@@ -159,6 +168,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -283,7 +303,7 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         private async Task RetrieveAccuracy(CmdArgs c)
         {
-            var player = c.Args[1];
+            var player = Helpers.GetArgVal(c, 1);
             _ssb.QlCommands.SendToQl("team s", false);
             var id = _ssb.ServerEventProcessor.GetPlayerId(player);
             if (id != -1)
@@ -303,7 +323,7 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         private async Task ShowAccSinglePlayer(CmdArgs c)
         {
-            var player = c.Args[1];
+            var player = Helpers.GetArgVal(c, 1);
             await RetrieveAccuracy(c);
             var accStr = FormatAccString(player);
             StatusMessage = string.Format("^3{0}'s^7 accuracy: {1}",

@@ -86,7 +86,7 @@ namespace SSB.Core.Modules.Irc
                 return;
             }
             var c = new CmdArgs(args, cmdName, fromUser, msg, true);
-            if (args.Length < _ircCmds.Commands[cmdName].MinArgs)
+            if (args.Length < _ircCmds.Commands[cmdName].IrcMinArgs)
             {
                 _ircCmds.Commands[cmdName].DisplayArgLengthError(c);
                 return;

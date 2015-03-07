@@ -39,7 +39,8 @@ namespace SSB.Core.Modules.Irc
                 {
                     // Synchronous
                     // ReSharper disable once UnusedVariable
-                    var i = _ircCommandProcessor.ProcessIrcCommand(e.Source.Name, e.Text);
+                    var i = _ircCommandProcessor.ProcessIrcCommand(e.Source.Name,
+                        e.Text.ToLowerInvariant());
                 }
             }
             else

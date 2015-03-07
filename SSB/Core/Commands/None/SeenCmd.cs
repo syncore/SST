@@ -18,7 +18,7 @@ namespace SSB.Core.Commands.None
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = true;
-        private int _minArgs = 2;
+        private int _qlMinArgs = 2;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SeenCmd" /> class.
@@ -29,6 +29,14 @@ namespace SSB.Core.Commands.None
             _ssb = ssb;
             _seenDb = new DbSeenDates();
         }
+
+        /// <summary>
+        /// Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        /// The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -42,14 +50,14 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        ///     The minimum arguments.
+        ///     The minimum arguments for the QL command.
         /// </value>
-        public int MinArgs
+        public int QlMinArgs
         {
-            get { return _minArgs; }
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -90,31 +98,32 @@ namespace SSB.Core.Commands.None
         /// <c>false</c>.
         /// </returns>
         /// <remarks>
-        /// c.Args[1] if specified: user to check
+        /// Helpers.GetArgVal(c, 1) if specified: user to check
         /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if (Helpers.KeyExists(c.Args[1], _ssb.ServerInfo.CurrentPlayers))
+            if (Helpers.KeyExists(Helpers.GetArgVal(c, 1), _ssb.ServerInfo.CurrentPlayers))
             {
                 StatusMessage = string.Format(
                             "^5[LAST SEEN]^7 {0} is here ^5right now!",
-                            c.Args[1]);
+                            Helpers.GetArgVal(c, 1));
                 await SendServerSay(c, StatusMessage);
+                return true;
             }
-            var date = _seenDb.GetLastSeenDate(c.Args[1]);
+            var date = _seenDb.GetLastSeenDate(Helpers.GetArgVal(c, 1));
             if (date != default(DateTime))
             {
                 var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays * 100) / 100;
                 StatusMessage = string.Format(
                             "^5[LAST SEEN]^7 {0} was last seen on my server at:^5 {1}^7 (^3{2}^7 days ago)",
-                            c.Args[1], date.ToString("g", CultureInfo.CreateSpecificCulture("en-us")), daysAgo);
+                            Helpers.GetArgVal(c, 1), date.ToString("g", CultureInfo.CreateSpecificCulture("en-us")), daysAgo);
                 await SendServerSay(c, StatusMessage);
             }
             else
             {
                 StatusMessage = string.Format(
                             "^5[LAST SEEN]^7 {0} has never been seen on my server.",
-                            c.Args[1]);
+                            Helpers.GetArgVal(c, 1));
                 await SendServerSay(c, StatusMessage);
             }
             return true;
@@ -132,7 +141,9 @@ namespace SSB.Core.Commands.None
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
-                CommandList.GameCommandPrefix, c.CmdName);
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc) ? (string.Format("{0} {1}",
+                c.CmdName, c.Args[1])) : c.CmdName));
         }
 
         /// <summary>

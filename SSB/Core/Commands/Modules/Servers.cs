@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
     /// <summary>
-    /// Module: enable or disable the ability to list the active QL servers for a given gametype and region.
+    ///     Module: enable or disable the ability to list the active QL servers for a given gametype and region.
     /// </summary>
     public class Servers : IModule
     {
         public const string NameModule = "servers";
         private readonly ConfigHandler _configHandler;
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
-        private bool _isIrcAccessAllowed = true;
-        private int _minModuleArgs = 3;
 
         public Servers(SynServerBot ssb)
         {
@@ -24,6 +24,30 @@ namespace SSB.Core.Commands.Modules
             _configHandler = new ConfigHandler();
             LoadConfig();
         }
+
+        /// <summary>
+        ///     Gets or sets the date and time that the query command was last used.
+        /// </summary>
+        /// <value>
+        ///     The date and time that the query command was last used.
+        /// </value>
+        public DateTime LastQueryTime { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the maximum servers to display.
+        /// </summary>
+        /// <value>
+        ///     The maximum servers to display.
+        /// </value>
+        public uint MaxServersToDisplay { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the time between queries.
+        /// </summary>
+        /// <value>
+        ///     The time between queries.
+        /// </value>
+        public double TimeBetweenQueries { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -34,38 +58,25 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this command can be accessed from IRC.
+        ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        ///     The minimum module arguments for the IRC command.
         /// </value>
-        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
-
-        /// <summary>
-        /// Gets or sets the date and time that the query command was last used.
-        /// </summary>
-        /// <value>
-        /// The date and time that the query command was last used.
-        /// </value>
-        public DateTime LastQueryTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the maximum servers to display.
-        /// </summary>
-        /// <value>
-        /// The maximum servers to display.
-        /// </value>
-        public uint MaxServersToDisplay { get; set; }
-
-        /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        public int MinModuleArgs
+        public int IrcMinModuleArgs
         {
-            get { return _minModuleArgs; }
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
@@ -80,31 +91,23 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets the command's status message.
+        ///     Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>
-        /// The command's status message.
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
+        }
+
+        /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time between queries.
-        /// </summary>
-        /// <value>
-        /// The time between queries.
-        /// </value>
-        public double TimeBetweenQueries { get; set; }
-
-        /// <summary>
-        /// Disables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        public async Task DisableServers(CmdArgs c)
-        {
-            UpdateConfig(false);
-            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
-            await SendServerSay(c, StatusMessage);
-        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -117,70 +120,52 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Enables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="maxServers">The maximum servers to display.</param>
-        /// <param name="timeBetween">The time in seconds that must elapse between users issuing the
-        /// query command.</param>
-        public async Task EnableServers(CmdArgs c, uint maxServers, double timeBetween)
-        {
-            MaxServersToDisplay = maxServers;
-            TimeBetweenQueries = timeBetween;
-            UpdateConfig(true);
-            StatusMessage = string.Format(
-                        "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
-                        " see up to ^5{0}^7 active servers every ^5{1}^7 seconds.",
-                        maxServers, timeBetween);
-            await SendServerSay(c, StatusMessage);
-        }
-
-        /// <summary>
-        /// Executes the specified module command asynchronously.
+        ///     Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c>if the command evaluation was successful,
-        /// otherwise <c>false</c>.
+        ///     <c>true</c>if the command evaluation was successful,
+        ///     otherwise <c>false</c>.
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await DisableServers(c);
                 return true;
             }
-            if (c.Args.Length != 4)
+            if (c.Args.Length != (c.FromIrc ? 5 : 4))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
             uint maxNum;
-            if (!uint.TryParse(c.Args[2], out maxNum))
+            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out maxNum))
             {
-                StatusMessage = "^1[ERROR]^3 The maximum servers to display must be a number greater than zero!";
+                StatusMessage =
+                    "^1[ERROR]^3 The maximum servers to display must be a number greater than zero!";
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
             double timebtNum;
-            if (!double.TryParse(c.Args[3], out timebtNum))
+            if (!double.TryParse(Helpers.GetArgVal(c, 3), out timebtNum))
             {
                 StatusMessage = string.Format(
-                        "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number.",
-                        CommandList.CmdServers);
+                    "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number.",
+                    CommandList.CmdServers);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
             if (timebtNum < 0)
             {
                 StatusMessage = string.Format(
-                        "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number greater than zero.",
-                        CommandList.CmdServers);
+                    "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number greater than zero.",
+                    CommandList.CmdServers);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -202,11 +187,15 @@ namespace SSB.Core.Commands.Modules
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <maxservers> <timebetween> -^7 max servers to" +
                 " show, limit in secs between queries",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.ServersArg);
+                CommandList.GameCommandPrefix, c.CmdName,
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
-        /// Loads the configuration.
+        ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -226,17 +215,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -248,10 +226,23 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Updates the configuration.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        ///     Updates the configuration.
+        /// </summary>
+        /// if set to
+        /// <c>true</c>
+        /// then the module is to remain active; otherwise it is to be disabled when
+        /// updating the configuration.
         public void UpdateConfig(bool active)
         {
             Active = active;
@@ -267,6 +258,38 @@ namespace SSB.Core.Commands.Modules
             }
 
             _configHandler.WriteConfiguration();
+        }
+
+        /// <summary>
+        ///     Disables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        public async Task DisableServers(CmdArgs c)
+        {
+            UpdateConfig(false);
+            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
+            await SendServerSay(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Enables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="maxServers">The maximum servers to display.</param>
+        /// <param name="timeBetween">
+        ///     The time in seconds that must elapse between users issuing the
+        ///     query command.
+        /// </param>
+        public async Task EnableServers(CmdArgs c, uint maxServers, double timeBetween)
+        {
+            MaxServersToDisplay = maxServers;
+            TimeBetweenQueries = timeBetween;
+            UpdateConfig(true);
+            StatusMessage = string.Format(
+                "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
+                " see up to^5 {0}^7 active servers every^5 {1}^7 seconds.",
+                maxServers, timeBetween);
+            await SendServerSay(c, StatusMessage);
         }
     }
 }

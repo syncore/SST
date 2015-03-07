@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Core.Commands.Admin;
 using SSB.Core.Modules;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Modules
 {
@@ -17,8 +17,8 @@ namespace SSB.Core.Commands.Modules
         private const uint MinRepeatThresholdStart = 0;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _minModuleArgs = 3;
         private readonly MotdHandler _motd;
+        private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -58,6 +58,17 @@ namespace SSB.Core.Commands.Modules
         public bool Active { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
         /// <value>
@@ -69,17 +80,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the minimum arguments.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments.
-        /// </value>
-        public int MinModuleArgs
-        {
-            get { return _minModuleArgs; }
-        }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -88,6 +88,17 @@ namespace SSB.Core.Commands.Modules
         public string ModuleName
         {
             get { return NameModule; }
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the QL command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the QL command.
+        /// </value>
+        public int QlMinModuleArgs
+        {
+            get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
@@ -118,19 +129,19 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
-            if (c.Args.Length < _minModuleArgs)
+            if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
                 await DisplayArgLengthError(c);
                 return false;
             }
-            if (c.Args[2].Equals("off"))
+            if (Helpers.GetArgVal(c, 2).Equals("off"))
             {
                 await DisableMotd(c);
                 return true;
             }
 
             uint minsNum;
-            if (!uint.TryParse(c.Args[2], out minsNum))
+            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out minsNum))
             {
                 StatusMessage = "^1[ERROR]^3 Minutes must be a positive number.}";
                 await SendServerTell(c, StatusMessage);
@@ -148,11 +159,15 @@ namespace SSB.Core.Commands.Modules
             {
                 StatusMessage =
                     string.Format("^1[ERROR]^3 MOTD has already been set. To disable: {0}{1} {2} off ",
-                        CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.MotdArg);
+                        CommandList.GameCommandPrefix, c.CmdName,
+                        ((c.FromIrc)
+                            ? (string.Format("{0} {1}", c.Args[1],
+                                NameModule))
+                            : NameModule));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            if (c.Args.Length < 4)
+            if (c.Args.Length < (c.FromIrc ? 5 : 4))
             {
                 await DisplayArgLengthError(c);
                 return false;
@@ -173,7 +188,11 @@ namespace SSB.Core.Commands.Modules
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <mins> <msg> - msg will repeat every X mins",
-                CommandList.GameCommandPrefix, c.CmdName, ModuleCmd.MotdArg);
+                CommandList.GameCommandPrefix, c.CmdName,
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}", c.Args[1],
+                        NameModule))
+                    : NameModule));
         }
 
         /// <summary>
@@ -200,17 +219,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -219,6 +227,17 @@ namespace SSB.Core.Commands.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -275,11 +294,23 @@ namespace SSB.Core.Commands.Modules
         /// </remarks>
         private async Task SetMotd(CmdArgs c, uint interval)
         {
-            //!mod motd 60 message
-            //TODO: test this
-            Message =
-                c.Text.Substring(CommandList.GameCommandPrefix.Length + c.CmdName.Length + c.Args[2].Length +
-                                 1);
+            int msgStart;
+            if (c.FromIrc)
+            {
+                //!ql mod motd 60 this is a test message
+                // c.Args[0]: !ql + space + c.Args[1]: mod + space + c.Args[2]: motd + space, c.Args[3]: 60 +
+                // space = start of message
+                msgStart = ((c.Args[0].Length+1) + (c.Args[1].Length+1) + (c.Args[2].Length+1) + (c.Args[3].Length+1));
+            }
+            else
+            {
+                //!mod motd 60 this is a test message
+                // c.Args[0]: !mod + space + c.Args[1]: motd + space + c.Args[3]: 60 +
+                // space = start of message
+                msgStart = ((c.Args[0].Length+1) + (c.Args[1].Length+1) + (c.Args[2].Length+1));
+            }
+
+            Message = c.Text.Substring(msgStart);
             RepeatInterval = interval;
             _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
 
@@ -290,8 +321,8 @@ namespace SSB.Core.Commands.Modules
             UpdateConfig(true);
 
             StatusMessage = string.Format(
-                "^2[SUCCESS]^7 Message of the day in config has been set and will repeat every^2 {0}^7 minutes.",
-                interval);
+                "^2[SUCCESS]^7 Message of the day set to:^5 {0}^7 and will repeat every^5 {1}^7 minutes.",
+                Message, interval);
             await SendServerSay(c, StatusMessage);
         }
     }
