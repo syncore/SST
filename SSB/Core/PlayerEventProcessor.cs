@@ -49,6 +49,14 @@ namespace SSB.Core
             {
                 await HandleEloUpdate(player);
             }
+
+            // If IRC module is active, send the message to the IRC channel 
+            if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
+            {
+                _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    string.Format("{0} has connected to my QL server.", player));
+            }
+            
             // Elo limiter kick, if active
             if (_ssb.Mod.EloLimit.Active)
             {
@@ -105,6 +113,13 @@ namespace SSB.Core
 
             Debug.WriteLine("Detected outgoing connection for " + player);
 
+            // If IRC module is active, send the message to the IRC channel 
+            if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
+            {
+                _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    string.Format("{0} has left my QL server.", player));
+            }
+            
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
@@ -194,7 +209,7 @@ namespace SSB.Core
             string msgFrom = Helpers.GetStrippedName(name);
 
             Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
-            // If irc module is active, send the message to the IRC channel 
+            // If IRC module is active, send the message to the IRC channel 
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
             {
                 // Don't show
@@ -283,6 +298,13 @@ namespace SSB.Core
                 await _ssb.Mod.Pickup.Manager.EvalOutgoingPlayer(player, outgoingWasActive, outgoingTeam);
                 _ssb.Mod.Pickup.Manager.RemoveActivePickupPlayer(player);
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
+            }
+
+            // If IRC module is active, send the message to the IRC channel 
+            if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
+            {
+                _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    string.Format("{0} has joined the spectators.", player));
             }
 
             // Evaluate player's early quit situation if that module is active

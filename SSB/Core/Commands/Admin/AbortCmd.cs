@@ -94,7 +94,7 @@ namespace SSB.Core.Commands.Admin
         {
             StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to abort match.");
             await _ssb.QlCommands.SendToQlAsync("abort", true);
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             return true;
         }
 

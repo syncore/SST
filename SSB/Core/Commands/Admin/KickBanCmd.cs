@@ -97,7 +97,7 @@ namespace SSB.Core.Commands.Admin
             StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to kickban player^2 {0}",
                 Helpers.GetArgVal(c, 1));
             await _ssb.QlCommands.CustCmdKickban(Helpers.GetArgVal(c, 1));
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             return true;
         }
 
