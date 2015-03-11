@@ -195,6 +195,12 @@
     <Compile Include="Model\QuakeLiveApi\FilterObject.cs" />
     <Compile Include="Model\QuakeLiveApi\Player.cs" />
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
+    <Compile Include="Ui\Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
     <Compile Include="Util\ExpirationDateGenerator.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
@@ -241,6 +247,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Ui\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

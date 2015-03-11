@@ -40,7 +40,7 @@ namespace SSB.Core
             VoteManager = new VoteManager();
 
             //Set the name of the bot
-            BotName = GetBotNameFromConfig();
+            AccountName = GetAccountNameFromConfig();
             // Hook up modules
             Mod = new ModuleManager(this);
             // Start reading the console
@@ -61,7 +61,7 @@ namespace SSB.Core
         /// <value>
         ///     The name of the account that is running the bot.
         /// </value>
-        public string BotName { get; set; }
+        public string AccountName { get; set; }
 
         /// <summary>
         ///     Gets the command processor.
@@ -211,7 +211,7 @@ namespace SSB.Core
         /// <summary>
         ///     Gets the bot's name from the configuration file.
         /// </summary>
-        private string GetBotNameFromConfig()
+        private string GetAccountNameFromConfig()
         {
             var cfgHandler = new ConfigHandler();
             if (!File.Exists(Filepaths.ConfigurationFilePath))
@@ -222,7 +222,7 @@ namespace SSB.Core
             {
                 cfgHandler.ReadConfiguration();
             }
-            return cfgHandler.Config.CoreOptions.botName;
+            return cfgHandler.Config.CoreOptions.accountName;
         }
 
         /// <summary>

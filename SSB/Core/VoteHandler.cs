@@ -199,7 +199,7 @@ namespace SSB.Core
         {
             string type = details.Groups["votetype"].Value;
             // Ignore cases when the bot calls the vote, i.e. setting the teamsize when setting up the pickup teams.
-            if (VoteCaller.Equals(_ssb.BotName)) return false;
+            if (VoteCaller.Equals(_ssb.AccountName)) return false;
             // Shuffle votes are not allowed in pickup mode
             if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
             // Teamsize votes are not allowed in pickup mode;

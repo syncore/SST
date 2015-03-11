@@ -14,7 +14,7 @@ namespace SSB.Config.Core
         ///     The name of the bot.
         /// </value>
         // ReSharper disable once InconsistentNaming
-        public string botName { get; set; }
+        public string accountName { get; set; }
 
         /// <summary>
         ///     Gets or sets the elo cache interval, which is
@@ -41,7 +41,7 @@ namespace SSB.Config.Core
         public void SetDefaults()
         {
             // TODO: prior to release, change this default bot name to something completely random
-            botName = "syncore";
+            accountName = "syncore";
             var o = new HashSet<string> {"syncore"};
             owners = o;
             eloCacheExpiration = 300; // 5 hours

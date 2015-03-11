@@ -956,7 +956,7 @@ namespace SSB.Core.Modules
             //ToList() because .NET can modify collection during enumeration, sometimes causing error
             // see: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
             foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList().Where(player =>
-                !player.Value.ShortName.Equals(_ssb.BotName,
+                !player.Value.ShortName.Equals(_ssb.AccountName,
                     StringComparison.InvariantCultureIgnoreCase)))
             {
                 await _ssb.QlCommands.CustCmdPutPlayer(player.Value.ShortName, Team.Spec);
@@ -1112,7 +1112,7 @@ namespace SSB.Core.Modules
             // Teams might be full, i.e. if a game just ended, so clear first
             await ClearTeams();
             // Force the bot to join a team, since votes can't be called in spectator mode.
-            var botId = _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Id;
+            var botId = _ssb.ServerInfo.CurrentPlayers[_ssb.AccountName].Id;
             await _ssb.QlCommands.SendToQlAsync(string.Format("put {0} r", botId), false);
             // Callvote the teamsize based on the specified teamsize in the pickup module options.
             await

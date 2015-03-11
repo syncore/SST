@@ -500,7 +500,7 @@ namespace SSB.Core.Commands.Modules
             // Elo limits don't apply to SuperUsers or higher
             if (_users.GetUserLevel(player) >= UserLevel.SuperUser) return;
             // Can't kick ourselves, though QL doesn't allow it anyway, don't show kick msg.
-            if (player.Equals(_ssb.BotName, StringComparison.InvariantCultureIgnoreCase)) return;
+            if (player.Equals(_ssb.AccountName, StringComparison.InvariantCultureIgnoreCase)) return;
 
             var playerElo = GetEloTypeToCompare(player);
 

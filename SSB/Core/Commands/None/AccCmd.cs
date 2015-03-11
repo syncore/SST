@@ -124,7 +124,7 @@ namespace SSB.Core.Commands.None
                 return false;
             }
 
-            if (!Helpers.KeyExists(_ssb.BotName, _ssb.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(_ssb.AccountName, _ssb.ServerInfo.CurrentPlayers))
             {
                 Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
                 return false;
@@ -282,8 +282,8 @@ namespace SSB.Core.Commands.None
         private bool IsBotPlayer()
         {
             // We've joined the game. Disable scanning.
-            var botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Red ||
-                               _ssb.ServerInfo.CurrentPlayers[_ssb.BotName].Team == Team.Blue);
+            var botIsPlayer = (_ssb.ServerInfo.CurrentPlayers[_ssb.AccountName].Team == Team.Red ||
+                               _ssb.ServerInfo.CurrentPlayers[_ssb.AccountName].Team == Team.Blue);
 
             if (botIsPlayer)
             {
