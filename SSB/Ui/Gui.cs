@@ -131,5 +131,11 @@ namespace SSB.Ui
             ConsoleTextBox.Clear();
             commandTextBox.Focus();
         }
+
+        private void newGuiButton_Click(object sender, EventArgs e)
+        {
+            var form = new Main();
+            form.Show();
+        }
     }
 }

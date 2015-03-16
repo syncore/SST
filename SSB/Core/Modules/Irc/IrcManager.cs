@@ -10,6 +10,9 @@ using SSB.Enum;
 
 namespace SSB.Core.Modules.Irc
 {
+    /// <summary>
+    /// Class responsible for managing the Internet Relay Chat interface.
+    /// </summary>
     public class IrcManager
     {
         public const int MaxReconnectionTries = 5;

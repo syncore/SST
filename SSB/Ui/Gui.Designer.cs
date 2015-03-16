@@ -38,6 +38,7 @@
             this.serverIdButton = new System.Windows.Forms.Button();
             this.getPlayersButton = new System.Windows.Forms.Button();
             this.appendCheckbox = new System.Windows.Forms.CheckBox();
+            this.newGuiButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // sendButton
@@ -130,17 +131,28 @@
             this.appendCheckbox.AutoSize = true;
             this.appendCheckbox.Location = new System.Drawing.Point(74, 60);
             this.appendCheckbox.Name = "appendCheckbox";
-            this.appendCheckbox.Size = new System.Drawing.Size(148, 17);
+            this.appendCheckbox.Size = new System.Drawing.Size(149, 17);
             this.appendCheckbox.TabIndex = 9;
             this.appendCheckbox.Text = "Append to console below:";
             this.appendCheckbox.UseVisualStyleBackColor = true;
             this.appendCheckbox.CheckedChanged += new System.EventHandler(this.appendCheckbox_CheckedChanged);
+            // 
+            // newGuiButton
+            // 
+            this.newGuiButton.Location = new System.Drawing.Point(728, 610);
+            this.newGuiButton.Name = "newGuiButton";
+            this.newGuiButton.Size = new System.Drawing.Size(110, 28);
+            this.newGuiButton.TabIndex = 10;
+            this.newGuiButton.Text = "New GUI Test";
+            this.newGuiButton.UseVisualStyleBackColor = true;
+            this.newGuiButton.Click += new System.EventHandler(this.newGuiButton_Click);
             // 
             // Gui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(947, 670);
+            this.Controls.Add(this.newGuiButton);
             this.Controls.Add(this.appendCheckbox);
             this.Controls.Add(this.getPlayersButton);
             this.Controls.Add(this.serverIdButton);
@@ -170,6 +182,7 @@
         private System.Windows.Forms.Button serverIdButton;
         private System.Windows.Forms.Button getPlayersButton;
         private System.Windows.Forms.CheckBox appendCheckbox;
+        private System.Windows.Forms.Button newGuiButton;
     }
 }
 
