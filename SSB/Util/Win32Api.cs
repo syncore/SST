@@ -24,6 +24,10 @@ namespace SSB.Util
         public const int WM_GETTEXT = 0xD;
 
         public const int WM_GETTEXTLENGTH = 0x000E;
+        
+        public const int WM_NCLBUTTONDOWN = 0x00A1;
+        
+        public const int HT_CAPTION = 2;
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -32,26 +36,36 @@ namespace SSB.Util
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass,
             string lpszWindow);
 
-        // get text of console window
+        // Get text of console window
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, StringBuilder lParam);
 
-        // get length of console window text
+        // Get length of console window text
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        // send text to console edit control; note don't set CharSet.Auto since using MarshalAs
+        // Send text to console edit control; note don't set CharSet.Auto since using MarshalAs
         // http://www.pinvoke.net/default.aspx/user32.sendmessage
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPStr)] string lParam);
         
-        // get total selection length (for calculating when an auto-clear needs to be sent so buffer isn't full)
+        // Get total selection length (for calculating when an auto-clear needs to be sent so buffer isn't full)
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint Msg, out int wParam, out int lParam);
         
-        // focus window (also, in testing environment, if viewlog "1" then you will have annoying
+        // Focus window (also, in testing environment, if viewlog "1" then you will have annoying
         //loss of window focus while playing -- doesn't apply to real game environment where viewlog is cheat protected)
         [DllImport("user32.dll", SetLastError = true)]
         public static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
+
+        // Moving the GUI window, which is a borderless form (FormBorderStyle 'None')
+        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+        [DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        // Moving the GUI window, which is a borderless form (FormBorderStyle 'None')
+        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
     }
 }

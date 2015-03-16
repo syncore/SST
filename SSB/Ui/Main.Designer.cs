@@ -30,13 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ssbLogo = new System.Windows.Forms.PictureBox();
             this.UiTabCtl = new System.Windows.Forms.TabControl();
             this.mainTab = new System.Windows.Forms.TabPage();
             this.appendToMainCheckbox = new System.Windows.Forms.CheckBox();
             this.ConsoleTextBox = new System.Windows.Forms.TextBox();
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.pictureBox12 = new System.Windows.Forms.PictureBox();
             this.coreOptionsGrpBox = new System.Windows.Forms.GroupBox();
+            this.textBox27 = new System.Windows.Forms.TextBox();
             this.qlConNoPrintCheckbox = new System.Windows.Forms.CheckBox();
             this.settingsGroupBox = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -46,7 +50,6 @@
             this.eloCacheTextBox = new System.Windows.Forms.TextBox();
             this.eloCacheLabel = new System.Windows.Forms.Label();
             this.ownerLabel = new System.Windows.Forms.Label();
-            this.ownersTextBox = new System.Windows.Forms.TextBox();
             this.accountNameTextBox = new System.Windows.Forms.TextBox();
             this.accountNameLabel = new System.Windows.Forms.Label();
             this.modulesTab = new System.Windows.Forms.TabPage();
@@ -54,9 +57,10 @@
             this.accountDateTab = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button4 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -123,11 +127,12 @@
             this.eloLimitTab = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -176,10 +181,12 @@
             this.motdTab = new System.Windows.Forms.TabPage();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
             this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.label36 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
             this.textBox18 = new System.Windows.Forms.TextBox();
             this.textBox17 = new System.Windows.Forms.TextBox();
             this.checkBox10 = new System.Windows.Forms.CheckBox();
-            this.label33 = new System.Windows.Forms.Label();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.button26 = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
@@ -188,51 +195,32 @@
             this.label35 = new System.Windows.Forms.Label();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.pickupTab = new System.Windows.Forms.TabPage();
-            this.serversTab = new System.Windows.Forms.TabPage();
-            this.aboutTab = new System.Windows.Forms.TabPage();
-            this.aboutGroupBox = new System.Windows.Forms.GroupBox();
-            this.aboutLabel3 = new System.Windows.Forms.Label();
-            this.aboutSsbWebButton = new System.Windows.Forms.Button();
-            this.aboutAuthorLabel = new System.Windows.Forms.Label();
-            this.aboutLabelVersion = new System.Windows.Forms.Label();
-            this.aboutVersPlaceHolder = new System.Windows.Forms.Label();
-            this.aboutLabel2 = new System.Windows.Forms.Label();
-            this.aboutLabel1 = new System.Windows.Forms.Label();
-            this.ssbAboutPictureBox = new System.Windows.Forms.PictureBox();
-            this.startButton = new System.Windows.Forms.Button();
-            this.exitButton = new System.Windows.Forms.Button();
-            this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.statusBar = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
             this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.textBox22 = new System.Windows.Forms.TextBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.textBox19 = new System.Windows.Forms.TextBox();
+            this.label37 = new System.Windows.Forms.Label();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.button29 = new System.Windows.Forms.Button();
+            this.button30 = new System.Windows.Forms.Button();
+            this.button31 = new System.Windows.Forms.Button();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.textBox20 = new System.Windows.Forms.TextBox();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.textBox25 = new System.Windows.Forms.TextBox();
+            this.label44 = new System.Windows.Forms.Label();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label43 = new System.Windows.Forms.Label();
             this.textBox24 = new System.Windows.Forms.TextBox();
             this.checkBox14 = new System.Windows.Forms.CheckBox();
             this.label48 = new System.Windows.Forms.Label();
             this.label49 = new System.Windows.Forms.Label();
             this.pictureBox9 = new System.Windows.Forms.PictureBox();
-            this.textBox25 = new System.Windows.Forms.TextBox();
-            this.label44 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.groupBox30 = new System.Windows.Forms.GroupBox();
-            this.button31 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
-            this.button29 = new System.Windows.Forms.Button();
-            this.groupBox29 = new System.Windows.Forms.GroupBox();
-            this.textBox19 = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.label38 = new System.Windows.Forms.Label();
-            this.textBox20 = new System.Windows.Forms.TextBox();
-            this.groupBox32 = new System.Windows.Forms.GroupBox();
-            this.label40 = new System.Windows.Forms.Label();
-            this.textBox22 = new System.Windows.Forms.TextBox();
-            this.groupBox33 = new System.Windows.Forms.GroupBox();
-            this.groupBox34 = new System.Windows.Forms.GroupBox();
-            this.groupBox35 = new System.Windows.Forms.GroupBox();
-            this.label36 = new System.Windows.Forms.Label();
+            this.serversTab = new System.Windows.Forms.TabPage();
             this.groupBox36 = new System.Windows.Forms.GroupBox();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
@@ -249,11 +237,57 @@
             this.label45 = new System.Windows.Forms.Label();
             this.pictureBox10 = new System.Windows.Forms.PictureBox();
             this.usersTab = new System.Windows.Forms.TabPage();
+            this.groupBox40 = new System.Windows.Forms.GroupBox();
+            this.groupBox41 = new System.Windows.Forms.GroupBox();
+            this.button36 = new System.Windows.Forms.Button();
+            this.listBox3 = new System.Windows.Forms.ListBox();
+            this.groupBox42 = new System.Windows.Forms.GroupBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.textBox26 = new System.Windows.Forms.TextBox();
+            this.button37 = new System.Windows.Forms.Button();
+            this.label50 = new System.Windows.Forms.Label();
+            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.label52 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
+            this.pictureBox11 = new System.Windows.Forms.PictureBox();
             this.banTab = new System.Windows.Forms.TabPage();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.aboutTab = new System.Windows.Forms.TabPage();
+            this.aboutGroupBox = new System.Windows.Forms.GroupBox();
+            this.aboutLabel3 = new System.Windows.Forms.Label();
+            this.aboutSsbWebButton = new System.Windows.Forms.Button();
+            this.aboutAuthorLabel = new System.Windows.Forms.Label();
+            this.aboutLabelVersion = new System.Windows.Forms.Label();
+            this.aboutVersPlaceHolder = new System.Windows.Forms.Label();
+            this.aboutLabel2 = new System.Windows.Forms.Label();
+            this.aboutLabel1 = new System.Windows.Forms.Label();
+            this.ssbAboutPictureBox = new System.Windows.Forms.PictureBox();
+            this.startButton = new System.Windows.Forms.Button();
+            this.exitButton = new System.Windows.Forms.Button();
+            this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.statusBar = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.minimizeButton = new System.Windows.Forms.PictureBox();
+            this.closeButton = new System.Windows.Forms.PictureBox();
+            this.groupBox43 = new System.Windows.Forms.GroupBox();
+            this.groupBox44 = new System.Windows.Forms.GroupBox();
+            this.button35 = new System.Windows.Forms.Button();
+            this.listBox4 = new System.Windows.Forms.ListBox();
+            this.groupBox45 = new System.Windows.Forms.GroupBox();
+            this.label47 = new System.Windows.Forms.Label();
+            this.textBox28 = new System.Windows.Forms.TextBox();
+            this.button38 = new System.Windows.Forms.Button();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label56 = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.textBox29 = new System.Windows.Forms.TextBox();
+            this.comboBox6 = new System.Windows.Forms.ComboBox();
+            this.label58 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.mainTab.SuspendLayout();
             this.coreOptionsTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
             this.coreOptionsGrpBox.SuspendLayout();
             this.settingsGroupBox.SuspendLayout();
             this.modulesTab.SuspendLayout();
@@ -261,6 +295,7 @@
             this.accountDateTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox13.SuspendLayout();
+            this.groupBox33.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.accuracyTab.SuspendLayout();
@@ -283,6 +318,7 @@
             this.eloLimitTab.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox16.SuspendLayout();
+            this.groupBox34.SuspendLayout();
             this.groupBox17.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.ircTab.SuspendLayout();
@@ -296,39 +332,51 @@
             this.motdTab.SuspendLayout();
             this.groupBox24.SuspendLayout();
             this.groupBox25.SuspendLayout();
+            this.groupBox35.SuspendLayout();
             this.groupBox26.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             this.pickupTab.SuspendLayout();
-            this.serversTab.SuspendLayout();
-            this.aboutTab.SuspendLayout();
-            this.aboutGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).BeginInit();
-            this.statusBar.SuspendLayout();
             this.groupBox27.SuspendLayout();
             this.groupBox28.SuspendLayout();
+            this.groupBox32.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            this.groupBox30.SuspendLayout();
             this.groupBox31.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
-            this.groupBox30.SuspendLayout();
-            this.groupBox29.SuspendLayout();
-            this.groupBox32.SuspendLayout();
-            this.groupBox33.SuspendLayout();
-            this.groupBox34.SuspendLayout();
-            this.groupBox35.SuspendLayout();
+            this.serversTab.SuspendLayout();
             this.groupBox36.SuspendLayout();
             this.groupBox37.SuspendLayout();
             this.groupBox38.SuspendLayout();
             this.groupBox39.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
+            this.usersTab.SuspendLayout();
+            this.groupBox40.SuspendLayout();
+            this.groupBox41.SuspendLayout();
+            this.groupBox42.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
+            this.banTab.SuspendLayout();
+            this.aboutTab.SuspendLayout();
+            this.aboutGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).BeginInit();
+            this.statusBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
+            this.groupBox43.SuspendLayout();
+            this.groupBox44.SuspendLayout();
+            this.groupBox45.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // ssbLogo
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(740, 100);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.ssbLogo.Cursor = System.Windows.Forms.Cursors.SizeAll;
+            this.ssbLogo.Image = ((System.Drawing.Image)(resources.GetObject("ssbLogo.Image")));
+            this.ssbLogo.Location = new System.Drawing.Point(0, 3);
+            this.ssbLogo.Name = "ssbLogo";
+            this.ssbLogo.Size = new System.Drawing.Size(750, 120);
+            this.ssbLogo.TabIndex = 0;
+            this.ssbLogo.TabStop = false;
+            this.ssbLogo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ssbLogo_MouseMove);
             // 
             // UiTabCtl
             // 
@@ -340,22 +388,23 @@
             this.UiTabCtl.Controls.Add(this.banTab);
             this.UiTabCtl.Controls.Add(this.aboutTab);
             this.UiTabCtl.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UiTabCtl.Location = new System.Drawing.Point(0, 102);
+            this.UiTabCtl.Location = new System.Drawing.Point(0, 120);
             this.UiTabCtl.Name = "UiTabCtl";
             this.UiTabCtl.SelectedIndex = 0;
-            this.UiTabCtl.Size = new System.Drawing.Size(740, 500);
+            this.UiTabCtl.Size = new System.Drawing.Size(750, 515);
             this.UiTabCtl.TabIndex = 1;
             // 
             // mainTab
             // 
-            this.mainTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.mainTab.BackColor = System.Drawing.Color.Black;
             this.mainTab.Controls.Add(this.appendToMainCheckbox);
             this.mainTab.Controls.Add(this.ConsoleTextBox);
             this.mainTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mainTab.ForeColor = System.Drawing.Color.White;
             this.mainTab.Location = new System.Drawing.Point(4, 26);
             this.mainTab.Name = "mainTab";
             this.mainTab.Padding = new System.Windows.Forms.Padding(3);
-            this.mainTab.Size = new System.Drawing.Size(732, 470);
+            this.mainTab.Size = new System.Drawing.Size(742, 485);
             this.mainTab.TabIndex = 0;
             this.mainTab.Text = "Main";
             // 
@@ -372,46 +421,94 @@
             // 
             // ConsoleTextBox
             // 
-            this.ConsoleTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.ConsoleTextBox.BackColor = System.Drawing.Color.Black;
             this.ConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ConsoleTextBox.Location = new System.Drawing.Point(2, 0);
             this.ConsoleTextBox.Multiline = true;
             this.ConsoleTextBox.Name = "ConsoleTextBox";
             this.ConsoleTextBox.ReadOnly = true;
             this.ConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ConsoleTextBox.Size = new System.Drawing.Size(729, 422);
+            this.ConsoleTextBox.Size = new System.Drawing.Size(742, 422);
             this.ConsoleTextBox.TabIndex = 0;
             // 
             // coreOptionsTab
             // 
             this.coreOptionsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.coreOptionsTab.Controls.Add(this.label54);
+            this.coreOptionsTab.Controls.Add(this.label55);
+            this.coreOptionsTab.Controls.Add(this.pictureBox12);
             this.coreOptionsTab.Controls.Add(this.coreOptionsGrpBox);
+            this.coreOptionsTab.ForeColor = System.Drawing.Color.White;
             this.coreOptionsTab.Location = new System.Drawing.Point(4, 26);
             this.coreOptionsTab.Name = "coreOptionsTab";
             this.coreOptionsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.coreOptionsTab.Size = new System.Drawing.Size(732, 470);
+            this.coreOptionsTab.Size = new System.Drawing.Size(742, 485);
             this.coreOptionsTab.TabIndex = 1;
             this.coreOptionsTab.Text = "Core Options";
             // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.ForeColor = System.Drawing.Color.White;
+            this.label54.Location = new System.Drawing.Point(82, 41);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(129, 14);
+            this.label54.TabIndex = 5;
+            this.label54.Text = "Critical options for SSB";
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label55.ForeColor = System.Drawing.Color.Silver;
+            this.label55.Location = new System.Drawing.Point(76, 12);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(177, 25);
+            this.label55.TabIndex = 4;
+            this.label55.Text = "SSB Core Options";
+            // 
+            // pictureBox12
+            // 
+            this.pictureBox12.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox12.Image")));
+            this.pictureBox12.Location = new System.Drawing.Point(12, 15);
+            this.pictureBox12.Name = "pictureBox12";
+            this.pictureBox12.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox12.TabIndex = 3;
+            this.pictureBox12.TabStop = false;
+            // 
             // coreOptionsGrpBox
             // 
+            this.coreOptionsGrpBox.BackColor = System.Drawing.Color.Black;
+            this.coreOptionsGrpBox.Controls.Add(this.textBox27);
             this.coreOptionsGrpBox.Controls.Add(this.qlConNoPrintCheckbox);
             this.coreOptionsGrpBox.Controls.Add(this.settingsGroupBox);
             this.coreOptionsGrpBox.Controls.Add(this.logMainWindowCheckbox);
             this.coreOptionsGrpBox.Controls.Add(this.eloCacheTextBox);
             this.coreOptionsGrpBox.Controls.Add(this.eloCacheLabel);
             this.coreOptionsGrpBox.Controls.Add(this.ownerLabel);
-            this.coreOptionsGrpBox.Controls.Add(this.ownersTextBox);
             this.coreOptionsGrpBox.Controls.Add(this.accountNameTextBox);
             this.coreOptionsGrpBox.Controls.Add(this.accountNameLabel);
             this.coreOptionsGrpBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.coreOptionsGrpBox.ForeColor = System.Drawing.Color.White;
-            this.coreOptionsGrpBox.Location = new System.Drawing.Point(3, 3);
+            this.coreOptionsGrpBox.Location = new System.Drawing.Point(3, 87);
             this.coreOptionsGrpBox.Name = "coreOptionsGrpBox";
-            this.coreOptionsGrpBox.Size = new System.Drawing.Size(726, 464);
+            this.coreOptionsGrpBox.Size = new System.Drawing.Size(736, 395);
             this.coreOptionsGrpBox.TabIndex = 0;
             this.coreOptionsGrpBox.TabStop = false;
             this.coreOptionsGrpBox.Text = "Core Options";
+            // 
+            // textBox27
+            // 
+            this.textBox27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox27.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox27.ForeColor = System.Drawing.Color.White;
+            this.textBox27.Location = new System.Drawing.Point(407, 76);
+            this.textBox27.MaxLength = 15;
+            this.textBox27.Name = "textBox27";
+            this.textBox27.Size = new System.Drawing.Size(205, 22);
+            this.textBox27.TabIndex = 11;
+            this.coreToolTip.SetToolTip(this.textBox27, "Enter the name of the QL account that is the owner (the main admin). \r\nDo not inc" +
+        "lude the clan tag. This user will have the highest privileges.\r\n");
             // 
             // qlConNoPrintCheckbox
             // 
@@ -430,7 +527,7 @@
             this.settingsGroupBox.Controls.Add(this.loadSettingsButton);
             this.settingsGroupBox.Controls.Add(this.saveSettingsButton);
             this.settingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.settingsGroupBox.Location = new System.Drawing.Point(520, 374);
+            this.settingsGroupBox.Location = new System.Drawing.Point(530, 305);
             this.settingsGroupBox.Name = "settingsGroupBox";
             this.settingsGroupBox.Size = new System.Drawing.Size(200, 84);
             this.settingsGroupBox.TabIndex = 9;
@@ -483,7 +580,7 @@
             // logMainWindowCheckbox
             // 
             this.logMainWindowCheckbox.AutoSize = true;
-            this.logMainWindowCheckbox.Location = new System.Drawing.Point(78, 249);
+            this.logMainWindowCheckbox.Location = new System.Drawing.Point(409, 201);
             this.logMainWindowCheckbox.Name = "logMainWindowCheckbox";
             this.logMainWindowCheckbox.Size = new System.Drawing.Size(153, 18);
             this.logMainWindowCheckbox.TabIndex = 7;
@@ -494,15 +591,14 @@
             // 
             // eloCacheTextBox
             // 
-            this.eloCacheTextBox.BackColor = System.Drawing.Color.Black;
+            this.eloCacheTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.eloCacheTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.eloCacheTextBox.ForeColor = System.Drawing.Color.White;
             this.eloCacheTextBox.Location = new System.Drawing.Point(78, 153);
             this.eloCacheTextBox.Name = "eloCacheTextBox";
             this.eloCacheTextBox.Size = new System.Drawing.Size(205, 22);
             this.eloCacheTextBox.TabIndex = 5;
-            this.coreToolTip.SetToolTip(this.eloCacheTextBox, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
-        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
+            this.coreToolTip.SetToolTip(this.eloCacheTextBox, resources.GetString("eloCacheTextBox.ToolTip"));
             // 
             // eloCacheLabel
             // 
@@ -520,26 +616,14 @@
             this.ownerLabel.AutoSize = true;
             this.ownerLabel.Location = new System.Drawing.Point(404, 49);
             this.ownerLabel.Name = "ownerLabel";
-            this.ownerLabel.Size = new System.Drawing.Size(138, 14);
+            this.ownerLabel.Size = new System.Drawing.Size(181, 14);
             this.ownerLabel.TabIndex = 3;
-            this.ownerLabel.Text = "Owner(s) [one per line]";
+            this.ownerLabel.Text = "SSB Owner\'s QL Account Name";
             this.coreToolTip.SetToolTip(this.ownerLabel, resources.GetString("ownerLabel.ToolTip"));
-            // 
-            // ownersTextBox
-            // 
-            this.ownersTextBox.BackColor = System.Drawing.Color.Black;
-            this.ownersTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ownersTextBox.ForeColor = System.Drawing.Color.White;
-            this.ownersTextBox.Location = new System.Drawing.Point(407, 76);
-            this.ownersTextBox.Multiline = true;
-            this.ownersTextBox.Name = "ownersTextBox";
-            this.ownersTextBox.Size = new System.Drawing.Size(205, 163);
-            this.ownersTextBox.TabIndex = 2;
-            this.coreToolTip.SetToolTip(this.ownersTextBox, resources.GetString("ownersTextBox.ToolTip"));
             // 
             // accountNameTextBox
             // 
-            this.accountNameTextBox.BackColor = System.Drawing.Color.Black;
+            this.accountNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.accountNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.accountNameTextBox.ForeColor = System.Drawing.Color.White;
             this.accountNameTextBox.Location = new System.Drawing.Point(78, 76);
@@ -555,17 +639,18 @@
             this.accountNameLabel.AutoSize = true;
             this.accountNameLabel.Location = new System.Drawing.Point(75, 49);
             this.accountNameLabel.Name = "accountNameLabel";
-            this.accountNameLabel.Size = new System.Drawing.Size(107, 14);
+            this.accountNameLabel.Size = new System.Drawing.Size(132, 14);
             this.accountNameLabel.TabIndex = 0;
-            this.accountNameLabel.Text = "QL Account Name";
+            this.accountNameLabel.Text = "SSB QL Account Name";
             // 
             // modulesTab
             // 
-            this.modulesTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modulesTab.BackColor = System.Drawing.Color.Black;
             this.modulesTab.Controls.Add(this.moduleTabControl);
+            this.modulesTab.ForeColor = System.Drawing.Color.White;
             this.modulesTab.Location = new System.Drawing.Point(4, 26);
             this.modulesTab.Name = "modulesTab";
-            this.modulesTab.Size = new System.Drawing.Size(732, 470);
+            this.modulesTab.Size = new System.Drawing.Size(742, 485);
             this.modulesTab.TabIndex = 2;
             this.modulesTab.Text = "Modules";
             // 
@@ -586,12 +671,12 @@
             this.moduleTabControl.Multiline = true;
             this.moduleTabControl.Name = "moduleTabControl";
             this.moduleTabControl.SelectedIndex = 0;
-            this.moduleTabControl.Size = new System.Drawing.Size(736, 458);
+            this.moduleTabControl.Size = new System.Drawing.Size(742, 489);
             this.moduleTabControl.TabIndex = 0;
             // 
             // accountDateTab
             // 
-            this.accountDateTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.accountDateTab.BackColor = System.Drawing.Color.Black;
             this.accountDateTab.Controls.Add(this.groupBox1);
             this.accountDateTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.accountDateTab.ForeColor = System.Drawing.Color.White;
@@ -599,7 +684,7 @@
             this.accountDateTab.Name = "accountDateTab";
             this.accountDateTab.Padding = new System.Windows.Forms.Padding(3);
             this.accountDateTab.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.accountDateTab.Size = new System.Drawing.Size(728, 429);
+            this.accountDateTab.Size = new System.Drawing.Size(734, 460);
             this.accountDateTab.TabIndex = 0;
             this.accountDateTab.Text = "Account Date Limiter";
             // 
@@ -614,27 +699,42 @@
             this.groupBox1.ForeColor = System.Drawing.Color.White;
             this.groupBox1.Location = new System.Drawing.Point(3, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(722, 422);
+            this.groupBox1.Size = new System.Drawing.Size(728, 453);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Account Date Limiter";
             // 
             // groupBox13
             // 
+            this.groupBox13.BackColor = System.Drawing.Color.Black;
             this.groupBox13.Controls.Add(this.groupBox33);
             this.groupBox13.Controls.Add(this.checkBox1);
             this.groupBox13.Controls.Add(this.groupBox2);
+            this.groupBox13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox13.ForeColor = System.Drawing.Color.White;
             this.groupBox13.Location = new System.Drawing.Point(3, 91);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(713, 328);
+            this.groupBox13.Size = new System.Drawing.Size(719, 359);
             this.groupBox13.TabIndex = 12;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Account Date Options";
             // 
+            // groupBox33
+            // 
+            this.groupBox33.Controls.Add(this.textBox1);
+            this.groupBox33.Controls.Add(this.label4);
+            this.groupBox33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox33.ForeColor = System.Drawing.Color.White;
+            this.groupBox33.Location = new System.Drawing.Point(9, 56);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(340, 107);
+            this.groupBox33.TabIndex = 29;
+            this.groupBox33.TabStop = false;
+            this.groupBox33.Text = "Account Age";
+            // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Black;
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.ForeColor = System.Drawing.Color.White;
             this.textBox1.Location = new System.Drawing.Point(9, 63);
@@ -645,6 +745,15 @@
             this.coreToolTip.SetToolTip(this.textBox1, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
         "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
         "server.");
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 31);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(177, 14);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Minimum account age [in days]";
             // 
             // checkBox1
             // 
@@ -657,15 +766,6 @@
             this.coreToolTip.SetToolTip(this.checkBox1, "Select whether this module should be enabled.");
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 31);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(177, 14);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Minimum account age [in days]";
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button4);
@@ -673,7 +773,7 @@
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox2.ForeColor = System.Drawing.Color.White;
-            this.groupBox2.Location = new System.Drawing.Point(422, 273);
+            this.groupBox2.Location = new System.Drawing.Point(428, 303);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(285, 50);
             this.groupBox2.TabIndex = 10;
@@ -761,7 +861,7 @@
             this.accuracyTab.Location = new System.Drawing.Point(4, 25);
             this.accuracyTab.Name = "accuracyTab";
             this.accuracyTab.Padding = new System.Windows.Forms.Padding(3);
-            this.accuracyTab.Size = new System.Drawing.Size(728, 429);
+            this.accuracyTab.Size = new System.Drawing.Size(734, 460);
             this.accuracyTab.TabIndex = 1;
             this.accuracyTab.Text = "Accuracy Display";
             // 
@@ -776,19 +876,20 @@
             this.groupBox3.ForeColor = System.Drawing.Color.White;
             this.groupBox3.Location = new System.Drawing.Point(3, 4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(722, 422);
+            this.groupBox3.Size = new System.Drawing.Size(728, 453);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Accuracy Display";
             // 
             // groupBox14
             // 
+            this.groupBox14.BackColor = System.Drawing.Color.Black;
             this.groupBox14.Controls.Add(this.groupBox15);
             this.groupBox14.Controls.Add(this.checkBox2);
             this.groupBox14.ForeColor = System.Drawing.Color.White;
             this.groupBox14.Location = new System.Drawing.Point(3, 91);
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(713, 328);
+            this.groupBox14.Size = new System.Drawing.Size(719, 359);
             this.groupBox14.TabIndex = 13;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Accuracy Options";
@@ -800,7 +901,7 @@
             this.groupBox15.Controls.Add(this.button22);
             this.groupBox15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox15.ForeColor = System.Drawing.Color.White;
-            this.groupBox15.Location = new System.Drawing.Point(422, 273);
+            this.groupBox15.Location = new System.Drawing.Point(428, 303);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Size = new System.Drawing.Size(285, 50);
             this.groupBox15.TabIndex = 10;
@@ -898,7 +999,7 @@
             this.autoVoterTab.ForeColor = System.Drawing.Color.White;
             this.autoVoterTab.Location = new System.Drawing.Point(4, 25);
             this.autoVoterTab.Name = "autoVoterTab";
-            this.autoVoterTab.Size = new System.Drawing.Size(728, 429);
+            this.autoVoterTab.Size = new System.Drawing.Size(734, 460);
             this.autoVoterTab.TabIndex = 2;
             this.autoVoterTab.Text = "Auto Voter";
             // 
@@ -915,21 +1016,22 @@
             this.groupBox5.ForeColor = System.Drawing.Color.White;
             this.groupBox5.Location = new System.Drawing.Point(3, 4);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(722, 422);
+            this.groupBox5.Size = new System.Drawing.Size(728, 453);
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Automatic Voter";
             // 
             // groupBox8
             // 
+            this.groupBox8.BackColor = System.Drawing.Color.Black;
             this.groupBox8.Controls.Add(this.button13);
             this.groupBox8.Controls.Add(this.button12);
             this.groupBox8.Controls.Add(this.listBox1);
             this.groupBox8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox8.ForeColor = System.Drawing.Color.White;
-            this.groupBox8.Location = new System.Drawing.Point(428, 91);
+            this.groupBox8.Location = new System.Drawing.Point(434, 91);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(288, 272);
+            this.groupBox8.Size = new System.Drawing.Size(288, 300);
             this.groupBox8.TabIndex = 12;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Current Votes";
@@ -940,7 +1042,7 @@
             this.button13.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button13.ForeColor = System.Drawing.Color.White;
-            this.button13.Location = new System.Drawing.Point(191, 240);
+            this.button13.Location = new System.Drawing.Point(191, 271);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(90, 23);
             this.button13.TabIndex = 15;
@@ -954,7 +1056,7 @@
             this.button12.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button12.ForeColor = System.Drawing.Color.White;
-            this.button12.Location = new System.Drawing.Point(6, 240);
+            this.button12.Location = new System.Drawing.Point(6, 271);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(122, 23);
             this.button12.TabIndex = 14;
@@ -964,20 +1066,21 @@
             // 
             // listBox1
             // 
-            this.listBox1.BackColor = System.Drawing.Color.Black;
+            this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listBox1.ForeColor = System.Drawing.Color.White;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 14;
             this.listBox1.Location = new System.Drawing.Point(6, 16);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(276, 212);
+            this.listBox1.Size = new System.Drawing.Size(276, 240);
             this.listBox1.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.listBox1, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
             // 
             // groupBox7
             // 
+            this.groupBox7.BackColor = System.Drawing.Color.Black;
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.textBox4);
             this.groupBox7.Controls.Add(this.checkBox3);
@@ -992,7 +1095,7 @@
             this.groupBox7.ForeColor = System.Drawing.Color.White;
             this.groupBox7.Location = new System.Drawing.Point(6, 91);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(416, 327);
+            this.groupBox7.Size = new System.Drawing.Size(416, 356);
             this.groupBox7.TabIndex = 5;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Vote Details";
@@ -1000,7 +1103,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(19, 159);
+            this.label18.Location = new System.Drawing.Point(19, 169);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(124, 14);
             this.label18.TabIndex = 16;
@@ -1008,10 +1111,10 @@
             // 
             // textBox4
             // 
-            this.textBox4.BackColor = System.Drawing.Color.Black;
+            this.textBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox4.ForeColor = System.Drawing.Color.White;
-            this.textBox4.Location = new System.Drawing.Point(22, 194);
+            this.textBox4.Location = new System.Drawing.Point(22, 204);
             this.textBox4.MaxLength = 15;
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(215, 22);
@@ -1035,7 +1138,7 @@
             this.button11.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button11.ForeColor = System.Drawing.Color.White;
-            this.button11.Location = new System.Drawing.Point(22, 284);
+            this.button11.Location = new System.Drawing.Point(22, 306);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(160, 23);
             this.button11.TabIndex = 13;
@@ -1047,7 +1150,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(19, 235);
+            this.label10.Location = new System.Drawing.Point(19, 247);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(236, 28);
             this.label10.TabIndex = 11;
@@ -1064,7 +1167,7 @@
             // 
             // comboBox1
             // 
-            this.comboBox1.BackColor = System.Drawing.Color.Black;
+            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBox1.ForeColor = System.Drawing.Color.White;
             this.comboBox1.FormattingEnabled = true;
@@ -1109,12 +1212,13 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.BackColor = System.Drawing.Color.Black;
             this.groupBox6.Controls.Add(this.button8);
             this.groupBox6.Controls.Add(this.button9);
             this.groupBox6.Controls.Add(this.button10);
             this.groupBox6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox6.ForeColor = System.Drawing.Color.White;
-            this.groupBox6.Location = new System.Drawing.Point(428, 368);
+            this.groupBox6.Location = new System.Drawing.Point(434, 397);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(288, 50);
             this.groupBox6.TabIndex = 10;
@@ -1200,7 +1304,7 @@
             this.earlyQuitTab.ForeColor = System.Drawing.Color.White;
             this.earlyQuitTab.Location = new System.Drawing.Point(4, 25);
             this.earlyQuitTab.Name = "earlyQuitTab";
-            this.earlyQuitTab.Size = new System.Drawing.Size(728, 429);
+            this.earlyQuitTab.Size = new System.Drawing.Size(734, 460);
             this.earlyQuitTab.TabIndex = 3;
             this.earlyQuitTab.Text = "Early Quit Banner";
             // 
@@ -1217,22 +1321,23 @@
             this.groupBox9.ForeColor = System.Drawing.Color.White;
             this.groupBox9.Location = new System.Drawing.Point(3, 3);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(722, 422);
+            this.groupBox9.Size = new System.Drawing.Size(728, 453);
             this.groupBox9.TabIndex = 5;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Early Quit Banner";
             // 
             // groupBox10
             // 
+            this.groupBox10.BackColor = System.Drawing.Color.Black;
             this.groupBox10.Controls.Add(this.button16);
             this.groupBox10.Controls.Add(this.button14);
             this.groupBox10.Controls.Add(this.button15);
             this.groupBox10.Controls.Add(this.listBox2);
             this.groupBox10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox10.ForeColor = System.Drawing.Color.White;
-            this.groupBox10.Location = new System.Drawing.Point(371, 114);
+            this.groupBox10.Location = new System.Drawing.Point(377, 114);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(345, 252);
+            this.groupBox10.Size = new System.Drawing.Size(345, 277);
             this.groupBox10.TabIndex = 12;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Current Early Quits";
@@ -1243,7 +1348,7 @@
             this.button16.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button16.ForeColor = System.Drawing.Color.White;
-            this.button16.Location = new System.Drawing.Point(6, 213);
+            this.button16.Location = new System.Drawing.Point(7, 248);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(92, 23);
             this.button16.TabIndex = 16;
@@ -1257,7 +1362,7 @@
             this.button14.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button14.ForeColor = System.Drawing.Color.White;
-            this.button14.Location = new System.Drawing.Point(246, 213);
+            this.button14.Location = new System.Drawing.Point(247, 248);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(90, 23);
             this.button14.TabIndex = 15;
@@ -1271,7 +1376,7 @@
             this.button15.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button15.ForeColor = System.Drawing.Color.White;
-            this.button15.Location = new System.Drawing.Point(116, 213);
+            this.button15.Location = new System.Drawing.Point(117, 248);
             this.button15.Name = "button15";
             this.button15.Size = new System.Drawing.Size(112, 23);
             this.button15.TabIndex = 14;
@@ -1281,20 +1386,21 @@
             // 
             // listBox2
             // 
-            this.listBox2.BackColor = System.Drawing.Color.Black;
+            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.listBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listBox2.ForeColor = System.Drawing.Color.White;
             this.listBox2.FormattingEnabled = true;
             this.listBox2.ItemHeight = 14;
             this.listBox2.Location = new System.Drawing.Point(6, 21);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(330, 184);
+            this.listBox2.Size = new System.Drawing.Size(330, 212);
             this.listBox2.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.listBox2, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
             // 
             // groupBox11
             // 
+            this.groupBox11.BackColor = System.Drawing.Color.Black;
             this.groupBox11.Controls.Add(this.textBox3);
             this.groupBox11.Controls.Add(this.textBox2);
             this.groupBox11.Controls.Add(this.checkBox4);
@@ -1305,14 +1411,14 @@
             this.groupBox11.ForeColor = System.Drawing.Color.White;
             this.groupBox11.Location = new System.Drawing.Point(6, 114);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(359, 304);
+            this.groupBox11.Size = new System.Drawing.Size(359, 333);
             this.groupBox11.TabIndex = 5;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Early Quit Details";
             // 
             // textBox3
             // 
-            this.textBox3.BackColor = System.Drawing.Color.Black;
+            this.textBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox3.ForeColor = System.Drawing.Color.White;
             this.textBox3.Location = new System.Drawing.Point(9, 252);
@@ -1325,7 +1431,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.BackColor = System.Drawing.Color.Black;
+            this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox2.ForeColor = System.Drawing.Color.White;
             this.textBox2.Location = new System.Drawing.Point(9, 98);
@@ -1358,7 +1464,7 @@
             // 
             // comboBox2
             // 
-            this.comboBox2.BackColor = System.Drawing.Color.Black;
+            this.comboBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBox2.ForeColor = System.Drawing.Color.White;
             this.comboBox2.FormattingEnabled = true;
@@ -1380,12 +1486,13 @@
             // 
             // groupBox12
             // 
+            this.groupBox12.BackColor = System.Drawing.Color.Black;
             this.groupBox12.Controls.Add(this.button17);
             this.groupBox12.Controls.Add(this.button18);
             this.groupBox12.Controls.Add(this.button19);
             this.groupBox12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox12.ForeColor = System.Drawing.Color.White;
-            this.groupBox12.Location = new System.Drawing.Point(371, 366);
+            this.groupBox12.Location = new System.Drawing.Point(377, 397);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(345, 50);
             this.groupBox12.TabIndex = 10;
@@ -1472,7 +1579,7 @@
             this.eloLimitTab.ForeColor = System.Drawing.Color.White;
             this.eloLimitTab.Location = new System.Drawing.Point(4, 25);
             this.eloLimitTab.Name = "eloLimitTab";
-            this.eloLimitTab.Size = new System.Drawing.Size(728, 429);
+            this.eloLimitTab.Size = new System.Drawing.Size(734, 460);
             this.eloLimitTab.TabIndex = 4;
             this.eloLimitTab.Text = "Elo Limiter";
             // 
@@ -1487,27 +1594,52 @@
             this.groupBox4.ForeColor = System.Drawing.Color.White;
             this.groupBox4.Location = new System.Drawing.Point(3, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(722, 422);
+            this.groupBox4.Size = new System.Drawing.Size(728, 453);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Elo Limiter";
             // 
             // groupBox16
             // 
+            this.groupBox16.BackColor = System.Drawing.Color.Black;
             this.groupBox16.Controls.Add(this.groupBox34);
             this.groupBox16.Controls.Add(this.checkBox5);
             this.groupBox16.Controls.Add(this.groupBox17);
             this.groupBox16.ForeColor = System.Drawing.Color.White;
             this.groupBox16.Location = new System.Drawing.Point(3, 91);
             this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(713, 328);
+            this.groupBox16.Size = new System.Drawing.Size(719, 359);
             this.groupBox16.TabIndex = 12;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "QLRanks Elo Options";
             // 
+            // groupBox34
+            // 
+            this.groupBox34.Controls.Add(this.label11);
+            this.groupBox34.Controls.Add(this.textBox6);
+            this.groupBox34.Controls.Add(this.textBox5);
+            this.groupBox34.Controls.Add(this.label19);
+            this.groupBox34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox34.ForeColor = System.Drawing.Color.White;
+            this.groupBox34.Location = new System.Drawing.Point(9, 56);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(381, 189);
+            this.groupBox34.TabIndex = 29;
+            this.groupBox34.TabStop = false;
+            this.groupBox34.Text = "Elo Values";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 30);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(183, 14);
+            this.label11.TabIndex = 3;
+            this.label11.Text = "Minimum QLRanks Elo [required]";
+            // 
             // textBox6
             // 
-            this.textBox6.BackColor = System.Drawing.Color.Black;
+            this.textBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox6.ForeColor = System.Drawing.Color.White;
             this.textBox6.Location = new System.Drawing.Point(9, 151);
@@ -1517,18 +1649,9 @@
             this.textBox6.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.textBox6, resources.GetString("textBox6.ToolTip"));
             // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 117);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(184, 14);
-            this.label19.TabIndex = 12;
-            this.label19.Text = "Maximum QLRanks Elo (optional)";
-            // 
             // textBox5
             // 
-            this.textBox5.BackColor = System.Drawing.Color.Black;
+            this.textBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox5.ForeColor = System.Drawing.Color.White;
             this.textBox5.Location = new System.Drawing.Point(9, 64);
@@ -1539,6 +1662,15 @@
             this.coreToolTip.SetToolTip(this.textBox5, "Enter the minimum QLRanks Elo for your server. Any accounts\r\nthat do not have thi" +
         "s minimum Elo for the current game type \r\nwill be kicked when they attempt to co" +
         "nnect to your server.");
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 117);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(184, 14);
+            this.label19.TabIndex = 12;
+            this.label19.Text = "Maximum QLRanks Elo (optional)";
             // 
             // checkBox5
             // 
@@ -1551,15 +1683,6 @@
             this.coreToolTip.SetToolTip(this.checkBox5, "Select whether this module should be enabled.");
             this.checkBox5.UseVisualStyleBackColor = true;
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 30);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(183, 14);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Minimum QLRanks Elo [required]";
-            // 
             // groupBox17
             // 
             this.groupBox17.Controls.Add(this.button5);
@@ -1567,7 +1690,7 @@
             this.groupBox17.Controls.Add(this.button7);
             this.groupBox17.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox17.ForeColor = System.Drawing.Color.White;
-            this.groupBox17.Location = new System.Drawing.Point(422, 273);
+            this.groupBox17.Location = new System.Drawing.Point(428, 303);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Size = new System.Drawing.Size(285, 50);
             this.groupBox17.TabIndex = 10;
@@ -1653,7 +1776,7 @@
             this.ircTab.ForeColor = System.Drawing.Color.White;
             this.ircTab.Location = new System.Drawing.Point(4, 25);
             this.ircTab.Name = "ircTab";
-            this.ircTab.Size = new System.Drawing.Size(728, 429);
+            this.ircTab.Size = new System.Drawing.Size(734, 460);
             this.ircTab.TabIndex = 5;
             this.ircTab.Text = "IRC";
             // 
@@ -1668,22 +1791,24 @@
             this.groupBox18.ForeColor = System.Drawing.Color.White;
             this.groupBox18.Location = new System.Drawing.Point(3, 3);
             this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(722, 422);
+            this.groupBox18.Size = new System.Drawing.Size(728, 453);
             this.groupBox18.TabIndex = 4;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Internet Relay Chat";
             // 
             // groupBox19
             // 
+            this.groupBox19.BackColor = System.Drawing.Color.Black;
             this.groupBox19.Controls.Add(this.label32);
             this.groupBox19.Controls.Add(this.groupBox23);
             this.groupBox19.Controls.Add(this.groupBox22);
             this.groupBox19.Controls.Add(this.groupBox21);
+            this.groupBox19.Controls.Add(this.groupBox20);
             this.groupBox19.Controls.Add(this.checkBox6);
             this.groupBox19.ForeColor = System.Drawing.Color.White;
             this.groupBox19.Location = new System.Drawing.Point(3, 91);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(713, 328);
+            this.groupBox19.Size = new System.Drawing.Size(719, 359);
             this.groupBox19.TabIndex = 12;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "IRC Options";
@@ -1706,7 +1831,6 @@
             this.groupBox23.Controls.Add(this.label28);
             this.groupBox23.Controls.Add(this.textBox13);
             this.groupBox23.Controls.Add(this.label24);
-            this.groupBox23.Controls.Add(this.groupBox20);
             this.groupBox23.Controls.Add(this.textBox9);
             this.groupBox23.Controls.Add(this.label25);
             this.groupBox23.Controls.Add(this.textBox10);
@@ -1714,9 +1838,9 @@
             this.groupBox23.Controls.Add(this.textBox12);
             this.groupBox23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox23.ForeColor = System.Drawing.Color.White;
-            this.groupBox23.Location = new System.Drawing.Point(364, 45);
+            this.groupBox23.Location = new System.Drawing.Point(377, 45);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(336, 276);
+            this.groupBox23.Size = new System.Drawing.Size(336, 255);
             this.groupBox23.TabIndex = 28;
             this.groupBox23.TabStop = false;
             this.groupBox23.Text = "IRC Server";
@@ -1732,7 +1856,7 @@
             // 
             // textBox14
             // 
-            this.textBox14.BackColor = System.Drawing.Color.Black;
+            this.textBox14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox14.ForeColor = System.Drawing.Color.White;
             this.textBox14.Location = new System.Drawing.Point(6, 180);
@@ -1765,7 +1889,7 @@
             // 
             // textBox13
             // 
-            this.textBox13.BackColor = System.Drawing.Color.Black;
+            this.textBox13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox13.ForeColor = System.Drawing.Color.White;
             this.textBox13.Location = new System.Drawing.Point(178, 116);
@@ -1791,9 +1915,9 @@
             this.groupBox20.Controls.Add(this.button25);
             this.groupBox20.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox20.ForeColor = System.Drawing.Color.White;
-            this.groupBox20.Location = new System.Drawing.Point(6, 217);
+            this.groupBox20.Location = new System.Drawing.Point(377, 300);
             this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(324, 53);
+            this.groupBox20.Size = new System.Drawing.Size(336, 53);
             this.groupBox20.TabIndex = 10;
             this.groupBox20.TabStop = false;
             this.groupBox20.Text = "Settings";
@@ -1842,7 +1966,7 @@
             // 
             // textBox9
             // 
-            this.textBox9.BackColor = System.Drawing.Color.Black;
+            this.textBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox9.ForeColor = System.Drawing.Color.White;
             this.textBox9.Location = new System.Drawing.Point(9, 52);
@@ -1863,7 +1987,7 @@
             // 
             // textBox10
             // 
-            this.textBox10.BackColor = System.Drawing.Color.Black;
+            this.textBox10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox10.ForeColor = System.Drawing.Color.White;
             this.textBox10.Location = new System.Drawing.Point(178, 52);
@@ -1884,7 +2008,7 @@
             // 
             // textBox12
             // 
-            this.textBox12.BackColor = System.Drawing.Color.Black;
+            this.textBox12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox12.ForeColor = System.Drawing.Color.White;
             this.textBox12.Location = new System.Drawing.Point(9, 116);
@@ -1907,7 +2031,7 @@
             this.groupBox22.ForeColor = System.Drawing.Color.White;
             this.groupBox22.Location = new System.Drawing.Point(9, 45);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(340, 156);
+            this.groupBox22.Size = new System.Drawing.Size(340, 167);
             this.groupBox22.TabIndex = 27;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "IRC Naming";
@@ -1923,7 +2047,7 @@
             // 
             // textBox8
             // 
-            this.textBox8.BackColor = System.Drawing.Color.Black;
+            this.textBox8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox8.ForeColor = System.Drawing.Color.White;
             this.textBox8.Location = new System.Drawing.Point(9, 52);
@@ -1944,7 +2068,7 @@
             // 
             // textBox7
             // 
-            this.textBox7.BackColor = System.Drawing.Color.Black;
+            this.textBox7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox7.ForeColor = System.Drawing.Color.White;
             this.textBox7.Location = new System.Drawing.Point(178, 52);
@@ -1965,7 +2089,7 @@
             // 
             // textBox11
             // 
-            this.textBox11.BackColor = System.Drawing.Color.Black;
+            this.textBox11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox11.ForeColor = System.Drawing.Color.White;
             this.textBox11.Location = new System.Drawing.Point(9, 116);
@@ -1986,9 +2110,9 @@
             this.groupBox21.Controls.Add(this.label30);
             this.groupBox21.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox21.ForeColor = System.Drawing.Color.White;
-            this.groupBox21.Location = new System.Drawing.Point(9, 207);
+            this.groupBox21.Location = new System.Drawing.Point(9, 225);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(340, 114);
+            this.groupBox21.Size = new System.Drawing.Size(340, 128);
             this.groupBox21.TabIndex = 4;
             this.groupBox21.TabStop = false;
             this.groupBox21.Text = "QuakeNet (Q) Options";
@@ -1996,7 +2120,7 @@
             // checkBox8
             // 
             this.checkBox8.AutoSize = true;
-            this.checkBox8.Location = new System.Drawing.Point(223, 86);
+            this.checkBox8.Location = new System.Drawing.Point(222, 97);
             this.checkBox8.Name = "checkBox8";
             this.checkBox8.Size = new System.Drawing.Size(108, 18);
             this.checkBox8.TabIndex = 27;
@@ -2008,7 +2132,7 @@
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(9, 86);
+            this.checkBox7.Location = new System.Drawing.Point(9, 97);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(168, 18);
             this.checkBox7.TabIndex = 26;
@@ -2019,7 +2143,7 @@
             // 
             // textBox16
             // 
-            this.textBox16.BackColor = System.Drawing.Color.Black;
+            this.textBox16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox16.ForeColor = System.Drawing.Color.White;
             this.textBox16.Location = new System.Drawing.Point(177, 53);
@@ -2041,7 +2165,7 @@
             // 
             // textBox15
             // 
-            this.textBox15.BackColor = System.Drawing.Color.Black;
+            this.textBox15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox15.ForeColor = System.Drawing.Color.White;
             this.textBox15.Location = new System.Drawing.Point(9, 53);
@@ -2110,7 +2234,7 @@
             this.motdTab.ForeColor = System.Drawing.Color.White;
             this.motdTab.Location = new System.Drawing.Point(4, 25);
             this.motdTab.Name = "motdTab";
-            this.motdTab.Size = new System.Drawing.Size(728, 429);
+            this.motdTab.Size = new System.Drawing.Size(734, 460);
             this.motdTab.TabIndex = 6;
             this.motdTab.Text = "MOTD";
             // 
@@ -2125,27 +2249,61 @@
             this.groupBox24.ForeColor = System.Drawing.Color.White;
             this.groupBox24.Location = new System.Drawing.Point(3, 3);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(722, 422);
+            this.groupBox24.Size = new System.Drawing.Size(728, 453);
             this.groupBox24.TabIndex = 3;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "Message of the Day";
             // 
             // groupBox25
             // 
+            this.groupBox25.BackColor = System.Drawing.Color.Black;
             this.groupBox25.Controls.Add(this.groupBox35);
             this.groupBox25.Controls.Add(this.checkBox10);
             this.groupBox25.Controls.Add(this.groupBox26);
             this.groupBox25.ForeColor = System.Drawing.Color.White;
             this.groupBox25.Location = new System.Drawing.Point(3, 91);
             this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(713, 328);
+            this.groupBox25.Size = new System.Drawing.Size(719, 359);
             this.groupBox25.TabIndex = 12;
             this.groupBox25.TabStop = false;
             this.groupBox25.Text = "Message of the Day Options";
             // 
+            // groupBox35
+            // 
+            this.groupBox35.Controls.Add(this.label36);
+            this.groupBox35.Controls.Add(this.label33);
+            this.groupBox35.Controls.Add(this.textBox18);
+            this.groupBox35.Controls.Add(this.textBox17);
+            this.groupBox35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox35.ForeColor = System.Drawing.Color.White;
+            this.groupBox35.Location = new System.Drawing.Point(9, 45);
+            this.groupBox35.Name = "groupBox35";
+            this.groupBox35.Size = new System.Drawing.Size(417, 208);
+            this.groupBox35.TabIndex = 29;
+            this.groupBox35.TabStop = false;
+            this.groupBox35.Text = "Repeat";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(6, 133);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(99, 14);
+            this.label36.TabIndex = 14;
+            this.label36.Text = "Message to send";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(6, 29);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(211, 14);
+            this.label33.TabIndex = 3;
+            this.label33.Text = "Time to repeat message [in minutes]";
+            // 
             // textBox18
             // 
-            this.textBox18.BackColor = System.Drawing.Color.Black;
+            this.textBox18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox18.ForeColor = System.Drawing.Color.White;
             this.textBox18.Location = new System.Drawing.Point(6, 170);
@@ -2159,7 +2317,7 @@
             // 
             // textBox17
             // 
-            this.textBox17.BackColor = System.Drawing.Color.Black;
+            this.textBox17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBox17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox17.ForeColor = System.Drawing.Color.White;
             this.textBox17.Location = new System.Drawing.Point(9, 63);
@@ -2182,15 +2340,6 @@
             this.coreToolTip.SetToolTip(this.checkBox10, "Select whether this module should be enabled.");
             this.checkBox10.UseVisualStyleBackColor = true;
             // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(6, 29);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(211, 14);
-            this.label33.TabIndex = 3;
-            this.label33.Text = "Time to repeat message [in minutes]";
-            // 
             // groupBox26
             // 
             this.groupBox26.Controls.Add(this.button26);
@@ -2198,7 +2347,7 @@
             this.groupBox26.Controls.Add(this.button28);
             this.groupBox26.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox26.ForeColor = System.Drawing.Color.White;
-            this.groupBox26.Location = new System.Drawing.Point(422, 273);
+            this.groupBox26.Location = new System.Drawing.Point(428, 303);
             this.groupBox26.Name = "groupBox26";
             this.groupBox26.Size = new System.Drawing.Size(285, 50);
             this.groupBox26.TabIndex = 10;
@@ -2284,9 +2433,317 @@
             this.pickupTab.ForeColor = System.Drawing.Color.White;
             this.pickupTab.Location = new System.Drawing.Point(4, 25);
             this.pickupTab.Name = "pickupTab";
-            this.pickupTab.Size = new System.Drawing.Size(728, 429);
+            this.pickupTab.Size = new System.Drawing.Size(734, 460);
             this.pickupTab.TabIndex = 7;
             this.pickupTab.Text = "Pickup";
+            // 
+            // groupBox27
+            // 
+            this.groupBox27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.groupBox27.Controls.Add(this.groupBox28);
+            this.groupBox27.Controls.Add(this.label48);
+            this.groupBox27.Controls.Add(this.label49);
+            this.groupBox27.Controls.Add(this.pictureBox9);
+            this.groupBox27.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox27.ForeColor = System.Drawing.Color.White;
+            this.groupBox27.Location = new System.Drawing.Point(3, 3);
+            this.groupBox27.Name = "groupBox27";
+            this.groupBox27.Size = new System.Drawing.Size(728, 453);
+            this.groupBox27.TabIndex = 5;
+            this.groupBox27.TabStop = false;
+            this.groupBox27.Text = "Pickup";
+            // 
+            // groupBox28
+            // 
+            this.groupBox28.BackColor = System.Drawing.Color.Black;
+            this.groupBox28.Controls.Add(this.groupBox32);
+            this.groupBox28.Controls.Add(this.groupBox29);
+            this.groupBox28.Controls.Add(this.groupBox30);
+            this.groupBox28.Controls.Add(this.groupBox31);
+            this.groupBox28.Controls.Add(this.checkBox14);
+            this.groupBox28.ForeColor = System.Drawing.Color.White;
+            this.groupBox28.Location = new System.Drawing.Point(3, 91);
+            this.groupBox28.Name = "groupBox28";
+            this.groupBox28.Size = new System.Drawing.Size(719, 359);
+            this.groupBox28.TabIndex = 12;
+            this.groupBox28.TabStop = false;
+            this.groupBox28.Text = "Pickup Options";
+            // 
+            // groupBox32
+            // 
+            this.groupBox32.Controls.Add(this.label40);
+            this.groupBox32.Controls.Add(this.textBox22);
+            this.groupBox32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox32.ForeColor = System.Drawing.Color.White;
+            this.groupBox32.Location = new System.Drawing.Point(9, 248);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(340, 105);
+            this.groupBox32.TabIndex = 28;
+            this.groupBox32.TabStop = false;
+            this.groupBox32.Text = "Team Size";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(6, 29);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(156, 14);
+            this.label40.TabIndex = 3;
+            this.label40.Text = "Players per team for pickup";
+            // 
+            // textBox22
+            // 
+            this.textBox22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox22.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox22.ForeColor = System.Drawing.Color.White;
+            this.textBox22.Location = new System.Drawing.Point(9, 62);
+            this.textBox22.MaxLength = 15;
+            this.textBox22.Name = "textBox22";
+            this.textBox22.Size = new System.Drawing.Size(99, 22);
+            this.textBox22.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.textBox22, "Enter the number of players that each team will have in pickup mode.");
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.Controls.Add(this.textBox19);
+            this.groupBox29.Controls.Add(this.label37);
+            this.groupBox29.Controls.Add(this.comboBox4);
+            this.groupBox29.Controls.Add(this.label38);
+            this.groupBox29.Controls.Add(this.textBox20);
+            this.groupBox29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox29.ForeColor = System.Drawing.Color.White;
+            this.groupBox29.Location = new System.Drawing.Point(367, 45);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(340, 243);
+            this.groupBox29.TabIndex = 28;
+            this.groupBox29.TabStop = false;
+            this.groupBox29.Text = "No-Shows";
+            // 
+            // textBox19
+            // 
+            this.textBox19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox19.ForeColor = System.Drawing.Color.White;
+            this.textBox19.Location = new System.Drawing.Point(9, 148);
+            this.textBox19.MaxLength = 15;
+            this.textBox19.Name = "textBox19";
+            this.textBox19.Size = new System.Drawing.Size(99, 22);
+            this.textBox19.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.textBox19, "Specify the time to ban the player for after the maximum no-shows\r\nare exceeded. " +
+        "This must be a number.");
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(6, 109);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(320, 14);
+            this.label37.TabIndex = 18;
+            this.label37.Text = "Time to ban player for after max no-shows are exceeded";
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.button29);
+            this.groupBox30.Controls.Add(this.button30);
+            this.groupBox30.Controls.Add(this.button31);
+            this.groupBox30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox30.ForeColor = System.Drawing.Color.White;
+            this.groupBox30.Location = new System.Drawing.Point(367, 294);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(340, 59);
+            this.groupBox30.TabIndex = 10;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = "Settings";
+            // 
+            // button29
+            // 
+            this.button29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button29.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button29.ForeColor = System.Drawing.Color.White;
+            this.button29.Location = new System.Drawing.Point(238, 21);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(79, 23);
+            this.button29.TabIndex = 9;
+            this.button29.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.button29, "Reset this module to its default settings.");
+            this.button29.UseVisualStyleBackColor = false;
+            // 
+            // button30
+            // 
+            this.button30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button30.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button30.ForeColor = System.Drawing.Color.White;
+            this.button30.Location = new System.Drawing.Point(126, 21);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(79, 23);
+            this.button30.TabIndex = 1;
+            this.button30.Text = "Load";
+            this.coreToolTip.SetToolTip(this.button30, "Load the current settings from the configuration file.");
+            this.button30.UseVisualStyleBackColor = false;
+            // 
+            // button31
+            // 
+            this.button31.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button31.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button31.ForeColor = System.Drawing.Color.White;
+            this.button31.Location = new System.Drawing.Point(16, 21);
+            this.button31.Name = "button31";
+            this.button31.Size = new System.Drawing.Size(79, 23);
+            this.button31.TabIndex = 8;
+            this.button31.Text = "Save";
+            this.coreToolTip.SetToolTip(this.button31, "Save the current settings to the configuration file.");
+            this.button31.UseVisualStyleBackColor = false;
+            // 
+            // comboBox4
+            // 
+            this.comboBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.comboBox4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox4.ForeColor = System.Drawing.Color.White;
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(126, 147);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(124, 22);
+            this.comboBox4.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.comboBox4, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+        "n the box to the left.");
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(6, 18);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(238, 14);
+            this.label38.TabIndex = 3;
+            this.label38.Text = "Maximum number of no-shows before ban\r\n";
+            // 
+            // textBox20
+            // 
+            this.textBox20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox20.ForeColor = System.Drawing.Color.White;
+            this.textBox20.Location = new System.Drawing.Point(9, 52);
+            this.textBox20.MaxLength = 15;
+            this.textBox20.Name = "textBox20";
+            this.textBox20.Size = new System.Drawing.Size(99, 22);
+            this.textBox20.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.textBox20, "Enter the maximum number of times that a player can leave the pickup game\r\nonce i" +
+        "t has started before the player is banned.\r\n\r\n");
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.Controls.Add(this.textBox25);
+            this.groupBox31.Controls.Add(this.label44);
+            this.groupBox31.Controls.Add(this.comboBox3);
+            this.groupBox31.Controls.Add(this.label43);
+            this.groupBox31.Controls.Add(this.textBox24);
+            this.groupBox31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox31.ForeColor = System.Drawing.Color.White;
+            this.groupBox31.Location = new System.Drawing.Point(9, 45);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(340, 197);
+            this.groupBox31.TabIndex = 27;
+            this.groupBox31.TabStop = false;
+            this.groupBox31.Text = "Substitutes";
+            // 
+            // textBox25
+            // 
+            this.textBox25.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox25.ForeColor = System.Drawing.Color.White;
+            this.textBox25.Location = new System.Drawing.Point(9, 148);
+            this.textBox25.MaxLength = 15;
+            this.textBox25.Name = "textBox25";
+            this.textBox25.Size = new System.Drawing.Size(99, 22);
+            this.textBox25.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.textBox25, "Specify the time to ban the player for after the maximum subs\r\nare exceeded. This" +
+        " must be a number.");
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(6, 109);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(292, 14);
+            this.label44.TabIndex = 18;
+            this.label44.Text = "Time to ban player for after max subs are exceeded";
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.comboBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox3.ForeColor = System.Drawing.Color.White;
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(126, 147);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(124, 22);
+            this.comboBox3.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.comboBox3, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+        "n the box to the left.");
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(6, 18);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(210, 14);
+            this.label43.TabIndex = 3;
+            this.label43.Text = "Maximum number of subs before ban\r\n";
+            // 
+            // textBox24
+            // 
+            this.textBox24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox24.ForeColor = System.Drawing.Color.White;
+            this.textBox24.Location = new System.Drawing.Point(9, 52);
+            this.textBox24.MaxLength = 15;
+            this.textBox24.Name = "textBox24";
+            this.textBox24.Size = new System.Drawing.Size(99, 22);
+            this.textBox24.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.textBox24, "Enter the maximum number of subs that a player may use before\r\nthe player is bann" +
+        "ed.");
+            // 
+            // checkBox14
+            // 
+            this.checkBox14.AutoSize = true;
+            this.checkBox14.Location = new System.Drawing.Point(9, 21);
+            this.checkBox14.Name = "checkBox14";
+            this.checkBox14.Size = new System.Drawing.Size(179, 18);
+            this.checkBox14.TabIndex = 11;
+            this.checkBox14.Text = "Enable Pickup Game Module";
+            this.coreToolTip.SetToolTip(this.checkBox14, "Select whether this module should be enabled.");
+            this.checkBox14.UseVisualStyleBackColor = true;
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(82, 47);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(303, 14);
+            this.label48.TabIndex = 2;
+            this.label48.Text = "Allows the server to be set up in pick-up game mode.";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label49.ForeColor = System.Drawing.Color.Silver;
+            this.label49.Location = new System.Drawing.Point(76, 18);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(215, 25);
+            this.label49.TabIndex = 1;
+            this.label49.Text = "Module: Pickup Game";
+            // 
+            // pictureBox9
+            // 
+            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
+            this.pictureBox9.Location = new System.Drawing.Point(12, 21);
+            this.pictureBox9.Name = "pictureBox9";
+            this.pictureBox9.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox9.TabIndex = 0;
+            this.pictureBox9.TabStop = false;
             // 
             // serversTab
             // 
@@ -2296,24 +2753,395 @@
             this.serversTab.ForeColor = System.Drawing.Color.White;
             this.serversTab.Location = new System.Drawing.Point(4, 25);
             this.serversTab.Name = "serversTab";
-            this.serversTab.Size = new System.Drawing.Size(728, 429);
+            this.serversTab.Size = new System.Drawing.Size(734, 460);
             this.serversTab.TabIndex = 8;
             this.serversTab.Text = "Server List";
             // 
+            // groupBox36
+            // 
+            this.groupBox36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.groupBox36.Controls.Add(this.groupBox37);
+            this.groupBox36.Controls.Add(this.label42);
+            this.groupBox36.Controls.Add(this.label45);
+            this.groupBox36.Controls.Add(this.pictureBox10);
+            this.groupBox36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox36.ForeColor = System.Drawing.Color.White;
+            this.groupBox36.Location = new System.Drawing.Point(3, 3);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(728, 453);
+            this.groupBox36.TabIndex = 4;
+            this.groupBox36.TabStop = false;
+            this.groupBox36.Text = "Server List";
+            // 
+            // groupBox37
+            // 
+            this.groupBox37.BackColor = System.Drawing.Color.Black;
+            this.groupBox37.Controls.Add(this.groupBox38);
+            this.groupBox37.Controls.Add(this.checkBox11);
+            this.groupBox37.Controls.Add(this.groupBox39);
+            this.groupBox37.ForeColor = System.Drawing.Color.White;
+            this.groupBox37.Location = new System.Drawing.Point(3, 91);
+            this.groupBox37.Name = "groupBox37";
+            this.groupBox37.Size = new System.Drawing.Size(719, 359);
+            this.groupBox37.TabIndex = 12;
+            this.groupBox37.TabStop = false;
+            this.groupBox37.Text = "Server List Options";
+            // 
+            // groupBox38
+            // 
+            this.groupBox38.Controls.Add(this.label39);
+            this.groupBox38.Controls.Add(this.textBox21);
+            this.groupBox38.Controls.Add(this.textBox23);
+            this.groupBox38.Controls.Add(this.label41);
+            this.groupBox38.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox38.ForeColor = System.Drawing.Color.White;
+            this.groupBox38.Location = new System.Drawing.Point(9, 56);
+            this.groupBox38.Name = "groupBox38";
+            this.groupBox38.Size = new System.Drawing.Size(381, 189);
+            this.groupBox38.TabIndex = 29;
+            this.groupBox38.TabStop = false;
+            this.groupBox38.Text = "Display Settings";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(6, 30);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(154, 14);
+            this.label39.TabIndex = 3;
+            this.label39.Text = "Maximum servers to display";
+            // 
+            // textBox21
+            // 
+            this.textBox21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox21.ForeColor = System.Drawing.Color.White;
+            this.textBox21.Location = new System.Drawing.Point(9, 151);
+            this.textBox21.MaxLength = 15;
+            this.textBox21.Name = "textBox21";
+            this.textBox21.Size = new System.Drawing.Size(99, 22);
+            this.textBox21.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.textBox21, "Enter the number of seconds that must pass before a player can request\r\nthe activ" +
+        "e server list again.");
+            // 
+            // textBox23
+            // 
+            this.textBox23.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox23.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox23.ForeColor = System.Drawing.Color.White;
+            this.textBox23.Location = new System.Drawing.Point(9, 64);
+            this.textBox23.MaxLength = 15;
+            this.textBox23.Name = "textBox23";
+            this.textBox23.Size = new System.Drawing.Size(99, 22);
+            this.textBox23.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.textBox23, "Enter the maximum number of active servers to return. Each server is sent to QL c" +
+        "hat one per line, so \r\nthis number should not be large.");
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(6, 117);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(202, 14);
+            this.label41.TabIndex = 12;
+            this.label41.Text = "Time between queries [in seconds]";
+            // 
+            // checkBox11
+            // 
+            this.checkBox11.AutoSize = true;
+            this.checkBox11.Location = new System.Drawing.Point(9, 21);
+            this.checkBox11.Name = "checkBox11";
+            this.checkBox11.Size = new System.Drawing.Size(230, 18);
+            this.checkBox11.TabIndex = 11;
+            this.checkBox11.Text = "Enable Quake Live Server List Module";
+            this.coreToolTip.SetToolTip(this.checkBox11, "Select whether this module should be enabled.");
+            this.checkBox11.UseVisualStyleBackColor = true;
+            // 
+            // groupBox39
+            // 
+            this.groupBox39.Controls.Add(this.button32);
+            this.groupBox39.Controls.Add(this.button33);
+            this.groupBox39.Controls.Add(this.button34);
+            this.groupBox39.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox39.ForeColor = System.Drawing.Color.White;
+            this.groupBox39.Location = new System.Drawing.Point(422, 303);
+            this.groupBox39.Name = "groupBox39";
+            this.groupBox39.Size = new System.Drawing.Size(285, 50);
+            this.groupBox39.TabIndex = 10;
+            this.groupBox39.TabStop = false;
+            this.groupBox39.Text = "Settings";
+            // 
+            // button32
+            // 
+            this.button32.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button32.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button32.ForeColor = System.Drawing.Color.White;
+            this.button32.Location = new System.Drawing.Point(199, 18);
+            this.button32.Name = "button32";
+            this.button32.Size = new System.Drawing.Size(79, 23);
+            this.button32.TabIndex = 9;
+            this.button32.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.button32, "Reset this module to its default settings.");
+            this.button32.UseVisualStyleBackColor = false;
+            // 
+            // button33
+            // 
+            this.button33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button33.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button33.ForeColor = System.Drawing.Color.White;
+            this.button33.Location = new System.Drawing.Point(104, 18);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(79, 23);
+            this.button33.TabIndex = 1;
+            this.button33.Text = "Load";
+            this.coreToolTip.SetToolTip(this.button33, "Load the current settings from the configuration file.");
+            this.button33.UseVisualStyleBackColor = false;
+            // 
+            // button34
+            // 
+            this.button34.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button34.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button34.ForeColor = System.Drawing.Color.White;
+            this.button34.Location = new System.Drawing.Point(10, 18);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(79, 23);
+            this.button34.TabIndex = 8;
+            this.button34.Text = "Save";
+            this.coreToolTip.SetToolTip(this.button34, "Save the current settings to the configuration file.");
+            this.button34.UseVisualStyleBackColor = false;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(82, 47);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(450, 14);
+            this.label42.TabIndex = 2;
+            this.label42.Text = "Allows players to list active servers for a specified game type and region in-gam" +
+    "e.";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label45.ForeColor = System.Drawing.Color.Silver;
+            this.label45.Location = new System.Drawing.Point(76, 18);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(373, 25);
+            this.label45.TabIndex = 1;
+            this.label45.Text = "Module: Quake Live Server List Display";
+            // 
+            // pictureBox10
+            // 
+            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
+            this.pictureBox10.Location = new System.Drawing.Point(12, 21);
+            this.pictureBox10.Name = "pictureBox10";
+            this.pictureBox10.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox10.TabIndex = 0;
+            this.pictureBox10.TabStop = false;
+            // 
+            // usersTab
+            // 
+            this.usersTab.BackColor = System.Drawing.Color.Black;
+            this.usersTab.Controls.Add(this.groupBox40);
+            this.usersTab.ForeColor = System.Drawing.Color.White;
+            this.usersTab.Location = new System.Drawing.Point(4, 26);
+            this.usersTab.Name = "usersTab";
+            this.usersTab.Size = new System.Drawing.Size(742, 485);
+            this.usersTab.TabIndex = 4;
+            this.usersTab.Text = "User Management";
+            // 
+            // groupBox40
+            // 
+            this.groupBox40.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.groupBox40.Controls.Add(this.groupBox41);
+            this.groupBox40.Controls.Add(this.groupBox42);
+            this.groupBox40.Controls.Add(this.label52);
+            this.groupBox40.Controls.Add(this.label53);
+            this.groupBox40.Controls.Add(this.pictureBox11);
+            this.groupBox40.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox40.ForeColor = System.Drawing.Color.White;
+            this.groupBox40.Location = new System.Drawing.Point(5, 3);
+            this.groupBox40.Name = "groupBox40";
+            this.groupBox40.Size = new System.Drawing.Size(731, 479);
+            this.groupBox40.TabIndex = 5;
+            this.groupBox40.TabStop = false;
+            this.groupBox40.Text = "User Management";
+            // 
+            // groupBox41
+            // 
+            this.groupBox41.BackColor = System.Drawing.Color.Black;
+            this.groupBox41.Controls.Add(this.button36);
+            this.groupBox41.Controls.Add(this.listBox3);
+            this.groupBox41.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox41.ForeColor = System.Drawing.Color.White;
+            this.groupBox41.Location = new System.Drawing.Point(430, 91);
+            this.groupBox41.Name = "groupBox41";
+            this.groupBox41.Size = new System.Drawing.Size(293, 382);
+            this.groupBox41.TabIndex = 12;
+            this.groupBox41.TabStop = false;
+            this.groupBox41.Text = "Current SSB Users";
+            // 
+            // button36
+            // 
+            this.button36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button36.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button36.ForeColor = System.Drawing.Color.White;
+            this.button36.Location = new System.Drawing.Point(121, 353);
+            this.button36.Name = "button36";
+            this.button36.Size = new System.Drawing.Size(166, 23);
+            this.button36.TabIndex = 14;
+            this.button36.Text = "Remove User from SSB";
+            this.coreToolTip.SetToolTip(this.button36, "Click this button to remove the selected user.");
+            this.button36.UseVisualStyleBackColor = false;
+            // 
+            // listBox3
+            // 
+            this.listBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.listBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listBox3.ForeColor = System.Drawing.Color.White;
+            this.listBox3.FormattingEnabled = true;
+            this.listBox3.ItemHeight = 14;
+            this.listBox3.Location = new System.Drawing.Point(6, 18);
+            this.listBox3.Name = "listBox3";
+            this.listBox3.Size = new System.Drawing.Size(281, 310);
+            this.listBox3.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.listBox3, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+        "s loaded.");
+            // 
+            // groupBox42
+            // 
+            this.groupBox42.BackColor = System.Drawing.Color.Black;
+            this.groupBox42.Controls.Add(this.label46);
+            this.groupBox42.Controls.Add(this.textBox26);
+            this.groupBox42.Controls.Add(this.button37);
+            this.groupBox42.Controls.Add(this.label50);
+            this.groupBox42.Controls.Add(this.comboBox5);
+            this.groupBox42.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox42.ForeColor = System.Drawing.Color.White;
+            this.groupBox42.Location = new System.Drawing.Point(6, 91);
+            this.groupBox42.Name = "groupBox42";
+            this.groupBox42.Size = new System.Drawing.Size(416, 382);
+            this.groupBox42.TabIndex = 5;
+            this.groupBox42.TabStop = false;
+            this.groupBox42.Text = "Add SSB User";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(6, 43);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(93, 14);
+            this.label46.TabIndex = 16;
+            this.label46.Text = "User\'s QL Name";
+            // 
+            // textBox26
+            // 
+            this.textBox26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox26.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox26.ForeColor = System.Drawing.Color.White;
+            this.textBox26.Location = new System.Drawing.Point(9, 82);
+            this.textBox26.MaxLength = 15;
+            this.textBox26.Name = "textBox26";
+            this.textBox26.Size = new System.Drawing.Size(215, 22);
+            this.textBox26.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.textBox26, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
+        "user list. Do not include the clan tag.");
+            // 
+            // button37
+            // 
+            this.button37.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button37.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button37.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button37.ForeColor = System.Drawing.Color.White;
+            this.button37.Location = new System.Drawing.Point(6, 353);
+            this.button37.Name = "button37";
+            this.button37.Size = new System.Drawing.Size(160, 23);
+            this.button37.TabIndex = 13;
+            this.button37.Text = "Add User to SSB";
+            this.coreToolTip.SetToolTip(this.button37, "Click this button to add the user.");
+            this.button37.UseVisualStyleBackColor = false;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(6, 202);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(112, 14);
+            this.label50.TabIndex = 9;
+            this.label50.Text = "User\'s Access Level";
+            // 
+            // comboBox5
+            // 
+            this.comboBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.comboBox5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox5.ForeColor = System.Drawing.Color.White;
+            this.comboBox5.FormattingEnabled = true;
+            this.comboBox5.Location = new System.Drawing.Point(6, 233);
+            this.comboBox5.Name = "comboBox5";
+            this.comboBox5.Size = new System.Drawing.Size(183, 22);
+            this.comboBox5.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.comboBox5, "This list contains the access level of the user. Higher access levels\r\nhave acces" +
+        "s to more sensitive commands.");
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(82, 47);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(140, 14);
+            this.label52.TabIndex = 2;
+            this.label52.Text = "Add or delete SSB users";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label53.ForeColor = System.Drawing.Color.Silver;
+            this.label53.Location = new System.Drawing.Point(76, 18);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(226, 25);
+            this.label53.TabIndex = 1;
+            this.label53.Text = "SSB User Management";
+            // 
+            // pictureBox11
+            // 
+            this.pictureBox11.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox11.Image")));
+            this.pictureBox11.Location = new System.Drawing.Point(12, 21);
+            this.pictureBox11.Name = "pictureBox11";
+            this.pictureBox11.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox11.TabIndex = 0;
+            this.pictureBox11.TabStop = false;
+            // 
+            // banTab
+            // 
+            this.banTab.BackColor = System.Drawing.Color.Black;
+            this.banTab.Controls.Add(this.groupBox43);
+            this.banTab.ForeColor = System.Drawing.Color.White;
+            this.banTab.Location = new System.Drawing.Point(4, 26);
+            this.banTab.Name = "banTab";
+            this.banTab.Size = new System.Drawing.Size(742, 485);
+            this.banTab.TabIndex = 5;
+            this.banTab.Text = "Ban Management";
+            // 
             // aboutTab
             // 
-            this.aboutTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.aboutTab.BackColor = System.Drawing.Color.Black;
             this.aboutTab.Controls.Add(this.aboutGroupBox);
             this.aboutTab.ForeColor = System.Drawing.Color.White;
             this.aboutTab.Location = new System.Drawing.Point(4, 26);
             this.aboutTab.Name = "aboutTab";
-            this.aboutTab.Size = new System.Drawing.Size(732, 470);
+            this.aboutTab.Size = new System.Drawing.Size(742, 485);
             this.aboutTab.TabIndex = 3;
             this.aboutTab.Text = "About";
             // 
             // aboutGroupBox
             // 
-            this.aboutGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.aboutGroupBox.BackColor = System.Drawing.Color.Black;
             this.aboutGroupBox.Controls.Add(this.aboutLabel3);
             this.aboutGroupBox.Controls.Add(this.aboutSsbWebButton);
             this.aboutGroupBox.Controls.Add(this.aboutAuthorLabel);
@@ -2324,9 +3152,9 @@
             this.aboutGroupBox.Controls.Add(this.ssbAboutPictureBox);
             this.aboutGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aboutGroupBox.ForeColor = System.Drawing.Color.White;
-            this.aboutGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.aboutGroupBox.Location = new System.Drawing.Point(5, 3);
             this.aboutGroupBox.Name = "aboutGroupBox";
-            this.aboutGroupBox.Size = new System.Drawing.Size(726, 464);
+            this.aboutGroupBox.Size = new System.Drawing.Size(732, 479);
             this.aboutGroupBox.TabIndex = 1;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "About SSB";
@@ -2413,7 +3241,7 @@
             this.startButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.startButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startButton.ForeColor = System.Drawing.Color.White;
-            this.startButton.Location = new System.Drawing.Point(12, 611);
+            this.startButton.Location = new System.Drawing.Point(4, 641);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(110, 28);
             this.startButton.TabIndex = 0;
@@ -2428,7 +3256,7 @@
             this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exitButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exitButton.ForeColor = System.Drawing.Color.White;
-            this.exitButton.Location = new System.Drawing.Point(132, 611);
+            this.exitButton.Location = new System.Drawing.Point(154, 641);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(110, 28);
             this.exitButton.TabIndex = 2;
@@ -2438,18 +3266,22 @@
             // 
             // coreToolTip
             // 
+            this.coreToolTip.AutoPopDelay = 15000;
+            this.coreToolTip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreToolTip.ForeColor = System.Drawing.Color.White;
+            this.coreToolTip.InitialDelay = 500;
             this.coreToolTip.IsBalloon = true;
-            this.coreToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.coreToolTip.ReshowDelay = 100;
             // 
             // statusBar
             // 
-            this.statusBar.BackColor = System.Drawing.Color.Black;
+            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.statusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusBar.Location = new System.Drawing.Point(0, 648);
+            this.statusBar.Location = new System.Drawing.Point(0, 676);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(742, 22);
+            this.statusBar.Size = new System.Drawing.Size(752, 22);
             this.statusBar.TabIndex = 3;
             this.statusBar.Text = "statusStrip1";
             // 
@@ -2462,589 +3294,239 @@
             this.toolStripStatusLabel1.Text = "statusBarLabel";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
-            // groupBox27
+            // minimizeButton
             // 
-            this.groupBox27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox27.Controls.Add(this.groupBox28);
-            this.groupBox27.Controls.Add(this.label48);
-            this.groupBox27.Controls.Add(this.label49);
-            this.groupBox27.Controls.Add(this.pictureBox9);
-            this.groupBox27.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox27.ForeColor = System.Drawing.Color.White;
-            this.groupBox27.Location = new System.Drawing.Point(3, 3);
-            this.groupBox27.Name = "groupBox27";
-            this.groupBox27.Size = new System.Drawing.Size(722, 422);
-            this.groupBox27.TabIndex = 5;
-            this.groupBox27.TabStop = false;
-            this.groupBox27.Text = "Pickup";
+            this.minimizeButton.Image = ((System.Drawing.Image)(resources.GetObject("minimizeButton.Image")));
+            this.minimizeButton.Location = new System.Drawing.Point(693, 4);
+            this.minimizeButton.Name = "minimizeButton";
+            this.minimizeButton.Size = new System.Drawing.Size(21, 17);
+            this.minimizeButton.TabIndex = 4;
+            this.minimizeButton.TabStop = false;
+            this.minimizeButton.Click += new System.EventHandler(this.minimizeButton_Click);
             // 
-            // groupBox28
+            // closeButton
             // 
-            this.groupBox28.Controls.Add(this.groupBox32);
-            this.groupBox28.Controls.Add(this.groupBox29);
-            this.groupBox28.Controls.Add(this.groupBox31);
-            this.groupBox28.Controls.Add(this.checkBox14);
-            this.groupBox28.ForeColor = System.Drawing.Color.White;
-            this.groupBox28.Location = new System.Drawing.Point(3, 91);
-            this.groupBox28.Name = "groupBox28";
-            this.groupBox28.Size = new System.Drawing.Size(713, 328);
-            this.groupBox28.TabIndex = 12;
-            this.groupBox28.TabStop = false;
-            this.groupBox28.Text = "Pickup Options";
+            this.closeButton.Image = ((System.Drawing.Image)(resources.GetObject("closeButton.Image")));
+            this.closeButton.Location = new System.Drawing.Point(723, 4);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(21, 17);
+            this.closeButton.TabIndex = 5;
+            this.closeButton.TabStop = false;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
-            // groupBox31
+            // groupBox43
             // 
-            this.groupBox31.Controls.Add(this.textBox25);
-            this.groupBox31.Controls.Add(this.label44);
-            this.groupBox31.Controls.Add(this.comboBox3);
-            this.groupBox31.Controls.Add(this.label43);
-            this.groupBox31.Controls.Add(this.textBox24);
-            this.groupBox31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox31.ForeColor = System.Drawing.Color.White;
-            this.groupBox31.Location = new System.Drawing.Point(9, 45);
-            this.groupBox31.Name = "groupBox31";
-            this.groupBox31.Size = new System.Drawing.Size(340, 164);
-            this.groupBox31.TabIndex = 27;
-            this.groupBox31.TabStop = false;
-            this.groupBox31.Text = "Substitutes";
+            this.groupBox43.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.groupBox43.Controls.Add(this.groupBox44);
+            this.groupBox43.Controls.Add(this.groupBox45);
+            this.groupBox43.Controls.Add(this.label56);
+            this.groupBox43.Controls.Add(this.label57);
+            this.groupBox43.Controls.Add(this.pictureBox1);
+            this.groupBox43.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox43.ForeColor = System.Drawing.Color.White;
+            this.groupBox43.Location = new System.Drawing.Point(6, 3);
+            this.groupBox43.Name = "groupBox43";
+            this.groupBox43.Size = new System.Drawing.Size(731, 479);
+            this.groupBox43.TabIndex = 6;
+            this.groupBox43.TabStop = false;
+            this.groupBox43.Text = "Ban Management";
             // 
-            // label43
+            // groupBox44
             // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(6, 18);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(210, 14);
-            this.label43.TabIndex = 3;
-            this.label43.Text = "Maximum number of subs before ban\r\n";
+            this.groupBox44.BackColor = System.Drawing.Color.Black;
+            this.groupBox44.Controls.Add(this.button35);
+            this.groupBox44.Controls.Add(this.listBox4);
+            this.groupBox44.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox44.ForeColor = System.Drawing.Color.White;
+            this.groupBox44.Location = new System.Drawing.Point(430, 91);
+            this.groupBox44.Name = "groupBox44";
+            this.groupBox44.Size = new System.Drawing.Size(293, 382);
+            this.groupBox44.TabIndex = 12;
+            this.groupBox44.TabStop = false;
+            this.groupBox44.Text = "Current Bans";
             // 
-            // textBox24
+            // button35
             // 
-            this.textBox24.BackColor = System.Drawing.Color.Black;
-            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox24.ForeColor = System.Drawing.Color.White;
-            this.textBox24.Location = new System.Drawing.Point(9, 52);
-            this.textBox24.MaxLength = 15;
-            this.textBox24.Name = "textBox24";
-            this.textBox24.Size = new System.Drawing.Size(99, 22);
-            this.textBox24.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox24, "Enter the maximum number of subs that a player may use before\r\nthe player is bann" +
-        "ed.");
+            this.button35.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button35.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button35.ForeColor = System.Drawing.Color.White;
+            this.button35.Location = new System.Drawing.Point(178, 353);
+            this.button35.Name = "button35";
+            this.button35.Size = new System.Drawing.Size(109, 23);
+            this.button35.TabIndex = 14;
+            this.button35.Text = "Remove Ban";
+            this.coreToolTip.SetToolTip(this.button35, "Click this button to remove the ban.");
+            this.button35.UseVisualStyleBackColor = false;
             // 
-            // checkBox14
+            // listBox4
             // 
-            this.checkBox14.AutoSize = true;
-            this.checkBox14.Location = new System.Drawing.Point(9, 21);
-            this.checkBox14.Name = "checkBox14";
-            this.checkBox14.Size = new System.Drawing.Size(179, 18);
-            this.checkBox14.TabIndex = 11;
-            this.checkBox14.Text = "Enable Pickup Game Module";
-            this.coreToolTip.SetToolTip(this.checkBox14, "Select whether this module should be enabled.");
-            this.checkBox14.UseVisualStyleBackColor = true;
+            this.listBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.listBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listBox4.ForeColor = System.Drawing.Color.White;
+            this.listBox4.FormattingEnabled = true;
+            this.listBox4.ItemHeight = 14;
+            this.listBox4.Location = new System.Drawing.Point(6, 18);
+            this.listBox4.Name = "listBox4";
+            this.listBox4.Size = new System.Drawing.Size(281, 310);
+            this.listBox4.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.listBox4, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+        "s loaded.");
             // 
-            // label48
+            // groupBox45
             // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(82, 47);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(303, 14);
-            this.label48.TabIndex = 2;
-            this.label48.Text = "Allows the server to be set up in pick-up game mode.";
+            this.groupBox45.BackColor = System.Drawing.Color.Black;
+            this.groupBox45.Controls.Add(this.textBox29);
+            this.groupBox45.Controls.Add(this.comboBox6);
+            this.groupBox45.Controls.Add(this.label47);
+            this.groupBox45.Controls.Add(this.textBox28);
+            this.groupBox45.Controls.Add(this.button38);
+            this.groupBox45.Controls.Add(this.label51);
+            this.groupBox45.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox45.ForeColor = System.Drawing.Color.White;
+            this.groupBox45.Location = new System.Drawing.Point(6, 91);
+            this.groupBox45.Name = "groupBox45";
+            this.groupBox45.Size = new System.Drawing.Size(416, 382);
+            this.groupBox45.TabIndex = 5;
+            this.groupBox45.TabStop = false;
+            this.groupBox45.Text = "Add Ban";
             // 
-            // label49
+            // label47
             // 
-            this.label49.AutoSize = true;
-            this.label49.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label49.ForeColor = System.Drawing.Color.Silver;
-            this.label49.Location = new System.Drawing.Point(76, 18);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(215, 25);
-            this.label49.TabIndex = 1;
-            this.label49.Text = "Module: Pickup Game";
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(6, 43);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(93, 14);
+            this.label47.TabIndex = 16;
+            this.label47.Text = "User\'s QL Name";
             // 
-            // pictureBox9
+            // textBox28
             // 
-            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
-            this.pictureBox9.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox9.TabIndex = 0;
-            this.pictureBox9.TabStop = false;
+            this.textBox28.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox28.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox28.ForeColor = System.Drawing.Color.White;
+            this.textBox28.Location = new System.Drawing.Point(9, 82);
+            this.textBox28.MaxLength = 15;
+            this.textBox28.Name = "textBox28";
+            this.textBox28.Size = new System.Drawing.Size(215, 22);
+            this.textBox28.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.textBox28, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
+        "ban database. Do not include the clan tag.");
             // 
-            // textBox25
+            // button38
             // 
-            this.textBox25.BackColor = System.Drawing.Color.Black;
-            this.textBox25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox25.ForeColor = System.Drawing.Color.White;
-            this.textBox25.Location = new System.Drawing.Point(9, 127);
-            this.textBox25.MaxLength = 15;
-            this.textBox25.Name = "textBox25";
-            this.textBox25.Size = new System.Drawing.Size(99, 22);
-            this.textBox25.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox25, "Specify the time to ban the player for after the maximum subs\r\nare exceeded. This" +
-        " must be a number.");
+            this.button38.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button38.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button38.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button38.ForeColor = System.Drawing.Color.White;
+            this.button38.Location = new System.Drawing.Point(6, 353);
+            this.button38.Name = "button38";
+            this.button38.Size = new System.Drawing.Size(99, 23);
+            this.button38.TabIndex = 13;
+            this.button38.Text = "Add Ban";
+            this.coreToolTip.SetToolTip(this.button38, "Click this button to add the ban.");
+            this.button38.UseVisualStyleBackColor = false;
             // 
-            // label44
+            // label51
             // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(6, 88);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(292, 14);
-            this.label44.TabIndex = 18;
-            this.label44.Text = "Time to ban player for after max subs are exceeded";
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(6, 202);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(77, 14);
+            this.label51.TabIndex = 9;
+            this.label51.Text = "Ban Duration";
             // 
-            // comboBox3
+            // label56
             // 
-            this.comboBox3.BackColor = System.Drawing.Color.Black;
-            this.comboBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox3.ForeColor = System.Drawing.Color.White;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(126, 126);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(124, 22);
-            this.comboBox3.TabIndex = 17;
-            this.coreToolTip.SetToolTip(this.comboBox3, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(82, 47);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(164, 14);
+            this.label56.TabIndex = 2;
+            this.label56.Text = "Add or delete SSB user bans";
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label57.ForeColor = System.Drawing.Color.Silver;
+            this.label57.Location = new System.Drawing.Point(76, 18);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(220, 25);
+            this.label57.TabIndex = 1;
+            this.label57.Text = "SSB Ban Management";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(12, 21);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // textBox29
+            // 
+            this.textBox29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.textBox29.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox29.ForeColor = System.Drawing.Color.White;
+            this.textBox29.Location = new System.Drawing.Point(6, 245);
+            this.textBox29.MaxLength = 15;
+            this.textBox29.Name = "textBox29";
+            this.textBox29.Size = new System.Drawing.Size(99, 22);
+            this.textBox29.TabIndex = 18;
+            this.coreToolTip.SetToolTip(this.textBox29, "Specify the length of the ban. This must be a number.");
+            // 
+            // comboBox6
+            // 
+            this.comboBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.comboBox6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox6.ForeColor = System.Drawing.Color.White;
+            this.comboBox6.FormattingEnabled = true;
+            this.comboBox6.Location = new System.Drawing.Point(123, 244);
+            this.comboBox6.Name = "comboBox6";
+            this.comboBox6.Size = new System.Drawing.Size(124, 22);
+            this.comboBox6.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.comboBox6, "This list contains time scale that will be combined\r\nwith the value you entered i" +
         "n the box to the left.");
             // 
-            // groupBox30
-            // 
-            this.groupBox30.Controls.Add(this.button29);
-            this.groupBox30.Controls.Add(this.button30);
-            this.groupBox30.Controls.Add(this.button31);
-            this.groupBox30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox30.ForeColor = System.Drawing.Color.White;
-            this.groupBox30.Location = new System.Drawing.Point(6, 212);
-            this.groupBox30.Name = "groupBox30";
-            this.groupBox30.Size = new System.Drawing.Size(331, 59);
-            this.groupBox30.TabIndex = 10;
-            this.groupBox30.TabStop = false;
-            this.groupBox30.Text = "Settings";
-            // 
-            // button31
-            // 
-            this.button31.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button31.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button31.ForeColor = System.Drawing.Color.White;
-            this.button31.Location = new System.Drawing.Point(17, 18);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(79, 23);
-            this.button31.TabIndex = 8;
-            this.button31.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button31, "Save the current settings to the configuration file.");
-            this.button31.UseVisualStyleBackColor = false;
-            // 
-            // button30
-            // 
-            this.button30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button30.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button30.ForeColor = System.Drawing.Color.White;
-            this.button30.Location = new System.Drawing.Point(127, 18);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(79, 23);
-            this.button30.TabIndex = 1;
-            this.button30.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button30, "Load the current settings from the configuration file.");
-            this.button30.UseVisualStyleBackColor = false;
-            // 
-            // button29
-            // 
-            this.button29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button29.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button29.ForeColor = System.Drawing.Color.White;
-            this.button29.Location = new System.Drawing.Point(239, 18);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(79, 23);
-            this.button29.TabIndex = 9;
-            this.button29.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button29, "Reset this module to its default settings.");
-            this.button29.UseVisualStyleBackColor = false;
-            // 
-            // groupBox29
-            // 
-            this.groupBox29.Controls.Add(this.textBox19);
-            this.groupBox29.Controls.Add(this.label37);
-            this.groupBox29.Controls.Add(this.groupBox30);
-            this.groupBox29.Controls.Add(this.comboBox4);
-            this.groupBox29.Controls.Add(this.label38);
-            this.groupBox29.Controls.Add(this.textBox20);
-            this.groupBox29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox29.ForeColor = System.Drawing.Color.White;
-            this.groupBox29.Location = new System.Drawing.Point(367, 45);
-            this.groupBox29.Name = "groupBox29";
-            this.groupBox29.Size = new System.Drawing.Size(340, 277);
-            this.groupBox29.TabIndex = 28;
-            this.groupBox29.TabStop = false;
-            this.groupBox29.Text = "No-Shows";
-            // 
-            // textBox19
-            // 
-            this.textBox19.BackColor = System.Drawing.Color.Black;
-            this.textBox19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox19.ForeColor = System.Drawing.Color.White;
-            this.textBox19.Location = new System.Drawing.Point(9, 127);
-            this.textBox19.MaxLength = 15;
-            this.textBox19.Name = "textBox19";
-            this.textBox19.Size = new System.Drawing.Size(99, 22);
-            this.textBox19.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox19, "Specify the time to ban the player for after the maximum no-shows\r\nare exceeded. " +
-        "This must be a number.");
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(6, 88);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(320, 14);
-            this.label37.TabIndex = 18;
-            this.label37.Text = "Time to ban player for after max no-shows are exceeded";
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.BackColor = System.Drawing.Color.Black;
-            this.comboBox4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox4.ForeColor = System.Drawing.Color.White;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(126, 126);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(124, 22);
-            this.comboBox4.TabIndex = 17;
-            this.coreToolTip.SetToolTip(this.comboBox4, "This list contains time scale that will be combined\r\nwith the value you entered i" +
-        "n the box to the left.");
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(6, 18);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(238, 14);
-            this.label38.TabIndex = 3;
-            this.label38.Text = "Maximum number of no-shows before ban\r\n";
-            // 
-            // textBox20
-            // 
-            this.textBox20.BackColor = System.Drawing.Color.Black;
-            this.textBox20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox20.ForeColor = System.Drawing.Color.White;
-            this.textBox20.Location = new System.Drawing.Point(9, 52);
-            this.textBox20.MaxLength = 15;
-            this.textBox20.Name = "textBox20";
-            this.textBox20.Size = new System.Drawing.Size(99, 22);
-            this.textBox20.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox20, "Enter the maximum number of times that a player can leave the pickup game\r\nonce i" +
-        "t has started before the player is banned.\r\n\r\n");
-            // 
-            // groupBox32
-            // 
-            this.groupBox32.Controls.Add(this.label40);
-            this.groupBox32.Controls.Add(this.textBox22);
-            this.groupBox32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox32.ForeColor = System.Drawing.Color.White;
-            this.groupBox32.Location = new System.Drawing.Point(9, 215);
-            this.groupBox32.Name = "groupBox32";
-            this.groupBox32.Size = new System.Drawing.Size(340, 107);
-            this.groupBox32.TabIndex = 28;
-            this.groupBox32.TabStop = false;
-            this.groupBox32.Text = "Team Size";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(6, 29);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(156, 14);
-            this.label40.TabIndex = 3;
-            this.label40.Text = "Players per team for pickup";
-            // 
-            // textBox22
-            // 
-            this.textBox22.BackColor = System.Drawing.Color.Black;
-            this.textBox22.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox22.ForeColor = System.Drawing.Color.White;
-            this.textBox22.Location = new System.Drawing.Point(9, 62);
-            this.textBox22.MaxLength = 15;
-            this.textBox22.Name = "textBox22";
-            this.textBox22.Size = new System.Drawing.Size(99, 22);
-            this.textBox22.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox22, "Enter the number of players that each team will have in pickup mode.");
-            // 
-            // groupBox33
-            // 
-            this.groupBox33.Controls.Add(this.textBox1);
-            this.groupBox33.Controls.Add(this.label4);
-            this.groupBox33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox33.ForeColor = System.Drawing.Color.White;
-            this.groupBox33.Location = new System.Drawing.Point(9, 56);
-            this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(340, 107);
-            this.groupBox33.TabIndex = 29;
-            this.groupBox33.TabStop = false;
-            this.groupBox33.Text = "Account Age";
-            // 
-            // groupBox34
-            // 
-            this.groupBox34.Controls.Add(this.label11);
-            this.groupBox34.Controls.Add(this.textBox6);
-            this.groupBox34.Controls.Add(this.textBox5);
-            this.groupBox34.Controls.Add(this.label19);
-            this.groupBox34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox34.ForeColor = System.Drawing.Color.White;
-            this.groupBox34.Location = new System.Drawing.Point(9, 56);
-            this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(381, 189);
-            this.groupBox34.TabIndex = 29;
-            this.groupBox34.TabStop = false;
-            this.groupBox34.Text = "Elo Values";
-            // 
-            // groupBox35
-            // 
-            this.groupBox35.Controls.Add(this.label36);
-            this.groupBox35.Controls.Add(this.label33);
-            this.groupBox35.Controls.Add(this.textBox18);
-            this.groupBox35.Controls.Add(this.textBox17);
-            this.groupBox35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox35.ForeColor = System.Drawing.Color.White;
-            this.groupBox35.Location = new System.Drawing.Point(9, 45);
-            this.groupBox35.Name = "groupBox35";
-            this.groupBox35.Size = new System.Drawing.Size(417, 208);
-            this.groupBox35.TabIndex = 29;
-            this.groupBox35.TabStop = false;
-            this.groupBox35.Text = "Repeat";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 133);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(99, 14);
-            this.label36.TabIndex = 14;
-            this.label36.Text = "Message to send";
-            // 
-            // groupBox36
-            // 
-            this.groupBox36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox36.Controls.Add(this.groupBox37);
-            this.groupBox36.Controls.Add(this.label42);
-            this.groupBox36.Controls.Add(this.label45);
-            this.groupBox36.Controls.Add(this.pictureBox10);
-            this.groupBox36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox36.ForeColor = System.Drawing.Color.White;
-            this.groupBox36.Location = new System.Drawing.Point(3, 3);
-            this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(722, 422);
-            this.groupBox36.TabIndex = 4;
-            this.groupBox36.TabStop = false;
-            this.groupBox36.Text = "Server List";
-            // 
-            // groupBox37
-            // 
-            this.groupBox37.Controls.Add(this.groupBox38);
-            this.groupBox37.Controls.Add(this.checkBox11);
-            this.groupBox37.Controls.Add(this.groupBox39);
-            this.groupBox37.ForeColor = System.Drawing.Color.White;
-            this.groupBox37.Location = new System.Drawing.Point(3, 91);
-            this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Size = new System.Drawing.Size(713, 328);
-            this.groupBox37.TabIndex = 12;
-            this.groupBox37.TabStop = false;
-            this.groupBox37.Text = "Server List Options";
-            // 
-            // groupBox38
-            // 
-            this.groupBox38.Controls.Add(this.label39);
-            this.groupBox38.Controls.Add(this.textBox21);
-            this.groupBox38.Controls.Add(this.textBox23);
-            this.groupBox38.Controls.Add(this.label41);
-            this.groupBox38.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox38.ForeColor = System.Drawing.Color.White;
-            this.groupBox38.Location = new System.Drawing.Point(9, 56);
-            this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Size = new System.Drawing.Size(381, 189);
-            this.groupBox38.TabIndex = 29;
-            this.groupBox38.TabStop = false;
-            this.groupBox38.Text = "Display Settings";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(6, 30);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(154, 14);
-            this.label39.TabIndex = 3;
-            this.label39.Text = "Maximum servers to display";
-            // 
-            // textBox21
-            // 
-            this.textBox21.BackColor = System.Drawing.Color.Black;
-            this.textBox21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox21.ForeColor = System.Drawing.Color.White;
-            this.textBox21.Location = new System.Drawing.Point(9, 151);
-            this.textBox21.MaxLength = 15;
-            this.textBox21.Name = "textBox21";
-            this.textBox21.Size = new System.Drawing.Size(99, 22);
-            this.textBox21.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox21, "Enter the number of seconds that must pass before a player can request\r\nthe activ" +
-        "e server list again.");
-            // 
-            // textBox23
-            // 
-            this.textBox23.BackColor = System.Drawing.Color.Black;
-            this.textBox23.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox23.ForeColor = System.Drawing.Color.White;
-            this.textBox23.Location = new System.Drawing.Point(9, 64);
-            this.textBox23.MaxLength = 15;
-            this.textBox23.Name = "textBox23";
-            this.textBox23.Size = new System.Drawing.Size(99, 22);
-            this.textBox23.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox23, "Enter the maximum number of active servers to return. Each server is sent to QL c" +
-        "hat one per line, so \r\nthis number should not be large.");
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(6, 117);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(202, 14);
-            this.label41.TabIndex = 12;
-            this.label41.Text = "Time between queries [in seconds]";
-            // 
-            // checkBox11
-            // 
-            this.checkBox11.AutoSize = true;
-            this.checkBox11.Location = new System.Drawing.Point(9, 21);
-            this.checkBox11.Name = "checkBox11";
-            this.checkBox11.Size = new System.Drawing.Size(230, 18);
-            this.checkBox11.TabIndex = 11;
-            this.checkBox11.Text = "Enable Quake Live Server List Module";
-            this.coreToolTip.SetToolTip(this.checkBox11, "Select whether this module should be enabled.");
-            this.checkBox11.UseVisualStyleBackColor = true;
-            // 
-            // groupBox39
-            // 
-            this.groupBox39.Controls.Add(this.button32);
-            this.groupBox39.Controls.Add(this.button33);
-            this.groupBox39.Controls.Add(this.button34);
-            this.groupBox39.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox39.ForeColor = System.Drawing.Color.White;
-            this.groupBox39.Location = new System.Drawing.Point(422, 273);
-            this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(285, 50);
-            this.groupBox39.TabIndex = 10;
-            this.groupBox39.TabStop = false;
-            this.groupBox39.Text = "Settings";
-            // 
-            // button32
-            // 
-            this.button32.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button32.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button32.ForeColor = System.Drawing.Color.White;
-            this.button32.Location = new System.Drawing.Point(199, 18);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(79, 23);
-            this.button32.TabIndex = 9;
-            this.button32.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button32, "Reset this module to its default settings.");
-            this.button32.UseVisualStyleBackColor = false;
-            // 
-            // button33
-            // 
-            this.button33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button33.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button33.ForeColor = System.Drawing.Color.White;
-            this.button33.Location = new System.Drawing.Point(104, 18);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(79, 23);
-            this.button33.TabIndex = 1;
-            this.button33.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button33, "Load the current settings from the configuration file.");
-            this.button33.UseVisualStyleBackColor = false;
-            // 
-            // button34
-            // 
-            this.button34.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button34.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button34.ForeColor = System.Drawing.Color.White;
-            this.button34.Location = new System.Drawing.Point(10, 18);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(79, 23);
-            this.button34.TabIndex = 8;
-            this.button34.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button34, "Save the current settings to the configuration file.");
-            this.button34.UseVisualStyleBackColor = false;
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(82, 47);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(450, 14);
-            this.label42.TabIndex = 2;
-            this.label42.Text = "Allows players to list active servers for a specified game type and region in-gam" +
-    "e.";
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label45.ForeColor = System.Drawing.Color.Silver;
-            this.label45.Location = new System.Drawing.Point(76, 18);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(373, 25);
-            this.label45.TabIndex = 1;
-            this.label45.Text = "Module: Quake Live Server List Display";
-            // 
-            // pictureBox10
-            // 
-            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
-            this.pictureBox10.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox10.Name = "pictureBox10";
-            this.pictureBox10.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox10.TabIndex = 0;
-            this.pictureBox10.TabStop = false;
-            // 
-            // usersTab
-            // 
-            this.usersTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.usersTab.ForeColor = System.Drawing.Color.White;
-            this.usersTab.Location = new System.Drawing.Point(4, 26);
-            this.usersTab.Name = "usersTab";
-            this.usersTab.Size = new System.Drawing.Size(732, 470);
-            this.usersTab.TabIndex = 4;
-            this.usersTab.Text = "User Management";
-            // 
-            // banTab
-            // 
-            this.banTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.banTab.ForeColor = System.Drawing.Color.White;
-            this.banTab.Location = new System.Drawing.Point(4, 26);
-            this.banTab.Name = "banTab";
-            this.banTab.Size = new System.Drawing.Size(732, 470);
-            this.banTab.TabIndex = 5;
-            this.banTab.Text = "Ban Management";
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.BackColor = System.Drawing.Color.Transparent;
+            this.label58.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
+            this.label58.Location = new System.Drawing.Point(23, 7);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(61, 13);
+            this.label58.TabIndex = 6;
+            this.label58.Text = "version 0.0";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.ClientSize = new System.Drawing.Size(742, 670);
+            this.BackColor = System.Drawing.Color.Black;
+            this.ClientSize = new System.Drawing.Size(752, 698);
+            this.Controls.Add(this.label58);
+            this.Controls.Add(this.closeButton);
+            this.Controls.Add(this.minimizeButton);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.UiTabCtl);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.ssbLogo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "Main";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).EndInit();
             this.UiTabCtl.ResumeLayout(false);
             this.mainTab.ResumeLayout(false);
             this.mainTab.PerformLayout();
             this.coreOptionsTab.ResumeLayout(false);
+            this.coreOptionsTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
             this.coreOptionsGrpBox.ResumeLayout(false);
             this.coreOptionsGrpBox.PerformLayout();
             this.settingsGroupBox.ResumeLayout(false);
@@ -3055,6 +3537,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
+            this.groupBox33.ResumeLayout(false);
+            this.groupBox33.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.accuracyTab.ResumeLayout(false);
@@ -3085,6 +3569,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox16.ResumeLayout(false);
             this.groupBox16.PerformLayout();
+            this.groupBox34.ResumeLayout(false);
+            this.groupBox34.PerformLayout();
             this.groupBox17.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.ircTab.ResumeLayout(false);
@@ -3105,34 +3591,24 @@
             this.groupBox24.PerformLayout();
             this.groupBox25.ResumeLayout(false);
             this.groupBox25.PerformLayout();
+            this.groupBox35.ResumeLayout(false);
+            this.groupBox35.PerformLayout();
             this.groupBox26.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
             this.pickupTab.ResumeLayout(false);
-            this.serversTab.ResumeLayout(false);
-            this.aboutTab.ResumeLayout(false);
-            this.aboutGroupBox.ResumeLayout(false);
-            this.aboutGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).EndInit();
-            this.statusBar.ResumeLayout(false);
-            this.statusBar.PerformLayout();
             this.groupBox27.ResumeLayout(false);
             this.groupBox27.PerformLayout();
             this.groupBox28.ResumeLayout(false);
             this.groupBox28.PerformLayout();
+            this.groupBox32.ResumeLayout(false);
+            this.groupBox32.PerformLayout();
+            this.groupBox29.ResumeLayout(false);
+            this.groupBox29.PerformLayout();
+            this.groupBox30.ResumeLayout(false);
             this.groupBox31.ResumeLayout(false);
             this.groupBox31.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
-            this.groupBox30.ResumeLayout(false);
-            this.groupBox29.ResumeLayout(false);
-            this.groupBox29.PerformLayout();
-            this.groupBox32.ResumeLayout(false);
-            this.groupBox32.PerformLayout();
-            this.groupBox33.ResumeLayout(false);
-            this.groupBox33.PerformLayout();
-            this.groupBox34.ResumeLayout(false);
-            this.groupBox34.PerformLayout();
-            this.groupBox35.ResumeLayout(false);
-            this.groupBox35.PerformLayout();
+            this.serversTab.ResumeLayout(false);
             this.groupBox36.ResumeLayout(false);
             this.groupBox36.PerformLayout();
             this.groupBox37.ResumeLayout(false);
@@ -3141,6 +3617,28 @@
             this.groupBox38.PerformLayout();
             this.groupBox39.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
+            this.usersTab.ResumeLayout(false);
+            this.groupBox40.ResumeLayout(false);
+            this.groupBox40.PerformLayout();
+            this.groupBox41.ResumeLayout(false);
+            this.groupBox42.ResumeLayout(false);
+            this.groupBox42.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
+            this.banTab.ResumeLayout(false);
+            this.aboutTab.ResumeLayout(false);
+            this.aboutGroupBox.ResumeLayout(false);
+            this.aboutGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).EndInit();
+            this.statusBar.ResumeLayout(false);
+            this.statusBar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
+            this.groupBox43.ResumeLayout(false);
+            this.groupBox43.PerformLayout();
+            this.groupBox44.ResumeLayout(false);
+            this.groupBox45.ResumeLayout(false);
+            this.groupBox45.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3148,7 +3646,7 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox ssbLogo;
         private System.Windows.Forms.TabControl UiTabCtl;
         private System.Windows.Forms.TabPage mainTab;
         private System.Windows.Forms.TabPage coreOptionsTab;
@@ -3157,8 +3655,6 @@
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.GroupBox coreOptionsGrpBox;
         private System.Windows.Forms.Label accountNameLabel;
-        private System.Windows.Forms.Label ownerLabel;
-        private System.Windows.Forms.TextBox ownersTextBox;
         private System.Windows.Forms.TextBox accountNameTextBox;
         private System.Windows.Forms.TextBox eloCacheTextBox;
         private System.Windows.Forms.Label eloCacheLabel;
@@ -3368,5 +3864,40 @@
         private System.Windows.Forms.PictureBox pictureBox10;
         private System.Windows.Forms.TabPage usersTab;
         private System.Windows.Forms.TabPage banTab;
+        private System.Windows.Forms.GroupBox groupBox40;
+        private System.Windows.Forms.GroupBox groupBox41;
+        private System.Windows.Forms.Button button36;
+        private System.Windows.Forms.ListBox listBox3;
+        private System.Windows.Forms.GroupBox groupBox42;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.TextBox textBox26;
+        private System.Windows.Forms.Button button37;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.PictureBox pictureBox11;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.PictureBox pictureBox12;
+        private System.Windows.Forms.TextBox textBox27;
+        private System.Windows.Forms.Label ownerLabel;
+        private System.Windows.Forms.PictureBox minimizeButton;
+        private System.Windows.Forms.PictureBox closeButton;
+        private System.Windows.Forms.GroupBox groupBox43;
+        private System.Windows.Forms.GroupBox groupBox44;
+        private System.Windows.Forms.Button button35;
+        private System.Windows.Forms.ListBox listBox4;
+        private System.Windows.Forms.GroupBox groupBox45;
+        private System.Windows.Forms.TextBox textBox29;
+        private System.Windows.Forms.ComboBox comboBox6;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TextBox textBox28;
+        private System.Windows.Forms.Button button38;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.Label label57;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label58;
     }
 }
