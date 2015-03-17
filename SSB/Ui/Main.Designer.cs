@@ -32,339 +32,359 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.ssbLogo = new System.Windows.Forms.PictureBox();
             this.UiTabCtl = new System.Windows.Forms.TabControl();
-            this.mainTab = new System.Windows.Forms.TabPage();
-            this.appendToMainCheckbox = new System.Windows.Forms.CheckBox();
-            this.ConsoleTextBox = new System.Windows.Forms.TextBox();
+            this.logTab = new System.Windows.Forms.TabPage();
+            this.logHeaderDescLabel = new System.Windows.Forms.Label();
+            this.logHeaderLabel = new System.Windows.Forms.Label();
+            this.logHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.logAppendEventCheckBox = new System.Windows.Forms.CheckBox();
+            this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
-            this.label54 = new System.Windows.Forms.Label();
-            this.label55 = new System.Windows.Forms.Label();
-            this.pictureBox12 = new System.Windows.Forms.PictureBox();
-            this.coreOptionsGrpBox = new System.Windows.Forms.GroupBox();
-            this.textBox27 = new System.Windows.Forms.TextBox();
-            this.qlConNoPrintCheckbox = new System.Windows.Forms.CheckBox();
-            this.settingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.loadSettingsButton = new System.Windows.Forms.Button();
-            this.saveSettingsButton = new System.Windows.Forms.Button();
-            this.logMainWindowCheckbox = new System.Windows.Forms.CheckBox();
-            this.eloCacheTextBox = new System.Windows.Forms.TextBox();
-            this.eloCacheLabel = new System.Windows.Forms.Label();
-            this.ownerLabel = new System.Windows.Forms.Label();
-            this.accountNameTextBox = new System.Windows.Forms.TextBox();
-            this.accountNameLabel = new System.Windows.Forms.Label();
+            this.coreHeaderDescLabel = new System.Windows.Forms.Label();
+            this.coreHeaderLabel = new System.Windows.Forms.Label();
+            this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreOwnerNameTextBox = new System.Windows.Forms.TextBox();
+            this.coreHideQlConsoleCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreResetDefaultsCheckBox = new System.Windows.Forms.Button();
+            this.coreLoadSettingsButton = new System.Windows.Forms.Button();
+            this.coreSaveSettingsButton = new System.Windows.Forms.Button();
+            this.coreLogEventsDiskCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreEloCacheTextBox = new System.Windows.Forms.TextBox();
+            this.coreEloCacheLabel = new System.Windows.Forms.Label();
+            this.coreOwnerNameLabel = new System.Windows.Forms.Label();
+            this.coreAccountNameTextBox = new System.Windows.Forms.TextBox();
+            this.coreAccountNameLabel = new System.Windows.Forms.Label();
             this.modulesTab = new System.Windows.Forms.TabPage();
             this.moduleTabControl = new System.Windows.Forms.TabControl();
             this.accountDateTab = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.groupBox33 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.modAccDateContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateOptAccAgeGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateAccAgeTextBox = new System.Windows.Forms.TextBox();
+            this.modAccDateAccAgeLabel = new System.Windows.Forms.Label();
+            this.modAccDateEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modAccDateSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateResetSettingsButton = new System.Windows.Forms.Button();
+            this.modAccDateLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modAccDateSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modAccDateHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modAccDateHeaderLabel = new System.Windows.Forms.Label();
+            this.modAccDateHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.accuracyTab = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.button20 = new System.Windows.Forms.Button();
-            this.button21 = new System.Windows.Forms.Button();
-            this.button22 = new System.Windows.Forms.Button();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.modAccuracyContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccuracyOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccuracySettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccuracyResetSettingsButton = new System.Windows.Forms.Button();
+            this.modAccuracyLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modAccuracySaveSettingsButton = new System.Windows.Forms.Button();
+            this.modAccuracyEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modAccuracyHeaderLabelDesc = new System.Windows.Forms.Label();
+            this.modAccuracyHeaderLabel = new System.Windows.Forms.Label();
+            this.modAccuracyHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.autoVoterTab = new System.Windows.Forms.TabPage();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.button11 = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.label8 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterOptCurVotesGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterClearVotesButton = new System.Windows.Forms.Button();
+            this.modAutoVoterDelVoteButton = new System.Windows.Forms.Button();
+            this.modAutoVoterCurVotesListBox = new System.Windows.Forms.ListBox();
+            this.modAutoVoterOptVoteDetailsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterContainingLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterContainingTextBox = new System.Windows.Forms.TextBox();
+            this.modAutoVoterEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modAutoVoterAddVoteButton = new System.Windows.Forms.Button();
+            this.modAutoVoterContainingDescLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterTypeLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterVoteTypeComboxBox = new System.Windows.Forms.ComboBox();
+            this.modAutoVoterRejectRadioButton = new System.Windows.Forms.RadioButton();
+            this.modAutoVoterPassRadioButton = new System.Windows.Forms.RadioButton();
+            this.modAutoVoterActionLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterResetSettingsButton = new System.Windows.Forms.Button();
+            this.modAutoVoterLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modAutoVoterSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modAutoVoterHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterHeaderLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.earlyQuitTab = new System.Windows.Forms.TabPage();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
-            this.button15 = new System.Windows.Forms.Button();
-            this.listBox2 = new System.Windows.Forms.ListBox();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.button17 = new System.Windows.Forms.Button();
-            this.button18 = new System.Windows.Forms.Button();
-            this.button19 = new System.Windows.Forms.Button();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitOptCurQuitsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitForgiveQuitButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitClearQuitsButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitDelQuitButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitCurQuitsListBox = new System.Windows.Forms.ListBox();
+            this.modEarlyQuitOptDetailsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitTimeTextBox = new System.Windows.Forms.TextBox();
+            this.modEarlyQuitMaxQuitsTextBox = new System.Windows.Forms.TextBox();
+            this.modEarlyQuitEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modEarlyQuitTimeLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitTimeScaleComboxBox = new System.Windows.Forms.ComboBox();
+            this.modEarlyQuitMaxQuitsLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitResetSettingsButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modEarlyQuitHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitHeaderLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.eloLimitTab = new System.Windows.Forms.TabPage();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.groupBox16 = new System.Windows.Forms.GroupBox();
-            this.groupBox34 = new System.Windows.Forms.GroupBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.groupBox17 = new System.Windows.Forms.GroupBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.modEloLimiterContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterOptEloGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterMinEloLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterMaxEloTextBox = new System.Windows.Forms.TextBox();
+            this.modEloLimiterMinEloTextBox = new System.Windows.Forms.TextBox();
+            this.modEloLimiterMaxEloLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modEloLimiterSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterResetSettingsButton = new System.Windows.Forms.Button();
+            this.modEloLimiterLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modEloLimiterSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modEloLimiterHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterHeaderLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.ircTab = new System.Windows.Forms.TabPage();
-            this.groupBox18 = new System.Windows.Forms.GroupBox();
-            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.modIRCContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCOptGroupBox = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.groupBox23 = new System.Windows.Forms.GroupBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.checkBox9 = new System.Windows.Forms.CheckBox();
-            this.label28 = new System.Windows.Forms.Label();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.label24 = new System.Windows.Forms.Label();
-            this.groupBox20 = new System.Windows.Forms.GroupBox();
-            this.button23 = new System.Windows.Forms.Button();
-            this.button24 = new System.Windows.Forms.Button();
-            this.button25 = new System.Windows.Forms.Button();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.label27 = new System.Windows.Forms.Label();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.groupBox22 = new System.Windows.Forms.GroupBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.textBox8 = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.label26 = new System.Windows.Forms.Label();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.groupBox21 = new System.Windows.Forms.GroupBox();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.label31 = new System.Windows.Forms.Label();
-            this.textBox15 = new System.Windows.Forms.TextBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.pictureBox7 = new System.Windows.Forms.PictureBox();
+            this.modIRCOptServerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCChannelKeyLabel = new System.Windows.Forms.Label();
+            this.modIRCChannelKeyTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCAutoConnectCheckBox = new System.Windows.Forms.CheckBox();
+            this.modIRCChannelLabel = new System.Windows.Forms.Label();
+            this.modIRCChannelTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCServerAddressLabel = new System.Windows.Forms.Label();
+            this.modIRCServerAddressTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCServerPortLabel = new System.Windows.Forms.Label();
+            this.modIRCServerPortTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCServerPassLabel = new System.Windows.Forms.Label();
+            this.modIRCServerPassTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCOptNamingGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCAdminNameLabel = new System.Windows.Forms.Label();
+            this.modIRCAdminNameTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCBotNickNameLabel = new System.Windows.Forms.Label();
+            this.modIRCBotNickNameTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCBotUserNameLabel = new System.Windows.Forms.Label();
+            this.modIRCBotUserNameTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCOptQuakeNetGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCQNetHideHostCheckBox = new System.Windows.Forms.CheckBox();
+            this.modIRCQNetAutoAuthCheckBox = new System.Windows.Forms.CheckBox();
+            this.modIRCQNetPassTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCQNetPassLabel = new System.Windows.Forms.Label();
+            this.modIRCQNetUserNameTextBox = new System.Windows.Forms.TextBox();
+            this.modIRCQNetUserNameLabel = new System.Windows.Forms.Label();
+            this.modIRCSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCResetSettingsButton = new System.Windows.Forms.Button();
+            this.modIRCLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modIRCSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modIRCEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modIRCHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modIRCHeaderLabel = new System.Windows.Forms.Label();
+            this.modIRCHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.motdTab = new System.Windows.Forms.TabPage();
-            this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.groupBox25 = new System.Windows.Forms.GroupBox();
-            this.groupBox35 = new System.Windows.Forms.GroupBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
-            this.textBox18 = new System.Windows.Forms.TextBox();
-            this.textBox17 = new System.Windows.Forms.TextBox();
-            this.checkBox10 = new System.Windows.Forms.CheckBox();
-            this.groupBox26 = new System.Windows.Forms.GroupBox();
-            this.button26 = new System.Windows.Forms.Button();
-            this.button27 = new System.Windows.Forms.Button();
-            this.button28 = new System.Windows.Forms.Button();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.modMOTDContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDOptMsgRepeatGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDRepeatMsgLabel = new System.Windows.Forms.Label();
+            this.modMOTDRepeatTimeLabel = new System.Windows.Forms.Label();
+            this.modMOTDRepeatMsgTextBox = new System.Windows.Forms.TextBox();
+            this.modMOTDRepeatTimeTextBox = new System.Windows.Forms.TextBox();
+            this.modMOTDEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modMOTDSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDResetSettingsButton = new System.Windows.Forms.Button();
+            this.modMOTDLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modMOTDSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modMOTDHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modMOTDHeaderLabel = new System.Windows.Forms.Label();
+            this.modMOTDHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.pickupTab = new System.Windows.Forms.TabPage();
-            this.groupBox27 = new System.Windows.Forms.GroupBox();
-            this.groupBox28 = new System.Windows.Forms.GroupBox();
-            this.groupBox32 = new System.Windows.Forms.GroupBox();
-            this.label40 = new System.Windows.Forms.Label();
-            this.textBox22 = new System.Windows.Forms.TextBox();
-            this.groupBox29 = new System.Windows.Forms.GroupBox();
-            this.textBox19 = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
-            this.groupBox30 = new System.Windows.Forms.GroupBox();
-            this.button29 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
-            this.button31 = new System.Windows.Forms.Button();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.label38 = new System.Windows.Forms.Label();
-            this.textBox20 = new System.Windows.Forms.TextBox();
-            this.groupBox31 = new System.Windows.Forms.GroupBox();
-            this.textBox25 = new System.Windows.Forms.TextBox();
-            this.label44 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.label43 = new System.Windows.Forms.Label();
-            this.textBox24 = new System.Windows.Forms.TextBox();
-            this.checkBox14 = new System.Windows.Forms.CheckBox();
-            this.label48 = new System.Windows.Forms.Label();
-            this.label49 = new System.Windows.Forms.Label();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
+            this.modPickupContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupOptTeamSizeGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupPlayersPerTeamLabel = new System.Windows.Forms.Label();
+            this.modPickupPlayersPerTeamTextBox = new System.Windows.Forms.TextBox();
+            this.modPickupOptNoShowsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupNoShowsTimeBanTextBox = new System.Windows.Forms.TextBox();
+            this.modPickupNoShowsTimeBanLabel = new System.Windows.Forms.Label();
+            this.modPickupNoShowsTimeBanScaleComboBox = new System.Windows.Forms.ComboBox();
+            this.modPickupMaxNoShowsLabel = new System.Windows.Forms.Label();
+            this.modPickupMaxNoShowsTextBox = new System.Windows.Forms.TextBox();
+            this.modPickupSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupResetSettingsButton = new System.Windows.Forms.Button();
+            this.modPickupLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modPickupSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modPickupOptSubsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupSubsTimeBanTextBox = new System.Windows.Forms.TextBox();
+            this.modPickupSubsTimeBanLabel = new System.Windows.Forms.Label();
+            this.modPickupSubsTimeBanScaleComboBox = new System.Windows.Forms.ComboBox();
+            this.modPickupMaxSubsLabel = new System.Windows.Forms.Label();
+            this.modPickupMaxSubsTextBox = new System.Windows.Forms.TextBox();
+            this.modPickupEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modPickupHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modPickupHeaderLabel = new System.Windows.Forms.Label();
+            this.modPickupHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.serversTab = new System.Windows.Forms.TabPage();
-            this.groupBox36 = new System.Windows.Forms.GroupBox();
-            this.groupBox37 = new System.Windows.Forms.GroupBox();
-            this.groupBox38 = new System.Windows.Forms.GroupBox();
-            this.label39 = new System.Windows.Forms.Label();
-            this.textBox21 = new System.Windows.Forms.TextBox();
-            this.textBox23 = new System.Windows.Forms.TextBox();
-            this.label41 = new System.Windows.Forms.Label();
-            this.checkBox11 = new System.Windows.Forms.CheckBox();
-            this.groupBox39 = new System.Windows.Forms.GroupBox();
-            this.button32 = new System.Windows.Forms.Button();
-            this.button33 = new System.Windows.Forms.Button();
-            this.button34 = new System.Windows.Forms.Button();
-            this.label42 = new System.Windows.Forms.Label();
-            this.label45 = new System.Windows.Forms.Label();
-            this.pictureBox10 = new System.Windows.Forms.PictureBox();
+            this.modServerListContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListOptGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListOptDisplayGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListMaxServersLabel = new System.Windows.Forms.Label();
+            this.modServerListTimeBetweenTextBox = new System.Windows.Forms.TextBox();
+            this.modServerListMaxServersTextBox = new System.Windows.Forms.TextBox();
+            this.modServerListTimeBetweenLabel = new System.Windows.Forms.Label();
+            this.modServerListEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modServerListSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListResetSettingsButton = new System.Windows.Forms.Button();
+            this.modServerListLoadSettingsButton = new System.Windows.Forms.Button();
+            this.modServerListSaveSettingsButton = new System.Windows.Forms.Button();
+            this.modServerListHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modServerListHeaderLabel = new System.Windows.Forms.Label();
+            this.modServerListHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.usersTab = new System.Windows.Forms.TabPage();
-            this.groupBox40 = new System.Windows.Forms.GroupBox();
-            this.groupBox41 = new System.Windows.Forms.GroupBox();
-            this.button36 = new System.Windows.Forms.Button();
-            this.listBox3 = new System.Windows.Forms.ListBox();
-            this.groupBox42 = new System.Windows.Forms.GroupBox();
-            this.label46 = new System.Windows.Forms.Label();
-            this.textBox26 = new System.Windows.Forms.TextBox();
-            this.button37 = new System.Windows.Forms.Button();
-            this.label50 = new System.Windows.Forms.Label();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
-            this.label52 = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
-            this.pictureBox11 = new System.Windows.Forms.PictureBox();
+            this.usrMContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.usrMCurUsersGroupBox = new System.Windows.Forms.GroupBox();
+            this.usrMDelUserButton = new System.Windows.Forms.Button();
+            this.usrMCurUsersListBox = new System.Windows.Forms.ListBox();
+            this.usrMAddUserGroupBox = new System.Windows.Forms.GroupBox();
+            this.usrMUserQlNameLabel = new System.Windows.Forms.Label();
+            this.usrMUserQlNameTextBox = new System.Windows.Forms.TextBox();
+            this.usrMAddUserButton = new System.Windows.Forms.Button();
+            this.usrMUserAccessLabel = new System.Windows.Forms.Label();
+            this.usrMUserAccessComboBox = new System.Windows.Forms.ComboBox();
+            this.usrMHeaderDescLabel = new System.Windows.Forms.Label();
+            this.usrMHeaderLabel = new System.Windows.Forms.Label();
+            this.usrMHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.banTab = new System.Windows.Forms.TabPage();
+            this.banMContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.banMCurBansGroupBox = new System.Windows.Forms.GroupBox();
+            this.banMDelBanButton = new System.Windows.Forms.Button();
+            this.banMCurBansListBox = new System.Windows.Forms.ListBox();
+            this.banMAddBanGroupBox = new System.Windows.Forms.GroupBox();
+            this.banMBanDurationTextBox = new System.Windows.Forms.TextBox();
+            this.banMBanDurationScaleComboBox = new System.Windows.Forms.ComboBox();
+            this.banMUserQlNameLabel = new System.Windows.Forms.Label();
+            this.banMUserQlNameTextBox = new System.Windows.Forms.TextBox();
+            this.banMAddBanButton = new System.Windows.Forms.Button();
+            this.banMBanDurationLabel = new System.Windows.Forms.Label();
+            this.banMHeaderDescLabel = new System.Windows.Forms.Label();
+            this.banMHeaderLabel = new System.Windows.Forms.Label();
+            this.banMHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.aboutTab = new System.Windows.Forms.TabPage();
             this.aboutGroupBox = new System.Windows.Forms.GroupBox();
-            this.aboutLabel3 = new System.Windows.Forms.Label();
-            this.aboutSsbWebButton = new System.Windows.Forms.Button();
-            this.aboutAuthorLabel = new System.Windows.Forms.Label();
-            this.aboutLabelVersion = new System.Windows.Forms.Label();
-            this.aboutVersPlaceHolder = new System.Windows.Forms.Label();
-            this.aboutLabel2 = new System.Windows.Forms.Label();
-            this.aboutLabel1 = new System.Windows.Forms.Label();
-            this.ssbAboutPictureBox = new System.Windows.Forms.PictureBox();
-            this.startButton = new System.Windows.Forms.Button();
-            this.exitButton = new System.Windows.Forms.Button();
+            this.abtIrcInfoLabel = new System.Windows.Forms.Label();
+            this.abtWebsiteButton = new System.Windows.Forms.Button();
+            this.abtCopyrightLabel = new System.Windows.Forms.Label();
+            this.abtVersLabel = new System.Windows.Forms.Label();
+            this.abtVersPlaceHolderLabel = new System.Windows.Forms.Label();
+            this.abtDescLabel = new System.Windows.Forms.Label();
+            this.abtSSBColorLabel = new System.Windows.Forms.Label();
+            this.abtIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.ssbStartButton = new System.Windows.Forms.Button();
+            this.ssbExitButton = new System.Windows.Forms.Button();
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusBar = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
             this.closeButton = new System.Windows.Forms.PictureBox();
-            this.groupBox43 = new System.Windows.Forms.GroupBox();
-            this.groupBox44 = new System.Windows.Forms.GroupBox();
-            this.button35 = new System.Windows.Forms.Button();
-            this.listBox4 = new System.Windows.Forms.ListBox();
-            this.groupBox45 = new System.Windows.Forms.GroupBox();
-            this.label47 = new System.Windows.Forms.Label();
-            this.textBox28 = new System.Windows.Forms.TextBox();
-            this.button38 = new System.Windows.Forms.Button();
-            this.label51 = new System.Windows.Forms.Label();
-            this.label56 = new System.Windows.Forms.Label();
-            this.label57 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.textBox29 = new System.Windows.Forms.TextBox();
-            this.comboBox6 = new System.Windows.Forms.ComboBox();
-            this.label58 = new System.Windows.Forms.Label();
+            this.titleBarVersionLabel = new System.Windows.Forms.Label();
+            this.logEventsGroupBox = new System.Windows.Forms.GroupBox();
+            this.abtHeaderDescLabel = new System.Windows.Forms.Label();
+            this.abtHeaderLabel = new System.Windows.Forms.Label();
+            this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.abtAuthorLabel = new System.Windows.Forms.Label();
+            this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
-            this.mainTab.SuspendLayout();
+            this.logTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).BeginInit();
             this.coreOptionsTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
-            this.coreOptionsGrpBox.SuspendLayout();
-            this.settingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).BeginInit();
+            this.coreCfgGroupBox.SuspendLayout();
+            this.coreSettingsGroupBox.SuspendLayout();
             this.modulesTab.SuspendLayout();
             this.moduleTabControl.SuspendLayout();
             this.accountDateTab.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox13.SuspendLayout();
-            this.groupBox33.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.modAccDateContainerGroupBox.SuspendLayout();
+            this.modAccDateOptGroupBox.SuspendLayout();
+            this.modAccDateOptAccAgeGroupBox.SuspendLayout();
+            this.modAccDateSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateHeaderPictureBox)).BeginInit();
             this.accuracyTab.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox14.SuspendLayout();
-            this.groupBox15.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.modAccuracyContainerGroupBox.SuspendLayout();
+            this.modAccuracyOptGroupBox.SuspendLayout();
+            this.modAccuracySettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).BeginInit();
             this.autoVoterTab.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox8.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            this.modAutoVoterContainerGroupBox.SuspendLayout();
+            this.modAutoVoterOptCurVotesGroupBox.SuspendLayout();
+            this.modAutoVoterOptVoteDetailsGroupBox.SuspendLayout();
+            this.modAutoVoterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterHeaderPictureBox)).BeginInit();
             this.earlyQuitTab.SuspendLayout();
-            this.groupBox9.SuspendLayout();
-            this.groupBox10.SuspendLayout();
-            this.groupBox11.SuspendLayout();
-            this.groupBox12.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            this.modEarlyQuitContainerGroupBox.SuspendLayout();
+            this.modEarlyQuitOptCurQuitsGroupBox.SuspendLayout();
+            this.modEarlyQuitOptDetailsGroupBox.SuspendLayout();
+            this.modEarlyQuitSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitHeaderPictureBox)).BeginInit();
             this.eloLimitTab.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox16.SuspendLayout();
-            this.groupBox34.SuspendLayout();
-            this.groupBox17.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            this.modEloLimiterContainerGroupBox.SuspendLayout();
+            this.modEloLimiterOptGroupBox.SuspendLayout();
+            this.modEloLimiterOptEloGroupBox.SuspendLayout();
+            this.modEloLimiterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterHeaderPictureBox)).BeginInit();
             this.ircTab.SuspendLayout();
-            this.groupBox18.SuspendLayout();
-            this.groupBox19.SuspendLayout();
-            this.groupBox23.SuspendLayout();
-            this.groupBox20.SuspendLayout();
-            this.groupBox22.SuspendLayout();
-            this.groupBox21.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+            this.modIRCContainerGroupBox.SuspendLayout();
+            this.modIRCOptGroupBox.SuspendLayout();
+            this.modIRCOptServerGroupBox.SuspendLayout();
+            this.modIRCOptNamingGroupBox.SuspendLayout();
+            this.modIRCOptQuakeNetGroupBox.SuspendLayout();
+            this.modIRCSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCHeaderPictureBox)).BeginInit();
             this.motdTab.SuspendLayout();
-            this.groupBox24.SuspendLayout();
-            this.groupBox25.SuspendLayout();
-            this.groupBox35.SuspendLayout();
-            this.groupBox26.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
+            this.modMOTDContainerGroupBox.SuspendLayout();
+            this.modMOTDOptGroupBox.SuspendLayout();
+            this.modMOTDOptMsgRepeatGroupBox.SuspendLayout();
+            this.modMOTDSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDHeaderPictureBox)).BeginInit();
             this.pickupTab.SuspendLayout();
-            this.groupBox27.SuspendLayout();
-            this.groupBox28.SuspendLayout();
-            this.groupBox32.SuspendLayout();
-            this.groupBox29.SuspendLayout();
-            this.groupBox30.SuspendLayout();
-            this.groupBox31.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
+            this.modPickupContainerGroupBox.SuspendLayout();
+            this.modPickupOptGroupBox.SuspendLayout();
+            this.modPickupOptTeamSizeGroupBox.SuspendLayout();
+            this.modPickupOptNoShowsGroupBox.SuspendLayout();
+            this.modPickupSettingsGroupBox.SuspendLayout();
+            this.modPickupOptSubsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupHeaderPictureBox)).BeginInit();
             this.serversTab.SuspendLayout();
-            this.groupBox36.SuspendLayout();
-            this.groupBox37.SuspendLayout();
-            this.groupBox38.SuspendLayout();
-            this.groupBox39.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
+            this.modServerListContainerGroupBox.SuspendLayout();
+            this.modServerListOptGroupBox.SuspendLayout();
+            this.modServerListOptDisplayGroupBox.SuspendLayout();
+            this.modServerListSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListHeaderPictureBox)).BeginInit();
             this.usersTab.SuspendLayout();
-            this.groupBox40.SuspendLayout();
-            this.groupBox41.SuspendLayout();
-            this.groupBox42.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
+            this.usrMContainerGroupBox.SuspendLayout();
+            this.usrMCurUsersGroupBox.SuspendLayout();
+            this.usrMAddUserGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.usrMHeaderPictureBox)).BeginInit();
             this.banTab.SuspendLayout();
+            this.banMContainerGroupBox.SuspendLayout();
+            this.banMCurBansGroupBox.SuspendLayout();
+            this.banMAddBanGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).BeginInit();
             this.aboutTab.SuspendLayout();
             this.aboutGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).BeginInit();
             this.statusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
-            this.groupBox43.SuspendLayout();
-            this.groupBox44.SuspendLayout();
-            this.groupBox45.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.logEventsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).BeginInit();
+            this.logContainerGroupBox.SuspendLayout();
+            this.coreContainerGroupBox.SuspendLayout();
+            this.abtContainerGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -381,7 +401,7 @@
             // UiTabCtl
             // 
             this.UiTabCtl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
-            this.UiTabCtl.Controls.Add(this.mainTab);
+            this.UiTabCtl.Controls.Add(this.logTab);
             this.UiTabCtl.Controls.Add(this.coreOptionsTab);
             this.UiTabCtl.Controls.Add(this.modulesTab);
             this.UiTabCtl.Controls.Add(this.usersTab);
@@ -394,50 +414,77 @@
             this.UiTabCtl.Size = new System.Drawing.Size(750, 515);
             this.UiTabCtl.TabIndex = 1;
             // 
-            // mainTab
+            // logTab
             // 
-            this.mainTab.BackColor = System.Drawing.Color.Black;
-            this.mainTab.Controls.Add(this.appendToMainCheckbox);
-            this.mainTab.Controls.Add(this.ConsoleTextBox);
-            this.mainTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mainTab.ForeColor = System.Drawing.Color.White;
-            this.mainTab.Location = new System.Drawing.Point(4, 26);
-            this.mainTab.Name = "mainTab";
-            this.mainTab.Padding = new System.Windows.Forms.Padding(3);
-            this.mainTab.Size = new System.Drawing.Size(742, 485);
-            this.mainTab.TabIndex = 0;
-            this.mainTab.Text = "Main";
+            this.logTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.logTab.Controls.Add(this.logContainerGroupBox);
+            this.logTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logTab.ForeColor = System.Drawing.Color.White;
+            this.logTab.Location = new System.Drawing.Point(4, 26);
+            this.logTab.Name = "logTab";
+            this.logTab.Padding = new System.Windows.Forms.Padding(3);
+            this.logTab.Size = new System.Drawing.Size(742, 485);
+            this.logTab.TabIndex = 0;
+            this.logTab.Text = "Log";
             // 
-            // appendToMainCheckbox
+            // logHeaderDescLabel
             // 
-            this.appendToMainCheckbox.AutoSize = true;
-            this.appendToMainCheckbox.ForeColor = System.Drawing.Color.White;
-            this.appendToMainCheckbox.Location = new System.Drawing.Point(9, 435);
-            this.appendToMainCheckbox.Name = "appendToMainCheckbox";
-            this.appendToMainCheckbox.Size = new System.Drawing.Size(123, 18);
-            this.appendToMainCheckbox.TabIndex = 1;
-            this.appendToMainCheckbox.Text = "Show SSB events";
-            this.appendToMainCheckbox.UseVisualStyleBackColor = true;
+            this.logHeaderDescLabel.AutoSize = true;
+            this.logHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.logHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.logHeaderDescLabel.Name = "logHeaderDescLabel";
+            this.logHeaderDescLabel.Size = new System.Drawing.Size(103, 14);
+            this.logHeaderDescLabel.TabIndex = 8;
+            this.logHeaderDescLabel.Text = "Track SSB Events";
             // 
-            // ConsoleTextBox
+            // logHeaderLabel
             // 
-            this.ConsoleTextBox.BackColor = System.Drawing.Color.Black;
-            this.ConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ConsoleTextBox.Location = new System.Drawing.Point(2, 0);
-            this.ConsoleTextBox.Multiline = true;
-            this.ConsoleTextBox.Name = "ConsoleTextBox";
-            this.ConsoleTextBox.ReadOnly = true;
-            this.ConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ConsoleTextBox.Size = new System.Drawing.Size(742, 422);
-            this.ConsoleTextBox.TabIndex = 0;
+            this.logHeaderLabel.AutoSize = true;
+            this.logHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.logHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.logHeaderLabel.Name = "logHeaderLabel";
+            this.logHeaderLabel.Size = new System.Drawing.Size(163, 25);
+            this.logHeaderLabel.TabIndex = 7;
+            this.logHeaderLabel.Text = "SSB Activity Log";
+            // 
+            // logHeaderPictureBox
+            // 
+            this.logHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logHeaderPictureBox.Image")));
+            this.logHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.logHeaderPictureBox.Name = "logHeaderPictureBox";
+            this.logHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.logHeaderPictureBox.TabIndex = 6;
+            this.logHeaderPictureBox.TabStop = false;
+            // 
+            // logAppendEventCheckBox
+            // 
+            this.logAppendEventCheckBox.AutoSize = true;
+            this.logAppendEventCheckBox.ForeColor = System.Drawing.Color.White;
+            this.logAppendEventCheckBox.Location = new System.Drawing.Point(9, 17);
+            this.logAppendEventCheckBox.Name = "logAppendEventCheckBox";
+            this.logAppendEventCheckBox.Size = new System.Drawing.Size(171, 18);
+            this.logAppendEventCheckBox.TabIndex = 1;
+            this.logAppendEventCheckBox.Text = "Append SSB events to log";
+            this.logAppendEventCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // logConsoleTextBox
+            // 
+            this.logConsoleTextBox.BackColor = System.Drawing.Color.Black;
+            this.logConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logConsoleTextBox.ForeColor = System.Drawing.Color.White;
+            this.logConsoleTextBox.Location = new System.Drawing.Point(6, 42);
+            this.logConsoleTextBox.Multiline = true;
+            this.logConsoleTextBox.Name = "logConsoleTextBox";
+            this.logConsoleTextBox.ReadOnly = true;
+            this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logConsoleTextBox.Size = new System.Drawing.Size(722, 337);
+            this.logConsoleTextBox.TabIndex = 0;
             // 
             // coreOptionsTab
             // 
             this.coreOptionsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.coreOptionsTab.Controls.Add(this.label54);
-            this.coreOptionsTab.Controls.Add(this.label55);
-            this.coreOptionsTab.Controls.Add(this.pictureBox12);
-            this.coreOptionsTab.Controls.Add(this.coreOptionsGrpBox);
+            this.coreOptionsTab.Controls.Add(this.coreContainerGroupBox);
             this.coreOptionsTab.ForeColor = System.Drawing.Color.White;
             this.coreOptionsTab.Location = new System.Drawing.Point(4, 26);
             this.coreOptionsTab.Name = "coreOptionsTab";
@@ -446,202 +493,203 @@
             this.coreOptionsTab.TabIndex = 1;
             this.coreOptionsTab.Text = "Core Options";
             // 
-            // label54
+            // coreHeaderDescLabel
             // 
-            this.label54.AutoSize = true;
-            this.label54.ForeColor = System.Drawing.Color.White;
-            this.label54.Location = new System.Drawing.Point(82, 41);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(129, 14);
-            this.label54.TabIndex = 5;
-            this.label54.Text = "Critical options for SSB";
+            this.coreHeaderDescLabel.AutoSize = true;
+            this.coreHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.coreHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.coreHeaderDescLabel.Name = "coreHeaderDescLabel";
+            this.coreHeaderDescLabel.Size = new System.Drawing.Size(129, 14);
+            this.coreHeaderDescLabel.TabIndex = 5;
+            this.coreHeaderDescLabel.Text = "Critical options for SSB";
             // 
-            // label55
+            // coreHeaderLabel
             // 
-            this.label55.AutoSize = true;
-            this.label55.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label55.ForeColor = System.Drawing.Color.Silver;
-            this.label55.Location = new System.Drawing.Point(76, 12);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(177, 25);
-            this.label55.TabIndex = 4;
-            this.label55.Text = "SSB Core Options";
+            this.coreHeaderLabel.AutoSize = true;
+            this.coreHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.coreHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.coreHeaderLabel.Name = "coreHeaderLabel";
+            this.coreHeaderLabel.Size = new System.Drawing.Size(177, 25);
+            this.coreHeaderLabel.TabIndex = 4;
+            this.coreHeaderLabel.Text = "SSB Core Options";
             // 
-            // pictureBox12
+            // coreHeaderPictureBox
             // 
-            this.pictureBox12.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox12.Image")));
-            this.pictureBox12.Location = new System.Drawing.Point(12, 15);
-            this.pictureBox12.Name = "pictureBox12";
-            this.pictureBox12.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox12.TabIndex = 3;
-            this.pictureBox12.TabStop = false;
+            this.coreHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreHeaderPictureBox.Image")));
+            this.coreHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.coreHeaderPictureBox.Name = "coreHeaderPictureBox";
+            this.coreHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.coreHeaderPictureBox.TabIndex = 3;
+            this.coreHeaderPictureBox.TabStop = false;
             // 
-            // coreOptionsGrpBox
+            // coreCfgGroupBox
             // 
-            this.coreOptionsGrpBox.BackColor = System.Drawing.Color.Black;
-            this.coreOptionsGrpBox.Controls.Add(this.textBox27);
-            this.coreOptionsGrpBox.Controls.Add(this.qlConNoPrintCheckbox);
-            this.coreOptionsGrpBox.Controls.Add(this.settingsGroupBox);
-            this.coreOptionsGrpBox.Controls.Add(this.logMainWindowCheckbox);
-            this.coreOptionsGrpBox.Controls.Add(this.eloCacheTextBox);
-            this.coreOptionsGrpBox.Controls.Add(this.eloCacheLabel);
-            this.coreOptionsGrpBox.Controls.Add(this.ownerLabel);
-            this.coreOptionsGrpBox.Controls.Add(this.accountNameTextBox);
-            this.coreOptionsGrpBox.Controls.Add(this.accountNameLabel);
-            this.coreOptionsGrpBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.coreOptionsGrpBox.ForeColor = System.Drawing.Color.White;
-            this.coreOptionsGrpBox.Location = new System.Drawing.Point(3, 87);
-            this.coreOptionsGrpBox.Name = "coreOptionsGrpBox";
-            this.coreOptionsGrpBox.Size = new System.Drawing.Size(736, 395);
-            this.coreOptionsGrpBox.TabIndex = 0;
-            this.coreOptionsGrpBox.TabStop = false;
-            this.coreOptionsGrpBox.Text = "Core Options";
+            this.coreCfgGroupBox.BackColor = System.Drawing.Color.Black;
+            this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameTextBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreSettingsGroupBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreLogEventsDiskCheckBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreEloCacheTextBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreEloCacheLabel);
+            this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameLabel);
+            this.coreCfgGroupBox.Controls.Add(this.coreAccountNameTextBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreAccountNameLabel);
+            this.coreCfgGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreCfgGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreCfgGroupBox.Location = new System.Drawing.Point(3, 103);
+            this.coreCfgGroupBox.Name = "coreCfgGroupBox";
+            this.coreCfgGroupBox.Size = new System.Drawing.Size(728, 373);
+            this.coreCfgGroupBox.TabIndex = 0;
+            this.coreCfgGroupBox.TabStop = false;
+            this.coreCfgGroupBox.Text = "Configuration";
             // 
-            // textBox27
+            // coreOwnerNameTextBox
             // 
-            this.textBox27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox27.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox27.ForeColor = System.Drawing.Color.White;
-            this.textBox27.Location = new System.Drawing.Point(407, 76);
-            this.textBox27.MaxLength = 15;
-            this.textBox27.Name = "textBox27";
-            this.textBox27.Size = new System.Drawing.Size(205, 22);
-            this.textBox27.TabIndex = 11;
-            this.coreToolTip.SetToolTip(this.textBox27, "Enter the name of the QL account that is the owner (the main admin). \r\nDo not inc" +
+            this.coreOwnerNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreOwnerNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreOwnerNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreOwnerNameTextBox.Location = new System.Drawing.Point(343, 71);
+            this.coreOwnerNameTextBox.MaxLength = 15;
+            this.coreOwnerNameTextBox.Name = "coreOwnerNameTextBox";
+            this.coreOwnerNameTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreOwnerNameTextBox.TabIndex = 11;
+            this.coreToolTip.SetToolTip(this.coreOwnerNameTextBox, "Enter the name of the QL account that is the owner (the main admin). \r\nDo not inc" +
         "lude the clan tag. This user will have the highest privileges.\r\n");
             // 
-            // qlConNoPrintCheckbox
+            // coreHideQlConsoleCheckBox
             // 
-            this.qlConNoPrintCheckbox.AutoSize = true;
-            this.qlConNoPrintCheckbox.Location = new System.Drawing.Point(78, 201);
-            this.qlConNoPrintCheckbox.Name = "qlConNoPrintCheckbox";
-            this.qlConNoPrintCheckbox.Size = new System.Drawing.Size(161, 18);
-            this.qlConNoPrintCheckbox.TabIndex = 10;
-            this.qlConNoPrintCheckbox.Text = "Hide All QL Console Text";
-            this.coreToolTip.SetToolTip(this.qlConNoPrintCheckbox, resources.GetString("qlConNoPrintCheckbox.ToolTip"));
-            this.qlConNoPrintCheckbox.UseVisualStyleBackColor = true;
+            this.coreHideQlConsoleCheckBox.AutoSize = true;
+            this.coreHideQlConsoleCheckBox.Location = new System.Drawing.Point(14, 234);
+            this.coreHideQlConsoleCheckBox.Name = "coreHideQlConsoleCheckBox";
+            this.coreHideQlConsoleCheckBox.Size = new System.Drawing.Size(161, 18);
+            this.coreHideQlConsoleCheckBox.TabIndex = 10;
+            this.coreHideQlConsoleCheckBox.Text = "Hide All QL Console Text";
+            this.coreToolTip.SetToolTip(this.coreHideQlConsoleCheckBox, resources.GetString("coreHideQlConsoleCheckBox.ToolTip"));
+            this.coreHideQlConsoleCheckBox.UseVisualStyleBackColor = true;
             // 
-            // settingsGroupBox
+            // coreSettingsGroupBox
             // 
-            this.settingsGroupBox.Controls.Add(this.button1);
-            this.settingsGroupBox.Controls.Add(this.loadSettingsButton);
-            this.settingsGroupBox.Controls.Add(this.saveSettingsButton);
-            this.settingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.settingsGroupBox.Location = new System.Drawing.Point(530, 305);
-            this.settingsGroupBox.Name = "settingsGroupBox";
-            this.settingsGroupBox.Size = new System.Drawing.Size(200, 84);
-            this.settingsGroupBox.TabIndex = 9;
-            this.settingsGroupBox.TabStop = false;
-            this.settingsGroupBox.Text = "Settings";
+            this.coreSettingsGroupBox.Controls.Add(this.coreResetDefaultsCheckBox);
+            this.coreSettingsGroupBox.Controls.Add(this.coreLoadSettingsButton);
+            this.coreSettingsGroupBox.Controls.Add(this.coreSaveSettingsButton);
+            this.coreSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreSettingsGroupBox.Location = new System.Drawing.Point(524, 283);
+            this.coreSettingsGroupBox.Name = "coreSettingsGroupBox";
+            this.coreSettingsGroupBox.Size = new System.Drawing.Size(200, 84);
+            this.coreSettingsGroupBox.TabIndex = 9;
+            this.coreSettingsGroupBox.TabStop = false;
+            this.coreSettingsGroupBox.Text = "Settings";
             // 
-            // button1
+            // coreResetDefaultsCheckBox
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(14, 49);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(176, 28);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Reset ALL to defaults";
-            this.coreToolTip.SetToolTip(this.button1, "Reset all options to their defaults, \r\nincluding module options as well.");
-            this.button1.UseVisualStyleBackColor = false;
+            this.coreResetDefaultsCheckBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreResetDefaultsCheckBox.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreResetDefaultsCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreResetDefaultsCheckBox.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreResetDefaultsCheckBox.ForeColor = System.Drawing.Color.White;
+            this.coreResetDefaultsCheckBox.Location = new System.Drawing.Point(14, 49);
+            this.coreResetDefaultsCheckBox.Name = "coreResetDefaultsCheckBox";
+            this.coreResetDefaultsCheckBox.Size = new System.Drawing.Size(176, 28);
+            this.coreResetDefaultsCheckBox.TabIndex = 4;
+            this.coreResetDefaultsCheckBox.Text = "Reset ALL to defaults";
+            this.coreToolTip.SetToolTip(this.coreResetDefaultsCheckBox, "Reset all options to their defaults, \r\nincluding module options as well.");
+            this.coreResetDefaultsCheckBox.UseVisualStyleBackColor = false;
             // 
-            // loadSettingsButton
+            // coreLoadSettingsButton
             // 
-            this.loadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.loadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.loadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.loadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.loadSettingsButton.Location = new System.Drawing.Point(109, 16);
-            this.loadSettingsButton.Name = "loadSettingsButton";
-            this.loadSettingsButton.Size = new System.Drawing.Size(79, 23);
-            this.loadSettingsButton.TabIndex = 1;
-            this.loadSettingsButton.Text = "Load";
-            this.coreToolTip.SetToolTip(this.loadSettingsButton, "Load the current settings from the configuration file.");
-            this.loadSettingsButton.UseVisualStyleBackColor = false;
+            this.coreLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.coreLoadSettingsButton.Location = new System.Drawing.Point(109, 16);
+            this.coreLoadSettingsButton.Name = "coreLoadSettingsButton";
+            this.coreLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.coreLoadSettingsButton.TabIndex = 1;
+            this.coreLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.coreLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.coreLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // saveSettingsButton
+            // coreSaveSettingsButton
             // 
-            this.saveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.saveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.saveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.saveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.saveSettingsButton.Location = new System.Drawing.Point(15, 16);
-            this.saveSettingsButton.Name = "saveSettingsButton";
-            this.saveSettingsButton.Size = new System.Drawing.Size(79, 23);
-            this.saveSettingsButton.TabIndex = 8;
-            this.saveSettingsButton.Text = "Save";
-            this.coreToolTip.SetToolTip(this.saveSettingsButton, "Save the current settings to the configuration file.");
-            this.saveSettingsButton.UseVisualStyleBackColor = false;
+            this.coreSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.coreSaveSettingsButton.Location = new System.Drawing.Point(15, 16);
+            this.coreSaveSettingsButton.Name = "coreSaveSettingsButton";
+            this.coreSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.coreSaveSettingsButton.TabIndex = 8;
+            this.coreSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.coreSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.coreSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // logMainWindowCheckbox
+            // coreLogEventsDiskCheckBox
             // 
-            this.logMainWindowCheckbox.AutoSize = true;
-            this.logMainWindowCheckbox.Location = new System.Drawing.Point(409, 201);
-            this.logMainWindowCheckbox.Name = "logMainWindowCheckbox";
-            this.logMainWindowCheckbox.Size = new System.Drawing.Size(153, 18);
-            this.logMainWindowCheckbox.TabIndex = 7;
-            this.logMainWindowCheckbox.Text = "Log SSB Events to Disk";
-            this.coreToolTip.SetToolTip(this.logMainWindowCheckbox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
+            this.coreLogEventsDiskCheckBox.AutoSize = true;
+            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(343, 234);
+            this.coreLogEventsDiskCheckBox.Name = "coreLogEventsDiskCheckBox";
+            this.coreLogEventsDiskCheckBox.Size = new System.Drawing.Size(153, 18);
+            this.coreLogEventsDiskCheckBox.TabIndex = 7;
+            this.coreLogEventsDiskCheckBox.Text = "Log SSB Events to Disk";
+            this.coreToolTip.SetToolTip(this.coreLogEventsDiskCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
         "ainly for debugging purposes).");
-            this.logMainWindowCheckbox.UseVisualStyleBackColor = true;
+            this.coreLogEventsDiskCheckBox.UseVisualStyleBackColor = true;
             // 
-            // eloCacheTextBox
+            // coreEloCacheTextBox
             // 
-            this.eloCacheTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.eloCacheTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.eloCacheTextBox.ForeColor = System.Drawing.Color.White;
-            this.eloCacheTextBox.Location = new System.Drawing.Point(78, 153);
-            this.eloCacheTextBox.Name = "eloCacheTextBox";
-            this.eloCacheTextBox.Size = new System.Drawing.Size(205, 22);
-            this.eloCacheTextBox.TabIndex = 5;
-            this.coreToolTip.SetToolTip(this.eloCacheTextBox, resources.GetString("eloCacheTextBox.ToolTip"));
+            this.coreEloCacheTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreEloCacheTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreEloCacheTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreEloCacheTextBox.Location = new System.Drawing.Point(14, 162);
+            this.coreEloCacheTextBox.MaxLength = 10;
+            this.coreEloCacheTextBox.Name = "coreEloCacheTextBox";
+            this.coreEloCacheTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreEloCacheTextBox.TabIndex = 5;
+            this.coreToolTip.SetToolTip(this.coreEloCacheTextBox, resources.GetString("coreEloCacheTextBox.ToolTip"));
             // 
-            // eloCacheLabel
+            // coreEloCacheLabel
             // 
-            this.eloCacheLabel.AutoSize = true;
-            this.eloCacheLabel.Location = new System.Drawing.Point(75, 121);
-            this.eloCacheLabel.Name = "eloCacheLabel";
-            this.eloCacheLabel.Size = new System.Drawing.Size(187, 14);
-            this.eloCacheLabel.TabIndex = 4;
-            this.eloCacheLabel.Text = "Elo Cache Expiration [in minutes]";
-            this.coreToolTip.SetToolTip(this.eloCacheLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
+            this.coreEloCacheLabel.AutoSize = true;
+            this.coreEloCacheLabel.Location = new System.Drawing.Point(11, 130);
+            this.coreEloCacheLabel.Name = "coreEloCacheLabel";
+            this.coreEloCacheLabel.Size = new System.Drawing.Size(187, 14);
+            this.coreEloCacheLabel.TabIndex = 4;
+            this.coreEloCacheLabel.Text = "Elo Cache Expiration [in minutes]";
+            this.coreToolTip.SetToolTip(this.coreEloCacheLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
         "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
             // 
-            // ownerLabel
+            // coreOwnerNameLabel
             // 
-            this.ownerLabel.AutoSize = true;
-            this.ownerLabel.Location = new System.Drawing.Point(404, 49);
-            this.ownerLabel.Name = "ownerLabel";
-            this.ownerLabel.Size = new System.Drawing.Size(181, 14);
-            this.ownerLabel.TabIndex = 3;
-            this.ownerLabel.Text = "SSB Owner\'s QL Account Name";
-            this.coreToolTip.SetToolTip(this.ownerLabel, resources.GetString("ownerLabel.ToolTip"));
+            this.coreOwnerNameLabel.AutoSize = true;
+            this.coreOwnerNameLabel.Location = new System.Drawing.Point(340, 44);
+            this.coreOwnerNameLabel.Name = "coreOwnerNameLabel";
+            this.coreOwnerNameLabel.Size = new System.Drawing.Size(181, 14);
+            this.coreOwnerNameLabel.TabIndex = 3;
+            this.coreOwnerNameLabel.Text = "SSB Owner\'s QL Account Name";
+            this.coreToolTip.SetToolTip(this.coreOwnerNameLabel, resources.GetString("coreOwnerNameLabel.ToolTip"));
             // 
-            // accountNameTextBox
+            // coreAccountNameTextBox
             // 
-            this.accountNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.accountNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.accountNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.accountNameTextBox.Location = new System.Drawing.Point(78, 76);
-            this.accountNameTextBox.MaxLength = 15;
-            this.accountNameTextBox.Name = "accountNameTextBox";
-            this.accountNameTextBox.Size = new System.Drawing.Size(205, 22);
-            this.accountNameTextBox.TabIndex = 1;
-            this.coreToolTip.SetToolTip(this.accountNameTextBox, "Enter the name of the QL account that\r\nwill be running the bot. Do not include th" +
+            this.coreAccountNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreAccountNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreAccountNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreAccountNameTextBox.Location = new System.Drawing.Point(14, 71);
+            this.coreAccountNameTextBox.MaxLength = 15;
+            this.coreAccountNameTextBox.Name = "coreAccountNameTextBox";
+            this.coreAccountNameTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreAccountNameTextBox.TabIndex = 1;
+            this.coreToolTip.SetToolTip(this.coreAccountNameTextBox, "Enter the name of the QL account that\r\nwill be running the bot. Do not include th" +
         "e clan tag.\r\n");
             // 
-            // accountNameLabel
+            // coreAccountNameLabel
             // 
-            this.accountNameLabel.AutoSize = true;
-            this.accountNameLabel.Location = new System.Drawing.Point(75, 49);
-            this.accountNameLabel.Name = "accountNameLabel";
-            this.accountNameLabel.Size = new System.Drawing.Size(132, 14);
-            this.accountNameLabel.TabIndex = 0;
-            this.accountNameLabel.Text = "SSB QL Account Name";
+            this.coreAccountNameLabel.AutoSize = true;
+            this.coreAccountNameLabel.Location = new System.Drawing.Point(11, 44);
+            this.coreAccountNameLabel.Name = "coreAccountNameLabel";
+            this.coreAccountNameLabel.Size = new System.Drawing.Size(132, 14);
+            this.coreAccountNameLabel.TabIndex = 0;
+            this.coreAccountNameLabel.Text = "SSB QL Account Name";
             // 
             // modulesTab
             // 
@@ -677,7 +725,7 @@
             // accountDateTab
             // 
             this.accountDateTab.BackColor = System.Drawing.Color.Black;
-            this.accountDateTab.Controls.Add(this.groupBox1);
+            this.accountDateTab.Controls.Add(this.modAccDateContainerGroupBox);
             this.accountDateTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.accountDateTab.ForeColor = System.Drawing.Color.White;
             this.accountDateTab.Location = new System.Drawing.Point(4, 25);
@@ -688,174 +736,174 @@
             this.accountDateTab.TabIndex = 0;
             this.accountDateTab.Text = "Account Date Limiter";
             // 
-            // groupBox1
+            // modAccDateContainerGroupBox
             // 
-            this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox1.Controls.Add(this.groupBox13);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.pictureBox2);
-            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(3, 4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(728, 453);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Account Date Limiter";
+            this.modAccDateContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateOptGroupBox);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderDescLabel);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderLabel);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderPictureBox);
+            this.modAccDateContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAccDateContainerGroupBox.Name = "modAccDateContainerGroupBox";
+            this.modAccDateContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modAccDateContainerGroupBox.TabIndex = 2;
+            this.modAccDateContainerGroupBox.TabStop = false;
+            this.modAccDateContainerGroupBox.Text = "Account Date Limiter";
             // 
-            // groupBox13
+            // modAccDateOptGroupBox
             // 
-            this.groupBox13.BackColor = System.Drawing.Color.Black;
-            this.groupBox13.Controls.Add(this.groupBox33);
-            this.groupBox13.Controls.Add(this.checkBox1);
-            this.groupBox13.Controls.Add(this.groupBox2);
-            this.groupBox13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox13.ForeColor = System.Drawing.Color.White;
-            this.groupBox13.Location = new System.Drawing.Point(3, 91);
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(719, 359);
-            this.groupBox13.TabIndex = 12;
-            this.groupBox13.TabStop = false;
-            this.groupBox13.Text = "Account Date Options";
+            this.modAccDateOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAccDateOptGroupBox.Controls.Add(this.modAccDateOptAccAgeGroupBox);
+            this.modAccDateOptGroupBox.Controls.Add(this.modAccDateEnableCheckBox);
+            this.modAccDateOptGroupBox.Controls.Add(this.modAccDateSettingsGroupBox);
+            this.modAccDateOptGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modAccDateOptGroupBox.Name = "modAccDateOptGroupBox";
+            this.modAccDateOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modAccDateOptGroupBox.TabIndex = 12;
+            this.modAccDateOptGroupBox.TabStop = false;
+            this.modAccDateOptGroupBox.Text = "Account Date Options";
             // 
-            // groupBox33
+            // modAccDateOptAccAgeGroupBox
             // 
-            this.groupBox33.Controls.Add(this.textBox1);
-            this.groupBox33.Controls.Add(this.label4);
-            this.groupBox33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox33.ForeColor = System.Drawing.Color.White;
-            this.groupBox33.Location = new System.Drawing.Point(9, 56);
-            this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(340, 107);
-            this.groupBox33.TabIndex = 29;
-            this.groupBox33.TabStop = false;
-            this.groupBox33.Text = "Account Age";
+            this.modAccDateOptAccAgeGroupBox.Controls.Add(this.modAccDateAccAgeTextBox);
+            this.modAccDateOptAccAgeGroupBox.Controls.Add(this.modAccDateAccAgeLabel);
+            this.modAccDateOptAccAgeGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateOptAccAgeGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateOptAccAgeGroupBox.Location = new System.Drawing.Point(9, 56);
+            this.modAccDateOptAccAgeGroupBox.Name = "modAccDateOptAccAgeGroupBox";
+            this.modAccDateOptAccAgeGroupBox.Size = new System.Drawing.Size(340, 107);
+            this.modAccDateOptAccAgeGroupBox.TabIndex = 29;
+            this.modAccDateOptAccAgeGroupBox.TabStop = false;
+            this.modAccDateOptAccAgeGroupBox.Text = "Account Age";
             // 
-            // textBox1
+            // modAccDateAccAgeTextBox
             // 
-            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(9, 63);
-            this.textBox1.MaxLength = 15;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(99, 22);
-            this.textBox1.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox1, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
+            this.modAccDateAccAgeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modAccDateAccAgeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modAccDateAccAgeTextBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateAccAgeTextBox.Location = new System.Drawing.Point(9, 63);
+            this.modAccDateAccAgeTextBox.MaxLength = 6;
+            this.modAccDateAccAgeTextBox.Name = "modAccDateAccAgeTextBox";
+            this.modAccDateAccAgeTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modAccDateAccAgeTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modAccDateAccAgeTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
         "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
         "server.");
             // 
-            // label4
+            // modAccDateAccAgeLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 31);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(177, 14);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Minimum account age [in days]";
+            this.modAccDateAccAgeLabel.AutoSize = true;
+            this.modAccDateAccAgeLabel.Location = new System.Drawing.Point(6, 31);
+            this.modAccDateAccAgeLabel.Name = "modAccDateAccAgeLabel";
+            this.modAccDateAccAgeLabel.Size = new System.Drawing.Size(177, 14);
+            this.modAccDateAccAgeLabel.TabIndex = 3;
+            this.modAccDateAccAgeLabel.Text = "Minimum account age [in days]";
             // 
-            // checkBox1
+            // modAccDateEnableCheckBox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(9, 21);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(225, 18);
-            this.checkBox1.TabIndex = 11;
-            this.checkBox1.Text = "Enable Account Date Limiter Module";
-            this.coreToolTip.SetToolTip(this.checkBox1, "Select whether this module should be enabled.");
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.modAccDateEnableCheckBox.AutoSize = true;
+            this.modAccDateEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modAccDateEnableCheckBox.Name = "modAccDateEnableCheckBox";
+            this.modAccDateEnableCheckBox.Size = new System.Drawing.Size(225, 18);
+            this.modAccDateEnableCheckBox.TabIndex = 11;
+            this.modAccDateEnableCheckBox.Text = "Enable Account Date Limiter Module";
+            this.coreToolTip.SetToolTip(this.modAccDateEnableCheckBox, "Select whether this module should be enabled.");
+            this.modAccDateEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // modAccDateSettingsGroupBox
             // 
-            this.groupBox2.Controls.Add(this.button4);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Controls.Add(this.button3);
-            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox2.ForeColor = System.Drawing.Color.White;
-            this.groupBox2.Location = new System.Drawing.Point(428, 303);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(285, 50);
-            this.groupBox2.TabIndex = 10;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Settings";
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateResetSettingsButton);
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateLoadSettingsButton);
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateSaveSettingsButton);
+            this.modAccDateSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateSettingsGroupBox.Location = new System.Drawing.Point(428, 303);
+            this.modAccDateSettingsGroupBox.Name = "modAccDateSettingsGroupBox";
+            this.modAccDateSettingsGroupBox.Size = new System.Drawing.Size(285, 50);
+            this.modAccDateSettingsGroupBox.TabIndex = 10;
+            this.modAccDateSettingsGroupBox.TabStop = false;
+            this.modAccDateSettingsGroupBox.Text = "Settings";
             // 
-            // button4
+            // modAccDateResetSettingsButton
             // 
-            this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button4.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(199, 18);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(79, 23);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button4, "Reset this module to its default settings.");
-            this.button4.UseVisualStyleBackColor = false;
+            this.modAccDateResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccDateResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccDateResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccDateResetSettingsButton.Location = new System.Drawing.Point(199, 18);
+            this.modAccDateResetSettingsButton.Name = "modAccDateResetSettingsButton";
+            this.modAccDateResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccDateResetSettingsButton.TabIndex = 9;
+            this.modAccDateResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modAccDateResetSettingsButton, "Reset this module to its default settings.");
+            this.modAccDateResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // modAccDateLoadSettingsButton
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(104, 18);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(79, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button2, "Load the current settings from the configuration file.");
-            this.button2.UseVisualStyleBackColor = false;
+            this.modAccDateLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccDateLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccDateLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccDateLoadSettingsButton.Location = new System.Drawing.Point(104, 18);
+            this.modAccDateLoadSettingsButton.Name = "modAccDateLoadSettingsButton";
+            this.modAccDateLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccDateLoadSettingsButton.TabIndex = 1;
+            this.modAccDateLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modAccDateLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modAccDateLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button3
+            // modAccDateSaveSettingsButton
             // 
-            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button3.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(10, 18);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(79, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button3, "Save the current settings to the configuration file.");
-            this.button3.UseVisualStyleBackColor = false;
+            this.modAccDateSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccDateSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccDateSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccDateSaveSettingsButton.Location = new System.Drawing.Point(10, 18);
+            this.modAccDateSaveSettingsButton.Name = "modAccDateSaveSettingsButton";
+            this.modAccDateSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccDateSaveSettingsButton.TabIndex = 8;
+            this.modAccDateSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modAccDateSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modAccDateSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label5
+            // modAccDateHeaderDescLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(82, 47);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(473, 14);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Automatically kicks players who do not meet account registration date requirement" +
+            this.modAccDateHeaderDescLabel.AutoSize = true;
+            this.modAccDateHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modAccDateHeaderDescLabel.Name = "modAccDateHeaderDescLabel";
+            this.modAccDateHeaderDescLabel.Size = new System.Drawing.Size(473, 14);
+            this.modAccDateHeaderDescLabel.TabIndex = 2;
+            this.modAccDateHeaderDescLabel.Text = "Automatically kicks players who do not meet account registration date requirement" +
     "s.";
             // 
-            // label6
+            // modAccDateHeaderLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.Silver;
-            this.label6.Location = new System.Drawing.Point(76, 18);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(289, 25);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Module: Account Date Limiter";
+            this.modAccDateHeaderLabel.AutoSize = true;
+            this.modAccDateHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAccDateHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modAccDateHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAccDateHeaderLabel.Name = "modAccDateHeaderLabel";
+            this.modAccDateHeaderLabel.Size = new System.Drawing.Size(289, 25);
+            this.modAccDateHeaderLabel.TabIndex = 1;
+            this.modAccDateHeaderLabel.Text = "Module: Account Date Limiter";
             // 
-            // pictureBox2
+            // modAccDateHeaderPictureBox
             // 
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox2.TabIndex = 0;
-            this.pictureBox2.TabStop = false;
+            this.modAccDateHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateHeaderPictureBox.Image")));
+            this.modAccDateHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAccDateHeaderPictureBox.Name = "modAccDateHeaderPictureBox";
+            this.modAccDateHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAccDateHeaderPictureBox.TabIndex = 0;
+            this.modAccDateHeaderPictureBox.TabStop = false;
             // 
             // accuracyTab
             // 
             this.accuracyTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.accuracyTab.Controls.Add(this.groupBox3);
+            this.accuracyTab.Controls.Add(this.modAccuracyContainerGroupBox);
             this.accuracyTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.accuracyTab.ForeColor = System.Drawing.Color.White;
             this.accuracyTab.Location = new System.Drawing.Point(4, 25);
@@ -865,136 +913,136 @@
             this.accuracyTab.TabIndex = 1;
             this.accuracyTab.Text = "Accuracy Display";
             // 
-            // groupBox3
+            // modAccuracyContainerGroupBox
             // 
-            this.groupBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox3.Controls.Add(this.groupBox14);
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.pictureBox3);
-            this.groupBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox3.ForeColor = System.Drawing.Color.White;
-            this.groupBox3.Location = new System.Drawing.Point(3, 4);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(728, 453);
-            this.groupBox3.TabIndex = 3;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Accuracy Display";
+            this.modAccuracyContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyOptGroupBox);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabelDesc);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabel);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderPictureBox);
+            this.modAccuracyContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracyContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccuracyContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAccuracyContainerGroupBox.Name = "modAccuracyContainerGroupBox";
+            this.modAccuracyContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modAccuracyContainerGroupBox.TabIndex = 3;
+            this.modAccuracyContainerGroupBox.TabStop = false;
+            this.modAccuracyContainerGroupBox.Text = "Accuracy Display";
             // 
-            // groupBox14
+            // modAccuracyOptGroupBox
             // 
-            this.groupBox14.BackColor = System.Drawing.Color.Black;
-            this.groupBox14.Controls.Add(this.groupBox15);
-            this.groupBox14.Controls.Add(this.checkBox2);
-            this.groupBox14.ForeColor = System.Drawing.Color.White;
-            this.groupBox14.Location = new System.Drawing.Point(3, 91);
-            this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(719, 359);
-            this.groupBox14.TabIndex = 13;
-            this.groupBox14.TabStop = false;
-            this.groupBox14.Text = "Accuracy Options";
+            this.modAccuracyOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAccuracyOptGroupBox.Controls.Add(this.modAccuracySettingsGroupBox);
+            this.modAccuracyOptGroupBox.Controls.Add(this.modAccuracyEnableCheckBox);
+            this.modAccuracyOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccuracyOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modAccuracyOptGroupBox.Name = "modAccuracyOptGroupBox";
+            this.modAccuracyOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modAccuracyOptGroupBox.TabIndex = 13;
+            this.modAccuracyOptGroupBox.TabStop = false;
+            this.modAccuracyOptGroupBox.Text = "Accuracy Options";
             // 
-            // groupBox15
+            // modAccuracySettingsGroupBox
             // 
-            this.groupBox15.Controls.Add(this.button20);
-            this.groupBox15.Controls.Add(this.button21);
-            this.groupBox15.Controls.Add(this.button22);
-            this.groupBox15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox15.ForeColor = System.Drawing.Color.White;
-            this.groupBox15.Location = new System.Drawing.Point(428, 303);
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(285, 50);
-            this.groupBox15.TabIndex = 10;
-            this.groupBox15.TabStop = false;
-            this.groupBox15.Text = "Settings";
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyResetSettingsButton);
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyLoadSettingsButton);
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracySaveSettingsButton);
+            this.modAccuracySettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracySettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccuracySettingsGroupBox.Location = new System.Drawing.Point(428, 303);
+            this.modAccuracySettingsGroupBox.Name = "modAccuracySettingsGroupBox";
+            this.modAccuracySettingsGroupBox.Size = new System.Drawing.Size(285, 50);
+            this.modAccuracySettingsGroupBox.TabIndex = 10;
+            this.modAccuracySettingsGroupBox.TabStop = false;
+            this.modAccuracySettingsGroupBox.Text = "Settings";
             // 
-            // button20
+            // modAccuracyResetSettingsButton
             // 
-            this.button20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button20.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button20.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button20.ForeColor = System.Drawing.Color.White;
-            this.button20.Location = new System.Drawing.Point(199, 18);
-            this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(79, 23);
-            this.button20.TabIndex = 9;
-            this.button20.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button20, "Reset this module to its default settings.");
-            this.button20.UseVisualStyleBackColor = false;
+            this.modAccuracyResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccuracyResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccuracyResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracyResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccuracyResetSettingsButton.Location = new System.Drawing.Point(199, 18);
+            this.modAccuracyResetSettingsButton.Name = "modAccuracyResetSettingsButton";
+            this.modAccuracyResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccuracyResetSettingsButton.TabIndex = 9;
+            this.modAccuracyResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modAccuracyResetSettingsButton, "Reset this module to its default settings.");
+            this.modAccuracyResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button21
+            // modAccuracyLoadSettingsButton
             // 
-            this.button21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button21.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button21.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button21.ForeColor = System.Drawing.Color.White;
-            this.button21.Location = new System.Drawing.Point(104, 18);
-            this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(79, 23);
-            this.button21.TabIndex = 1;
-            this.button21.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button21, "Load the current settings from the configuration file.");
-            this.button21.UseVisualStyleBackColor = false;
+            this.modAccuracyLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccuracyLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccuracyLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracyLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccuracyLoadSettingsButton.Location = new System.Drawing.Point(104, 18);
+            this.modAccuracyLoadSettingsButton.Name = "modAccuracyLoadSettingsButton";
+            this.modAccuracyLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccuracyLoadSettingsButton.TabIndex = 1;
+            this.modAccuracyLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modAccuracyLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modAccuracyLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button22
+            // modAccuracySaveSettingsButton
             // 
-            this.button22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button22.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button22.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button22.ForeColor = System.Drawing.Color.White;
-            this.button22.Location = new System.Drawing.Point(10, 18);
-            this.button22.Name = "button22";
-            this.button22.Size = new System.Drawing.Size(79, 23);
-            this.button22.TabIndex = 8;
-            this.button22.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button22, "Save the current settings to the configuration file.");
-            this.button22.UseVisualStyleBackColor = false;
+            this.modAccuracySaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAccuracySaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAccuracySaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracySaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAccuracySaveSettingsButton.Location = new System.Drawing.Point(10, 18);
+            this.modAccuracySaveSettingsButton.Name = "modAccuracySaveSettingsButton";
+            this.modAccuracySaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAccuracySaveSettingsButton.TabIndex = 8;
+            this.modAccuracySaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modAccuracySaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modAccuracySaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // checkBox2
+            // modAccuracyEnableCheckBox
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(9, 21);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(198, 18);
-            this.checkBox2.TabIndex = 11;
-            this.checkBox2.Text = "Enable Accuracy Display Module";
-            this.coreToolTip.SetToolTip(this.checkBox2, "Select whether this module should be enabled.");
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.modAccuracyEnableCheckBox.AutoSize = true;
+            this.modAccuracyEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modAccuracyEnableCheckBox.Name = "modAccuracyEnableCheckBox";
+            this.modAccuracyEnableCheckBox.Size = new System.Drawing.Size(198, 18);
+            this.modAccuracyEnableCheckBox.TabIndex = 11;
+            this.modAccuracyEnableCheckBox.Text = "Enable Accuracy Display Module";
+            this.coreToolTip.SetToolTip(this.modAccuracyEnableCheckBox, "Select whether this module should be enabled.");
+            this.modAccuracyEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // modAccuracyHeaderLabelDesc
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(82, 47);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(487, 14);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Allow players to check each other\'s weapon accuracies when SSB is in spectator mo" +
+            this.modAccuracyHeaderLabelDesc.AutoSize = true;
+            this.modAccuracyHeaderLabelDesc.Location = new System.Drawing.Point(82, 47);
+            this.modAccuracyHeaderLabelDesc.Name = "modAccuracyHeaderLabelDesc";
+            this.modAccuracyHeaderLabelDesc.Size = new System.Drawing.Size(487, 14);
+            this.modAccuracyHeaderLabelDesc.TabIndex = 2;
+            this.modAccuracyHeaderLabelDesc.Text = "Allow players to check each other\'s weapon accuracies when SSB is in spectator mo" +
     "de.";
             // 
-            // label3
+            // modAccuracyHeaderLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Silver;
-            this.label3.Location = new System.Drawing.Point(76, 18);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(250, 25);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Module: Accuracy Display";
+            this.modAccuracyHeaderLabel.AutoSize = true;
+            this.modAccuracyHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAccuracyHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modAccuracyHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAccuracyHeaderLabel.Name = "modAccuracyHeaderLabel";
+            this.modAccuracyHeaderLabel.Size = new System.Drawing.Size(250, 25);
+            this.modAccuracyHeaderLabel.TabIndex = 1;
+            this.modAccuracyHeaderLabel.Text = "Module: Accuracy Display";
             // 
-            // pictureBox3
+            // modAccuracyHeaderPictureBox
             // 
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox3.TabIndex = 0;
-            this.pictureBox3.TabStop = false;
+            this.modAccuracyHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyHeaderPictureBox.Image")));
+            this.modAccuracyHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAccuracyHeaderPictureBox.Name = "modAccuracyHeaderPictureBox";
+            this.modAccuracyHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAccuracyHeaderPictureBox.TabIndex = 0;
+            this.modAccuracyHeaderPictureBox.TabStop = false;
             // 
             // autoVoterTab
             // 
             this.autoVoterTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.autoVoterTab.Controls.Add(this.groupBox5);
+            this.autoVoterTab.Controls.Add(this.modAutoVoterContainerGroupBox);
             this.autoVoterTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.autoVoterTab.ForeColor = System.Drawing.Color.White;
             this.autoVoterTab.Location = new System.Drawing.Point(4, 25);
@@ -1003,303 +1051,303 @@
             this.autoVoterTab.TabIndex = 2;
             this.autoVoterTab.Text = "Auto Voter";
             // 
-            // groupBox5
+            // modAutoVoterContainerGroupBox
             // 
-            this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox5.Controls.Add(this.groupBox8);
-            this.groupBox5.Controls.Add(this.groupBox7);
-            this.groupBox5.Controls.Add(this.groupBox6);
-            this.groupBox5.Controls.Add(this.label1);
-            this.groupBox5.Controls.Add(this.label7);
-            this.groupBox5.Controls.Add(this.pictureBox4);
-            this.groupBox5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox5.ForeColor = System.Drawing.Color.White;
-            this.groupBox5.Location = new System.Drawing.Point(3, 4);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(728, 453);
-            this.groupBox5.TabIndex = 4;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Automatic Voter";
+            this.modAutoVoterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptCurVotesGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptVoteDetailsGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterSettingsGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderDescLabel);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderLabel);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderPictureBox);
+            this.modAutoVoterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAutoVoterContainerGroupBox.Name = "modAutoVoterContainerGroupBox";
+            this.modAutoVoterContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modAutoVoterContainerGroupBox.TabIndex = 4;
+            this.modAutoVoterContainerGroupBox.TabStop = false;
+            this.modAutoVoterContainerGroupBox.Text = "Automatic Voter";
             // 
-            // groupBox8
+            // modAutoVoterOptCurVotesGroupBox
             // 
-            this.groupBox8.BackColor = System.Drawing.Color.Black;
-            this.groupBox8.Controls.Add(this.button13);
-            this.groupBox8.Controls.Add(this.button12);
-            this.groupBox8.Controls.Add(this.listBox1);
-            this.groupBox8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox8.ForeColor = System.Drawing.Color.White;
-            this.groupBox8.Location = new System.Drawing.Point(434, 91);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(288, 300);
-            this.groupBox8.TabIndex = 12;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Current Votes";
+            this.modAutoVoterOptCurVotesGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterClearVotesButton);
+            this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterDelVoteButton);
+            this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterCurVotesListBox);
+            this.modAutoVoterOptCurVotesGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterOptCurVotesGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterOptCurVotesGroupBox.Location = new System.Drawing.Point(434, 91);
+            this.modAutoVoterOptCurVotesGroupBox.Name = "modAutoVoterOptCurVotesGroupBox";
+            this.modAutoVoterOptCurVotesGroupBox.Size = new System.Drawing.Size(288, 300);
+            this.modAutoVoterOptCurVotesGroupBox.TabIndex = 12;
+            this.modAutoVoterOptCurVotesGroupBox.TabStop = false;
+            this.modAutoVoterOptCurVotesGroupBox.Text = "Current Votes";
             // 
-            // button13
+            // modAutoVoterClearVotesButton
             // 
-            this.button13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button13.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button13.ForeColor = System.Drawing.Color.White;
-            this.button13.Location = new System.Drawing.Point(191, 271);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(90, 23);
-            this.button13.TabIndex = 15;
-            this.button13.Text = "Clear All";
-            this.coreToolTip.SetToolTip(this.button13, "Click this button to remove all of the current automatic votes.");
-            this.button13.UseVisualStyleBackColor = false;
+            this.modAutoVoterClearVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterClearVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterClearVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterClearVotesButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(191, 271);
+            this.modAutoVoterClearVotesButton.Name = "modAutoVoterClearVotesButton";
+            this.modAutoVoterClearVotesButton.Size = new System.Drawing.Size(90, 23);
+            this.modAutoVoterClearVotesButton.TabIndex = 15;
+            this.modAutoVoterClearVotesButton.Text = "Clear All";
+            this.coreToolTip.SetToolTip(this.modAutoVoterClearVotesButton, "Click this button to remove all of the current automatic votes.");
+            this.modAutoVoterClearVotesButton.UseVisualStyleBackColor = false;
             // 
-            // button12
+            // modAutoVoterDelVoteButton
             // 
-            this.button12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button12.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button12.ForeColor = System.Drawing.Color.White;
-            this.button12.Location = new System.Drawing.Point(6, 271);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(122, 23);
-            this.button12.TabIndex = 14;
-            this.button12.Text = "Remove Selected";
-            this.coreToolTip.SetToolTip(this.button12, "Click this button to remove the selected automatic vote.");
-            this.button12.UseVisualStyleBackColor = false;
+            this.modAutoVoterDelVoteButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterDelVoteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterDelVoteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterDelVoteButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(6, 271);
+            this.modAutoVoterDelVoteButton.Name = "modAutoVoterDelVoteButton";
+            this.modAutoVoterDelVoteButton.Size = new System.Drawing.Size(122, 23);
+            this.modAutoVoterDelVoteButton.TabIndex = 14;
+            this.modAutoVoterDelVoteButton.Text = "Remove Selected";
+            this.coreToolTip.SetToolTip(this.modAutoVoterDelVoteButton, "Click this button to remove the selected automatic vote.");
+            this.modAutoVoterDelVoteButton.UseVisualStyleBackColor = false;
             // 
-            // listBox1
+            // modAutoVoterCurVotesListBox
             // 
-            this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listBox1.ForeColor = System.Drawing.Color.White;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 14;
-            this.listBox1.Location = new System.Drawing.Point(6, 16);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(276, 240);
-            this.listBox1.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.listBox1, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+            this.modAutoVoterCurVotesListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modAutoVoterCurVotesListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modAutoVoterCurVotesListBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterCurVotesListBox.FormattingEnabled = true;
+            this.modAutoVoterCurVotesListBox.ItemHeight = 14;
+            this.modAutoVoterCurVotesListBox.Location = new System.Drawing.Point(6, 16);
+            this.modAutoVoterCurVotesListBox.Name = "modAutoVoterCurVotesListBox";
+            this.modAutoVoterCurVotesListBox.Size = new System.Drawing.Size(276, 240);
+            this.modAutoVoterCurVotesListBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modAutoVoterCurVotesListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
             // 
-            // groupBox7
+            // modAutoVoterOptVoteDetailsGroupBox
             // 
-            this.groupBox7.BackColor = System.Drawing.Color.Black;
-            this.groupBox7.Controls.Add(this.label18);
-            this.groupBox7.Controls.Add(this.textBox4);
-            this.groupBox7.Controls.Add(this.checkBox3);
-            this.groupBox7.Controls.Add(this.button11);
-            this.groupBox7.Controls.Add(this.label10);
-            this.groupBox7.Controls.Add(this.label9);
-            this.groupBox7.Controls.Add(this.comboBox1);
-            this.groupBox7.Controls.Add(this.radioButton2);
-            this.groupBox7.Controls.Add(this.radioButton1);
-            this.groupBox7.Controls.Add(this.label8);
-            this.groupBox7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox7.ForeColor = System.Drawing.Color.White;
-            this.groupBox7.Location = new System.Drawing.Point(6, 91);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(416, 356);
-            this.groupBox7.TabIndex = 5;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Vote Details";
+            this.modAutoVoterOptVoteDetailsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterContainingLabel);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterContainingTextBox);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterEnableCheckBox);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterAddVoteButton);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterContainingDescLabel);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterTypeLabel);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterVoteTypeComboxBox);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterRejectRadioButton);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterPassRadioButton);
+            this.modAutoVoterOptVoteDetailsGroupBox.Controls.Add(this.modAutoVoterActionLabel);
+            this.modAutoVoterOptVoteDetailsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterOptVoteDetailsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterOptVoteDetailsGroupBox.Location = new System.Drawing.Point(6, 91);
+            this.modAutoVoterOptVoteDetailsGroupBox.Name = "modAutoVoterOptVoteDetailsGroupBox";
+            this.modAutoVoterOptVoteDetailsGroupBox.Size = new System.Drawing.Size(416, 356);
+            this.modAutoVoterOptVoteDetailsGroupBox.TabIndex = 5;
+            this.modAutoVoterOptVoteDetailsGroupBox.TabStop = false;
+            this.modAutoVoterOptVoteDetailsGroupBox.Text = "Vote Details";
             // 
-            // label18
+            // modAutoVoterContainingLabel
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(19, 169);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(124, 14);
-            this.label18.TabIndex = 16;
-            this.label18.Text = "(optional) containing:";
+            this.modAutoVoterContainingLabel.AutoSize = true;
+            this.modAutoVoterContainingLabel.Location = new System.Drawing.Point(19, 169);
+            this.modAutoVoterContainingLabel.Name = "modAutoVoterContainingLabel";
+            this.modAutoVoterContainingLabel.Size = new System.Drawing.Size(124, 14);
+            this.modAutoVoterContainingLabel.TabIndex = 16;
+            this.modAutoVoterContainingLabel.Text = "(optional) containing:";
             // 
-            // textBox4
+            // modAutoVoterContainingTextBox
             // 
-            this.textBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox4.ForeColor = System.Drawing.Color.White;
-            this.textBox4.Location = new System.Drawing.Point(22, 204);
-            this.textBox4.MaxLength = 15;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(215, 22);
-            this.textBox4.TabIndex = 15;
-            this.coreToolTip.SetToolTip(this.textBox4, resources.GetString("textBox4.ToolTip"));
+            this.modAutoVoterContainingTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modAutoVoterContainingTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modAutoVoterContainingTextBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterContainingTextBox.Location = new System.Drawing.Point(22, 204);
+            this.modAutoVoterContainingTextBox.MaxLength = 256;
+            this.modAutoVoterContainingTextBox.Name = "modAutoVoterContainingTextBox";
+            this.modAutoVoterContainingTextBox.Size = new System.Drawing.Size(215, 22);
+            this.modAutoVoterContainingTextBox.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.modAutoVoterContainingTextBox, resources.GetString("modAutoVoterContainingTextBox.ToolTip"));
             // 
-            // checkBox3
+            // modAutoVoterEnableCheckBox
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(6, 23);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(171, 18);
-            this.checkBox3.TabIndex = 11;
-            this.checkBox3.Text = "Enable Auto Voter Module";
-            this.coreToolTip.SetToolTip(this.checkBox3, "Select whether this module should be enabled.");
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.modAutoVoterEnableCheckBox.AutoSize = true;
+            this.modAutoVoterEnableCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.modAutoVoterEnableCheckBox.Name = "modAutoVoterEnableCheckBox";
+            this.modAutoVoterEnableCheckBox.Size = new System.Drawing.Size(171, 18);
+            this.modAutoVoterEnableCheckBox.TabIndex = 11;
+            this.modAutoVoterEnableCheckBox.Text = "Enable Auto Voter Module";
+            this.coreToolTip.SetToolTip(this.modAutoVoterEnableCheckBox, "Select whether this module should be enabled.");
+            this.modAutoVoterEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // button11
+            // modAutoVoterAddVoteButton
             // 
-            this.button11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button11.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button11.ForeColor = System.Drawing.Color.White;
-            this.button11.Location = new System.Drawing.Point(22, 306);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(160, 23);
-            this.button11.TabIndex = 13;
-            this.button11.Text = "Add Automatic Vote";
-            this.coreToolTip.SetToolTip(this.button11, "Click this button to add this vote.");
-            this.button11.UseVisualStyleBackColor = false;
+            this.modAutoVoterAddVoteButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterAddVoteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterAddVoteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterAddVoteButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterAddVoteButton.Location = new System.Drawing.Point(22, 306);
+            this.modAutoVoterAddVoteButton.Name = "modAutoVoterAddVoteButton";
+            this.modAutoVoterAddVoteButton.Size = new System.Drawing.Size(160, 23);
+            this.modAutoVoterAddVoteButton.TabIndex = 13;
+            this.modAutoVoterAddVoteButton.Text = "Add Automatic Vote";
+            this.coreToolTip.SetToolTip(this.modAutoVoterAddVoteButton, "Click this button to add this vote.");
+            this.modAutoVoterAddVoteButton.UseVisualStyleBackColor = false;
             // 
-            // label10
+            // modAutoVoterContainingDescLabel
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(19, 247);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(236, 28);
-            this.label10.TabIndex = 11;
-            this.label10.Text = "if empty then ALL [VOTETYPE] votes will\r\nautomatically [PASS]/[FAIL].";
+            this.modAutoVoterContainingDescLabel.AutoSize = true;
+            this.modAutoVoterContainingDescLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAutoVoterContainingDescLabel.Location = new System.Drawing.Point(19, 247);
+            this.modAutoVoterContainingDescLabel.Name = "modAutoVoterContainingDescLabel";
+            this.modAutoVoterContainingDescLabel.Size = new System.Drawing.Size(236, 28);
+            this.modAutoVoterContainingDescLabel.TabIndex = 11;
+            this.modAutoVoterContainingDescLabel.Text = "if empty then ALL [VOTETYPE] votes will\r\nautomatically [PASS]/[FAIL].";
             // 
-            // label9
+            // modAutoVoterTypeLabel
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(19, 110);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(65, 14);
-            this.label9.TabIndex = 9;
-            this.label9.Text = "vote type:";
+            this.modAutoVoterTypeLabel.AutoSize = true;
+            this.modAutoVoterTypeLabel.Location = new System.Drawing.Point(19, 110);
+            this.modAutoVoterTypeLabel.Name = "modAutoVoterTypeLabel";
+            this.modAutoVoterTypeLabel.Size = new System.Drawing.Size(65, 14);
+            this.modAutoVoterTypeLabel.TabIndex = 9;
+            this.modAutoVoterTypeLabel.Text = "vote type:";
             // 
-            // comboBox1
+            // modAutoVoterVoteTypeComboxBox
             // 
-            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox1.ForeColor = System.Drawing.Color.White;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(109, 110);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(183, 22);
-            this.comboBox1.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.comboBox1, "This list contains the types of votes to automatically pass\r\nor reject.");
+            this.modAutoVoterVoteTypeComboxBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modAutoVoterVoteTypeComboxBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterVoteTypeComboxBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterVoteTypeComboxBox.FormattingEnabled = true;
+            this.modAutoVoterVoteTypeComboxBox.Location = new System.Drawing.Point(109, 110);
+            this.modAutoVoterVoteTypeComboxBox.Name = "modAutoVoterVoteTypeComboxBox";
+            this.modAutoVoterVoteTypeComboxBox.Size = new System.Drawing.Size(183, 22);
+            this.modAutoVoterVoteTypeComboxBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modAutoVoterVoteTypeComboxBox, "This list contains the types of votes to automatically pass\r\nor reject.");
             // 
-            // radioButton2
+            // modAutoVoterRejectRadioButton
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(177, 59);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(60, 18);
-            this.radioButton2.TabIndex = 7;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Reject";
-            this.coreToolTip.SetToolTip(this.radioButton2, "Select this option to automatically vote \"no.\"");
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.modAutoVoterRejectRadioButton.AutoSize = true;
+            this.modAutoVoterRejectRadioButton.Location = new System.Drawing.Point(177, 59);
+            this.modAutoVoterRejectRadioButton.Name = "modAutoVoterRejectRadioButton";
+            this.modAutoVoterRejectRadioButton.Size = new System.Drawing.Size(60, 18);
+            this.modAutoVoterRejectRadioButton.TabIndex = 7;
+            this.modAutoVoterRejectRadioButton.TabStop = true;
+            this.modAutoVoterRejectRadioButton.Text = "Reject";
+            this.coreToolTip.SetToolTip(this.modAutoVoterRejectRadioButton, "Select this option to automatically vote \"no.\"");
+            this.modAutoVoterRejectRadioButton.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // modAutoVoterPassRadioButton
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(109, 59);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(48, 18);
-            this.radioButton1.TabIndex = 6;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Pass";
-            this.coreToolTip.SetToolTip(this.radioButton1, "Select this option to automatically vote \"yes.\"");
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.modAutoVoterPassRadioButton.AutoSize = true;
+            this.modAutoVoterPassRadioButton.Location = new System.Drawing.Point(109, 59);
+            this.modAutoVoterPassRadioButton.Name = "modAutoVoterPassRadioButton";
+            this.modAutoVoterPassRadioButton.Size = new System.Drawing.Size(48, 18);
+            this.modAutoVoterPassRadioButton.TabIndex = 6;
+            this.modAutoVoterPassRadioButton.TabStop = true;
+            this.modAutoVoterPassRadioButton.Text = "Pass";
+            this.coreToolTip.SetToolTip(this.modAutoVoterPassRadioButton, "Select this option to automatically vote \"yes.\"");
+            this.modAutoVoterPassRadioButton.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // modAutoVoterActionLabel
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(19, 59);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(79, 14);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "Automatically";
+            this.modAutoVoterActionLabel.AutoSize = true;
+            this.modAutoVoterActionLabel.Location = new System.Drawing.Point(19, 59);
+            this.modAutoVoterActionLabel.Name = "modAutoVoterActionLabel";
+            this.modAutoVoterActionLabel.Size = new System.Drawing.Size(79, 14);
+            this.modAutoVoterActionLabel.TabIndex = 5;
+            this.modAutoVoterActionLabel.Text = "Automatically";
             // 
-            // groupBox6
+            // modAutoVoterSettingsGroupBox
             // 
-            this.groupBox6.BackColor = System.Drawing.Color.Black;
-            this.groupBox6.Controls.Add(this.button8);
-            this.groupBox6.Controls.Add(this.button9);
-            this.groupBox6.Controls.Add(this.button10);
-            this.groupBox6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox6.ForeColor = System.Drawing.Color.White;
-            this.groupBox6.Location = new System.Drawing.Point(434, 397);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(288, 50);
-            this.groupBox6.TabIndex = 10;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Settings";
+            this.modAutoVoterSettingsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterResetSettingsButton);
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterLoadSettingsButton);
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterSaveSettingsButton);
+            this.modAutoVoterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterSettingsGroupBox.Location = new System.Drawing.Point(434, 397);
+            this.modAutoVoterSettingsGroupBox.Name = "modAutoVoterSettingsGroupBox";
+            this.modAutoVoterSettingsGroupBox.Size = new System.Drawing.Size(288, 50);
+            this.modAutoVoterSettingsGroupBox.TabIndex = 10;
+            this.modAutoVoterSettingsGroupBox.TabStop = false;
+            this.modAutoVoterSettingsGroupBox.Text = "Settings";
             // 
-            // button8
+            // modAutoVoterResetSettingsButton
             // 
-            this.button8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button8.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button8.ForeColor = System.Drawing.Color.White;
-            this.button8.Location = new System.Drawing.Point(198, 20);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(79, 23);
-            this.button8.TabIndex = 9;
-            this.button8.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button8, "Reset this module to its default settings.");
-            this.button8.UseVisualStyleBackColor = false;
+            this.modAutoVoterResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(198, 20);
+            this.modAutoVoterResetSettingsButton.Name = "modAutoVoterResetSettingsButton";
+            this.modAutoVoterResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterResetSettingsButton.TabIndex = 9;
+            this.modAutoVoterResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modAutoVoterResetSettingsButton, "Reset this module to its default settings.");
+            this.modAutoVoterResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button9
+            // modAutoVoterLoadSettingsButton
             // 
-            this.button9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button9.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button9.ForeColor = System.Drawing.Color.White;
-            this.button9.Location = new System.Drawing.Point(104, 20);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(79, 23);
-            this.button9.TabIndex = 1;
-            this.button9.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button9, "Load the current settings from the configuration file.");
-            this.button9.UseVisualStyleBackColor = false;
+            this.modAutoVoterLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(104, 20);
+            this.modAutoVoterLoadSettingsButton.Name = "modAutoVoterLoadSettingsButton";
+            this.modAutoVoterLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterLoadSettingsButton.TabIndex = 1;
+            this.modAutoVoterLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modAutoVoterLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modAutoVoterLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button10
+            // modAutoVoterSaveSettingsButton
             // 
-            this.button10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button10.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button10.ForeColor = System.Drawing.Color.White;
-            this.button10.Location = new System.Drawing.Point(10, 20);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(79, 23);
-            this.button10.TabIndex = 8;
-            this.button10.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button10, "Save the current settings to the configuration file.");
-            this.button10.UseVisualStyleBackColor = false;
+            this.modAutoVoterSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(10, 20);
+            this.modAutoVoterSaveSettingsButton.Name = "modAutoVoterSaveSettingsButton";
+            this.modAutoVoterSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterSaveSettingsButton.TabIndex = 8;
+            this.modAutoVoterSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modAutoVoterSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modAutoVoterSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label1
+            // modAutoVoterHeaderDescLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(82, 47);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(340, 14);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Automatically pass or reject votes based on specified criteria.";
+            this.modAutoVoterHeaderDescLabel.AutoSize = true;
+            this.modAutoVoterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modAutoVoterHeaderDescLabel.Name = "modAutoVoterHeaderDescLabel";
+            this.modAutoVoterHeaderDescLabel.Size = new System.Drawing.Size(340, 14);
+            this.modAutoVoterHeaderDescLabel.TabIndex = 2;
+            this.modAutoVoterHeaderDescLabel.Text = "Automatically pass or reject votes based on specified criteria.";
             // 
-            // label7
+            // modAutoVoterHeaderLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.Color.Silver;
-            this.label7.Location = new System.Drawing.Point(76, 18);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(244, 25);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "Module: Automatic Voter";
+            this.modAutoVoterHeaderLabel.AutoSize = true;
+            this.modAutoVoterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAutoVoterHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modAutoVoterHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAutoVoterHeaderLabel.Name = "modAutoVoterHeaderLabel";
+            this.modAutoVoterHeaderLabel.Size = new System.Drawing.Size(244, 25);
+            this.modAutoVoterHeaderLabel.TabIndex = 1;
+            this.modAutoVoterHeaderLabel.Text = "Module: Automatic Voter";
             // 
-            // pictureBox4
+            // modAutoVoterHeaderPictureBox
             // 
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox4.TabIndex = 0;
-            this.pictureBox4.TabStop = false;
+            this.modAutoVoterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterHeaderPictureBox.Image")));
+            this.modAutoVoterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAutoVoterHeaderPictureBox.Name = "modAutoVoterHeaderPictureBox";
+            this.modAutoVoterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAutoVoterHeaderPictureBox.TabIndex = 0;
+            this.modAutoVoterHeaderPictureBox.TabStop = false;
             // 
             // earlyQuitTab
             // 
             this.earlyQuitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.earlyQuitTab.Controls.Add(this.groupBox9);
+            this.earlyQuitTab.Controls.Add(this.modEarlyQuitContainerGroupBox);
             this.earlyQuitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.earlyQuitTab.ForeColor = System.Drawing.Color.White;
             this.earlyQuitTab.Location = new System.Drawing.Point(4, 25);
@@ -1308,273 +1356,273 @@
             this.earlyQuitTab.TabIndex = 3;
             this.earlyQuitTab.Text = "Early Quit Banner";
             // 
-            // groupBox9
+            // modEarlyQuitContainerGroupBox
             // 
-            this.groupBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox9.Controls.Add(this.groupBox10);
-            this.groupBox9.Controls.Add(this.groupBox11);
-            this.groupBox9.Controls.Add(this.groupBox12);
-            this.groupBox9.Controls.Add(this.label15);
-            this.groupBox9.Controls.Add(this.label16);
-            this.groupBox9.Controls.Add(this.pictureBox5);
-            this.groupBox9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox9.ForeColor = System.Drawing.Color.White;
-            this.groupBox9.Location = new System.Drawing.Point(3, 3);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(728, 453);
-            this.groupBox9.TabIndex = 5;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Early Quit Banner";
+            this.modEarlyQuitContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptCurQuitsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptDetailsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitSettingsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderDescLabel);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderLabel);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderPictureBox);
+            this.modEarlyQuitContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modEarlyQuitContainerGroupBox.Name = "modEarlyQuitContainerGroupBox";
+            this.modEarlyQuitContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modEarlyQuitContainerGroupBox.TabIndex = 5;
+            this.modEarlyQuitContainerGroupBox.TabStop = false;
+            this.modEarlyQuitContainerGroupBox.Text = "Early Quit Banner";
             // 
-            // groupBox10
+            // modEarlyQuitOptCurQuitsGroupBox
             // 
-            this.groupBox10.BackColor = System.Drawing.Color.Black;
-            this.groupBox10.Controls.Add(this.button16);
-            this.groupBox10.Controls.Add(this.button14);
-            this.groupBox10.Controls.Add(this.button15);
-            this.groupBox10.Controls.Add(this.listBox2);
-            this.groupBox10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox10.ForeColor = System.Drawing.Color.White;
-            this.groupBox10.Location = new System.Drawing.Point(377, 114);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(345, 277);
-            this.groupBox10.TabIndex = 12;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Current Early Quits";
+            this.modEarlyQuitOptCurQuitsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitForgiveQuitButton);
+            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitClearQuitsButton);
+            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitDelQuitButton);
+            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitCurQuitsListBox);
+            this.modEarlyQuitOptCurQuitsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitOptCurQuitsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitOptCurQuitsGroupBox.Location = new System.Drawing.Point(377, 91);
+            this.modEarlyQuitOptCurQuitsGroupBox.Name = "modEarlyQuitOptCurQuitsGroupBox";
+            this.modEarlyQuitOptCurQuitsGroupBox.Size = new System.Drawing.Size(345, 300);
+            this.modEarlyQuitOptCurQuitsGroupBox.TabIndex = 12;
+            this.modEarlyQuitOptCurQuitsGroupBox.TabStop = false;
+            this.modEarlyQuitOptCurQuitsGroupBox.Text = "Current Early Quits";
             // 
-            // button16
+            // modEarlyQuitForgiveQuitButton
             // 
-            this.button16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button16.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button16.ForeColor = System.Drawing.Color.White;
-            this.button16.Location = new System.Drawing.Point(7, 248);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(92, 23);
-            this.button16.TabIndex = 16;
-            this.button16.Text = "Forgive Quit";
-            this.coreToolTip.SetToolTip(this.button16, "Click this button to forgive one of the player\'s early quits.");
-            this.button16.UseVisualStyleBackColor = false;
+            this.modEarlyQuitForgiveQuitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitForgiveQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitForgiveQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitForgiveQuitButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(8, 266);
+            this.modEarlyQuitForgiveQuitButton.Name = "modEarlyQuitForgiveQuitButton";
+            this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(92, 23);
+            this.modEarlyQuitForgiveQuitButton.TabIndex = 16;
+            this.modEarlyQuitForgiveQuitButton.Text = "Forgive Quit";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitForgiveQuitButton, "Click this button to forgive one of the player\'s early quits.");
+            this.modEarlyQuitForgiveQuitButton.UseVisualStyleBackColor = false;
             // 
-            // button14
+            // modEarlyQuitClearQuitsButton
             // 
-            this.button14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button14.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button14.ForeColor = System.Drawing.Color.White;
-            this.button14.Location = new System.Drawing.Point(247, 248);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(90, 23);
-            this.button14.TabIndex = 15;
-            this.button14.Text = "Clear All";
-            this.coreToolTip.SetToolTip(this.button14, "Click this button to remove all players\' early quits.");
-            this.button14.UseVisualStyleBackColor = false;
+            this.modEarlyQuitClearQuitsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitClearQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitClearQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitClearQuitsButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(248, 266);
+            this.modEarlyQuitClearQuitsButton.Name = "modEarlyQuitClearQuitsButton";
+            this.modEarlyQuitClearQuitsButton.Size = new System.Drawing.Size(90, 23);
+            this.modEarlyQuitClearQuitsButton.TabIndex = 15;
+            this.modEarlyQuitClearQuitsButton.Text = "Clear All";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitClearQuitsButton, "Click this button to remove all players\' early quits.");
+            this.modEarlyQuitClearQuitsButton.UseVisualStyleBackColor = false;
             // 
-            // button15
+            // modEarlyQuitDelQuitButton
             // 
-            this.button15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button15.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button15.ForeColor = System.Drawing.Color.White;
-            this.button15.Location = new System.Drawing.Point(117, 248);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(112, 23);
-            this.button15.TabIndex = 14;
-            this.button15.Text = "Remove selected";
-            this.coreToolTip.SetToolTip(this.button15, "Click this button to remove all of the selected player\'s\r\nearly quits.");
-            this.button15.UseVisualStyleBackColor = false;
+            this.modEarlyQuitDelQuitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitDelQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitDelQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitDelQuitButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(118, 266);
+            this.modEarlyQuitDelQuitButton.Name = "modEarlyQuitDelQuitButton";
+            this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(112, 23);
+            this.modEarlyQuitDelQuitButton.TabIndex = 14;
+            this.modEarlyQuitDelQuitButton.Text = "Remove selected";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitDelQuitButton, "Click this button to remove all of the selected player\'s\r\nearly quits.");
+            this.modEarlyQuitDelQuitButton.UseVisualStyleBackColor = false;
             // 
-            // listBox2
+            // modEarlyQuitCurQuitsListBox
             // 
-            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.listBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listBox2.ForeColor = System.Drawing.Color.White;
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.ItemHeight = 14;
-            this.listBox2.Location = new System.Drawing.Point(6, 21);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(330, 212);
-            this.listBox2.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.listBox2, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+            this.modEarlyQuitCurQuitsListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEarlyQuitCurQuitsListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modEarlyQuitCurQuitsListBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitCurQuitsListBox.FormattingEnabled = true;
+            this.modEarlyQuitCurQuitsListBox.ItemHeight = 14;
+            this.modEarlyQuitCurQuitsListBox.Location = new System.Drawing.Point(6, 21);
+            this.modEarlyQuitCurQuitsListBox.Name = "modEarlyQuitCurQuitsListBox";
+            this.modEarlyQuitCurQuitsListBox.Size = new System.Drawing.Size(330, 226);
+            this.modEarlyQuitCurQuitsListBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitCurQuitsListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
             // 
-            // groupBox11
+            // modEarlyQuitOptDetailsGroupBox
             // 
-            this.groupBox11.BackColor = System.Drawing.Color.Black;
-            this.groupBox11.Controls.Add(this.textBox3);
-            this.groupBox11.Controls.Add(this.textBox2);
-            this.groupBox11.Controls.Add(this.checkBox4);
-            this.groupBox11.Controls.Add(this.label13);
-            this.groupBox11.Controls.Add(this.comboBox2);
-            this.groupBox11.Controls.Add(this.label14);
-            this.groupBox11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox11.ForeColor = System.Drawing.Color.White;
-            this.groupBox11.Location = new System.Drawing.Point(6, 114);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(359, 333);
-            this.groupBox11.TabIndex = 5;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Early Quit Details";
+            this.modEarlyQuitOptDetailsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitTimeTextBox);
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitMaxQuitsTextBox);
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitEnableCheckBox);
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitTimeLabel);
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitTimeScaleComboxBox);
+            this.modEarlyQuitOptDetailsGroupBox.Controls.Add(this.modEarlyQuitMaxQuitsLabel);
+            this.modEarlyQuitOptDetailsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitOptDetailsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitOptDetailsGroupBox.Location = new System.Drawing.Point(6, 91);
+            this.modEarlyQuitOptDetailsGroupBox.Name = "modEarlyQuitOptDetailsGroupBox";
+            this.modEarlyQuitOptDetailsGroupBox.Size = new System.Drawing.Size(359, 356);
+            this.modEarlyQuitOptDetailsGroupBox.TabIndex = 5;
+            this.modEarlyQuitOptDetailsGroupBox.TabStop = false;
+            this.modEarlyQuitOptDetailsGroupBox.Text = "Early Quit Details";
             // 
-            // textBox3
+            // modEarlyQuitTimeTextBox
             // 
-            this.textBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.ForeColor = System.Drawing.Color.White;
-            this.textBox3.Location = new System.Drawing.Point(9, 252);
-            this.textBox3.MaxLength = 15;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(99, 22);
-            this.textBox3.TabIndex = 16;
-            this.coreToolTip.SetToolTip(this.textBox3, "Specify the time to ban the player for after the maximum quits\r\nare exceeded. Thi" +
+            this.modEarlyQuitTimeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEarlyQuitTimeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modEarlyQuitTimeTextBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitTimeTextBox.Location = new System.Drawing.Point(9, 252);
+            this.modEarlyQuitTimeTextBox.MaxLength = 15;
+            this.modEarlyQuitTimeTextBox.Name = "modEarlyQuitTimeTextBox";
+            this.modEarlyQuitTimeTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modEarlyQuitTimeTextBox.TabIndex = 16;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitTimeTextBox, "Specify the time to ban the player for after the maximum quits\r\nare exceeded. Thi" +
         "s must be a number.");
             // 
-            // textBox2
+            // modEarlyQuitMaxQuitsTextBox
             // 
-            this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.ForeColor = System.Drawing.Color.White;
-            this.textBox2.Location = new System.Drawing.Point(9, 98);
-            this.textBox2.MaxLength = 15;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(99, 22);
-            this.textBox2.TabIndex = 15;
-            this.coreToolTip.SetToolTip(this.textBox2, "Specify the maximum number of times a player can leave early.\r\nThis must be a num" +
+            this.modEarlyQuitMaxQuitsTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEarlyQuitMaxQuitsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modEarlyQuitMaxQuitsTextBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitMaxQuitsTextBox.Location = new System.Drawing.Point(9, 98);
+            this.modEarlyQuitMaxQuitsTextBox.MaxLength = 15;
+            this.modEarlyQuitMaxQuitsTextBox.Name = "modEarlyQuitMaxQuitsTextBox";
+            this.modEarlyQuitMaxQuitsTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modEarlyQuitMaxQuitsTextBox.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitMaxQuitsTextBox, "Specify the maximum number of times a player can leave early.\r\nThis must be a num" +
         "ber.");
             // 
-            // checkBox4
+            // modEarlyQuitEnableCheckBox
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(6, 23);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(160, 18);
-            this.checkBox4.TabIndex = 11;
-            this.checkBox4.Text = "Enable Early Quit Banner";
-            this.coreToolTip.SetToolTip(this.checkBox4, "Select whether this module should be enabled.");
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.modEarlyQuitEnableCheckBox.AutoSize = true;
+            this.modEarlyQuitEnableCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.modEarlyQuitEnableCheckBox.Name = "modEarlyQuitEnableCheckBox";
+            this.modEarlyQuitEnableCheckBox.Size = new System.Drawing.Size(160, 18);
+            this.modEarlyQuitEnableCheckBox.TabIndex = 11;
+            this.modEarlyQuitEnableCheckBox.Text = "Enable Early Quit Banner";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitEnableCheckBox, "Select whether this module should be enabled.");
+            this.modEarlyQuitEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label13
+            // modEarlyQuitTimeLabel
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 213);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(323, 14);
-            this.label13.TabIndex = 9;
-            this.label13.Text = "Time to ban player for after max early quits are exceeded";
+            this.modEarlyQuitTimeLabel.AutoSize = true;
+            this.modEarlyQuitTimeLabel.Location = new System.Drawing.Point(6, 213);
+            this.modEarlyQuitTimeLabel.Name = "modEarlyQuitTimeLabel";
+            this.modEarlyQuitTimeLabel.Size = new System.Drawing.Size(323, 14);
+            this.modEarlyQuitTimeLabel.TabIndex = 9;
+            this.modEarlyQuitTimeLabel.Text = "Time to ban player for after max early quits are exceeded";
             // 
-            // comboBox2
+            // modEarlyQuitTimeScaleComboxBox
             // 
-            this.comboBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox2.ForeColor = System.Drawing.Color.White;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(126, 251);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(124, 22);
-            this.comboBox2.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.comboBox2, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+            this.modEarlyQuitTimeScaleComboxBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEarlyQuitTimeScaleComboxBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitTimeScaleComboxBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitTimeScaleComboxBox.FormattingEnabled = true;
+            this.modEarlyQuitTimeScaleComboxBox.Location = new System.Drawing.Point(126, 251);
+            this.modEarlyQuitTimeScaleComboxBox.Name = "modEarlyQuitTimeScaleComboxBox";
+            this.modEarlyQuitTimeScaleComboxBox.Size = new System.Drawing.Size(124, 22);
+            this.modEarlyQuitTimeScaleComboxBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitTimeScaleComboxBox, "This list contains time scale that will be combined\r\nwith the value you entered i" +
         "n the box to the left.");
             // 
-            // label14
+            // modEarlyQuitMaxQuitsLabel
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 64);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(241, 14);
-            this.label14.TabIndex = 5;
-            this.label14.Text = "Maximum number of early quits before ban";
+            this.modEarlyQuitMaxQuitsLabel.AutoSize = true;
+            this.modEarlyQuitMaxQuitsLabel.Location = new System.Drawing.Point(6, 64);
+            this.modEarlyQuitMaxQuitsLabel.Name = "modEarlyQuitMaxQuitsLabel";
+            this.modEarlyQuitMaxQuitsLabel.Size = new System.Drawing.Size(241, 14);
+            this.modEarlyQuitMaxQuitsLabel.TabIndex = 5;
+            this.modEarlyQuitMaxQuitsLabel.Text = "Maximum number of early quits before ban";
             // 
-            // groupBox12
+            // modEarlyQuitSettingsGroupBox
             // 
-            this.groupBox12.BackColor = System.Drawing.Color.Black;
-            this.groupBox12.Controls.Add(this.button17);
-            this.groupBox12.Controls.Add(this.button18);
-            this.groupBox12.Controls.Add(this.button19);
-            this.groupBox12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox12.ForeColor = System.Drawing.Color.White;
-            this.groupBox12.Location = new System.Drawing.Point(377, 397);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(345, 50);
-            this.groupBox12.TabIndex = 10;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Settings";
+            this.modEarlyQuitSettingsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitResetSettingsButton);
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitLoadSettingsButton);
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitSaveSettingsButton);
+            this.modEarlyQuitSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitSettingsGroupBox.Location = new System.Drawing.Point(377, 397);
+            this.modEarlyQuitSettingsGroupBox.Name = "modEarlyQuitSettingsGroupBox";
+            this.modEarlyQuitSettingsGroupBox.Size = new System.Drawing.Size(345, 50);
+            this.modEarlyQuitSettingsGroupBox.TabIndex = 10;
+            this.modEarlyQuitSettingsGroupBox.TabStop = false;
+            this.modEarlyQuitSettingsGroupBox.Text = "Settings";
             // 
-            // button17
+            // modEarlyQuitResetSettingsButton
             // 
-            this.button17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button17.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button17.ForeColor = System.Drawing.Color.White;
-            this.button17.Location = new System.Drawing.Point(257, 19);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(79, 23);
-            this.button17.TabIndex = 9;
-            this.button17.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button17, "Reset this module to its default settings.");
-            this.button17.UseVisualStyleBackColor = false;
+            this.modEarlyQuitResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(257, 19);
+            this.modEarlyQuitResetSettingsButton.Name = "modEarlyQuitResetSettingsButton";
+            this.modEarlyQuitResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitResetSettingsButton.TabIndex = 9;
+            this.modEarlyQuitResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitResetSettingsButton, "Reset this module to its default settings.");
+            this.modEarlyQuitResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button18
+            // modEarlyQuitLoadSettingsButton
             // 
-            this.button18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button18.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button18.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button18.ForeColor = System.Drawing.Color.White;
-            this.button18.Location = new System.Drawing.Point(140, 19);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(79, 23);
-            this.button18.TabIndex = 1;
-            this.button18.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button18, "Load the current settings from the configuration file.");
-            this.button18.UseVisualStyleBackColor = false;
+            this.modEarlyQuitLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(140, 19);
+            this.modEarlyQuitLoadSettingsButton.Name = "modEarlyQuitLoadSettingsButton";
+            this.modEarlyQuitLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitLoadSettingsButton.TabIndex = 1;
+            this.modEarlyQuitLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modEarlyQuitLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button19
+            // modEarlyQuitSaveSettingsButton
             // 
-            this.button19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button19.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button19.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button19.ForeColor = System.Drawing.Color.White;
-            this.button19.Location = new System.Drawing.Point(19, 19);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(79, 23);
-            this.button19.TabIndex = 8;
-            this.button19.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button19, "Save the current settings to the configuration file.");
-            this.button19.UseVisualStyleBackColor = false;
+            this.modEarlyQuitSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(19, 19);
+            this.modEarlyQuitSaveSettingsButton.Name = "modEarlyQuitSaveSettingsButton";
+            this.modEarlyQuitSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitSaveSettingsButton.TabIndex = 8;
+            this.modEarlyQuitSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modEarlyQuitSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label15
+            // modEarlyQuitHeaderDescLabel
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(82, 47);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(569, 14);
-            this.label15.TabIndex = 2;
-            this.label15.Text = "Track players who leave the game early and automatically ban them after a maximum" +
+            this.modEarlyQuitHeaderDescLabel.AutoSize = true;
+            this.modEarlyQuitHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modEarlyQuitHeaderDescLabel.Name = "modEarlyQuitHeaderDescLabel";
+            this.modEarlyQuitHeaderDescLabel.Size = new System.Drawing.Size(569, 14);
+            this.modEarlyQuitHeaderDescLabel.TabIndex = 2;
+            this.modEarlyQuitHeaderDescLabel.Text = "Track players who leave the game early and automatically ban them after a maximum" +
     " number of quits.";
             // 
-            // label16
+            // modEarlyQuitHeaderLabel
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.ForeColor = System.Drawing.Color.Silver;
-            this.label16.Location = new System.Drawing.Point(76, 18);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(259, 25);
-            this.label16.TabIndex = 1;
-            this.label16.Text = "Module: Early Quit Banner";
+            this.modEarlyQuitHeaderLabel.AutoSize = true;
+            this.modEarlyQuitHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modEarlyQuitHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modEarlyQuitHeaderLabel.Name = "modEarlyQuitHeaderLabel";
+            this.modEarlyQuitHeaderLabel.Size = new System.Drawing.Size(259, 25);
+            this.modEarlyQuitHeaderLabel.TabIndex = 1;
+            this.modEarlyQuitHeaderLabel.Text = "Module: Early Quit Banner";
             // 
-            // pictureBox5
+            // modEarlyQuitHeaderPictureBox
             // 
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox5.TabIndex = 0;
-            this.pictureBox5.TabStop = false;
+            this.modEarlyQuitHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitHeaderPictureBox.Image")));
+            this.modEarlyQuitHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modEarlyQuitHeaderPictureBox.Name = "modEarlyQuitHeaderPictureBox";
+            this.modEarlyQuitHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modEarlyQuitHeaderPictureBox.TabIndex = 0;
+            this.modEarlyQuitHeaderPictureBox.TabStop = false;
             // 
             // eloLimitTab
             // 
             this.eloLimitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.eloLimitTab.Controls.Add(this.groupBox4);
+            this.eloLimitTab.Controls.Add(this.modEloLimiterContainerGroupBox);
             this.eloLimitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eloLimitTab.ForeColor = System.Drawing.Color.White;
             this.eloLimitTab.Location = new System.Drawing.Point(4, 25);
@@ -1583,195 +1631,195 @@
             this.eloLimitTab.TabIndex = 4;
             this.eloLimitTab.Text = "Elo Limiter";
             // 
-            // groupBox4
+            // modEloLimiterContainerGroupBox
             // 
-            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox4.Controls.Add(this.groupBox16);
-            this.groupBox4.Controls.Add(this.label12);
-            this.groupBox4.Controls.Add(this.label17);
-            this.groupBox4.Controls.Add(this.pictureBox6);
-            this.groupBox4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox4.ForeColor = System.Drawing.Color.White;
-            this.groupBox4.Location = new System.Drawing.Point(3, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(728, 453);
-            this.groupBox4.TabIndex = 3;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Elo Limiter";
+            this.modEloLimiterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterOptGroupBox);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderDescLabel);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderLabel);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderPictureBox);
+            this.modEloLimiterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modEloLimiterContainerGroupBox.Name = "modEloLimiterContainerGroupBox";
+            this.modEloLimiterContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modEloLimiterContainerGroupBox.TabIndex = 3;
+            this.modEloLimiterContainerGroupBox.TabStop = false;
+            this.modEloLimiterContainerGroupBox.Text = "Elo Limiter";
             // 
-            // groupBox16
+            // modEloLimiterOptGroupBox
             // 
-            this.groupBox16.BackColor = System.Drawing.Color.Black;
-            this.groupBox16.Controls.Add(this.groupBox34);
-            this.groupBox16.Controls.Add(this.checkBox5);
-            this.groupBox16.Controls.Add(this.groupBox17);
-            this.groupBox16.ForeColor = System.Drawing.Color.White;
-            this.groupBox16.Location = new System.Drawing.Point(3, 91);
-            this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(719, 359);
-            this.groupBox16.TabIndex = 12;
-            this.groupBox16.TabStop = false;
-            this.groupBox16.Text = "QLRanks Elo Options";
+            this.modEloLimiterOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modEloLimiterOptGroupBox.Controls.Add(this.modEloLimiterOptEloGroupBox);
+            this.modEloLimiterOptGroupBox.Controls.Add(this.modEloLimiterEnableCheckBox);
+            this.modEloLimiterOptGroupBox.Controls.Add(this.modEloLimiterSettingsGroupBox);
+            this.modEloLimiterOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modEloLimiterOptGroupBox.Name = "modEloLimiterOptGroupBox";
+            this.modEloLimiterOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modEloLimiterOptGroupBox.TabIndex = 12;
+            this.modEloLimiterOptGroupBox.TabStop = false;
+            this.modEloLimiterOptGroupBox.Text = "QLRanks Elo Options";
             // 
-            // groupBox34
+            // modEloLimiterOptEloGroupBox
             // 
-            this.groupBox34.Controls.Add(this.label11);
-            this.groupBox34.Controls.Add(this.textBox6);
-            this.groupBox34.Controls.Add(this.textBox5);
-            this.groupBox34.Controls.Add(this.label19);
-            this.groupBox34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox34.ForeColor = System.Drawing.Color.White;
-            this.groupBox34.Location = new System.Drawing.Point(9, 56);
-            this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(381, 189);
-            this.groupBox34.TabIndex = 29;
-            this.groupBox34.TabStop = false;
-            this.groupBox34.Text = "Elo Values";
+            this.modEloLimiterOptEloGroupBox.Controls.Add(this.modEloLimiterMinEloLabel);
+            this.modEloLimiterOptEloGroupBox.Controls.Add(this.modEloLimiterMaxEloTextBox);
+            this.modEloLimiterOptEloGroupBox.Controls.Add(this.modEloLimiterMinEloTextBox);
+            this.modEloLimiterOptEloGroupBox.Controls.Add(this.modEloLimiterMaxEloLabel);
+            this.modEloLimiterOptEloGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterOptEloGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterOptEloGroupBox.Location = new System.Drawing.Point(9, 56);
+            this.modEloLimiterOptEloGroupBox.Name = "modEloLimiterOptEloGroupBox";
+            this.modEloLimiterOptEloGroupBox.Size = new System.Drawing.Size(381, 189);
+            this.modEloLimiterOptEloGroupBox.TabIndex = 29;
+            this.modEloLimiterOptEloGroupBox.TabStop = false;
+            this.modEloLimiterOptEloGroupBox.Text = "Elo Values";
             // 
-            // label11
+            // modEloLimiterMinEloLabel
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 30);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(183, 14);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Minimum QLRanks Elo [required]";
+            this.modEloLimiterMinEloLabel.AutoSize = true;
+            this.modEloLimiterMinEloLabel.Location = new System.Drawing.Point(6, 30);
+            this.modEloLimiterMinEloLabel.Name = "modEloLimiterMinEloLabel";
+            this.modEloLimiterMinEloLabel.Size = new System.Drawing.Size(183, 14);
+            this.modEloLimiterMinEloLabel.TabIndex = 3;
+            this.modEloLimiterMinEloLabel.Text = "Minimum QLRanks Elo [required]";
             // 
-            // textBox6
+            // modEloLimiterMaxEloTextBox
             // 
-            this.textBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox6.ForeColor = System.Drawing.Color.White;
-            this.textBox6.Location = new System.Drawing.Point(9, 151);
-            this.textBox6.MaxLength = 15;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(99, 22);
-            this.textBox6.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox6, resources.GetString("textBox6.ToolTip"));
+            this.modEloLimiterMaxEloTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEloLimiterMaxEloTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modEloLimiterMaxEloTextBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterMaxEloTextBox.Location = new System.Drawing.Point(9, 151);
+            this.modEloLimiterMaxEloTextBox.MaxLength = 5;
+            this.modEloLimiterMaxEloTextBox.Name = "modEloLimiterMaxEloTextBox";
+            this.modEloLimiterMaxEloTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modEloLimiterMaxEloTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modEloLimiterMaxEloTextBox, resources.GetString("modEloLimiterMaxEloTextBox.ToolTip"));
             // 
-            // textBox5
+            // modEloLimiterMinEloTextBox
             // 
-            this.textBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox5.ForeColor = System.Drawing.Color.White;
-            this.textBox5.Location = new System.Drawing.Point(9, 64);
-            this.textBox5.MaxLength = 15;
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(99, 22);
-            this.textBox5.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox5, "Enter the minimum QLRanks Elo for your server. Any accounts\r\nthat do not have thi" +
+            this.modEloLimiterMinEloTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEloLimiterMinEloTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modEloLimiterMinEloTextBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterMinEloTextBox.Location = new System.Drawing.Point(9, 64);
+            this.modEloLimiterMinEloTextBox.MaxLength = 5;
+            this.modEloLimiterMinEloTextBox.Name = "modEloLimiterMinEloTextBox";
+            this.modEloLimiterMinEloTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modEloLimiterMinEloTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modEloLimiterMinEloTextBox, "Enter the minimum QLRanks Elo for your server. Any accounts\r\nthat do not have thi" +
         "s minimum Elo for the current game type \r\nwill be kicked when they attempt to co" +
         "nnect to your server.");
             // 
-            // label19
+            // modEloLimiterMaxEloLabel
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 117);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(184, 14);
-            this.label19.TabIndex = 12;
-            this.label19.Text = "Maximum QLRanks Elo (optional)";
+            this.modEloLimiterMaxEloLabel.AutoSize = true;
+            this.modEloLimiterMaxEloLabel.Location = new System.Drawing.Point(6, 117);
+            this.modEloLimiterMaxEloLabel.Name = "modEloLimiterMaxEloLabel";
+            this.modEloLimiterMaxEloLabel.Size = new System.Drawing.Size(184, 14);
+            this.modEloLimiterMaxEloLabel.TabIndex = 12;
+            this.modEloLimiterMaxEloLabel.Text = "Maximum QLRanks Elo (optional)";
             // 
-            // checkBox5
+            // modEloLimiterEnableCheckBox
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(9, 21);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(215, 18);
-            this.checkBox5.TabIndex = 11;
-            this.checkBox5.Text = "Enable QLRanks Elo Limiter Module";
-            this.coreToolTip.SetToolTip(this.checkBox5, "Select whether this module should be enabled.");
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.modEloLimiterEnableCheckBox.AutoSize = true;
+            this.modEloLimiterEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modEloLimiterEnableCheckBox.Name = "modEloLimiterEnableCheckBox";
+            this.modEloLimiterEnableCheckBox.Size = new System.Drawing.Size(215, 18);
+            this.modEloLimiterEnableCheckBox.TabIndex = 11;
+            this.modEloLimiterEnableCheckBox.Text = "Enable QLRanks Elo Limiter Module";
+            this.coreToolTip.SetToolTip(this.modEloLimiterEnableCheckBox, "Select whether this module should be enabled.");
+            this.modEloLimiterEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox17
+            // modEloLimiterSettingsGroupBox
             // 
-            this.groupBox17.Controls.Add(this.button5);
-            this.groupBox17.Controls.Add(this.button6);
-            this.groupBox17.Controls.Add(this.button7);
-            this.groupBox17.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox17.ForeColor = System.Drawing.Color.White;
-            this.groupBox17.Location = new System.Drawing.Point(428, 303);
-            this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(285, 50);
-            this.groupBox17.TabIndex = 10;
-            this.groupBox17.TabStop = false;
-            this.groupBox17.Text = "Settings";
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterResetSettingsButton);
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterLoadSettingsButton);
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterSaveSettingsButton);
+            this.modEloLimiterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterSettingsGroupBox.Location = new System.Drawing.Point(428, 303);
+            this.modEloLimiterSettingsGroupBox.Name = "modEloLimiterSettingsGroupBox";
+            this.modEloLimiterSettingsGroupBox.Size = new System.Drawing.Size(285, 50);
+            this.modEloLimiterSettingsGroupBox.TabIndex = 10;
+            this.modEloLimiterSettingsGroupBox.TabStop = false;
+            this.modEloLimiterSettingsGroupBox.Text = "Settings";
             // 
-            // button5
+            // modEloLimiterResetSettingsButton
             // 
-            this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button5.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.ForeColor = System.Drawing.Color.White;
-            this.button5.Location = new System.Drawing.Point(199, 18);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(79, 23);
-            this.button5.TabIndex = 9;
-            this.button5.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button5, "Reset this module to its default settings.");
-            this.button5.UseVisualStyleBackColor = false;
+            this.modEloLimiterResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEloLimiterResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEloLimiterResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterResetSettingsButton.Location = new System.Drawing.Point(199, 18);
+            this.modEloLimiterResetSettingsButton.Name = "modEloLimiterResetSettingsButton";
+            this.modEloLimiterResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEloLimiterResetSettingsButton.TabIndex = 9;
+            this.modEloLimiterResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modEloLimiterResetSettingsButton, "Reset this module to its default settings.");
+            this.modEloLimiterResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button6
+            // modEloLimiterLoadSettingsButton
             // 
-            this.button6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button6.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button6.ForeColor = System.Drawing.Color.White;
-            this.button6.Location = new System.Drawing.Point(104, 18);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(79, 23);
-            this.button6.TabIndex = 1;
-            this.button6.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button6, "Load the current settings from the configuration file.");
-            this.button6.UseVisualStyleBackColor = false;
+            this.modEloLimiterLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEloLimiterLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEloLimiterLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterLoadSettingsButton.Location = new System.Drawing.Point(104, 18);
+            this.modEloLimiterLoadSettingsButton.Name = "modEloLimiterLoadSettingsButton";
+            this.modEloLimiterLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEloLimiterLoadSettingsButton.TabIndex = 1;
+            this.modEloLimiterLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modEloLimiterLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modEloLimiterLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button7
+            // modEloLimiterSaveSettingsButton
             // 
-            this.button7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button7.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button7.ForeColor = System.Drawing.Color.White;
-            this.button7.Location = new System.Drawing.Point(10, 18);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(79, 23);
-            this.button7.TabIndex = 8;
-            this.button7.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button7, "Save the current settings to the configuration file.");
-            this.button7.UseVisualStyleBackColor = false;
+            this.modEloLimiterSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEloLimiterSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEloLimiterSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterSaveSettingsButton.Location = new System.Drawing.Point(10, 18);
+            this.modEloLimiterSaveSettingsButton.Name = "modEloLimiterSaveSettingsButton";
+            this.modEloLimiterSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEloLimiterSaveSettingsButton.TabIndex = 8;
+            this.modEloLimiterSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modEloLimiterSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modEloLimiterSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label12
+            // modEloLimiterHeaderDescLabel
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(82, 47);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(401, 14);
-            this.label12.TabIndex = 2;
-            this.label12.Text = "Automatically kicks players who do not meet QLRanks Elo requirements.";
+            this.modEloLimiterHeaderDescLabel.AutoSize = true;
+            this.modEloLimiterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modEloLimiterHeaderDescLabel.Name = "modEloLimiterHeaderDescLabel";
+            this.modEloLimiterHeaderDescLabel.Size = new System.Drawing.Size(401, 14);
+            this.modEloLimiterHeaderDescLabel.TabIndex = 2;
+            this.modEloLimiterHeaderDescLabel.Text = "Automatically kicks players who do not meet QLRanks Elo requirements.";
             // 
-            // label17
+            // modEloLimiterHeaderLabel
             // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.Color.Silver;
-            this.label17.Location = new System.Drawing.Point(76, 18);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(279, 25);
-            this.label17.TabIndex = 1;
-            this.label17.Text = "Module: QLRanks Elo Limiter";
+            this.modEloLimiterHeaderLabel.AutoSize = true;
+            this.modEloLimiterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modEloLimiterHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modEloLimiterHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modEloLimiterHeaderLabel.Name = "modEloLimiterHeaderLabel";
+            this.modEloLimiterHeaderLabel.Size = new System.Drawing.Size(279, 25);
+            this.modEloLimiterHeaderLabel.TabIndex = 1;
+            this.modEloLimiterHeaderLabel.Text = "Module: QLRanks Elo Limiter";
             // 
-            // pictureBox6
+            // modEloLimiterHeaderPictureBox
             // 
-            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
-            this.pictureBox6.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox6.TabIndex = 0;
-            this.pictureBox6.TabStop = false;
+            this.modEloLimiterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterHeaderPictureBox.Image")));
+            this.modEloLimiterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modEloLimiterHeaderPictureBox.Name = "modEloLimiterHeaderPictureBox";
+            this.modEloLimiterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modEloLimiterHeaderPictureBox.TabIndex = 0;
+            this.modEloLimiterHeaderPictureBox.TabStop = false;
             // 
             // ircTab
             // 
             this.ircTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.ircTab.Controls.Add(this.groupBox18);
+            this.ircTab.Controls.Add(this.modIRCContainerGroupBox);
             this.ircTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ircTab.ForeColor = System.Drawing.Color.White;
             this.ircTab.Location = new System.Drawing.Point(4, 25);
@@ -1780,38 +1828,38 @@
             this.ircTab.TabIndex = 5;
             this.ircTab.Text = "IRC";
             // 
-            // groupBox18
+            // modIRCContainerGroupBox
             // 
-            this.groupBox18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox18.Controls.Add(this.groupBox19);
-            this.groupBox18.Controls.Add(this.label22);
-            this.groupBox18.Controls.Add(this.label23);
-            this.groupBox18.Controls.Add(this.pictureBox7);
-            this.groupBox18.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox18.ForeColor = System.Drawing.Color.White;
-            this.groupBox18.Location = new System.Drawing.Point(3, 3);
-            this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(728, 453);
-            this.groupBox18.TabIndex = 4;
-            this.groupBox18.TabStop = false;
-            this.groupBox18.Text = "Internet Relay Chat";
+            this.modIRCContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCOptGroupBox);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderDescLabel);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderLabel);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderPictureBox);
+            this.modIRCContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modIRCContainerGroupBox.Name = "modIRCContainerGroupBox";
+            this.modIRCContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modIRCContainerGroupBox.TabIndex = 4;
+            this.modIRCContainerGroupBox.TabStop = false;
+            this.modIRCContainerGroupBox.Text = "Internet Relay Chat";
             // 
-            // groupBox19
+            // modIRCOptGroupBox
             // 
-            this.groupBox19.BackColor = System.Drawing.Color.Black;
-            this.groupBox19.Controls.Add(this.label32);
-            this.groupBox19.Controls.Add(this.groupBox23);
-            this.groupBox19.Controls.Add(this.groupBox22);
-            this.groupBox19.Controls.Add(this.groupBox21);
-            this.groupBox19.Controls.Add(this.groupBox20);
-            this.groupBox19.Controls.Add(this.checkBox6);
-            this.groupBox19.ForeColor = System.Drawing.Color.White;
-            this.groupBox19.Location = new System.Drawing.Point(3, 91);
-            this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(719, 359);
-            this.groupBox19.TabIndex = 12;
-            this.groupBox19.TabStop = false;
-            this.groupBox19.Text = "IRC Options";
+            this.modIRCOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modIRCOptGroupBox.Controls.Add(this.label32);
+            this.modIRCOptGroupBox.Controls.Add(this.modIRCOptServerGroupBox);
+            this.modIRCOptGroupBox.Controls.Add(this.modIRCOptNamingGroupBox);
+            this.modIRCOptGroupBox.Controls.Add(this.modIRCOptQuakeNetGroupBox);
+            this.modIRCOptGroupBox.Controls.Add(this.modIRCSettingsGroupBox);
+            this.modIRCOptGroupBox.Controls.Add(this.modIRCEnableCheckBox);
+            this.modIRCOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modIRCOptGroupBox.Name = "modIRCOptGroupBox";
+            this.modIRCOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modIRCOptGroupBox.TabIndex = 12;
+            this.modIRCOptGroupBox.TabStop = false;
+            this.modIRCOptGroupBox.Text = "IRC Options";
             // 
             // label32
             // 
@@ -1823,413 +1871,413 @@
             this.label32.TabIndex = 27;
             this.label32.Text = "Connection will be attempted when settings are saved.";
             // 
-            // groupBox23
+            // modIRCOptServerGroupBox
             // 
-            this.groupBox23.Controls.Add(this.label29);
-            this.groupBox23.Controls.Add(this.textBox14);
-            this.groupBox23.Controls.Add(this.checkBox9);
-            this.groupBox23.Controls.Add(this.label28);
-            this.groupBox23.Controls.Add(this.textBox13);
-            this.groupBox23.Controls.Add(this.label24);
-            this.groupBox23.Controls.Add(this.textBox9);
-            this.groupBox23.Controls.Add(this.label25);
-            this.groupBox23.Controls.Add(this.textBox10);
-            this.groupBox23.Controls.Add(this.label27);
-            this.groupBox23.Controls.Add(this.textBox12);
-            this.groupBox23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox23.ForeColor = System.Drawing.Color.White;
-            this.groupBox23.Location = new System.Drawing.Point(377, 45);
-            this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(336, 255);
-            this.groupBox23.TabIndex = 28;
-            this.groupBox23.TabStop = false;
-            this.groupBox23.Text = "IRC Server";
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCChannelKeyLabel);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCChannelKeyTextBox);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCAutoConnectCheckBox);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCChannelLabel);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCChannelTextBox);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerAddressLabel);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerAddressTextBox);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerPortLabel);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerPortTextBox);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerPassLabel);
+            this.modIRCOptServerGroupBox.Controls.Add(this.modIRCServerPassTextBox);
+            this.modIRCOptServerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCOptServerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCOptServerGroupBox.Location = new System.Drawing.Point(366, 45);
+            this.modIRCOptServerGroupBox.Name = "modIRCOptServerGroupBox";
+            this.modIRCOptServerGroupBox.Size = new System.Drawing.Size(347, 255);
+            this.modIRCOptServerGroupBox.TabIndex = 28;
+            this.modIRCOptServerGroupBox.TabStop = false;
+            this.modIRCOptServerGroupBox.Text = "IRC Server";
             // 
-            // label29
+            // modIRCChannelKeyLabel
             // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(6, 153);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(96, 14);
-            this.label29.TabIndex = 22;
-            this.label29.Text = "IRC Channel Key";
+            this.modIRCChannelKeyLabel.AutoSize = true;
+            this.modIRCChannelKeyLabel.Location = new System.Drawing.Point(6, 153);
+            this.modIRCChannelKeyLabel.Name = "modIRCChannelKeyLabel";
+            this.modIRCChannelKeyLabel.Size = new System.Drawing.Size(96, 14);
+            this.modIRCChannelKeyLabel.TabIndex = 22;
+            this.modIRCChannelKeyLabel.Text = "IRC Channel Key";
             // 
-            // textBox14
+            // modIRCChannelKeyTextBox
             // 
-            this.textBox14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox14.ForeColor = System.Drawing.Color.White;
-            this.textBox14.Location = new System.Drawing.Point(6, 180);
-            this.textBox14.MaxLength = 15;
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(137, 22);
-            this.textBox14.TabIndex = 23;
-            this.coreToolTip.SetToolTip(this.textBox14, "(Optional) Enter the channel\'s password or key, if it has one.\r\n");
+            this.modIRCChannelKeyTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCChannelKeyTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCChannelKeyTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCChannelKeyTextBox.Location = new System.Drawing.Point(6, 180);
+            this.modIRCChannelKeyTextBox.MaxLength = 500;
+            this.modIRCChannelKeyTextBox.Name = "modIRCChannelKeyTextBox";
+            this.modIRCChannelKeyTextBox.Size = new System.Drawing.Size(137, 22);
+            this.modIRCChannelKeyTextBox.TabIndex = 23;
+            this.coreToolTip.SetToolTip(this.modIRCChannelKeyTextBox, "(Optional) Enter the channel\'s password or key, if it has one.\r\n");
             // 
-            // checkBox9
+            // modIRCAutoConnectCheckBox
             // 
-            this.checkBox9.AutoSize = true;
-            this.checkBox9.Location = new System.Drawing.Point(156, 180);
-            this.checkBox9.Name = "checkBox9";
-            this.checkBox9.Size = new System.Drawing.Size(174, 18);
-            this.checkBox9.TabIndex = 26;
-            this.checkBox9.Text = "Auto-connect on SSB start";
-            this.coreToolTip.SetToolTip(this.checkBox9, "Select whether SSB should automatically connect to IRC when the\r\nprogram is launc" +
+            this.modIRCAutoConnectCheckBox.AutoSize = true;
+            this.modIRCAutoConnectCheckBox.Location = new System.Drawing.Point(6, 219);
+            this.modIRCAutoConnectCheckBox.Name = "modIRCAutoConnectCheckBox";
+            this.modIRCAutoConnectCheckBox.Size = new System.Drawing.Size(271, 18);
+            this.modIRCAutoConnectCheckBox.TabIndex = 26;
+            this.modIRCAutoConnectCheckBox.Text = "Auto-connect to IRC on SSB program launch";
+            this.coreToolTip.SetToolTip(this.modIRCAutoConnectCheckBox, "Select whether SSB should automatically connect to IRC when the\r\nprogram is launc" +
         "hed.");
-            this.checkBox9.UseVisualStyleBackColor = true;
+            this.modIRCAutoConnectCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label28
+            // modIRCChannelLabel
             // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(175, 88);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(72, 14);
-            this.label28.TabIndex = 20;
-            this.label28.Text = "IRC Channel";
+            this.modIRCChannelLabel.AutoSize = true;
+            this.modIRCChannelLabel.Location = new System.Drawing.Point(175, 88);
+            this.modIRCChannelLabel.Name = "modIRCChannelLabel";
+            this.modIRCChannelLabel.Size = new System.Drawing.Size(72, 14);
+            this.modIRCChannelLabel.TabIndex = 20;
+            this.modIRCChannelLabel.Text = "IRC Channel";
             // 
-            // textBox13
+            // modIRCChannelTextBox
             // 
-            this.textBox13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox13.ForeColor = System.Drawing.Color.White;
-            this.textBox13.Location = new System.Drawing.Point(178, 116);
-            this.textBox13.MaxLength = 15;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(152, 22);
-            this.textBox13.TabIndex = 21;
-            this.coreToolTip.SetToolTip(this.textBox13, "Enter the IRC channel that SSB will join on IRC.");
+            this.modIRCChannelTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCChannelTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCChannelTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCChannelTextBox.Location = new System.Drawing.Point(178, 116);
+            this.modIRCChannelTextBox.MaxLength = 200;
+            this.modIRCChannelTextBox.Name = "modIRCChannelTextBox";
+            this.modIRCChannelTextBox.Size = new System.Drawing.Size(152, 22);
+            this.modIRCChannelTextBox.TabIndex = 21;
+            this.coreToolTip.SetToolTip(this.modIRCChannelTextBox, "Enter the IRC channel that SSB will join on IRC.");
             // 
-            // label24
+            // modIRCServerAddressLabel
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(6, 18);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(111, 14);
-            this.label24.TabIndex = 3;
-            this.label24.Text = "IRC Server Address";
+            this.modIRCServerAddressLabel.AutoSize = true;
+            this.modIRCServerAddressLabel.Location = new System.Drawing.Point(6, 18);
+            this.modIRCServerAddressLabel.Name = "modIRCServerAddressLabel";
+            this.modIRCServerAddressLabel.Size = new System.Drawing.Size(111, 14);
+            this.modIRCServerAddressLabel.TabIndex = 3;
+            this.modIRCServerAddressLabel.Text = "IRC Server Address";
             // 
-            // groupBox20
+            // modIRCServerAddressTextBox
             // 
-            this.groupBox20.Controls.Add(this.button23);
-            this.groupBox20.Controls.Add(this.button24);
-            this.groupBox20.Controls.Add(this.button25);
-            this.groupBox20.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox20.ForeColor = System.Drawing.Color.White;
-            this.groupBox20.Location = new System.Drawing.Point(377, 300);
-            this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(336, 53);
-            this.groupBox20.TabIndex = 10;
-            this.groupBox20.TabStop = false;
-            this.groupBox20.Text = "Settings";
+            this.modIRCServerAddressTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCServerAddressTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCServerAddressTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCServerAddressTextBox.Location = new System.Drawing.Point(9, 52);
+            this.modIRCServerAddressTextBox.MaxLength = 500;
+            this.modIRCServerAddressTextBox.Name = "modIRCServerAddressTextBox";
+            this.modIRCServerAddressTextBox.Size = new System.Drawing.Size(152, 22);
+            this.modIRCServerAddressTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modIRCServerAddressTextBox, "Enter the IRC server address that SSB will connect to.");
             // 
-            // button23
+            // modIRCServerPortLabel
             // 
-            this.button23.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button23.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button23.ForeColor = System.Drawing.Color.White;
-            this.button23.Location = new System.Drawing.Point(239, 18);
-            this.button23.Name = "button23";
-            this.button23.Size = new System.Drawing.Size(79, 23);
-            this.button23.TabIndex = 9;
-            this.button23.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button23, "Reset this module to its default settings.");
-            this.button23.UseVisualStyleBackColor = false;
+            this.modIRCServerPortLabel.AutoSize = true;
+            this.modIRCServerPortLabel.Location = new System.Drawing.Point(175, 18);
+            this.modIRCServerPortLabel.Name = "modIRCServerPortLabel";
+            this.modIRCServerPortLabel.Size = new System.Drawing.Size(91, 14);
+            this.modIRCServerPortLabel.TabIndex = 12;
+            this.modIRCServerPortLabel.Text = "IRC Server Port";
             // 
-            // button24
+            // modIRCServerPortTextBox
             // 
-            this.button24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button24.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button24.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button24.ForeColor = System.Drawing.Color.White;
-            this.button24.Location = new System.Drawing.Point(127, 18);
-            this.button24.Name = "button24";
-            this.button24.Size = new System.Drawing.Size(79, 23);
-            this.button24.TabIndex = 1;
-            this.button24.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button24, "Load the current settings from the configuration file.");
-            this.button24.UseVisualStyleBackColor = false;
+            this.modIRCServerPortTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCServerPortTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCServerPortTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCServerPortTextBox.Location = new System.Drawing.Point(178, 52);
+            this.modIRCServerPortTextBox.MaxLength = 5;
+            this.modIRCServerPortTextBox.Name = "modIRCServerPortTextBox";
+            this.modIRCServerPortTextBox.Size = new System.Drawing.Size(152, 22);
+            this.modIRCServerPortTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modIRCServerPortTextBox, "Enter the IRC server\'s port. This is usually 6667.");
             // 
-            // button25
+            // modIRCServerPassLabel
             // 
-            this.button25.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button25.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button25.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button25.ForeColor = System.Drawing.Color.White;
-            this.button25.Location = new System.Drawing.Point(17, 18);
-            this.button25.Name = "button25";
-            this.button25.Size = new System.Drawing.Size(79, 23);
-            this.button25.TabIndex = 8;
-            this.button25.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button25, "Save the current settings to the configuration file.");
-            this.button25.UseVisualStyleBackColor = false;
+            this.modIRCServerPassLabel.AutoSize = true;
+            this.modIRCServerPassLabel.Location = new System.Drawing.Point(6, 88);
+            this.modIRCServerPassLabel.Name = "modIRCServerPassLabel";
+            this.modIRCServerPassLabel.Size = new System.Drawing.Size(119, 14);
+            this.modIRCServerPassLabel.TabIndex = 18;
+            this.modIRCServerPassLabel.Text = "IRC Server Password";
             // 
-            // textBox9
+            // modIRCServerPassTextBox
             // 
-            this.textBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox9.ForeColor = System.Drawing.Color.White;
-            this.textBox9.Location = new System.Drawing.Point(9, 52);
-            this.textBox9.MaxLength = 15;
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(152, 22);
-            this.textBox9.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox9, "Enter the IRC server address that SSB will connect to.");
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(175, 18);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(91, 14);
-            this.label25.TabIndex = 12;
-            this.label25.Text = "IRC Server Port";
-            // 
-            // textBox10
-            // 
-            this.textBox10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox10.ForeColor = System.Drawing.Color.White;
-            this.textBox10.Location = new System.Drawing.Point(178, 52);
-            this.textBox10.MaxLength = 15;
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(152, 22);
-            this.textBox10.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox10, "Enter the IRC server\'s port. This is usually 6667.");
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(6, 88);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(119, 14);
-            this.label27.TabIndex = 18;
-            this.label27.Text = "IRC Server Password";
-            // 
-            // textBox12
-            // 
-            this.textBox12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox12.ForeColor = System.Drawing.Color.White;
-            this.textBox12.Location = new System.Drawing.Point(9, 116);
-            this.textBox12.MaxLength = 15;
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(152, 22);
-            this.textBox12.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox12, "(Optional) Enter the IRC server\'s password if it has one. Note:\r\nif using an IRC " +
+            this.modIRCServerPassTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCServerPassTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCServerPassTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCServerPassTextBox.Location = new System.Drawing.Point(9, 116);
+            this.modIRCServerPassTextBox.MaxLength = 500;
+            this.modIRCServerPassTextBox.Name = "modIRCServerPassTextBox";
+            this.modIRCServerPassTextBox.Size = new System.Drawing.Size(152, 22);
+            this.modIRCServerPassTextBox.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.modIRCServerPassTextBox, "(Optional) Enter the IRC server\'s password if it has one. Note:\r\nif using an IRC " +
         "bouncer, this is where you would enter your bouncer password.\r\n");
             // 
-            // groupBox22
+            // modIRCOptNamingGroupBox
             // 
-            this.groupBox22.Controls.Add(this.label21);
-            this.groupBox22.Controls.Add(this.textBox8);
-            this.groupBox22.Controls.Add(this.label20);
-            this.groupBox22.Controls.Add(this.textBox7);
-            this.groupBox22.Controls.Add(this.label26);
-            this.groupBox22.Controls.Add(this.textBox11);
-            this.groupBox22.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox22.ForeColor = System.Drawing.Color.White;
-            this.groupBox22.Location = new System.Drawing.Point(9, 45);
-            this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(340, 167);
-            this.groupBox22.TabIndex = 27;
-            this.groupBox22.TabStop = false;
-            this.groupBox22.Text = "IRC Naming";
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCAdminNameLabel);
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCAdminNameTextBox);
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCBotNickNameLabel);
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCBotNickNameTextBox);
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCBotUserNameLabel);
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCBotUserNameTextBox);
+            this.modIRCOptNamingGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCOptNamingGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCOptNamingGroupBox.Location = new System.Drawing.Point(9, 45);
+            this.modIRCOptNamingGroupBox.Name = "modIRCOptNamingGroupBox";
+            this.modIRCOptNamingGroupBox.Size = new System.Drawing.Size(340, 167);
+            this.modIRCOptNamingGroupBox.TabIndex = 27;
+            this.modIRCOptNamingGroupBox.TabStop = false;
+            this.modIRCOptNamingGroupBox.Text = "IRC Naming";
             // 
-            // label21
+            // modIRCAdminNameLabel
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(6, 18);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(149, 14);
-            this.label21.TabIndex = 3;
-            this.label21.Text = "Your IRC Admin Nickname";
+            this.modIRCAdminNameLabel.AutoSize = true;
+            this.modIRCAdminNameLabel.Location = new System.Drawing.Point(6, 18);
+            this.modIRCAdminNameLabel.Name = "modIRCAdminNameLabel";
+            this.modIRCAdminNameLabel.Size = new System.Drawing.Size(149, 14);
+            this.modIRCAdminNameLabel.TabIndex = 3;
+            this.modIRCAdminNameLabel.Text = "Your IRC Admin Nickname";
             // 
-            // textBox8
+            // modIRCAdminNameTextBox
             // 
-            this.textBox8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox8.ForeColor = System.Drawing.Color.White;
-            this.textBox8.Location = new System.Drawing.Point(9, 52);
-            this.textBox8.MaxLength = 15;
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(154, 22);
-            this.textBox8.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox8, "Enter the IRC nickname of the bot\'s owner.");
+            this.modIRCAdminNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCAdminNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCAdminNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCAdminNameTextBox.Location = new System.Drawing.Point(9, 52);
+            this.modIRCAdminNameTextBox.MaxLength = 15;
+            this.modIRCAdminNameTextBox.Name = "modIRCAdminNameTextBox";
+            this.modIRCAdminNameTextBox.Size = new System.Drawing.Size(154, 22);
+            this.modIRCAdminNameTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modIRCAdminNameTextBox, "Enter the IRC nickname of the bot\'s owner.");
             // 
-            // label20
+            // modIRCBotNickNameLabel
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(175, 18);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(129, 14);
-            this.label20.TabIndex = 12;
-            this.label20.Text = "SSB IRC Bot Nickname";
+            this.modIRCBotNickNameLabel.AutoSize = true;
+            this.modIRCBotNickNameLabel.Location = new System.Drawing.Point(175, 18);
+            this.modIRCBotNickNameLabel.Name = "modIRCBotNickNameLabel";
+            this.modIRCBotNickNameLabel.Size = new System.Drawing.Size(129, 14);
+            this.modIRCBotNickNameLabel.TabIndex = 12;
+            this.modIRCBotNickNameLabel.Text = "SSB IRC Bot Nickname";
             // 
-            // textBox7
+            // modIRCBotNickNameTextBox
             // 
-            this.textBox7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox7.ForeColor = System.Drawing.Color.White;
-            this.textBox7.Location = new System.Drawing.Point(178, 52);
-            this.textBox7.MaxLength = 15;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(152, 22);
-            this.textBox7.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox7, "Enter the nickname that SSB will use on the IRC server.");
+            this.modIRCBotNickNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCBotNickNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCBotNickNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCBotNickNameTextBox.Location = new System.Drawing.Point(178, 52);
+            this.modIRCBotNickNameTextBox.MaxLength = 15;
+            this.modIRCBotNickNameTextBox.Name = "modIRCBotNickNameTextBox";
+            this.modIRCBotNickNameTextBox.Size = new System.Drawing.Size(152, 22);
+            this.modIRCBotNickNameTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modIRCBotNickNameTextBox, "Enter the nickname that SSB will use on the IRC server.");
             // 
-            // label26
+            // modIRCBotUserNameLabel
             // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(6, 88);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(131, 14);
-            this.label26.TabIndex = 18;
-            this.label26.Text = "SSB IRC Bot Username";
+            this.modIRCBotUserNameLabel.AutoSize = true;
+            this.modIRCBotUserNameLabel.Location = new System.Drawing.Point(6, 88);
+            this.modIRCBotUserNameLabel.Name = "modIRCBotUserNameLabel";
+            this.modIRCBotUserNameLabel.Size = new System.Drawing.Size(131, 14);
+            this.modIRCBotUserNameLabel.TabIndex = 18;
+            this.modIRCBotUserNameLabel.Text = "SSB IRC Bot Username";
             // 
-            // textBox11
+            // modIRCBotUserNameTextBox
             // 
-            this.textBox11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox11.ForeColor = System.Drawing.Color.White;
-            this.textBox11.Location = new System.Drawing.Point(9, 116);
-            this.textBox11.MaxLength = 15;
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(154, 22);
-            this.textBox11.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox11, "(Optional) Enter the IRC username or ident that SSB will use on IRC.\r\nThis may be" +
+            this.modIRCBotUserNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCBotUserNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCBotUserNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCBotUserNameTextBox.Location = new System.Drawing.Point(9, 116);
+            this.modIRCBotUserNameTextBox.MaxLength = 15;
+            this.modIRCBotUserNameTextBox.Name = "modIRCBotUserNameTextBox";
+            this.modIRCBotUserNameTextBox.Size = new System.Drawing.Size(154, 22);
+            this.modIRCBotUserNameTextBox.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.modIRCBotUserNameTextBox, "(Optional) Enter the IRC username or ident that SSB will use on IRC.\r\nThis may be" +
         " required if you\'re trying to connect to IRC through a bouncer.\r\n\r\n");
             // 
-            // groupBox21
+            // modIRCOptQuakeNetGroupBox
             // 
-            this.groupBox21.Controls.Add(this.checkBox8);
-            this.groupBox21.Controls.Add(this.checkBox7);
-            this.groupBox21.Controls.Add(this.textBox16);
-            this.groupBox21.Controls.Add(this.label31);
-            this.groupBox21.Controls.Add(this.textBox15);
-            this.groupBox21.Controls.Add(this.label30);
-            this.groupBox21.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox21.ForeColor = System.Drawing.Color.White;
-            this.groupBox21.Location = new System.Drawing.Point(9, 225);
-            this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(340, 128);
-            this.groupBox21.TabIndex = 4;
-            this.groupBox21.TabStop = false;
-            this.groupBox21.Text = "QuakeNet (Q) Options";
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetHideHostCheckBox);
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetAutoAuthCheckBox);
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetPassTextBox);
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetPassLabel);
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetUserNameTextBox);
+            this.modIRCOptQuakeNetGroupBox.Controls.Add(this.modIRCQNetUserNameLabel);
+            this.modIRCOptQuakeNetGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCOptQuakeNetGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCOptQuakeNetGroupBox.Location = new System.Drawing.Point(9, 225);
+            this.modIRCOptQuakeNetGroupBox.Name = "modIRCOptQuakeNetGroupBox";
+            this.modIRCOptQuakeNetGroupBox.Size = new System.Drawing.Size(340, 128);
+            this.modIRCOptQuakeNetGroupBox.TabIndex = 4;
+            this.modIRCOptQuakeNetGroupBox.TabStop = false;
+            this.modIRCOptQuakeNetGroupBox.Text = "QuakeNet (Q) Options";
             // 
-            // checkBox8
+            // modIRCQNetHideHostCheckBox
             // 
-            this.checkBox8.AutoSize = true;
-            this.checkBox8.Location = new System.Drawing.Point(222, 97);
-            this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(108, 18);
-            this.checkBox8.TabIndex = 27;
-            this.checkBox8.Text = "Hide hostname";
-            this.coreToolTip.SetToolTip(this.checkBox8, "Select whether SSB\'s hostname should be hidden when authenticated\r\nwith QuakeNet\'" +
+            this.modIRCQNetHideHostCheckBox.AutoSize = true;
+            this.modIRCQNetHideHostCheckBox.Location = new System.Drawing.Point(222, 97);
+            this.modIRCQNetHideHostCheckBox.Name = "modIRCQNetHideHostCheckBox";
+            this.modIRCQNetHideHostCheckBox.Size = new System.Drawing.Size(108, 18);
+            this.modIRCQNetHideHostCheckBox.TabIndex = 27;
+            this.modIRCQNetHideHostCheckBox.Text = "Hide hostname";
+            this.coreToolTip.SetToolTip(this.modIRCQNetHideHostCheckBox, "Select whether SSB\'s hostname should be hidden when authenticated\r\nwith QuakeNet\'" +
         "s Q service (IRC mode +x).");
-            this.checkBox8.UseVisualStyleBackColor = true;
+            this.modIRCQNetHideHostCheckBox.UseVisualStyleBackColor = true;
             // 
-            // checkBox7
+            // modIRCQNetAutoAuthCheckBox
             // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(9, 97);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(168, 18);
-            this.checkBox7.TabIndex = 26;
-            this.checkBox7.Text = "Automatically auth with Q";
-            this.coreToolTip.SetToolTip(this.checkBox7, "Select whether SSB should automatically authenticate with QuakeNet\'s\r\nQ service w" +
+            this.modIRCQNetAutoAuthCheckBox.AutoSize = true;
+            this.modIRCQNetAutoAuthCheckBox.Location = new System.Drawing.Point(9, 97);
+            this.modIRCQNetAutoAuthCheckBox.Name = "modIRCQNetAutoAuthCheckBox";
+            this.modIRCQNetAutoAuthCheckBox.Size = new System.Drawing.Size(168, 18);
+            this.modIRCQNetAutoAuthCheckBox.TabIndex = 26;
+            this.modIRCQNetAutoAuthCheckBox.Text = "Automatically auth with Q";
+            this.coreToolTip.SetToolTip(this.modIRCQNetAutoAuthCheckBox, "Select whether SSB should automatically authenticate with QuakeNet\'s\r\nQ service w" +
         "hen the IRC connection is made.");
-            this.checkBox7.UseVisualStyleBackColor = true;
+            this.modIRCQNetAutoAuthCheckBox.UseVisualStyleBackColor = true;
             // 
-            // textBox16
+            // modIRCQNetPassTextBox
             // 
-            this.textBox16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox16.ForeColor = System.Drawing.Color.White;
-            this.textBox16.Location = new System.Drawing.Point(177, 53);
-            this.textBox16.MaxLength = 15;
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(154, 22);
-            this.textBox16.TabIndex = 12;
-            this.coreToolTip.SetToolTip(this.textBox16, "Enter your QuakeNet Q password. For more info, see:\r\nhttps://www.quakenet.org/hel" +
+            this.modIRCQNetPassTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCQNetPassTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCQNetPassTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCQNetPassTextBox.Location = new System.Drawing.Point(177, 53);
+            this.modIRCQNetPassTextBox.MaxLength = 128;
+            this.modIRCQNetPassTextBox.Name = "modIRCQNetPassTextBox";
+            this.modIRCQNetPassTextBox.Size = new System.Drawing.Size(154, 22);
+            this.modIRCQNetPassTextBox.TabIndex = 12;
+            this.coreToolTip.SetToolTip(this.modIRCQNetPassTextBox, "Enter your QuakeNet Q password. For more info, see:\r\nhttps://www.quakenet.org/hel" +
         "p/q/how-to-register-an-account-with-q\r\n");
             // 
-            // label31
+            // modIRCQNetPassLabel
             // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(174, 23);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(140, 14);
-            this.label31.TabIndex = 11;
-            this.label31.Text = "QuakeNet (Q) Password";
+            this.modIRCQNetPassLabel.AutoSize = true;
+            this.modIRCQNetPassLabel.Location = new System.Drawing.Point(174, 23);
+            this.modIRCQNetPassLabel.Name = "modIRCQNetPassLabel";
+            this.modIRCQNetPassLabel.Size = new System.Drawing.Size(140, 14);
+            this.modIRCQNetPassLabel.TabIndex = 11;
+            this.modIRCQNetPassLabel.Text = "QuakeNet (Q) Password";
             // 
-            // textBox15
+            // modIRCQNetUserNameTextBox
             // 
-            this.textBox15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox15.ForeColor = System.Drawing.Color.White;
-            this.textBox15.Location = new System.Drawing.Point(9, 53);
-            this.textBox15.MaxLength = 15;
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(154, 22);
-            this.textBox15.TabIndex = 10;
-            this.coreToolTip.SetToolTip(this.textBox15, "Enter your QuakeNet Q username. For more info,\r\nsee: https://www.quakenet.org/hel" +
+            this.modIRCQNetUserNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modIRCQNetUserNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modIRCQNetUserNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCQNetUserNameTextBox.Location = new System.Drawing.Point(9, 53);
+            this.modIRCQNetUserNameTextBox.MaxLength = 64;
+            this.modIRCQNetUserNameTextBox.Name = "modIRCQNetUserNameTextBox";
+            this.modIRCQNetUserNameTextBox.Size = new System.Drawing.Size(154, 22);
+            this.modIRCQNetUserNameTextBox.TabIndex = 10;
+            this.coreToolTip.SetToolTip(this.modIRCQNetUserNameTextBox, "Enter your QuakeNet Q username. For more info,\r\nsee: https://www.quakenet.org/hel" +
         "p/q/how-to-register-an-account-with-q");
             // 
-            // label30
+            // modIRCQNetUserNameLabel
             // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(11, 23);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(143, 14);
-            this.label30.TabIndex = 9;
-            this.label30.Text = "QuakeNet (Q) Username";
+            this.modIRCQNetUserNameLabel.AutoSize = true;
+            this.modIRCQNetUserNameLabel.Location = new System.Drawing.Point(11, 23);
+            this.modIRCQNetUserNameLabel.Name = "modIRCQNetUserNameLabel";
+            this.modIRCQNetUserNameLabel.Size = new System.Drawing.Size(143, 14);
+            this.modIRCQNetUserNameLabel.TabIndex = 9;
+            this.modIRCQNetUserNameLabel.Text = "QuakeNet (Q) Username";
             // 
-            // checkBox6
+            // modIRCSettingsGroupBox
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(9, 21);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(216, 18);
-            this.checkBox6.TabIndex = 11;
-            this.checkBox6.Text = "Enable Internet Relay Chat Module";
-            this.coreToolTip.SetToolTip(this.checkBox6, "Select whether this module should be enabled.");
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCResetSettingsButton);
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCLoadSettingsButton);
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCSaveSettingsButton);
+            this.modIRCSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCSettingsGroupBox.Location = new System.Drawing.Point(366, 300);
+            this.modIRCSettingsGroupBox.Name = "modIRCSettingsGroupBox";
+            this.modIRCSettingsGroupBox.Size = new System.Drawing.Size(347, 53);
+            this.modIRCSettingsGroupBox.TabIndex = 10;
+            this.modIRCSettingsGroupBox.TabStop = false;
+            this.modIRCSettingsGroupBox.Text = "Settings";
             // 
-            // label22
+            // modIRCResetSettingsButton
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(82, 47);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(538, 14);
-            this.label22.TabIndex = 2;
-            this.label22.Text = "Provides an interface for accepting SSB commands and for accessing server informa" +
+            this.modIRCResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modIRCResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modIRCResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modIRCResetSettingsButton.Location = new System.Drawing.Point(239, 18);
+            this.modIRCResetSettingsButton.Name = "modIRCResetSettingsButton";
+            this.modIRCResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modIRCResetSettingsButton.TabIndex = 9;
+            this.modIRCResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modIRCResetSettingsButton, "Reset this module to its default settings.");
+            this.modIRCResetSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modIRCLoadSettingsButton
+            // 
+            this.modIRCLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modIRCLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modIRCLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modIRCLoadSettingsButton.Location = new System.Drawing.Point(127, 18);
+            this.modIRCLoadSettingsButton.Name = "modIRCLoadSettingsButton";
+            this.modIRCLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modIRCLoadSettingsButton.TabIndex = 1;
+            this.modIRCLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modIRCLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modIRCLoadSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modIRCSaveSettingsButton
+            // 
+            this.modIRCSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modIRCSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modIRCSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modIRCSaveSettingsButton.Location = new System.Drawing.Point(17, 18);
+            this.modIRCSaveSettingsButton.Name = "modIRCSaveSettingsButton";
+            this.modIRCSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modIRCSaveSettingsButton.TabIndex = 8;
+            this.modIRCSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modIRCSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modIRCSaveSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modIRCEnableCheckBox
+            // 
+            this.modIRCEnableCheckBox.AutoSize = true;
+            this.modIRCEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modIRCEnableCheckBox.Name = "modIRCEnableCheckBox";
+            this.modIRCEnableCheckBox.Size = new System.Drawing.Size(216, 18);
+            this.modIRCEnableCheckBox.TabIndex = 11;
+            this.modIRCEnableCheckBox.Text = "Enable Internet Relay Chat Module";
+            this.coreToolTip.SetToolTip(this.modIRCEnableCheckBox, "Select whether this module should be enabled.");
+            this.modIRCEnableCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // modIRCHeaderDescLabel
+            // 
+            this.modIRCHeaderDescLabel.AutoSize = true;
+            this.modIRCHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modIRCHeaderDescLabel.Name = "modIRCHeaderDescLabel";
+            this.modIRCHeaderDescLabel.Size = new System.Drawing.Size(538, 14);
+            this.modIRCHeaderDescLabel.TabIndex = 2;
+            this.modIRCHeaderDescLabel.Text = "Provides an interface for accepting SSB commands and for accessing server informa" +
     "tion over IRC.";
             // 
-            // label23
+            // modIRCHeaderLabel
             // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.ForeColor = System.Drawing.Color.Silver;
-            this.label23.Location = new System.Drawing.Point(76, 18);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(276, 25);
-            this.label23.TabIndex = 1;
-            this.label23.Text = "Module: Internet Relay Chat";
+            this.modIRCHeaderLabel.AutoSize = true;
+            this.modIRCHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modIRCHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modIRCHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modIRCHeaderLabel.Name = "modIRCHeaderLabel";
+            this.modIRCHeaderLabel.Size = new System.Drawing.Size(276, 25);
+            this.modIRCHeaderLabel.TabIndex = 1;
+            this.modIRCHeaderLabel.Text = "Module: Internet Relay Chat";
             // 
-            // pictureBox7
+            // modIRCHeaderPictureBox
             // 
-            this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
-            this.pictureBox7.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox7.Name = "pictureBox7";
-            this.pictureBox7.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox7.TabIndex = 0;
-            this.pictureBox7.TabStop = false;
+            this.modIRCHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCHeaderPictureBox.Image")));
+            this.modIRCHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modIRCHeaderPictureBox.Name = "modIRCHeaderPictureBox";
+            this.modIRCHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modIRCHeaderPictureBox.TabIndex = 0;
+            this.modIRCHeaderPictureBox.TabStop = false;
             // 
             // motdTab
             // 
             this.motdTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.motdTab.Controls.Add(this.groupBox24);
+            this.motdTab.Controls.Add(this.modMOTDContainerGroupBox);
             this.motdTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.motdTab.ForeColor = System.Drawing.Color.White;
             this.motdTab.Location = new System.Drawing.Point(4, 25);
@@ -2238,197 +2286,196 @@
             this.motdTab.TabIndex = 6;
             this.motdTab.Text = "MOTD";
             // 
-            // groupBox24
+            // modMOTDContainerGroupBox
             // 
-            this.groupBox24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox24.Controls.Add(this.groupBox25);
-            this.groupBox24.Controls.Add(this.label34);
-            this.groupBox24.Controls.Add(this.label35);
-            this.groupBox24.Controls.Add(this.pictureBox8);
-            this.groupBox24.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox24.ForeColor = System.Drawing.Color.White;
-            this.groupBox24.Location = new System.Drawing.Point(3, 3);
-            this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(728, 453);
-            this.groupBox24.TabIndex = 3;
-            this.groupBox24.TabStop = false;
-            this.groupBox24.Text = "Message of the Day";
+            this.modMOTDContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDOptGroupBox);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderDescLabel);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderLabel);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderPictureBox);
+            this.modMOTDContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modMOTDContainerGroupBox.Name = "modMOTDContainerGroupBox";
+            this.modMOTDContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modMOTDContainerGroupBox.TabIndex = 3;
+            this.modMOTDContainerGroupBox.TabStop = false;
+            this.modMOTDContainerGroupBox.Text = "Message of the Day";
             // 
-            // groupBox25
+            // modMOTDOptGroupBox
             // 
-            this.groupBox25.BackColor = System.Drawing.Color.Black;
-            this.groupBox25.Controls.Add(this.groupBox35);
-            this.groupBox25.Controls.Add(this.checkBox10);
-            this.groupBox25.Controls.Add(this.groupBox26);
-            this.groupBox25.ForeColor = System.Drawing.Color.White;
-            this.groupBox25.Location = new System.Drawing.Point(3, 91);
-            this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(719, 359);
-            this.groupBox25.TabIndex = 12;
-            this.groupBox25.TabStop = false;
-            this.groupBox25.Text = "Message of the Day Options";
+            this.modMOTDOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modMOTDOptGroupBox.Controls.Add(this.modMOTDOptMsgRepeatGroupBox);
+            this.modMOTDOptGroupBox.Controls.Add(this.modMOTDEnableCheckBox);
+            this.modMOTDOptGroupBox.Controls.Add(this.modMOTDSettingsGroupBox);
+            this.modMOTDOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modMOTDOptGroupBox.Name = "modMOTDOptGroupBox";
+            this.modMOTDOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modMOTDOptGroupBox.TabIndex = 12;
+            this.modMOTDOptGroupBox.TabStop = false;
+            this.modMOTDOptGroupBox.Text = "Message of the Day Options";
             // 
-            // groupBox35
+            // modMOTDOptMsgRepeatGroupBox
             // 
-            this.groupBox35.Controls.Add(this.label36);
-            this.groupBox35.Controls.Add(this.label33);
-            this.groupBox35.Controls.Add(this.textBox18);
-            this.groupBox35.Controls.Add(this.textBox17);
-            this.groupBox35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox35.ForeColor = System.Drawing.Color.White;
-            this.groupBox35.Location = new System.Drawing.Point(9, 45);
-            this.groupBox35.Name = "groupBox35";
-            this.groupBox35.Size = new System.Drawing.Size(417, 208);
-            this.groupBox35.TabIndex = 29;
-            this.groupBox35.TabStop = false;
-            this.groupBox35.Text = "Repeat";
+            this.modMOTDOptMsgRepeatGroupBox.Controls.Add(this.modMOTDRepeatMsgLabel);
+            this.modMOTDOptMsgRepeatGroupBox.Controls.Add(this.modMOTDRepeatTimeLabel);
+            this.modMOTDOptMsgRepeatGroupBox.Controls.Add(this.modMOTDRepeatMsgTextBox);
+            this.modMOTDOptMsgRepeatGroupBox.Controls.Add(this.modMOTDRepeatTimeTextBox);
+            this.modMOTDOptMsgRepeatGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDOptMsgRepeatGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDOptMsgRepeatGroupBox.Location = new System.Drawing.Point(9, 45);
+            this.modMOTDOptMsgRepeatGroupBox.Name = "modMOTDOptMsgRepeatGroupBox";
+            this.modMOTDOptMsgRepeatGroupBox.Size = new System.Drawing.Size(417, 208);
+            this.modMOTDOptMsgRepeatGroupBox.TabIndex = 29;
+            this.modMOTDOptMsgRepeatGroupBox.TabStop = false;
+            this.modMOTDOptMsgRepeatGroupBox.Text = "Message Repeat";
             // 
-            // label36
+            // modMOTDRepeatMsgLabel
             // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 133);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(99, 14);
-            this.label36.TabIndex = 14;
-            this.label36.Text = "Message to send";
+            this.modMOTDRepeatMsgLabel.AutoSize = true;
+            this.modMOTDRepeatMsgLabel.Location = new System.Drawing.Point(6, 133);
+            this.modMOTDRepeatMsgLabel.Name = "modMOTDRepeatMsgLabel";
+            this.modMOTDRepeatMsgLabel.Size = new System.Drawing.Size(99, 14);
+            this.modMOTDRepeatMsgLabel.TabIndex = 14;
+            this.modMOTDRepeatMsgLabel.Text = "Message to send";
             // 
-            // label33
+            // modMOTDRepeatTimeLabel
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(6, 29);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(211, 14);
-            this.label33.TabIndex = 3;
-            this.label33.Text = "Time to repeat message [in minutes]";
+            this.modMOTDRepeatTimeLabel.AutoSize = true;
+            this.modMOTDRepeatTimeLabel.Location = new System.Drawing.Point(6, 29);
+            this.modMOTDRepeatTimeLabel.Name = "modMOTDRepeatTimeLabel";
+            this.modMOTDRepeatTimeLabel.Size = new System.Drawing.Size(211, 14);
+            this.modMOTDRepeatTimeLabel.TabIndex = 3;
+            this.modMOTDRepeatTimeLabel.Text = "Time to repeat message [in minutes]";
             // 
-            // textBox18
+            // modMOTDRepeatMsgTextBox
             // 
-            this.textBox18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox18.ForeColor = System.Drawing.Color.White;
-            this.textBox18.Location = new System.Drawing.Point(6, 170);
-            this.textBox18.MaxLength = 15;
-            this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(375, 22);
-            this.textBox18.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox18, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
+            this.modMOTDRepeatMsgTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modMOTDRepeatMsgTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modMOTDRepeatMsgTextBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDRepeatMsgTextBox.Location = new System.Drawing.Point(6, 170);
+            this.modMOTDRepeatMsgTextBox.Name = "modMOTDRepeatMsgTextBox";
+            this.modMOTDRepeatMsgTextBox.Size = new System.Drawing.Size(375, 22);
+            this.modMOTDRepeatMsgTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modMOTDRepeatMsgTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
         "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
         "server.");
             // 
-            // textBox17
+            // modMOTDRepeatTimeTextBox
             // 
-            this.textBox17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox17.ForeColor = System.Drawing.Color.White;
-            this.textBox17.Location = new System.Drawing.Point(9, 63);
-            this.textBox17.MaxLength = 15;
-            this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(99, 22);
-            this.textBox17.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox17, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
+            this.modMOTDRepeatTimeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modMOTDRepeatTimeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modMOTDRepeatTimeTextBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDRepeatTimeTextBox.Location = new System.Drawing.Point(9, 63);
+            this.modMOTDRepeatTimeTextBox.MaxLength = 15;
+            this.modMOTDRepeatTimeTextBox.Name = "modMOTDRepeatTimeTextBox";
+            this.modMOTDRepeatTimeTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modMOTDRepeatTimeTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modMOTDRepeatTimeTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
         "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
         "server.");
             // 
-            // checkBox10
+            // modMOTDEnableCheckBox
             // 
-            this.checkBox10.AutoSize = true;
-            this.checkBox10.Location = new System.Drawing.Point(9, 21);
-            this.checkBox10.Name = "checkBox10";
-            this.checkBox10.Size = new System.Drawing.Size(217, 18);
-            this.checkBox10.TabIndex = 11;
-            this.checkBox10.Text = "Enable Message of the Day Module";
-            this.coreToolTip.SetToolTip(this.checkBox10, "Select whether this module should be enabled.");
-            this.checkBox10.UseVisualStyleBackColor = true;
+            this.modMOTDEnableCheckBox.AutoSize = true;
+            this.modMOTDEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modMOTDEnableCheckBox.Name = "modMOTDEnableCheckBox";
+            this.modMOTDEnableCheckBox.Size = new System.Drawing.Size(217, 18);
+            this.modMOTDEnableCheckBox.TabIndex = 11;
+            this.modMOTDEnableCheckBox.Text = "Enable Message of the Day Module";
+            this.coreToolTip.SetToolTip(this.modMOTDEnableCheckBox, "Select whether this module should be enabled.");
+            this.modMOTDEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox26
+            // modMOTDSettingsGroupBox
             // 
-            this.groupBox26.Controls.Add(this.button26);
-            this.groupBox26.Controls.Add(this.button27);
-            this.groupBox26.Controls.Add(this.button28);
-            this.groupBox26.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox26.ForeColor = System.Drawing.Color.White;
-            this.groupBox26.Location = new System.Drawing.Point(428, 303);
-            this.groupBox26.Name = "groupBox26";
-            this.groupBox26.Size = new System.Drawing.Size(285, 50);
-            this.groupBox26.TabIndex = 10;
-            this.groupBox26.TabStop = false;
-            this.groupBox26.Text = "Settings";
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDResetSettingsButton);
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDLoadSettingsButton);
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDSaveSettingsButton);
+            this.modMOTDSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDSettingsGroupBox.Location = new System.Drawing.Point(428, 303);
+            this.modMOTDSettingsGroupBox.Name = "modMOTDSettingsGroupBox";
+            this.modMOTDSettingsGroupBox.Size = new System.Drawing.Size(285, 50);
+            this.modMOTDSettingsGroupBox.TabIndex = 10;
+            this.modMOTDSettingsGroupBox.TabStop = false;
+            this.modMOTDSettingsGroupBox.Text = "Settings";
             // 
-            // button26
+            // modMOTDResetSettingsButton
             // 
-            this.button26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button26.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button26.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button26.ForeColor = System.Drawing.Color.White;
-            this.button26.Location = new System.Drawing.Point(199, 18);
-            this.button26.Name = "button26";
-            this.button26.Size = new System.Drawing.Size(79, 23);
-            this.button26.TabIndex = 9;
-            this.button26.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button26, "Reset this module to its default settings.");
-            this.button26.UseVisualStyleBackColor = false;
+            this.modMOTDResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modMOTDResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modMOTDResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modMOTDResetSettingsButton.Location = new System.Drawing.Point(199, 18);
+            this.modMOTDResetSettingsButton.Name = "modMOTDResetSettingsButton";
+            this.modMOTDResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modMOTDResetSettingsButton.TabIndex = 9;
+            this.modMOTDResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modMOTDResetSettingsButton, "Reset this module to its default settings.");
+            this.modMOTDResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button27
+            // modMOTDLoadSettingsButton
             // 
-            this.button27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button27.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button27.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button27.ForeColor = System.Drawing.Color.White;
-            this.button27.Location = new System.Drawing.Point(104, 18);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(79, 23);
-            this.button27.TabIndex = 1;
-            this.button27.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button27, "Load the current settings from the configuration file.");
-            this.button27.UseVisualStyleBackColor = false;
+            this.modMOTDLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modMOTDLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modMOTDLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modMOTDLoadSettingsButton.Location = new System.Drawing.Point(104, 18);
+            this.modMOTDLoadSettingsButton.Name = "modMOTDLoadSettingsButton";
+            this.modMOTDLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modMOTDLoadSettingsButton.TabIndex = 1;
+            this.modMOTDLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modMOTDLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modMOTDLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button28
+            // modMOTDSaveSettingsButton
             // 
-            this.button28.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button28.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button28.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button28.ForeColor = System.Drawing.Color.White;
-            this.button28.Location = new System.Drawing.Point(10, 18);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(79, 23);
-            this.button28.TabIndex = 8;
-            this.button28.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button28, "Save the current settings to the configuration file.");
-            this.button28.UseVisualStyleBackColor = false;
+            this.modMOTDSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modMOTDSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modMOTDSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modMOTDSaveSettingsButton.Location = new System.Drawing.Point(10, 18);
+            this.modMOTDSaveSettingsButton.Name = "modMOTDSaveSettingsButton";
+            this.modMOTDSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modMOTDSaveSettingsButton.TabIndex = 8;
+            this.modMOTDSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modMOTDSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modMOTDSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label34
+            // modMOTDHeaderDescLabel
             // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(82, 47);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(395, 14);
-            this.label34.TabIndex = 2;
-            this.label34.Text = "Automatically repeats a specified message over a specified time period.";
+            this.modMOTDHeaderDescLabel.AutoSize = true;
+            this.modMOTDHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modMOTDHeaderDescLabel.Name = "modMOTDHeaderDescLabel";
+            this.modMOTDHeaderDescLabel.Size = new System.Drawing.Size(395, 14);
+            this.modMOTDHeaderDescLabel.TabIndex = 2;
+            this.modMOTDHeaderDescLabel.Text = "Automatically repeats a specified message over a specified time period.";
             // 
-            // label35
+            // modMOTDHeaderLabel
             // 
-            this.label35.AutoSize = true;
-            this.label35.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label35.ForeColor = System.Drawing.Color.Silver;
-            this.label35.Location = new System.Drawing.Point(76, 18);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(276, 25);
-            this.label35.TabIndex = 1;
-            this.label35.Text = "Module: Message of the Day";
+            this.modMOTDHeaderLabel.AutoSize = true;
+            this.modMOTDHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modMOTDHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modMOTDHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modMOTDHeaderLabel.Name = "modMOTDHeaderLabel";
+            this.modMOTDHeaderLabel.Size = new System.Drawing.Size(276, 25);
+            this.modMOTDHeaderLabel.TabIndex = 1;
+            this.modMOTDHeaderLabel.Text = "Module: Message of the Day";
             // 
-            // pictureBox8
+            // modMOTDHeaderPictureBox
             // 
-            this.pictureBox8.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox8.Image")));
-            this.pictureBox8.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox8.Name = "pictureBox8";
-            this.pictureBox8.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox8.TabIndex = 0;
-            this.pictureBox8.TabStop = false;
+            this.modMOTDHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDHeaderPictureBox.Image")));
+            this.modMOTDHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modMOTDHeaderPictureBox.Name = "modMOTDHeaderPictureBox";
+            this.modMOTDHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modMOTDHeaderPictureBox.TabIndex = 0;
+            this.modMOTDHeaderPictureBox.TabStop = false;
             // 
             // pickupTab
             // 
             this.pickupTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.pickupTab.Controls.Add(this.groupBox27);
+            this.pickupTab.Controls.Add(this.modPickupContainerGroupBox);
             this.pickupTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pickupTab.ForeColor = System.Drawing.Color.White;
             this.pickupTab.Location = new System.Drawing.Point(4, 25);
@@ -2437,318 +2484,318 @@
             this.pickupTab.TabIndex = 7;
             this.pickupTab.Text = "Pickup";
             // 
-            // groupBox27
+            // modPickupContainerGroupBox
             // 
-            this.groupBox27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox27.Controls.Add(this.groupBox28);
-            this.groupBox27.Controls.Add(this.label48);
-            this.groupBox27.Controls.Add(this.label49);
-            this.groupBox27.Controls.Add(this.pictureBox9);
-            this.groupBox27.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox27.ForeColor = System.Drawing.Color.White;
-            this.groupBox27.Location = new System.Drawing.Point(3, 3);
-            this.groupBox27.Name = "groupBox27";
-            this.groupBox27.Size = new System.Drawing.Size(728, 453);
-            this.groupBox27.TabIndex = 5;
-            this.groupBox27.TabStop = false;
-            this.groupBox27.Text = "Pickup";
+            this.modPickupContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupOptGroupBox);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderDescLabel);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderLabel);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderPictureBox);
+            this.modPickupContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modPickupContainerGroupBox.Name = "modPickupContainerGroupBox";
+            this.modPickupContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modPickupContainerGroupBox.TabIndex = 5;
+            this.modPickupContainerGroupBox.TabStop = false;
+            this.modPickupContainerGroupBox.Text = "Pickup";
             // 
-            // groupBox28
+            // modPickupOptGroupBox
             // 
-            this.groupBox28.BackColor = System.Drawing.Color.Black;
-            this.groupBox28.Controls.Add(this.groupBox32);
-            this.groupBox28.Controls.Add(this.groupBox29);
-            this.groupBox28.Controls.Add(this.groupBox30);
-            this.groupBox28.Controls.Add(this.groupBox31);
-            this.groupBox28.Controls.Add(this.checkBox14);
-            this.groupBox28.ForeColor = System.Drawing.Color.White;
-            this.groupBox28.Location = new System.Drawing.Point(3, 91);
-            this.groupBox28.Name = "groupBox28";
-            this.groupBox28.Size = new System.Drawing.Size(719, 359);
-            this.groupBox28.TabIndex = 12;
-            this.groupBox28.TabStop = false;
-            this.groupBox28.Text = "Pickup Options";
+            this.modPickupOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modPickupOptGroupBox.Controls.Add(this.modPickupOptTeamSizeGroupBox);
+            this.modPickupOptGroupBox.Controls.Add(this.modPickupOptNoShowsGroupBox);
+            this.modPickupOptGroupBox.Controls.Add(this.modPickupSettingsGroupBox);
+            this.modPickupOptGroupBox.Controls.Add(this.modPickupOptSubsGroupBox);
+            this.modPickupOptGroupBox.Controls.Add(this.modPickupEnableCheckBox);
+            this.modPickupOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modPickupOptGroupBox.Name = "modPickupOptGroupBox";
+            this.modPickupOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modPickupOptGroupBox.TabIndex = 12;
+            this.modPickupOptGroupBox.TabStop = false;
+            this.modPickupOptGroupBox.Text = "Pickup Options";
             // 
-            // groupBox32
+            // modPickupOptTeamSizeGroupBox
             // 
-            this.groupBox32.Controls.Add(this.label40);
-            this.groupBox32.Controls.Add(this.textBox22);
-            this.groupBox32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox32.ForeColor = System.Drawing.Color.White;
-            this.groupBox32.Location = new System.Drawing.Point(9, 248);
-            this.groupBox32.Name = "groupBox32";
-            this.groupBox32.Size = new System.Drawing.Size(340, 105);
-            this.groupBox32.TabIndex = 28;
-            this.groupBox32.TabStop = false;
-            this.groupBox32.Text = "Team Size";
+            this.modPickupOptTeamSizeGroupBox.Controls.Add(this.modPickupPlayersPerTeamLabel);
+            this.modPickupOptTeamSizeGroupBox.Controls.Add(this.modPickupPlayersPerTeamTextBox);
+            this.modPickupOptTeamSizeGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupOptTeamSizeGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupOptTeamSizeGroupBox.Location = new System.Drawing.Point(9, 248);
+            this.modPickupOptTeamSizeGroupBox.Name = "modPickupOptTeamSizeGroupBox";
+            this.modPickupOptTeamSizeGroupBox.Size = new System.Drawing.Size(340, 105);
+            this.modPickupOptTeamSizeGroupBox.TabIndex = 28;
+            this.modPickupOptTeamSizeGroupBox.TabStop = false;
+            this.modPickupOptTeamSizeGroupBox.Text = "Team Size";
             // 
-            // label40
+            // modPickupPlayersPerTeamLabel
             // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(6, 29);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(156, 14);
-            this.label40.TabIndex = 3;
-            this.label40.Text = "Players per team for pickup";
+            this.modPickupPlayersPerTeamLabel.AutoSize = true;
+            this.modPickupPlayersPerTeamLabel.Location = new System.Drawing.Point(6, 29);
+            this.modPickupPlayersPerTeamLabel.Name = "modPickupPlayersPerTeamLabel";
+            this.modPickupPlayersPerTeamLabel.Size = new System.Drawing.Size(156, 14);
+            this.modPickupPlayersPerTeamLabel.TabIndex = 3;
+            this.modPickupPlayersPerTeamLabel.Text = "Players per team for pickup";
             // 
-            // textBox22
+            // modPickupPlayersPerTeamTextBox
             // 
-            this.textBox22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox22.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox22.ForeColor = System.Drawing.Color.White;
-            this.textBox22.Location = new System.Drawing.Point(9, 62);
-            this.textBox22.MaxLength = 15;
-            this.textBox22.Name = "textBox22";
-            this.textBox22.Size = new System.Drawing.Size(99, 22);
-            this.textBox22.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox22, "Enter the number of players that each team will have in pickup mode.");
+            this.modPickupPlayersPerTeamTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupPlayersPerTeamTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modPickupPlayersPerTeamTextBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupPlayersPerTeamTextBox.Location = new System.Drawing.Point(9, 62);
+            this.modPickupPlayersPerTeamTextBox.MaxLength = 2;
+            this.modPickupPlayersPerTeamTextBox.Name = "modPickupPlayersPerTeamTextBox";
+            this.modPickupPlayersPerTeamTextBox.Size = new System.Drawing.Size(42, 22);
+            this.modPickupPlayersPerTeamTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modPickupPlayersPerTeamTextBox, "Enter the number of players that each team will have in pickup mode.");
             // 
-            // groupBox29
+            // modPickupOptNoShowsGroupBox
             // 
-            this.groupBox29.Controls.Add(this.textBox19);
-            this.groupBox29.Controls.Add(this.label37);
-            this.groupBox29.Controls.Add(this.comboBox4);
-            this.groupBox29.Controls.Add(this.label38);
-            this.groupBox29.Controls.Add(this.textBox20);
-            this.groupBox29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox29.ForeColor = System.Drawing.Color.White;
-            this.groupBox29.Location = new System.Drawing.Point(367, 45);
-            this.groupBox29.Name = "groupBox29";
-            this.groupBox29.Size = new System.Drawing.Size(340, 243);
-            this.groupBox29.TabIndex = 28;
-            this.groupBox29.TabStop = false;
-            this.groupBox29.Text = "No-Shows";
+            this.modPickupOptNoShowsGroupBox.Controls.Add(this.modPickupNoShowsTimeBanTextBox);
+            this.modPickupOptNoShowsGroupBox.Controls.Add(this.modPickupNoShowsTimeBanLabel);
+            this.modPickupOptNoShowsGroupBox.Controls.Add(this.modPickupNoShowsTimeBanScaleComboBox);
+            this.modPickupOptNoShowsGroupBox.Controls.Add(this.modPickupMaxNoShowsLabel);
+            this.modPickupOptNoShowsGroupBox.Controls.Add(this.modPickupMaxNoShowsTextBox);
+            this.modPickupOptNoShowsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupOptNoShowsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupOptNoShowsGroupBox.Location = new System.Drawing.Point(367, 45);
+            this.modPickupOptNoShowsGroupBox.Name = "modPickupOptNoShowsGroupBox";
+            this.modPickupOptNoShowsGroupBox.Size = new System.Drawing.Size(340, 243);
+            this.modPickupOptNoShowsGroupBox.TabIndex = 28;
+            this.modPickupOptNoShowsGroupBox.TabStop = false;
+            this.modPickupOptNoShowsGroupBox.Text = "No-Shows";
             // 
-            // textBox19
+            // modPickupNoShowsTimeBanTextBox
             // 
-            this.textBox19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox19.ForeColor = System.Drawing.Color.White;
-            this.textBox19.Location = new System.Drawing.Point(9, 148);
-            this.textBox19.MaxLength = 15;
-            this.textBox19.Name = "textBox19";
-            this.textBox19.Size = new System.Drawing.Size(99, 22);
-            this.textBox19.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox19, "Specify the time to ban the player for after the maximum no-shows\r\nare exceeded. " +
+            this.modPickupNoShowsTimeBanTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupNoShowsTimeBanTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modPickupNoShowsTimeBanTextBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupNoShowsTimeBanTextBox.Location = new System.Drawing.Point(9, 148);
+            this.modPickupNoShowsTimeBanTextBox.MaxLength = 15;
+            this.modPickupNoShowsTimeBanTextBox.Name = "modPickupNoShowsTimeBanTextBox";
+            this.modPickupNoShowsTimeBanTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modPickupNoShowsTimeBanTextBox.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.modPickupNoShowsTimeBanTextBox, "Specify the time to ban the player for after the maximum no-shows\r\nare exceeded. " +
         "This must be a number.");
             // 
-            // label37
+            // modPickupNoShowsTimeBanLabel
             // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(6, 109);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(320, 14);
-            this.label37.TabIndex = 18;
-            this.label37.Text = "Time to ban player for after max no-shows are exceeded";
+            this.modPickupNoShowsTimeBanLabel.AutoSize = true;
+            this.modPickupNoShowsTimeBanLabel.Location = new System.Drawing.Point(6, 109);
+            this.modPickupNoShowsTimeBanLabel.Name = "modPickupNoShowsTimeBanLabel";
+            this.modPickupNoShowsTimeBanLabel.Size = new System.Drawing.Size(320, 14);
+            this.modPickupNoShowsTimeBanLabel.TabIndex = 18;
+            this.modPickupNoShowsTimeBanLabel.Text = "Time to ban player for after max no-shows are exceeded";
             // 
-            // groupBox30
+            // modPickupNoShowsTimeBanScaleComboBox
             // 
-            this.groupBox30.Controls.Add(this.button29);
-            this.groupBox30.Controls.Add(this.button30);
-            this.groupBox30.Controls.Add(this.button31);
-            this.groupBox30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox30.ForeColor = System.Drawing.Color.White;
-            this.groupBox30.Location = new System.Drawing.Point(367, 294);
-            this.groupBox30.Name = "groupBox30";
-            this.groupBox30.Size = new System.Drawing.Size(340, 59);
-            this.groupBox30.TabIndex = 10;
-            this.groupBox30.TabStop = false;
-            this.groupBox30.Text = "Settings";
-            // 
-            // button29
-            // 
-            this.button29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button29.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button29.ForeColor = System.Drawing.Color.White;
-            this.button29.Location = new System.Drawing.Point(238, 21);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(79, 23);
-            this.button29.TabIndex = 9;
-            this.button29.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button29, "Reset this module to its default settings.");
-            this.button29.UseVisualStyleBackColor = false;
-            // 
-            // button30
-            // 
-            this.button30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button30.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button30.ForeColor = System.Drawing.Color.White;
-            this.button30.Location = new System.Drawing.Point(126, 21);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(79, 23);
-            this.button30.TabIndex = 1;
-            this.button30.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button30, "Load the current settings from the configuration file.");
-            this.button30.UseVisualStyleBackColor = false;
-            // 
-            // button31
-            // 
-            this.button31.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button31.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button31.ForeColor = System.Drawing.Color.White;
-            this.button31.Location = new System.Drawing.Point(16, 21);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(79, 23);
-            this.button31.TabIndex = 8;
-            this.button31.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button31, "Save the current settings to the configuration file.");
-            this.button31.UseVisualStyleBackColor = false;
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox4.ForeColor = System.Drawing.Color.White;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(126, 147);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(124, 22);
-            this.comboBox4.TabIndex = 17;
-            this.coreToolTip.SetToolTip(this.comboBox4, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+            this.modPickupNoShowsTimeBanScaleComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupNoShowsTimeBanScaleComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupNoShowsTimeBanScaleComboBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupNoShowsTimeBanScaleComboBox.FormattingEnabled = true;
+            this.modPickupNoShowsTimeBanScaleComboBox.Location = new System.Drawing.Point(126, 147);
+            this.modPickupNoShowsTimeBanScaleComboBox.Name = "modPickupNoShowsTimeBanScaleComboBox";
+            this.modPickupNoShowsTimeBanScaleComboBox.Size = new System.Drawing.Size(124, 22);
+            this.modPickupNoShowsTimeBanScaleComboBox.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.modPickupNoShowsTimeBanScaleComboBox, "This list contains time scale that will be combined\r\nwith the value you entered i" +
         "n the box to the left.");
             // 
-            // label38
+            // modPickupMaxNoShowsLabel
             // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(6, 18);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(238, 14);
-            this.label38.TabIndex = 3;
-            this.label38.Text = "Maximum number of no-shows before ban\r\n";
+            this.modPickupMaxNoShowsLabel.AutoSize = true;
+            this.modPickupMaxNoShowsLabel.Location = new System.Drawing.Point(6, 18);
+            this.modPickupMaxNoShowsLabel.Name = "modPickupMaxNoShowsLabel";
+            this.modPickupMaxNoShowsLabel.Size = new System.Drawing.Size(238, 14);
+            this.modPickupMaxNoShowsLabel.TabIndex = 3;
+            this.modPickupMaxNoShowsLabel.Text = "Maximum number of no-shows before ban\r\n";
             // 
-            // textBox20
+            // modPickupMaxNoShowsTextBox
             // 
-            this.textBox20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox20.ForeColor = System.Drawing.Color.White;
-            this.textBox20.Location = new System.Drawing.Point(9, 52);
-            this.textBox20.MaxLength = 15;
-            this.textBox20.Name = "textBox20";
-            this.textBox20.Size = new System.Drawing.Size(99, 22);
-            this.textBox20.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox20, "Enter the maximum number of times that a player can leave the pickup game\r\nonce i" +
+            this.modPickupMaxNoShowsTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupMaxNoShowsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modPickupMaxNoShowsTextBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupMaxNoShowsTextBox.Location = new System.Drawing.Point(9, 52);
+            this.modPickupMaxNoShowsTextBox.MaxLength = 15;
+            this.modPickupMaxNoShowsTextBox.Name = "modPickupMaxNoShowsTextBox";
+            this.modPickupMaxNoShowsTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modPickupMaxNoShowsTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modPickupMaxNoShowsTextBox, "Enter the maximum number of times that a player can leave the pickup game\r\nonce i" +
         "t has started before the player is banned.\r\n\r\n");
             // 
-            // groupBox31
+            // modPickupSettingsGroupBox
             // 
-            this.groupBox31.Controls.Add(this.textBox25);
-            this.groupBox31.Controls.Add(this.label44);
-            this.groupBox31.Controls.Add(this.comboBox3);
-            this.groupBox31.Controls.Add(this.label43);
-            this.groupBox31.Controls.Add(this.textBox24);
-            this.groupBox31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox31.ForeColor = System.Drawing.Color.White;
-            this.groupBox31.Location = new System.Drawing.Point(9, 45);
-            this.groupBox31.Name = "groupBox31";
-            this.groupBox31.Size = new System.Drawing.Size(340, 197);
-            this.groupBox31.TabIndex = 27;
-            this.groupBox31.TabStop = false;
-            this.groupBox31.Text = "Substitutes";
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupResetSettingsButton);
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupLoadSettingsButton);
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupSaveSettingsButton);
+            this.modPickupSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupSettingsGroupBox.Location = new System.Drawing.Point(367, 294);
+            this.modPickupSettingsGroupBox.Name = "modPickupSettingsGroupBox";
+            this.modPickupSettingsGroupBox.Size = new System.Drawing.Size(340, 59);
+            this.modPickupSettingsGroupBox.TabIndex = 10;
+            this.modPickupSettingsGroupBox.TabStop = false;
+            this.modPickupSettingsGroupBox.Text = "Settings";
             // 
-            // textBox25
+            // modPickupResetSettingsButton
             // 
-            this.textBox25.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox25.ForeColor = System.Drawing.Color.White;
-            this.textBox25.Location = new System.Drawing.Point(9, 148);
-            this.textBox25.MaxLength = 15;
-            this.textBox25.Name = "textBox25";
-            this.textBox25.Size = new System.Drawing.Size(99, 22);
-            this.textBox25.TabIndex = 19;
-            this.coreToolTip.SetToolTip(this.textBox25, "Specify the time to ban the player for after the maximum subs\r\nare exceeded. This" +
+            this.modPickupResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modPickupResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modPickupResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modPickupResetSettingsButton.Location = new System.Drawing.Point(238, 21);
+            this.modPickupResetSettingsButton.Name = "modPickupResetSettingsButton";
+            this.modPickupResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modPickupResetSettingsButton.TabIndex = 9;
+            this.modPickupResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modPickupResetSettingsButton, "Reset this module to its default settings.");
+            this.modPickupResetSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modPickupLoadSettingsButton
+            // 
+            this.modPickupLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modPickupLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modPickupLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modPickupLoadSettingsButton.Location = new System.Drawing.Point(126, 21);
+            this.modPickupLoadSettingsButton.Name = "modPickupLoadSettingsButton";
+            this.modPickupLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modPickupLoadSettingsButton.TabIndex = 1;
+            this.modPickupLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modPickupLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modPickupLoadSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modPickupSaveSettingsButton
+            // 
+            this.modPickupSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modPickupSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modPickupSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modPickupSaveSettingsButton.Location = new System.Drawing.Point(16, 21);
+            this.modPickupSaveSettingsButton.Name = "modPickupSaveSettingsButton";
+            this.modPickupSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modPickupSaveSettingsButton.TabIndex = 8;
+            this.modPickupSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modPickupSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modPickupSaveSettingsButton.UseVisualStyleBackColor = false;
+            // 
+            // modPickupOptSubsGroupBox
+            // 
+            this.modPickupOptSubsGroupBox.Controls.Add(this.modPickupSubsTimeBanTextBox);
+            this.modPickupOptSubsGroupBox.Controls.Add(this.modPickupSubsTimeBanLabel);
+            this.modPickupOptSubsGroupBox.Controls.Add(this.modPickupSubsTimeBanScaleComboBox);
+            this.modPickupOptSubsGroupBox.Controls.Add(this.modPickupMaxSubsLabel);
+            this.modPickupOptSubsGroupBox.Controls.Add(this.modPickupMaxSubsTextBox);
+            this.modPickupOptSubsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupOptSubsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupOptSubsGroupBox.Location = new System.Drawing.Point(9, 45);
+            this.modPickupOptSubsGroupBox.Name = "modPickupOptSubsGroupBox";
+            this.modPickupOptSubsGroupBox.Size = new System.Drawing.Size(340, 197);
+            this.modPickupOptSubsGroupBox.TabIndex = 27;
+            this.modPickupOptSubsGroupBox.TabStop = false;
+            this.modPickupOptSubsGroupBox.Text = "Substitutes";
+            // 
+            // modPickupSubsTimeBanTextBox
+            // 
+            this.modPickupSubsTimeBanTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupSubsTimeBanTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modPickupSubsTimeBanTextBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupSubsTimeBanTextBox.Location = new System.Drawing.Point(9, 148);
+            this.modPickupSubsTimeBanTextBox.MaxLength = 15;
+            this.modPickupSubsTimeBanTextBox.Name = "modPickupSubsTimeBanTextBox";
+            this.modPickupSubsTimeBanTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modPickupSubsTimeBanTextBox.TabIndex = 19;
+            this.coreToolTip.SetToolTip(this.modPickupSubsTimeBanTextBox, "Specify the time to ban the player for after the maximum subs\r\nare exceeded. This" +
         " must be a number.");
             // 
-            // label44
+            // modPickupSubsTimeBanLabel
             // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(6, 109);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(292, 14);
-            this.label44.TabIndex = 18;
-            this.label44.Text = "Time to ban player for after max subs are exceeded";
+            this.modPickupSubsTimeBanLabel.AutoSize = true;
+            this.modPickupSubsTimeBanLabel.Location = new System.Drawing.Point(6, 109);
+            this.modPickupSubsTimeBanLabel.Name = "modPickupSubsTimeBanLabel";
+            this.modPickupSubsTimeBanLabel.Size = new System.Drawing.Size(292, 14);
+            this.modPickupSubsTimeBanLabel.TabIndex = 18;
+            this.modPickupSubsTimeBanLabel.Text = "Time to ban player for after max subs are exceeded";
             // 
-            // comboBox3
+            // modPickupSubsTimeBanScaleComboBox
             // 
-            this.comboBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox3.ForeColor = System.Drawing.Color.White;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(126, 147);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(124, 22);
-            this.comboBox3.TabIndex = 17;
-            this.coreToolTip.SetToolTip(this.comboBox3, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+            this.modPickupSubsTimeBanScaleComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupSubsTimeBanScaleComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupSubsTimeBanScaleComboBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupSubsTimeBanScaleComboBox.FormattingEnabled = true;
+            this.modPickupSubsTimeBanScaleComboBox.Location = new System.Drawing.Point(126, 147);
+            this.modPickupSubsTimeBanScaleComboBox.Name = "modPickupSubsTimeBanScaleComboBox";
+            this.modPickupSubsTimeBanScaleComboBox.Size = new System.Drawing.Size(124, 22);
+            this.modPickupSubsTimeBanScaleComboBox.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.modPickupSubsTimeBanScaleComboBox, "This list contains time scale that will be combined\r\nwith the value you entered i" +
         "n the box to the left.");
             // 
-            // label43
+            // modPickupMaxSubsLabel
             // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(6, 18);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(210, 14);
-            this.label43.TabIndex = 3;
-            this.label43.Text = "Maximum number of subs before ban\r\n";
+            this.modPickupMaxSubsLabel.AutoSize = true;
+            this.modPickupMaxSubsLabel.Location = new System.Drawing.Point(6, 18);
+            this.modPickupMaxSubsLabel.Name = "modPickupMaxSubsLabel";
+            this.modPickupMaxSubsLabel.Size = new System.Drawing.Size(210, 14);
+            this.modPickupMaxSubsLabel.TabIndex = 3;
+            this.modPickupMaxSubsLabel.Text = "Maximum number of subs before ban\r\n";
             // 
-            // textBox24
+            // modPickupMaxSubsTextBox
             // 
-            this.textBox24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox24.ForeColor = System.Drawing.Color.White;
-            this.textBox24.Location = new System.Drawing.Point(9, 52);
-            this.textBox24.MaxLength = 15;
-            this.textBox24.Name = "textBox24";
-            this.textBox24.Size = new System.Drawing.Size(99, 22);
-            this.textBox24.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox24, "Enter the maximum number of subs that a player may use before\r\nthe player is bann" +
+            this.modPickupMaxSubsTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modPickupMaxSubsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modPickupMaxSubsTextBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupMaxSubsTextBox.Location = new System.Drawing.Point(9, 52);
+            this.modPickupMaxSubsTextBox.MaxLength = 15;
+            this.modPickupMaxSubsTextBox.Name = "modPickupMaxSubsTextBox";
+            this.modPickupMaxSubsTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modPickupMaxSubsTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modPickupMaxSubsTextBox, "Enter the maximum number of subs that a player may use before\r\nthe player is bann" +
         "ed.");
             // 
-            // checkBox14
+            // modPickupEnableCheckBox
             // 
-            this.checkBox14.AutoSize = true;
-            this.checkBox14.Location = new System.Drawing.Point(9, 21);
-            this.checkBox14.Name = "checkBox14";
-            this.checkBox14.Size = new System.Drawing.Size(179, 18);
-            this.checkBox14.TabIndex = 11;
-            this.checkBox14.Text = "Enable Pickup Game Module";
-            this.coreToolTip.SetToolTip(this.checkBox14, "Select whether this module should be enabled.");
-            this.checkBox14.UseVisualStyleBackColor = true;
+            this.modPickupEnableCheckBox.AutoSize = true;
+            this.modPickupEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modPickupEnableCheckBox.Name = "modPickupEnableCheckBox";
+            this.modPickupEnableCheckBox.Size = new System.Drawing.Size(179, 18);
+            this.modPickupEnableCheckBox.TabIndex = 11;
+            this.modPickupEnableCheckBox.Text = "Enable Pickup Game Module";
+            this.coreToolTip.SetToolTip(this.modPickupEnableCheckBox, "Select whether this module should be enabled.");
+            this.modPickupEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label48
+            // modPickupHeaderDescLabel
             // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(82, 47);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(303, 14);
-            this.label48.TabIndex = 2;
-            this.label48.Text = "Allows the server to be set up in pick-up game mode.";
+            this.modPickupHeaderDescLabel.AutoSize = true;
+            this.modPickupHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modPickupHeaderDescLabel.Name = "modPickupHeaderDescLabel";
+            this.modPickupHeaderDescLabel.Size = new System.Drawing.Size(303, 14);
+            this.modPickupHeaderDescLabel.TabIndex = 2;
+            this.modPickupHeaderDescLabel.Text = "Allows the server to be set up in pick-up game mode.";
             // 
-            // label49
+            // modPickupHeaderLabel
             // 
-            this.label49.AutoSize = true;
-            this.label49.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label49.ForeColor = System.Drawing.Color.Silver;
-            this.label49.Location = new System.Drawing.Point(76, 18);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(215, 25);
-            this.label49.TabIndex = 1;
-            this.label49.Text = "Module: Pickup Game";
+            this.modPickupHeaderLabel.AutoSize = true;
+            this.modPickupHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modPickupHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modPickupHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modPickupHeaderLabel.Name = "modPickupHeaderLabel";
+            this.modPickupHeaderLabel.Size = new System.Drawing.Size(215, 25);
+            this.modPickupHeaderLabel.TabIndex = 1;
+            this.modPickupHeaderLabel.Text = "Module: Pickup Game";
             // 
-            // pictureBox9
+            // modPickupHeaderPictureBox
             // 
-            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
-            this.pictureBox9.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox9.TabIndex = 0;
-            this.pictureBox9.TabStop = false;
+            this.modPickupHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupHeaderPictureBox.Image")));
+            this.modPickupHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modPickupHeaderPictureBox.Name = "modPickupHeaderPictureBox";
+            this.modPickupHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modPickupHeaderPictureBox.TabIndex = 0;
+            this.modPickupHeaderPictureBox.TabStop = false;
             // 
             // serversTab
             // 
             this.serversTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.serversTab.Controls.Add(this.groupBox36);
+            this.serversTab.Controls.Add(this.modServerListContainerGroupBox);
             this.serversTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.serversTab.ForeColor = System.Drawing.Color.White;
             this.serversTab.Location = new System.Drawing.Point(4, 25);
@@ -2757,196 +2804,196 @@
             this.serversTab.TabIndex = 8;
             this.serversTab.Text = "Server List";
             // 
-            // groupBox36
+            // modServerListContainerGroupBox
             // 
-            this.groupBox36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox36.Controls.Add(this.groupBox37);
-            this.groupBox36.Controls.Add(this.label42);
-            this.groupBox36.Controls.Add(this.label45);
-            this.groupBox36.Controls.Add(this.pictureBox10);
-            this.groupBox36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox36.ForeColor = System.Drawing.Color.White;
-            this.groupBox36.Location = new System.Drawing.Point(3, 3);
-            this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(728, 453);
-            this.groupBox36.TabIndex = 4;
-            this.groupBox36.TabStop = false;
-            this.groupBox36.Text = "Server List";
+            this.modServerListContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListOptGroupBox);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderDescLabel);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderLabel);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderPictureBox);
+            this.modServerListContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modServerListContainerGroupBox.Name = "modServerListContainerGroupBox";
+            this.modServerListContainerGroupBox.Size = new System.Drawing.Size(728, 453);
+            this.modServerListContainerGroupBox.TabIndex = 4;
+            this.modServerListContainerGroupBox.TabStop = false;
+            this.modServerListContainerGroupBox.Text = "Server List";
             // 
-            // groupBox37
+            // modServerListOptGroupBox
             // 
-            this.groupBox37.BackColor = System.Drawing.Color.Black;
-            this.groupBox37.Controls.Add(this.groupBox38);
-            this.groupBox37.Controls.Add(this.checkBox11);
-            this.groupBox37.Controls.Add(this.groupBox39);
-            this.groupBox37.ForeColor = System.Drawing.Color.White;
-            this.groupBox37.Location = new System.Drawing.Point(3, 91);
-            this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Size = new System.Drawing.Size(719, 359);
-            this.groupBox37.TabIndex = 12;
-            this.groupBox37.TabStop = false;
-            this.groupBox37.Text = "Server List Options";
+            this.modServerListOptGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modServerListOptGroupBox.Controls.Add(this.modServerListOptDisplayGroupBox);
+            this.modServerListOptGroupBox.Controls.Add(this.modServerListEnableCheckBox);
+            this.modServerListOptGroupBox.Controls.Add(this.modServerListSettingsGroupBox);
+            this.modServerListOptGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListOptGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.modServerListOptGroupBox.Name = "modServerListOptGroupBox";
+            this.modServerListOptGroupBox.Size = new System.Drawing.Size(719, 359);
+            this.modServerListOptGroupBox.TabIndex = 12;
+            this.modServerListOptGroupBox.TabStop = false;
+            this.modServerListOptGroupBox.Text = "Server List Options";
             // 
-            // groupBox38
+            // modServerListOptDisplayGroupBox
             // 
-            this.groupBox38.Controls.Add(this.label39);
-            this.groupBox38.Controls.Add(this.textBox21);
-            this.groupBox38.Controls.Add(this.textBox23);
-            this.groupBox38.Controls.Add(this.label41);
-            this.groupBox38.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox38.ForeColor = System.Drawing.Color.White;
-            this.groupBox38.Location = new System.Drawing.Point(9, 56);
-            this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Size = new System.Drawing.Size(381, 189);
-            this.groupBox38.TabIndex = 29;
-            this.groupBox38.TabStop = false;
-            this.groupBox38.Text = "Display Settings";
+            this.modServerListOptDisplayGroupBox.Controls.Add(this.modServerListMaxServersLabel);
+            this.modServerListOptDisplayGroupBox.Controls.Add(this.modServerListTimeBetweenTextBox);
+            this.modServerListOptDisplayGroupBox.Controls.Add(this.modServerListMaxServersTextBox);
+            this.modServerListOptDisplayGroupBox.Controls.Add(this.modServerListTimeBetweenLabel);
+            this.modServerListOptDisplayGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListOptDisplayGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListOptDisplayGroupBox.Location = new System.Drawing.Point(9, 56);
+            this.modServerListOptDisplayGroupBox.Name = "modServerListOptDisplayGroupBox";
+            this.modServerListOptDisplayGroupBox.Size = new System.Drawing.Size(381, 189);
+            this.modServerListOptDisplayGroupBox.TabIndex = 29;
+            this.modServerListOptDisplayGroupBox.TabStop = false;
+            this.modServerListOptDisplayGroupBox.Text = "Display Settings";
             // 
-            // label39
+            // modServerListMaxServersLabel
             // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(6, 30);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(154, 14);
-            this.label39.TabIndex = 3;
-            this.label39.Text = "Maximum servers to display";
+            this.modServerListMaxServersLabel.AutoSize = true;
+            this.modServerListMaxServersLabel.Location = new System.Drawing.Point(6, 30);
+            this.modServerListMaxServersLabel.Name = "modServerListMaxServersLabel";
+            this.modServerListMaxServersLabel.Size = new System.Drawing.Size(154, 14);
+            this.modServerListMaxServersLabel.TabIndex = 3;
+            this.modServerListMaxServersLabel.Text = "Maximum servers to display";
             // 
-            // textBox21
+            // modServerListTimeBetweenTextBox
             // 
-            this.textBox21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox21.ForeColor = System.Drawing.Color.White;
-            this.textBox21.Location = new System.Drawing.Point(9, 151);
-            this.textBox21.MaxLength = 15;
-            this.textBox21.Name = "textBox21";
-            this.textBox21.Size = new System.Drawing.Size(99, 22);
-            this.textBox21.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.textBox21, "Enter the number of seconds that must pass before a player can request\r\nthe activ" +
+            this.modServerListTimeBetweenTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modServerListTimeBetweenTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modServerListTimeBetweenTextBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListTimeBetweenTextBox.Location = new System.Drawing.Point(9, 151);
+            this.modServerListTimeBetweenTextBox.MaxLength = 15;
+            this.modServerListTimeBetweenTextBox.Name = "modServerListTimeBetweenTextBox";
+            this.modServerListTimeBetweenTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modServerListTimeBetweenTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.modServerListTimeBetweenTextBox, "Enter the number of seconds that must pass before a player can request\r\nthe activ" +
         "e server list again.");
             // 
-            // textBox23
+            // modServerListMaxServersTextBox
             // 
-            this.textBox23.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox23.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox23.ForeColor = System.Drawing.Color.White;
-            this.textBox23.Location = new System.Drawing.Point(9, 64);
-            this.textBox23.MaxLength = 15;
-            this.textBox23.Name = "textBox23";
-            this.textBox23.Size = new System.Drawing.Size(99, 22);
-            this.textBox23.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.textBox23, "Enter the maximum number of active servers to return. Each server is sent to QL c" +
+            this.modServerListMaxServersTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modServerListMaxServersTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modServerListMaxServersTextBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListMaxServersTextBox.Location = new System.Drawing.Point(9, 64);
+            this.modServerListMaxServersTextBox.MaxLength = 2;
+            this.modServerListMaxServersTextBox.Name = "modServerListMaxServersTextBox";
+            this.modServerListMaxServersTextBox.Size = new System.Drawing.Size(99, 22);
+            this.modServerListMaxServersTextBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.modServerListMaxServersTextBox, "Enter the maximum number of active servers to return. Each server is sent to QL c" +
         "hat one per line, so \r\nthis number should not be large.");
             // 
-            // label41
+            // modServerListTimeBetweenLabel
             // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(6, 117);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(202, 14);
-            this.label41.TabIndex = 12;
-            this.label41.Text = "Time between queries [in seconds]";
+            this.modServerListTimeBetweenLabel.AutoSize = true;
+            this.modServerListTimeBetweenLabel.Location = new System.Drawing.Point(6, 117);
+            this.modServerListTimeBetweenLabel.Name = "modServerListTimeBetweenLabel";
+            this.modServerListTimeBetweenLabel.Size = new System.Drawing.Size(202, 14);
+            this.modServerListTimeBetweenLabel.TabIndex = 12;
+            this.modServerListTimeBetweenLabel.Text = "Time between queries [in seconds]";
             // 
-            // checkBox11
+            // modServerListEnableCheckBox
             // 
-            this.checkBox11.AutoSize = true;
-            this.checkBox11.Location = new System.Drawing.Point(9, 21);
-            this.checkBox11.Name = "checkBox11";
-            this.checkBox11.Size = new System.Drawing.Size(230, 18);
-            this.checkBox11.TabIndex = 11;
-            this.checkBox11.Text = "Enable Quake Live Server List Module";
-            this.coreToolTip.SetToolTip(this.checkBox11, "Select whether this module should be enabled.");
-            this.checkBox11.UseVisualStyleBackColor = true;
+            this.modServerListEnableCheckBox.AutoSize = true;
+            this.modServerListEnableCheckBox.Location = new System.Drawing.Point(9, 21);
+            this.modServerListEnableCheckBox.Name = "modServerListEnableCheckBox";
+            this.modServerListEnableCheckBox.Size = new System.Drawing.Size(230, 18);
+            this.modServerListEnableCheckBox.TabIndex = 11;
+            this.modServerListEnableCheckBox.Text = "Enable Quake Live Server List Module";
+            this.coreToolTip.SetToolTip(this.modServerListEnableCheckBox, "Select whether this module should be enabled.");
+            this.modServerListEnableCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox39
+            // modServerListSettingsGroupBox
             // 
-            this.groupBox39.Controls.Add(this.button32);
-            this.groupBox39.Controls.Add(this.button33);
-            this.groupBox39.Controls.Add(this.button34);
-            this.groupBox39.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox39.ForeColor = System.Drawing.Color.White;
-            this.groupBox39.Location = new System.Drawing.Point(422, 303);
-            this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(285, 50);
-            this.groupBox39.TabIndex = 10;
-            this.groupBox39.TabStop = false;
-            this.groupBox39.Text = "Settings";
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListResetSettingsButton);
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListLoadSettingsButton);
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListSaveSettingsButton);
+            this.modServerListSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListSettingsGroupBox.Location = new System.Drawing.Point(428, 303);
+            this.modServerListSettingsGroupBox.Name = "modServerListSettingsGroupBox";
+            this.modServerListSettingsGroupBox.Size = new System.Drawing.Size(285, 50);
+            this.modServerListSettingsGroupBox.TabIndex = 10;
+            this.modServerListSettingsGroupBox.TabStop = false;
+            this.modServerListSettingsGroupBox.Text = "Settings";
             // 
-            // button32
+            // modServerListResetSettingsButton
             // 
-            this.button32.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button32.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button32.ForeColor = System.Drawing.Color.White;
-            this.button32.Location = new System.Drawing.Point(199, 18);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(79, 23);
-            this.button32.TabIndex = 9;
-            this.button32.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.button32, "Reset this module to its default settings.");
-            this.button32.UseVisualStyleBackColor = false;
+            this.modServerListResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modServerListResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modServerListResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modServerListResetSettingsButton.Location = new System.Drawing.Point(199, 18);
+            this.modServerListResetSettingsButton.Name = "modServerListResetSettingsButton";
+            this.modServerListResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modServerListResetSettingsButton.TabIndex = 9;
+            this.modServerListResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.modServerListResetSettingsButton, "Reset this module to its default settings.");
+            this.modServerListResetSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button33
+            // modServerListLoadSettingsButton
             // 
-            this.button33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button33.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button33.ForeColor = System.Drawing.Color.White;
-            this.button33.Location = new System.Drawing.Point(104, 18);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(79, 23);
-            this.button33.TabIndex = 1;
-            this.button33.Text = "Load";
-            this.coreToolTip.SetToolTip(this.button33, "Load the current settings from the configuration file.");
-            this.button33.UseVisualStyleBackColor = false;
+            this.modServerListLoadSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modServerListLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modServerListLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListLoadSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modServerListLoadSettingsButton.Location = new System.Drawing.Point(104, 18);
+            this.modServerListLoadSettingsButton.Name = "modServerListLoadSettingsButton";
+            this.modServerListLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modServerListLoadSettingsButton.TabIndex = 1;
+            this.modServerListLoadSettingsButton.Text = "Load";
+            this.coreToolTip.SetToolTip(this.modServerListLoadSettingsButton, "Load the current settings from the configuration file.");
+            this.modServerListLoadSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // button34
+            // modServerListSaveSettingsButton
             // 
-            this.button34.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button34.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button34.ForeColor = System.Drawing.Color.White;
-            this.button34.Location = new System.Drawing.Point(10, 18);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(79, 23);
-            this.button34.TabIndex = 8;
-            this.button34.Text = "Save";
-            this.coreToolTip.SetToolTip(this.button34, "Save the current settings to the configuration file.");
-            this.button34.UseVisualStyleBackColor = false;
+            this.modServerListSaveSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modServerListSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modServerListSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListSaveSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.modServerListSaveSettingsButton.Location = new System.Drawing.Point(10, 18);
+            this.modServerListSaveSettingsButton.Name = "modServerListSaveSettingsButton";
+            this.modServerListSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modServerListSaveSettingsButton.TabIndex = 8;
+            this.modServerListSaveSettingsButton.Text = "Save";
+            this.coreToolTip.SetToolTip(this.modServerListSaveSettingsButton, "Save the current settings to the configuration file.");
+            this.modServerListSaveSettingsButton.UseVisualStyleBackColor = false;
             // 
-            // label42
+            // modServerListHeaderDescLabel
             // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(82, 47);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(450, 14);
-            this.label42.TabIndex = 2;
-            this.label42.Text = "Allows players to list active servers for a specified game type and region in-gam" +
+            this.modServerListHeaderDescLabel.AutoSize = true;
+            this.modServerListHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modServerListHeaderDescLabel.Name = "modServerListHeaderDescLabel";
+            this.modServerListHeaderDescLabel.Size = new System.Drawing.Size(450, 14);
+            this.modServerListHeaderDescLabel.TabIndex = 2;
+            this.modServerListHeaderDescLabel.Text = "Allows players to list active servers for a specified game type and region in-gam" +
     "e.";
             // 
-            // label45
+            // modServerListHeaderLabel
             // 
-            this.label45.AutoSize = true;
-            this.label45.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label45.ForeColor = System.Drawing.Color.Silver;
-            this.label45.Location = new System.Drawing.Point(76, 18);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(373, 25);
-            this.label45.TabIndex = 1;
-            this.label45.Text = "Module: Quake Live Server List Display";
+            this.modServerListHeaderLabel.AutoSize = true;
+            this.modServerListHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modServerListHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.modServerListHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modServerListHeaderLabel.Name = "modServerListHeaderLabel";
+            this.modServerListHeaderLabel.Size = new System.Drawing.Size(373, 25);
+            this.modServerListHeaderLabel.TabIndex = 1;
+            this.modServerListHeaderLabel.Text = "Module: Quake Live Server List Display";
             // 
-            // pictureBox10
+            // modServerListHeaderPictureBox
             // 
-            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
-            this.pictureBox10.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox10.Name = "pictureBox10";
-            this.pictureBox10.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox10.TabIndex = 0;
-            this.pictureBox10.TabStop = false;
+            this.modServerListHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListHeaderPictureBox.Image")));
+            this.modServerListHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modServerListHeaderPictureBox.Name = "modServerListHeaderPictureBox";
+            this.modServerListHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modServerListHeaderPictureBox.TabIndex = 0;
+            this.modServerListHeaderPictureBox.TabStop = false;
             // 
             // usersTab
             // 
             this.usersTab.BackColor = System.Drawing.Color.Black;
-            this.usersTab.Controls.Add(this.groupBox40);
+            this.usersTab.Controls.Add(this.usrMContainerGroupBox);
             this.usersTab.ForeColor = System.Drawing.Color.White;
             this.usersTab.Location = new System.Drawing.Point(4, 26);
             this.usersTab.Name = "usersTab";
@@ -2954,173 +3001,173 @@
             this.usersTab.TabIndex = 4;
             this.usersTab.Text = "User Management";
             // 
-            // groupBox40
+            // usrMContainerGroupBox
             // 
-            this.groupBox40.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox40.Controls.Add(this.groupBox41);
-            this.groupBox40.Controls.Add(this.groupBox42);
-            this.groupBox40.Controls.Add(this.label52);
-            this.groupBox40.Controls.Add(this.label53);
-            this.groupBox40.Controls.Add(this.pictureBox11);
-            this.groupBox40.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox40.ForeColor = System.Drawing.Color.White;
-            this.groupBox40.Location = new System.Drawing.Point(5, 3);
-            this.groupBox40.Name = "groupBox40";
-            this.groupBox40.Size = new System.Drawing.Size(731, 479);
-            this.groupBox40.TabIndex = 5;
-            this.groupBox40.TabStop = false;
-            this.groupBox40.Text = "User Management";
+            this.usrMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.usrMContainerGroupBox.Controls.Add(this.usrMCurUsersGroupBox);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMAddUserGroupBox);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderDescLabel);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderLabel);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderPictureBox);
+            this.usrMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.usrMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.usrMContainerGroupBox.Name = "usrMContainerGroupBox";
+            this.usrMContainerGroupBox.Size = new System.Drawing.Size(731, 479);
+            this.usrMContainerGroupBox.TabIndex = 5;
+            this.usrMContainerGroupBox.TabStop = false;
+            this.usrMContainerGroupBox.Text = "User Management";
             // 
-            // groupBox41
+            // usrMCurUsersGroupBox
             // 
-            this.groupBox41.BackColor = System.Drawing.Color.Black;
-            this.groupBox41.Controls.Add(this.button36);
-            this.groupBox41.Controls.Add(this.listBox3);
-            this.groupBox41.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox41.ForeColor = System.Drawing.Color.White;
-            this.groupBox41.Location = new System.Drawing.Point(430, 91);
-            this.groupBox41.Name = "groupBox41";
-            this.groupBox41.Size = new System.Drawing.Size(293, 382);
-            this.groupBox41.TabIndex = 12;
-            this.groupBox41.TabStop = false;
-            this.groupBox41.Text = "Current SSB Users";
+            this.usrMCurUsersGroupBox.BackColor = System.Drawing.Color.Black;
+            this.usrMCurUsersGroupBox.Controls.Add(this.usrMDelUserButton);
+            this.usrMCurUsersGroupBox.Controls.Add(this.usrMCurUsersListBox);
+            this.usrMCurUsersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMCurUsersGroupBox.ForeColor = System.Drawing.Color.White;
+            this.usrMCurUsersGroupBox.Location = new System.Drawing.Point(430, 91);
+            this.usrMCurUsersGroupBox.Name = "usrMCurUsersGroupBox";
+            this.usrMCurUsersGroupBox.Size = new System.Drawing.Size(293, 382);
+            this.usrMCurUsersGroupBox.TabIndex = 12;
+            this.usrMCurUsersGroupBox.TabStop = false;
+            this.usrMCurUsersGroupBox.Text = "Current SSB Users";
             // 
-            // button36
+            // usrMDelUserButton
             // 
-            this.button36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button36.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button36.ForeColor = System.Drawing.Color.White;
-            this.button36.Location = new System.Drawing.Point(121, 353);
-            this.button36.Name = "button36";
-            this.button36.Size = new System.Drawing.Size(166, 23);
-            this.button36.TabIndex = 14;
-            this.button36.Text = "Remove User from SSB";
-            this.coreToolTip.SetToolTip(this.button36, "Click this button to remove the selected user.");
-            this.button36.UseVisualStyleBackColor = false;
+            this.usrMDelUserButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.usrMDelUserButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.usrMDelUserButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMDelUserButton.ForeColor = System.Drawing.Color.White;
+            this.usrMDelUserButton.Location = new System.Drawing.Point(121, 353);
+            this.usrMDelUserButton.Name = "usrMDelUserButton";
+            this.usrMDelUserButton.Size = new System.Drawing.Size(166, 23);
+            this.usrMDelUserButton.TabIndex = 14;
+            this.usrMDelUserButton.Text = "Remove User from SSB";
+            this.coreToolTip.SetToolTip(this.usrMDelUserButton, "Click this button to remove the selected user.");
+            this.usrMDelUserButton.UseVisualStyleBackColor = false;
             // 
-            // listBox3
+            // usrMCurUsersListBox
             // 
-            this.listBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.listBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listBox3.ForeColor = System.Drawing.Color.White;
-            this.listBox3.FormattingEnabled = true;
-            this.listBox3.ItemHeight = 14;
-            this.listBox3.Location = new System.Drawing.Point(6, 18);
-            this.listBox3.Name = "listBox3";
-            this.listBox3.Size = new System.Drawing.Size(281, 310);
-            this.listBox3.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.listBox3, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+            this.usrMCurUsersListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.usrMCurUsersListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.usrMCurUsersListBox.ForeColor = System.Drawing.Color.White;
+            this.usrMCurUsersListBox.FormattingEnabled = true;
+            this.usrMCurUsersListBox.ItemHeight = 14;
+            this.usrMCurUsersListBox.Location = new System.Drawing.Point(6, 18);
+            this.usrMCurUsersListBox.Name = "usrMCurUsersListBox";
+            this.usrMCurUsersListBox.Size = new System.Drawing.Size(281, 310);
+            this.usrMCurUsersListBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.usrMCurUsersListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
             // 
-            // groupBox42
+            // usrMAddUserGroupBox
             // 
-            this.groupBox42.BackColor = System.Drawing.Color.Black;
-            this.groupBox42.Controls.Add(this.label46);
-            this.groupBox42.Controls.Add(this.textBox26);
-            this.groupBox42.Controls.Add(this.button37);
-            this.groupBox42.Controls.Add(this.label50);
-            this.groupBox42.Controls.Add(this.comboBox5);
-            this.groupBox42.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox42.ForeColor = System.Drawing.Color.White;
-            this.groupBox42.Location = new System.Drawing.Point(6, 91);
-            this.groupBox42.Name = "groupBox42";
-            this.groupBox42.Size = new System.Drawing.Size(416, 382);
-            this.groupBox42.TabIndex = 5;
-            this.groupBox42.TabStop = false;
-            this.groupBox42.Text = "Add SSB User";
+            this.usrMAddUserGroupBox.BackColor = System.Drawing.Color.Black;
+            this.usrMAddUserGroupBox.Controls.Add(this.usrMUserQlNameLabel);
+            this.usrMAddUserGroupBox.Controls.Add(this.usrMUserQlNameTextBox);
+            this.usrMAddUserGroupBox.Controls.Add(this.usrMAddUserButton);
+            this.usrMAddUserGroupBox.Controls.Add(this.usrMUserAccessLabel);
+            this.usrMAddUserGroupBox.Controls.Add(this.usrMUserAccessComboBox);
+            this.usrMAddUserGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMAddUserGroupBox.ForeColor = System.Drawing.Color.White;
+            this.usrMAddUserGroupBox.Location = new System.Drawing.Point(6, 91);
+            this.usrMAddUserGroupBox.Name = "usrMAddUserGroupBox";
+            this.usrMAddUserGroupBox.Size = new System.Drawing.Size(416, 382);
+            this.usrMAddUserGroupBox.TabIndex = 5;
+            this.usrMAddUserGroupBox.TabStop = false;
+            this.usrMAddUserGroupBox.Text = "Add SSB User";
             // 
-            // label46
+            // usrMUserQlNameLabel
             // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(6, 43);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(93, 14);
-            this.label46.TabIndex = 16;
-            this.label46.Text = "User\'s QL Name";
+            this.usrMUserQlNameLabel.AutoSize = true;
+            this.usrMUserQlNameLabel.Location = new System.Drawing.Point(6, 43);
+            this.usrMUserQlNameLabel.Name = "usrMUserQlNameLabel";
+            this.usrMUserQlNameLabel.Size = new System.Drawing.Size(93, 14);
+            this.usrMUserQlNameLabel.TabIndex = 16;
+            this.usrMUserQlNameLabel.Text = "User\'s QL Name";
             // 
-            // textBox26
+            // usrMUserQlNameTextBox
             // 
-            this.textBox26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox26.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox26.ForeColor = System.Drawing.Color.White;
-            this.textBox26.Location = new System.Drawing.Point(9, 82);
-            this.textBox26.MaxLength = 15;
-            this.textBox26.Name = "textBox26";
-            this.textBox26.Size = new System.Drawing.Size(215, 22);
-            this.textBox26.TabIndex = 15;
-            this.coreToolTip.SetToolTip(this.textBox26, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
+            this.usrMUserQlNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.usrMUserQlNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.usrMUserQlNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.usrMUserQlNameTextBox.Location = new System.Drawing.Point(9, 82);
+            this.usrMUserQlNameTextBox.MaxLength = 15;
+            this.usrMUserQlNameTextBox.Name = "usrMUserQlNameTextBox";
+            this.usrMUserQlNameTextBox.Size = new System.Drawing.Size(215, 22);
+            this.usrMUserQlNameTextBox.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.usrMUserQlNameTextBox, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
         "user list. Do not include the clan tag.");
             // 
-            // button37
+            // usrMAddUserButton
             // 
-            this.button37.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button37.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button37.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button37.ForeColor = System.Drawing.Color.White;
-            this.button37.Location = new System.Drawing.Point(6, 353);
-            this.button37.Name = "button37";
-            this.button37.Size = new System.Drawing.Size(160, 23);
-            this.button37.TabIndex = 13;
-            this.button37.Text = "Add User to SSB";
-            this.coreToolTip.SetToolTip(this.button37, "Click this button to add the user.");
-            this.button37.UseVisualStyleBackColor = false;
+            this.usrMAddUserButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.usrMAddUserButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.usrMAddUserButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMAddUserButton.ForeColor = System.Drawing.Color.White;
+            this.usrMAddUserButton.Location = new System.Drawing.Point(9, 335);
+            this.usrMAddUserButton.Name = "usrMAddUserButton";
+            this.usrMAddUserButton.Size = new System.Drawing.Size(134, 23);
+            this.usrMAddUserButton.TabIndex = 13;
+            this.usrMAddUserButton.Text = "Add User to SSB";
+            this.coreToolTip.SetToolTip(this.usrMAddUserButton, "Click this button to add the user.");
+            this.usrMAddUserButton.UseVisualStyleBackColor = false;
             // 
-            // label50
+            // usrMUserAccessLabel
             // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(6, 202);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(112, 14);
-            this.label50.TabIndex = 9;
-            this.label50.Text = "User\'s Access Level";
+            this.usrMUserAccessLabel.AutoSize = true;
+            this.usrMUserAccessLabel.Location = new System.Drawing.Point(3, 186);
+            this.usrMUserAccessLabel.Name = "usrMUserAccessLabel";
+            this.usrMUserAccessLabel.Size = new System.Drawing.Size(112, 14);
+            this.usrMUserAccessLabel.TabIndex = 9;
+            this.usrMUserAccessLabel.Text = "User\'s Access Level";
             // 
-            // comboBox5
+            // usrMUserAccessComboBox
             // 
-            this.comboBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox5.ForeColor = System.Drawing.Color.White;
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(6, 233);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(183, 22);
-            this.comboBox5.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.comboBox5, "This list contains the access level of the user. Higher access levels\r\nhave acces" +
+            this.usrMUserAccessComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.usrMUserAccessComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMUserAccessComboBox.ForeColor = System.Drawing.Color.White;
+            this.usrMUserAccessComboBox.FormattingEnabled = true;
+            this.usrMUserAccessComboBox.Location = new System.Drawing.Point(3, 217);
+            this.usrMUserAccessComboBox.Name = "usrMUserAccessComboBox";
+            this.usrMUserAccessComboBox.Size = new System.Drawing.Size(183, 22);
+            this.usrMUserAccessComboBox.TabIndex = 8;
+            this.coreToolTip.SetToolTip(this.usrMUserAccessComboBox, "This list contains the access level of the user. Higher access levels\r\nhave acces" +
         "s to more sensitive commands.");
             // 
-            // label52
+            // usrMHeaderDescLabel
             // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(82, 47);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(140, 14);
-            this.label52.TabIndex = 2;
-            this.label52.Text = "Add or delete SSB users";
+            this.usrMHeaderDescLabel.AutoSize = true;
+            this.usrMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.usrMHeaderDescLabel.Name = "usrMHeaderDescLabel";
+            this.usrMHeaderDescLabel.Size = new System.Drawing.Size(140, 14);
+            this.usrMHeaderDescLabel.TabIndex = 2;
+            this.usrMHeaderDescLabel.Text = "Add or delete SSB users";
             // 
-            // label53
+            // usrMHeaderLabel
             // 
-            this.label53.AutoSize = true;
-            this.label53.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label53.ForeColor = System.Drawing.Color.Silver;
-            this.label53.Location = new System.Drawing.Point(76, 18);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(226, 25);
-            this.label53.TabIndex = 1;
-            this.label53.Text = "SSB User Management";
+            this.usrMHeaderLabel.AutoSize = true;
+            this.usrMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.usrMHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.usrMHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.usrMHeaderLabel.Name = "usrMHeaderLabel";
+            this.usrMHeaderLabel.Size = new System.Drawing.Size(226, 25);
+            this.usrMHeaderLabel.TabIndex = 1;
+            this.usrMHeaderLabel.Text = "SSB User Management";
             // 
-            // pictureBox11
+            // usrMHeaderPictureBox
             // 
-            this.pictureBox11.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox11.Image")));
-            this.pictureBox11.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox11.Name = "pictureBox11";
-            this.pictureBox11.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox11.TabIndex = 0;
-            this.pictureBox11.TabStop = false;
+            this.usrMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("usrMHeaderPictureBox.Image")));
+            this.usrMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.usrMHeaderPictureBox.Name = "usrMHeaderPictureBox";
+            this.usrMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.usrMHeaderPictureBox.TabIndex = 0;
+            this.usrMHeaderPictureBox.TabStop = false;
             // 
             // banTab
             // 
             this.banTab.BackColor = System.Drawing.Color.Black;
-            this.banTab.Controls.Add(this.groupBox43);
+            this.banTab.Controls.Add(this.banMContainerGroupBox);
             this.banTab.ForeColor = System.Drawing.Color.White;
             this.banTab.Location = new System.Drawing.Point(4, 26);
             this.banTab.Name = "banTab";
@@ -3128,10 +3175,186 @@
             this.banTab.TabIndex = 5;
             this.banTab.Text = "Ban Management";
             // 
+            // banMContainerGroupBox
+            // 
+            this.banMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.banMContainerGroupBox.Controls.Add(this.banMCurBansGroupBox);
+            this.banMContainerGroupBox.Controls.Add(this.banMAddBanGroupBox);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderDescLabel);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderLabel);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderPictureBox);
+            this.banMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.banMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.banMContainerGroupBox.Name = "banMContainerGroupBox";
+            this.banMContainerGroupBox.Size = new System.Drawing.Size(731, 479);
+            this.banMContainerGroupBox.TabIndex = 6;
+            this.banMContainerGroupBox.TabStop = false;
+            this.banMContainerGroupBox.Text = "Ban Management";
+            // 
+            // banMCurBansGroupBox
+            // 
+            this.banMCurBansGroupBox.BackColor = System.Drawing.Color.Black;
+            this.banMCurBansGroupBox.Controls.Add(this.banMDelBanButton);
+            this.banMCurBansGroupBox.Controls.Add(this.banMCurBansListBox);
+            this.banMCurBansGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMCurBansGroupBox.ForeColor = System.Drawing.Color.White;
+            this.banMCurBansGroupBox.Location = new System.Drawing.Point(430, 91);
+            this.banMCurBansGroupBox.Name = "banMCurBansGroupBox";
+            this.banMCurBansGroupBox.Size = new System.Drawing.Size(293, 382);
+            this.banMCurBansGroupBox.TabIndex = 12;
+            this.banMCurBansGroupBox.TabStop = false;
+            this.banMCurBansGroupBox.Text = "Current Bans";
+            // 
+            // banMDelBanButton
+            // 
+            this.banMDelBanButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.banMDelBanButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.banMDelBanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMDelBanButton.ForeColor = System.Drawing.Color.White;
+            this.banMDelBanButton.Location = new System.Drawing.Point(121, 353);
+            this.banMDelBanButton.Name = "banMDelBanButton";
+            this.banMDelBanButton.Size = new System.Drawing.Size(166, 23);
+            this.banMDelBanButton.TabIndex = 14;
+            this.banMDelBanButton.Text = "Remove Ban from SSB";
+            this.coreToolTip.SetToolTip(this.banMDelBanButton, "Click this button to remove the ban.");
+            this.banMDelBanButton.UseVisualStyleBackColor = false;
+            // 
+            // banMCurBansListBox
+            // 
+            this.banMCurBansListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.banMCurBansListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.banMCurBansListBox.ForeColor = System.Drawing.Color.White;
+            this.banMCurBansListBox.FormattingEnabled = true;
+            this.banMCurBansListBox.ItemHeight = 14;
+            this.banMCurBansListBox.Location = new System.Drawing.Point(6, 18);
+            this.banMCurBansListBox.Name = "banMCurBansListBox";
+            this.banMCurBansListBox.Size = new System.Drawing.Size(281, 310);
+            this.banMCurBansListBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.banMCurBansListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
+        "s loaded.");
+            // 
+            // banMAddBanGroupBox
+            // 
+            this.banMAddBanGroupBox.BackColor = System.Drawing.Color.Black;
+            this.banMAddBanGroupBox.Controls.Add(this.banMBanDurationTextBox);
+            this.banMAddBanGroupBox.Controls.Add(this.banMBanDurationScaleComboBox);
+            this.banMAddBanGroupBox.Controls.Add(this.banMUserQlNameLabel);
+            this.banMAddBanGroupBox.Controls.Add(this.banMUserQlNameTextBox);
+            this.banMAddBanGroupBox.Controls.Add(this.banMAddBanButton);
+            this.banMAddBanGroupBox.Controls.Add(this.banMBanDurationLabel);
+            this.banMAddBanGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMAddBanGroupBox.ForeColor = System.Drawing.Color.White;
+            this.banMAddBanGroupBox.Location = new System.Drawing.Point(6, 91);
+            this.banMAddBanGroupBox.Name = "banMAddBanGroupBox";
+            this.banMAddBanGroupBox.Size = new System.Drawing.Size(416, 382);
+            this.banMAddBanGroupBox.TabIndex = 5;
+            this.banMAddBanGroupBox.TabStop = false;
+            this.banMAddBanGroupBox.Text = "Add Ban";
+            // 
+            // banMBanDurationTextBox
+            // 
+            this.banMBanDurationTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.banMBanDurationTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.banMBanDurationTextBox.ForeColor = System.Drawing.Color.White;
+            this.banMBanDurationTextBox.Location = new System.Drawing.Point(9, 218);
+            this.banMBanDurationTextBox.MaxLength = 10;
+            this.banMBanDurationTextBox.Name = "banMBanDurationTextBox";
+            this.banMBanDurationTextBox.Size = new System.Drawing.Size(99, 22);
+            this.banMBanDurationTextBox.TabIndex = 18;
+            this.coreToolTip.SetToolTip(this.banMBanDurationTextBox, "Specify the length of the ban. This must be a number.");
+            // 
+            // banMBanDurationScaleComboBox
+            // 
+            this.banMBanDurationScaleComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.banMBanDurationScaleComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMBanDurationScaleComboBox.ForeColor = System.Drawing.Color.White;
+            this.banMBanDurationScaleComboBox.FormattingEnabled = true;
+            this.banMBanDurationScaleComboBox.Location = new System.Drawing.Point(125, 217);
+            this.banMBanDurationScaleComboBox.Name = "banMBanDurationScaleComboBox";
+            this.banMBanDurationScaleComboBox.Size = new System.Drawing.Size(124, 22);
+            this.banMBanDurationScaleComboBox.TabIndex = 17;
+            this.coreToolTip.SetToolTip(this.banMBanDurationScaleComboBox, "This list contains time scale that will be combined\r\nwith the value you entered i" +
+        "n the box to the left.");
+            // 
+            // banMUserQlNameLabel
+            // 
+            this.banMUserQlNameLabel.AutoSize = true;
+            this.banMUserQlNameLabel.Location = new System.Drawing.Point(6, 43);
+            this.banMUserQlNameLabel.Name = "banMUserQlNameLabel";
+            this.banMUserQlNameLabel.Size = new System.Drawing.Size(93, 14);
+            this.banMUserQlNameLabel.TabIndex = 16;
+            this.banMUserQlNameLabel.Text = "User\'s QL Name";
+            // 
+            // banMUserQlNameTextBox
+            // 
+            this.banMUserQlNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.banMUserQlNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.banMUserQlNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.banMUserQlNameTextBox.Location = new System.Drawing.Point(9, 82);
+            this.banMUserQlNameTextBox.MaxLength = 15;
+            this.banMUserQlNameTextBox.Name = "banMUserQlNameTextBox";
+            this.banMUserQlNameTextBox.Size = new System.Drawing.Size(215, 22);
+            this.banMUserQlNameTextBox.TabIndex = 15;
+            this.coreToolTip.SetToolTip(this.banMUserQlNameTextBox, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
+        "ban database. Do not include the clan tag.");
+            // 
+            // banMAddBanButton
+            // 
+            this.banMAddBanButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.banMAddBanButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.banMAddBanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMAddBanButton.ForeColor = System.Drawing.Color.White;
+            this.banMAddBanButton.Location = new System.Drawing.Point(9, 335);
+            this.banMAddBanButton.Name = "banMAddBanButton";
+            this.banMAddBanButton.Size = new System.Drawing.Size(134, 23);
+            this.banMAddBanButton.TabIndex = 13;
+            this.banMAddBanButton.Text = "Add Ban To SSB";
+            this.coreToolTip.SetToolTip(this.banMAddBanButton, "Click this button to add the ban.");
+            this.banMAddBanButton.UseVisualStyleBackColor = false;
+            // 
+            // banMBanDurationLabel
+            // 
+            this.banMBanDurationLabel.AutoSize = true;
+            this.banMBanDurationLabel.Location = new System.Drawing.Point(6, 186);
+            this.banMBanDurationLabel.Name = "banMBanDurationLabel";
+            this.banMBanDurationLabel.Size = new System.Drawing.Size(77, 14);
+            this.banMBanDurationLabel.TabIndex = 9;
+            this.banMBanDurationLabel.Text = "Ban Duration";
+            // 
+            // banMHeaderDescLabel
+            // 
+            this.banMHeaderDescLabel.AutoSize = true;
+            this.banMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.banMHeaderDescLabel.Name = "banMHeaderDescLabel";
+            this.banMHeaderDescLabel.Size = new System.Drawing.Size(164, 14);
+            this.banMHeaderDescLabel.TabIndex = 2;
+            this.banMHeaderDescLabel.Text = "Add or delete SSB user bans";
+            // 
+            // banMHeaderLabel
+            // 
+            this.banMHeaderLabel.AutoSize = true;
+            this.banMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.banMHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.banMHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.banMHeaderLabel.Name = "banMHeaderLabel";
+            this.banMHeaderLabel.Size = new System.Drawing.Size(220, 25);
+            this.banMHeaderLabel.TabIndex = 1;
+            this.banMHeaderLabel.Text = "SSB Ban Management";
+            // 
+            // banMHeaderPictureBox
+            // 
+            this.banMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("banMHeaderPictureBox.Image")));
+            this.banMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.banMHeaderPictureBox.Name = "banMHeaderPictureBox";
+            this.banMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.banMHeaderPictureBox.TabIndex = 0;
+            this.banMHeaderPictureBox.TabStop = false;
+            // 
             // aboutTab
             // 
-            this.aboutTab.BackColor = System.Drawing.Color.Black;
-            this.aboutTab.Controls.Add(this.aboutGroupBox);
+            this.aboutTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.aboutTab.Controls.Add(this.abtContainerGroupBox);
             this.aboutTab.ForeColor = System.Drawing.Color.White;
             this.aboutTab.Location = new System.Drawing.Point(4, 26);
             this.aboutTab.Name = "aboutTab";
@@ -3142,127 +3365,129 @@
             // aboutGroupBox
             // 
             this.aboutGroupBox.BackColor = System.Drawing.Color.Black;
-            this.aboutGroupBox.Controls.Add(this.aboutLabel3);
-            this.aboutGroupBox.Controls.Add(this.aboutSsbWebButton);
-            this.aboutGroupBox.Controls.Add(this.aboutAuthorLabel);
-            this.aboutGroupBox.Controls.Add(this.aboutLabelVersion);
-            this.aboutGroupBox.Controls.Add(this.aboutVersPlaceHolder);
-            this.aboutGroupBox.Controls.Add(this.aboutLabel2);
-            this.aboutGroupBox.Controls.Add(this.aboutLabel1);
-            this.aboutGroupBox.Controls.Add(this.ssbAboutPictureBox);
+            this.aboutGroupBox.Controls.Add(this.xaeroPictureBox);
+            this.aboutGroupBox.Controls.Add(this.abtAuthorLabel);
+            this.aboutGroupBox.Controls.Add(this.abtIrcInfoLabel);
+            this.aboutGroupBox.Controls.Add(this.abtWebsiteButton);
+            this.aboutGroupBox.Controls.Add(this.abtCopyrightLabel);
+            this.aboutGroupBox.Controls.Add(this.abtVersLabel);
+            this.aboutGroupBox.Controls.Add(this.abtVersPlaceHolderLabel);
+            this.aboutGroupBox.Controls.Add(this.abtDescLabel);
+            this.aboutGroupBox.Controls.Add(this.abtSSBColorLabel);
+            this.aboutGroupBox.Controls.Add(this.abtIconPictureBox);
             this.aboutGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aboutGroupBox.ForeColor = System.Drawing.Color.White;
-            this.aboutGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.aboutGroupBox.Location = new System.Drawing.Point(3, 103);
             this.aboutGroupBox.Name = "aboutGroupBox";
-            this.aboutGroupBox.Size = new System.Drawing.Size(732, 479);
+            this.aboutGroupBox.Size = new System.Drawing.Size(730, 370);
             this.aboutGroupBox.TabIndex = 1;
             this.aboutGroupBox.TabStop = false;
-            this.aboutGroupBox.Text = "About SSB";
+            this.aboutGroupBox.Text = "Application Info";
             // 
-            // aboutLabel3
+            // abtIrcInfoLabel
             // 
-            this.aboutLabel3.AutoSize = true;
-            this.aboutLabel3.Location = new System.Drawing.Point(82, 223);
-            this.aboutLabel3.Name = "aboutLabel3";
-            this.aboutLabel3.Size = new System.Drawing.Size(161, 14);
-            this.aboutLabel3.TabIndex = 7;
-            this.aboutLabel3.Text = "#ssb_ql on irc.quakenet.org";
+            this.abtIrcInfoLabel.AutoSize = true;
+            this.abtIrcInfoLabel.Location = new System.Drawing.Point(46, 212);
+            this.abtIrcInfoLabel.Name = "abtIrcInfoLabel";
+            this.abtIrcInfoLabel.Size = new System.Drawing.Size(161, 14);
+            this.abtIrcInfoLabel.TabIndex = 7;
+            this.abtIrcInfoLabel.Text = "#ssb_ql on irc.quakenet.org";
             // 
-            // aboutSsbWebButton
+            // abtWebsiteButton
             // 
-            this.aboutSsbWebButton.ForeColor = System.Drawing.Color.Black;
-            this.aboutSsbWebButton.Location = new System.Drawing.Point(85, 306);
-            this.aboutSsbWebButton.Name = "aboutSsbWebButton";
-            this.aboutSsbWebButton.Size = new System.Drawing.Size(149, 23);
-            this.aboutSsbWebButton.TabIndex = 6;
-            this.aboutSsbWebButton.Text = "SSB Website";
-            this.aboutSsbWebButton.UseVisualStyleBackColor = true;
+            this.abtWebsiteButton.ForeColor = System.Drawing.Color.Black;
+            this.abtWebsiteButton.Location = new System.Drawing.Point(49, 263);
+            this.abtWebsiteButton.Name = "abtWebsiteButton";
+            this.abtWebsiteButton.Size = new System.Drawing.Size(149, 23);
+            this.abtWebsiteButton.TabIndex = 6;
+            this.abtWebsiteButton.Text = "SSB Website";
+            this.abtWebsiteButton.UseVisualStyleBackColor = true;
             // 
-            // aboutAuthorLabel
+            // abtCopyrightLabel
             // 
-            this.aboutAuthorLabel.AutoSize = true;
-            this.aboutAuthorLabel.Location = new System.Drawing.Point(82, 194);
-            this.aboutAuthorLabel.Name = "aboutAuthorLabel";
-            this.aboutAuthorLabel.Size = new System.Drawing.Size(246, 14);
-            this.aboutAuthorLabel.TabIndex = 5;
-            this.aboutAuthorLabel.Text = "Copyright 2015 syncore. All rights reserved.";
+            this.abtCopyrightLabel.AutoSize = true;
+            this.abtCopyrightLabel.Location = new System.Drawing.Point(46, 183);
+            this.abtCopyrightLabel.Name = "abtCopyrightLabel";
+            this.abtCopyrightLabel.Size = new System.Drawing.Size(246, 14);
+            this.abtCopyrightLabel.TabIndex = 5;
+            this.abtCopyrightLabel.Text = "Copyright 2015 syncore. All rights reserved.";
             // 
-            // aboutLabelVersion
+            // abtVersLabel
             // 
-            this.aboutLabelVersion.AutoSize = true;
-            this.aboutLabelVersion.Location = new System.Drawing.Point(135, 153);
-            this.aboutLabelVersion.Name = "aboutLabelVersion";
-            this.aboutLabelVersion.Size = new System.Drawing.Size(47, 14);
-            this.aboutLabelVersion.TabIndex = 4;
-            this.aboutLabelVersion.Text = "0.0.0.0";
+            this.abtVersLabel.AutoSize = true;
+            this.abtVersLabel.Location = new System.Drawing.Point(99, 141);
+            this.abtVersLabel.Name = "abtVersLabel";
+            this.abtVersLabel.Size = new System.Drawing.Size(47, 14);
+            this.abtVersLabel.TabIndex = 4;
+            this.abtVersLabel.Text = "0.0.0.0";
             // 
-            // aboutVersPlaceHolder
+            // abtVersPlaceHolderLabel
             // 
-            this.aboutVersPlaceHolder.AutoSize = true;
-            this.aboutVersPlaceHolder.Location = new System.Drawing.Point(82, 153);
-            this.aboutVersPlaceHolder.Name = "aboutVersPlaceHolder";
-            this.aboutVersPlaceHolder.Size = new System.Drawing.Size(47, 14);
-            this.aboutVersPlaceHolder.TabIndex = 3;
-            this.aboutVersPlaceHolder.Text = "Version";
+            this.abtVersPlaceHolderLabel.AutoSize = true;
+            this.abtVersPlaceHolderLabel.Location = new System.Drawing.Point(46, 141);
+            this.abtVersPlaceHolderLabel.Name = "abtVersPlaceHolderLabel";
+            this.abtVersPlaceHolderLabel.Size = new System.Drawing.Size(47, 14);
+            this.abtVersPlaceHolderLabel.TabIndex = 3;
+            this.abtVersPlaceHolderLabel.Text = "Version";
             // 
-            // aboutLabel2
+            // abtDescLabel
             // 
-            this.aboutLabel2.AutoSize = true;
-            this.aboutLabel2.Location = new System.Drawing.Point(164, 102);
-            this.aboutLabel2.Name = "aboutLabel2";
-            this.aboutLabel2.Size = new System.Drawing.Size(227, 14);
-            this.aboutLabel2.TabIndex = 2;
-            this.aboutLabel2.Text = "A Quake Live Server Administration Tool";
+            this.abtDescLabel.AutoSize = true;
+            this.abtDescLabel.Location = new System.Drawing.Point(132, 68);
+            this.abtDescLabel.Name = "abtDescLabel";
+            this.abtDescLabel.Size = new System.Drawing.Size(227, 14);
+            this.abtDescLabel.TabIndex = 2;
+            this.abtDescLabel.Text = "A Quake Live Server Administration Tool";
             // 
-            // aboutLabel1
+            // abtSSBColorLabel
             // 
-            this.aboutLabel1.AutoSize = true;
-            this.aboutLabel1.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.aboutLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(163)))), ((int)(((byte)(185)))));
-            this.aboutLabel1.Location = new System.Drawing.Point(162, 67);
-            this.aboutLabel1.Name = "aboutLabel1";
-            this.aboutLabel1.Size = new System.Drawing.Size(52, 25);
-            this.aboutLabel1.TabIndex = 1;
-            this.aboutLabel1.Text = "SSB";
+            this.abtSSBColorLabel.AutoSize = true;
+            this.abtSSBColorLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtSSBColorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(163)))), ((int)(((byte)(185)))));
+            this.abtSSBColorLabel.Location = new System.Drawing.Point(130, 33);
+            this.abtSSBColorLabel.Name = "abtSSBColorLabel";
+            this.abtSSBColorLabel.Size = new System.Drawing.Size(52, 25);
+            this.abtSSBColorLabel.TabIndex = 1;
+            this.abtSSBColorLabel.Text = "SSB";
             // 
-            // ssbAboutPictureBox
+            // abtIconPictureBox
             // 
-            this.ssbAboutPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("ssbAboutPictureBox.Image")));
-            this.ssbAboutPictureBox.Location = new System.Drawing.Point(81, 67);
-            this.ssbAboutPictureBox.Name = "ssbAboutPictureBox";
-            this.ssbAboutPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.ssbAboutPictureBox.TabIndex = 0;
-            this.ssbAboutPictureBox.TabStop = false;
+            this.abtIconPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtIconPictureBox.Image")));
+            this.abtIconPictureBox.Location = new System.Drawing.Point(49, 43);
+            this.abtIconPictureBox.Name = "abtIconPictureBox";
+            this.abtIconPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.abtIconPictureBox.TabIndex = 0;
+            this.abtIconPictureBox.TabStop = false;
             // 
-            // startButton
+            // ssbStartButton
             // 
-            this.startButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.startButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.startButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.startButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startButton.ForeColor = System.Drawing.Color.White;
-            this.startButton.Location = new System.Drawing.Point(4, 641);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(110, 28);
-            this.startButton.TabIndex = 0;
-            this.startButton.Text = "Start";
-            this.coreToolTip.SetToolTip(this.startButton, "Start monitoring your server.");
-            this.startButton.UseVisualStyleBackColor = false;
+            this.ssbStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.ssbStartButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ssbStartButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ssbStartButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ssbStartButton.ForeColor = System.Drawing.Color.White;
+            this.ssbStartButton.Location = new System.Drawing.Point(9, 645);
+            this.ssbStartButton.Name = "ssbStartButton";
+            this.ssbStartButton.Size = new System.Drawing.Size(132, 28);
+            this.ssbStartButton.TabIndex = 0;
+            this.ssbStartButton.Text = "Start Monitoring";
+            this.coreToolTip.SetToolTip(this.ssbStartButton, "Start monitoring your server.");
+            this.ssbStartButton.UseVisualStyleBackColor = false;
             // 
-            // exitButton
+            // ssbExitButton
             // 
-            this.exitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.exitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.exitButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.exitButton.ForeColor = System.Drawing.Color.White;
-            this.exitButton.Location = new System.Drawing.Point(154, 641);
-            this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(110, 28);
-            this.exitButton.TabIndex = 2;
-            this.exitButton.Text = "Exit";
-            this.coreToolTip.SetToolTip(this.exitButton, "Exit SSB.");
-            this.exitButton.UseVisualStyleBackColor = false;
+            this.ssbExitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.ssbExitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ssbExitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ssbExitButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ssbExitButton.ForeColor = System.Drawing.Color.White;
+            this.ssbExitButton.Location = new System.Drawing.Point(660, 645);
+            this.ssbExitButton.Name = "ssbExitButton";
+            this.ssbExitButton.Size = new System.Drawing.Size(80, 28);
+            this.ssbExitButton.TabIndex = 2;
+            this.ssbExitButton.Text = "Exit";
+            this.coreToolTip.SetToolTip(this.ssbExitButton, "Exit SSB.");
+            this.ssbExitButton.UseVisualStyleBackColor = false;
             // 
             // coreToolTip
             // 
@@ -3278,21 +3503,13 @@
             this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.statusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
-            this.statusBar.Location = new System.Drawing.Point(0, 676);
+            this.statusLabel});
+            this.statusBar.Location = new System.Drawing.Point(0, 683);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(752, 22);
+            this.statusBar.SizingGrip = false;
             this.statusBar.TabIndex = 3;
             this.statusBar.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.White;
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(85, 17);
-            this.toolStripStatusLabel1.Text = "statusBarLabel";
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // minimizeButton
             // 
@@ -3314,331 +3531,297 @@
             this.closeButton.TabStop = false;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
-            // groupBox43
+            // titleBarVersionLabel
             // 
-            this.groupBox43.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.groupBox43.Controls.Add(this.groupBox44);
-            this.groupBox43.Controls.Add(this.groupBox45);
-            this.groupBox43.Controls.Add(this.label56);
-            this.groupBox43.Controls.Add(this.label57);
-            this.groupBox43.Controls.Add(this.pictureBox1);
-            this.groupBox43.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox43.ForeColor = System.Drawing.Color.White;
-            this.groupBox43.Location = new System.Drawing.Point(6, 3);
-            this.groupBox43.Name = "groupBox43";
-            this.groupBox43.Size = new System.Drawing.Size(731, 479);
-            this.groupBox43.TabIndex = 6;
-            this.groupBox43.TabStop = false;
-            this.groupBox43.Text = "Ban Management";
+            this.titleBarVersionLabel.AutoSize = true;
+            this.titleBarVersionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.titleBarVersionLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.titleBarVersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
+            this.titleBarVersionLabel.Location = new System.Drawing.Point(23, 7);
+            this.titleBarVersionLabel.Name = "titleBarVersionLabel";
+            this.titleBarVersionLabel.Size = new System.Drawing.Size(61, 13);
+            this.titleBarVersionLabel.TabIndex = 6;
+            this.titleBarVersionLabel.Text = "version 0.0";
             // 
-            // groupBox44
+            // logEventsGroupBox
             // 
-            this.groupBox44.BackColor = System.Drawing.Color.Black;
-            this.groupBox44.Controls.Add(this.button35);
-            this.groupBox44.Controls.Add(this.listBox4);
-            this.groupBox44.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox44.ForeColor = System.Drawing.Color.White;
-            this.groupBox44.Location = new System.Drawing.Point(430, 91);
-            this.groupBox44.Name = "groupBox44";
-            this.groupBox44.Size = new System.Drawing.Size(293, 382);
-            this.groupBox44.TabIndex = 12;
-            this.groupBox44.TabStop = false;
-            this.groupBox44.Text = "Current Bans";
+            this.logEventsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.logEventsGroupBox.Controls.Add(this.logConsoleTextBox);
+            this.logEventsGroupBox.Controls.Add(this.logAppendEventCheckBox);
+            this.logEventsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logEventsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.logEventsGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.logEventsGroupBox.Name = "logEventsGroupBox";
+            this.logEventsGroupBox.Size = new System.Drawing.Size(730, 385);
+            this.logEventsGroupBox.TabIndex = 9;
+            this.logEventsGroupBox.TabStop = false;
+            this.logEventsGroupBox.Text = "Events";
             // 
-            // button35
+            // abtHeaderDescLabel
             // 
-            this.button35.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button35.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button35.ForeColor = System.Drawing.Color.White;
-            this.button35.Location = new System.Drawing.Point(178, 353);
-            this.button35.Name = "button35";
-            this.button35.Size = new System.Drawing.Size(109, 23);
-            this.button35.TabIndex = 14;
-            this.button35.Text = "Remove Ban";
-            this.coreToolTip.SetToolTip(this.button35, "Click this button to remove the ban.");
-            this.button35.UseVisualStyleBackColor = false;
+            this.abtHeaderDescLabel.AutoSize = true;
+            this.abtHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.abtHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.abtHeaderDescLabel.Name = "abtHeaderDescLabel";
+            this.abtHeaderDescLabel.Size = new System.Drawing.Size(206, 14);
+            this.abtHeaderDescLabel.TabIndex = 8;
+            this.abtHeaderDescLabel.Text = "Information about the SSB software";
             // 
-            // listBox4
+            // abtHeaderLabel
             // 
-            this.listBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.listBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listBox4.ForeColor = System.Drawing.Color.White;
-            this.listBox4.FormattingEnabled = true;
-            this.listBox4.ItemHeight = 14;
-            this.listBox4.Location = new System.Drawing.Point(6, 18);
-            this.listBox4.Name = "listBox4";
-            this.listBox4.Size = new System.Drawing.Size(281, 310);
-            this.listBox4.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.listBox4, "This box displays the current automatic votes that are\r\nin effect if the module i" +
-        "s loaded.");
+            this.abtHeaderLabel.AutoSize = true;
+            this.abtHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.abtHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.abtHeaderLabel.Name = "abtHeaderLabel";
+            this.abtHeaderLabel.Size = new System.Drawing.Size(111, 25);
+            this.abtHeaderLabel.TabIndex = 7;
+            this.abtHeaderLabel.Text = "About SSB";
             // 
-            // groupBox45
+            // abtHeaderPictureBox
             // 
-            this.groupBox45.BackColor = System.Drawing.Color.Black;
-            this.groupBox45.Controls.Add(this.textBox29);
-            this.groupBox45.Controls.Add(this.comboBox6);
-            this.groupBox45.Controls.Add(this.label47);
-            this.groupBox45.Controls.Add(this.textBox28);
-            this.groupBox45.Controls.Add(this.button38);
-            this.groupBox45.Controls.Add(this.label51);
-            this.groupBox45.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox45.ForeColor = System.Drawing.Color.White;
-            this.groupBox45.Location = new System.Drawing.Point(6, 91);
-            this.groupBox45.Name = "groupBox45";
-            this.groupBox45.Size = new System.Drawing.Size(416, 382);
-            this.groupBox45.TabIndex = 5;
-            this.groupBox45.TabStop = false;
-            this.groupBox45.Text = "Add Ban";
+            this.abtHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtHeaderPictureBox.Image")));
+            this.abtHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.abtHeaderPictureBox.Name = "abtHeaderPictureBox";
+            this.abtHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.abtHeaderPictureBox.TabIndex = 6;
+            this.abtHeaderPictureBox.TabStop = false;
             // 
-            // label47
+            // logContainerGroupBox
             // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(6, 43);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(93, 14);
-            this.label47.TabIndex = 16;
-            this.label47.Text = "User\'s QL Name";
+            this.logContainerGroupBox.Controls.Add(this.logEventsGroupBox);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderDescLabel);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderLabel);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderPictureBox);
+            this.logContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.logContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.logContainerGroupBox.Name = "logContainerGroupBox";
+            this.logContainerGroupBox.Size = new System.Drawing.Size(737, 479);
+            this.logContainerGroupBox.TabIndex = 10;
+            this.logContainerGroupBox.TabStop = false;
+            this.logContainerGroupBox.Text = "Activity Log";
             // 
-            // textBox28
+            // coreContainerGroupBox
             // 
-            this.textBox28.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox28.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox28.ForeColor = System.Drawing.Color.White;
-            this.textBox28.Location = new System.Drawing.Point(9, 82);
-            this.textBox28.MaxLength = 15;
-            this.textBox28.Name = "textBox28";
-            this.textBox28.Size = new System.Drawing.Size(215, 22);
-            this.textBox28.TabIndex = 15;
-            this.coreToolTip.SetToolTip(this.textBox28, "Enter the name of the QL account of the user you wish to add to SSB\'s \r\ninternal " +
-        "ban database. Do not include the clan tag.");
+            this.coreContainerGroupBox.Controls.Add(this.coreCfgGroupBox);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderDescLabel);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderPictureBox);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderLabel);
+            this.coreContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.coreContainerGroupBox.Name = "coreContainerGroupBox";
+            this.coreContainerGroupBox.Size = new System.Drawing.Size(733, 480);
+            this.coreContainerGroupBox.TabIndex = 6;
+            this.coreContainerGroupBox.TabStop = false;
+            this.coreContainerGroupBox.Text = "Core Options";
             // 
-            // button38
+            // abtContainerGroupBox
             // 
-            this.button38.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button38.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button38.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button38.ForeColor = System.Drawing.Color.White;
-            this.button38.Location = new System.Drawing.Point(6, 353);
-            this.button38.Name = "button38";
-            this.button38.Size = new System.Drawing.Size(99, 23);
-            this.button38.TabIndex = 13;
-            this.button38.Text = "Add Ban";
-            this.coreToolTip.SetToolTip(this.button38, "Click this button to add the ban.");
-            this.button38.UseVisualStyleBackColor = false;
+            this.abtContainerGroupBox.Controls.Add(this.aboutGroupBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderDescLabel);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderPictureBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderLabel);
+            this.abtContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.abtContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.abtContainerGroupBox.Name = "abtContainerGroupBox";
+            this.abtContainerGroupBox.Size = new System.Drawing.Size(736, 479);
+            this.abtContainerGroupBox.TabIndex = 9;
+            this.abtContainerGroupBox.TabStop = false;
+            this.abtContainerGroupBox.Text = "About SSB";
             // 
-            // label51
+            // abtAuthorLabel
             // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(6, 202);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(77, 14);
-            this.label51.TabIndex = 9;
-            this.label51.Text = "Ban Duration";
+            this.abtAuthorLabel.AutoSize = true;
+            this.abtAuthorLabel.Location = new System.Drawing.Point(132, 93);
+            this.abtAuthorLabel.Name = "abtAuthorLabel";
+            this.abtAuthorLabel.Size = new System.Drawing.Size(251, 14);
+            this.abtAuthorLabel.TabIndex = 8;
+            this.abtAuthorLabel.Text = "Written by syncore <syncore@syncore.org>";
             // 
-            // label56
+            // xaeroPictureBox
             // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(82, 47);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(164, 14);
-            this.label56.TabIndex = 2;
-            this.label56.Text = "Add or delete SSB user bans";
+            this.xaeroPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("xaeroPictureBox.Image")));
+            this.xaeroPictureBox.Location = new System.Drawing.Point(499, 43);
+            this.xaeroPictureBox.Name = "xaeroPictureBox";
+            this.xaeroPictureBox.Size = new System.Drawing.Size(187, 250);
+            this.xaeroPictureBox.TabIndex = 9;
+            this.xaeroPictureBox.TabStop = false;
             // 
-            // label57
+            // statusLabel
             // 
-            this.label57.AutoSize = true;
-            this.label57.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label57.ForeColor = System.Drawing.Color.Silver;
-            this.label57.Location = new System.Drawing.Point(76, 18);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(220, 25);
-            this.label57.TabIndex = 1;
-            this.label57.Text = "SSB Ban Management";
+            this.statusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.statusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.Color.White;
+            this.statusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(62, 17);
+            this.statusLabel.Text = "Status: ...";
+            this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             // 
-            // pictureBox1
+            // button1
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 21);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // textBox29
-            // 
-            this.textBox29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.textBox29.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox29.ForeColor = System.Drawing.Color.White;
-            this.textBox29.Location = new System.Drawing.Point(6, 245);
-            this.textBox29.MaxLength = 15;
-            this.textBox29.Name = "textBox29";
-            this.textBox29.Size = new System.Drawing.Size(99, 22);
-            this.textBox29.TabIndex = 18;
-            this.coreToolTip.SetToolTip(this.textBox29, "Specify the length of the ban. This must be a number.");
-            // 
-            // comboBox6
-            // 
-            this.comboBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.comboBox6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox6.ForeColor = System.Drawing.Color.White;
-            this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(123, 244);
-            this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(124, 22);
-            this.comboBox6.TabIndex = 17;
-            this.coreToolTip.SetToolTip(this.comboBox6, "This list contains time scale that will be combined\r\nwith the value you entered i" +
-        "n the box to the left.");
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.BackColor = System.Drawing.Color.Transparent;
-            this.label58.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
-            this.label58.Location = new System.Drawing.Point(23, 7);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(61, 13);
-            this.label58.TabIndex = 6;
-            this.label58.Text = "version 0.0";
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(166, 645);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(132, 28);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Stop Monitoring";
+            this.coreToolTip.SetToolTip(this.button1, "Start monitoring your server.");
+            this.button1.UseVisualStyleBackColor = false;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(752, 698);
-            this.Controls.Add(this.label58);
+            this.ClientSize = new System.Drawing.Size(752, 705);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.titleBarVersionLabel);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.minimizeButton);
             this.Controls.Add(this.statusBar);
-            this.Controls.Add(this.exitButton);
-            this.Controls.Add(this.startButton);
+            this.Controls.Add(this.ssbExitButton);
+            this.Controls.Add(this.ssbStartButton);
             this.Controls.Add(this.UiTabCtl);
             this.Controls.Add(this.ssbLogo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
-            this.Text = "Main";
+            this.Text = "SSB";
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).EndInit();
             this.UiTabCtl.ResumeLayout(false);
-            this.mainTab.ResumeLayout(false);
-            this.mainTab.PerformLayout();
+            this.logTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).EndInit();
             this.coreOptionsTab.ResumeLayout(false);
-            this.coreOptionsTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
-            this.coreOptionsGrpBox.ResumeLayout(false);
-            this.coreOptionsGrpBox.PerformLayout();
-            this.settingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).EndInit();
+            this.coreCfgGroupBox.ResumeLayout(false);
+            this.coreCfgGroupBox.PerformLayout();
+            this.coreSettingsGroupBox.ResumeLayout(false);
             this.modulesTab.ResumeLayout(false);
             this.moduleTabControl.ResumeLayout(false);
             this.accountDateTab.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox13.ResumeLayout(false);
-            this.groupBox13.PerformLayout();
-            this.groupBox33.ResumeLayout(false);
-            this.groupBox33.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.modAccDateContainerGroupBox.ResumeLayout(false);
+            this.modAccDateContainerGroupBox.PerformLayout();
+            this.modAccDateOptGroupBox.ResumeLayout(false);
+            this.modAccDateOptGroupBox.PerformLayout();
+            this.modAccDateOptAccAgeGroupBox.ResumeLayout(false);
+            this.modAccDateOptAccAgeGroupBox.PerformLayout();
+            this.modAccDateSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateHeaderPictureBox)).EndInit();
             this.accuracyTab.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox14.ResumeLayout(false);
-            this.groupBox14.PerformLayout();
-            this.groupBox15.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.modAccuracyContainerGroupBox.ResumeLayout(false);
+            this.modAccuracyContainerGroupBox.PerformLayout();
+            this.modAccuracyOptGroupBox.ResumeLayout(false);
+            this.modAccuracyOptGroupBox.PerformLayout();
+            this.modAccuracySettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).EndInit();
             this.autoVoterTab.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            this.modAutoVoterContainerGroupBox.ResumeLayout(false);
+            this.modAutoVoterContainerGroupBox.PerformLayout();
+            this.modAutoVoterOptCurVotesGroupBox.ResumeLayout(false);
+            this.modAutoVoterOptVoteDetailsGroupBox.ResumeLayout(false);
+            this.modAutoVoterOptVoteDetailsGroupBox.PerformLayout();
+            this.modAutoVoterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterHeaderPictureBox)).EndInit();
             this.earlyQuitTab.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
-            this.groupBox12.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            this.modEarlyQuitContainerGroupBox.ResumeLayout(false);
+            this.modEarlyQuitContainerGroupBox.PerformLayout();
+            this.modEarlyQuitOptCurQuitsGroupBox.ResumeLayout(false);
+            this.modEarlyQuitOptDetailsGroupBox.ResumeLayout(false);
+            this.modEarlyQuitOptDetailsGroupBox.PerformLayout();
+            this.modEarlyQuitSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitHeaderPictureBox)).EndInit();
             this.eloLimitTab.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox16.ResumeLayout(false);
-            this.groupBox16.PerformLayout();
-            this.groupBox34.ResumeLayout(false);
-            this.groupBox34.PerformLayout();
-            this.groupBox17.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            this.modEloLimiterContainerGroupBox.ResumeLayout(false);
+            this.modEloLimiterContainerGroupBox.PerformLayout();
+            this.modEloLimiterOptGroupBox.ResumeLayout(false);
+            this.modEloLimiterOptGroupBox.PerformLayout();
+            this.modEloLimiterOptEloGroupBox.ResumeLayout(false);
+            this.modEloLimiterOptEloGroupBox.PerformLayout();
+            this.modEloLimiterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterHeaderPictureBox)).EndInit();
             this.ircTab.ResumeLayout(false);
-            this.groupBox18.ResumeLayout(false);
-            this.groupBox18.PerformLayout();
-            this.groupBox19.ResumeLayout(false);
-            this.groupBox19.PerformLayout();
-            this.groupBox23.ResumeLayout(false);
-            this.groupBox23.PerformLayout();
-            this.groupBox20.ResumeLayout(false);
-            this.groupBox22.ResumeLayout(false);
-            this.groupBox22.PerformLayout();
-            this.groupBox21.ResumeLayout(false);
-            this.groupBox21.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+            this.modIRCContainerGroupBox.ResumeLayout(false);
+            this.modIRCContainerGroupBox.PerformLayout();
+            this.modIRCOptGroupBox.ResumeLayout(false);
+            this.modIRCOptGroupBox.PerformLayout();
+            this.modIRCOptServerGroupBox.ResumeLayout(false);
+            this.modIRCOptServerGroupBox.PerformLayout();
+            this.modIRCOptNamingGroupBox.ResumeLayout(false);
+            this.modIRCOptNamingGroupBox.PerformLayout();
+            this.modIRCOptQuakeNetGroupBox.ResumeLayout(false);
+            this.modIRCOptQuakeNetGroupBox.PerformLayout();
+            this.modIRCSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCHeaderPictureBox)).EndInit();
             this.motdTab.ResumeLayout(false);
-            this.groupBox24.ResumeLayout(false);
-            this.groupBox24.PerformLayout();
-            this.groupBox25.ResumeLayout(false);
-            this.groupBox25.PerformLayout();
-            this.groupBox35.ResumeLayout(false);
-            this.groupBox35.PerformLayout();
-            this.groupBox26.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
+            this.modMOTDContainerGroupBox.ResumeLayout(false);
+            this.modMOTDContainerGroupBox.PerformLayout();
+            this.modMOTDOptGroupBox.ResumeLayout(false);
+            this.modMOTDOptGroupBox.PerformLayout();
+            this.modMOTDOptMsgRepeatGroupBox.ResumeLayout(false);
+            this.modMOTDOptMsgRepeatGroupBox.PerformLayout();
+            this.modMOTDSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDHeaderPictureBox)).EndInit();
             this.pickupTab.ResumeLayout(false);
-            this.groupBox27.ResumeLayout(false);
-            this.groupBox27.PerformLayout();
-            this.groupBox28.ResumeLayout(false);
-            this.groupBox28.PerformLayout();
-            this.groupBox32.ResumeLayout(false);
-            this.groupBox32.PerformLayout();
-            this.groupBox29.ResumeLayout(false);
-            this.groupBox29.PerformLayout();
-            this.groupBox30.ResumeLayout(false);
-            this.groupBox31.ResumeLayout(false);
-            this.groupBox31.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
+            this.modPickupContainerGroupBox.ResumeLayout(false);
+            this.modPickupContainerGroupBox.PerformLayout();
+            this.modPickupOptGroupBox.ResumeLayout(false);
+            this.modPickupOptGroupBox.PerformLayout();
+            this.modPickupOptTeamSizeGroupBox.ResumeLayout(false);
+            this.modPickupOptTeamSizeGroupBox.PerformLayout();
+            this.modPickupOptNoShowsGroupBox.ResumeLayout(false);
+            this.modPickupOptNoShowsGroupBox.PerformLayout();
+            this.modPickupSettingsGroupBox.ResumeLayout(false);
+            this.modPickupOptSubsGroupBox.ResumeLayout(false);
+            this.modPickupOptSubsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupHeaderPictureBox)).EndInit();
             this.serversTab.ResumeLayout(false);
-            this.groupBox36.ResumeLayout(false);
-            this.groupBox36.PerformLayout();
-            this.groupBox37.ResumeLayout(false);
-            this.groupBox37.PerformLayout();
-            this.groupBox38.ResumeLayout(false);
-            this.groupBox38.PerformLayout();
-            this.groupBox39.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
+            this.modServerListContainerGroupBox.ResumeLayout(false);
+            this.modServerListContainerGroupBox.PerformLayout();
+            this.modServerListOptGroupBox.ResumeLayout(false);
+            this.modServerListOptGroupBox.PerformLayout();
+            this.modServerListOptDisplayGroupBox.ResumeLayout(false);
+            this.modServerListOptDisplayGroupBox.PerformLayout();
+            this.modServerListSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListHeaderPictureBox)).EndInit();
             this.usersTab.ResumeLayout(false);
-            this.groupBox40.ResumeLayout(false);
-            this.groupBox40.PerformLayout();
-            this.groupBox41.ResumeLayout(false);
-            this.groupBox42.ResumeLayout(false);
-            this.groupBox42.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
+            this.usrMContainerGroupBox.ResumeLayout(false);
+            this.usrMContainerGroupBox.PerformLayout();
+            this.usrMCurUsersGroupBox.ResumeLayout(false);
+            this.usrMAddUserGroupBox.ResumeLayout(false);
+            this.usrMAddUserGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.usrMHeaderPictureBox)).EndInit();
             this.banTab.ResumeLayout(false);
+            this.banMContainerGroupBox.ResumeLayout(false);
+            this.banMContainerGroupBox.PerformLayout();
+            this.banMCurBansGroupBox.ResumeLayout(false);
+            this.banMAddBanGroupBox.ResumeLayout(false);
+            this.banMAddBanGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).EndInit();
             this.aboutTab.ResumeLayout(false);
             this.aboutGroupBox.ResumeLayout(false);
             this.aboutGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ssbAboutPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).EndInit();
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
-            this.groupBox43.ResumeLayout(false);
-            this.groupBox43.PerformLayout();
-            this.groupBox44.ResumeLayout(false);
-            this.groupBox45.ResumeLayout(false);
-            this.groupBox45.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.logEventsGroupBox.ResumeLayout(false);
+            this.logEventsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).EndInit();
+            this.logContainerGroupBox.ResumeLayout(false);
+            this.logContainerGroupBox.PerformLayout();
+            this.coreContainerGroupBox.ResumeLayout(false);
+            this.coreContainerGroupBox.PerformLayout();
+            this.abtContainerGroupBox.ResumeLayout(false);
+            this.abtContainerGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3648,35 +3831,34 @@
 
         private System.Windows.Forms.PictureBox ssbLogo;
         private System.Windows.Forms.TabControl UiTabCtl;
-        private System.Windows.Forms.TabPage mainTab;
+        private System.Windows.Forms.TabPage logTab;
         private System.Windows.Forms.TabPage coreOptionsTab;
-        private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.TextBox ConsoleTextBox;
-        private System.Windows.Forms.Button exitButton;
-        private System.Windows.Forms.GroupBox coreOptionsGrpBox;
-        private System.Windows.Forms.Label accountNameLabel;
-        private System.Windows.Forms.TextBox accountNameTextBox;
-        private System.Windows.Forms.TextBox eloCacheTextBox;
-        private System.Windows.Forms.Label eloCacheLabel;
-        private System.Windows.Forms.CheckBox logMainWindowCheckbox;
+        private System.Windows.Forms.Button ssbStartButton;
+        private System.Windows.Forms.TextBox logConsoleTextBox;
+        private System.Windows.Forms.Button ssbExitButton;
+        private System.Windows.Forms.GroupBox coreCfgGroupBox;
+        private System.Windows.Forms.Label coreAccountNameLabel;
+        private System.Windows.Forms.TextBox coreAccountNameTextBox;
+        private System.Windows.Forms.TextBox coreEloCacheTextBox;
+        private System.Windows.Forms.Label coreEloCacheLabel;
+        private System.Windows.Forms.CheckBox coreLogEventsDiskCheckBox;
         private System.Windows.Forms.ToolTip coreToolTip;
         private System.Windows.Forms.StatusStrip statusBar;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.CheckBox appendToMainCheckbox;
+        private System.Windows.Forms.CheckBox logAppendEventCheckBox;
         private System.Windows.Forms.TabPage modulesTab;
         private System.Windows.Forms.TabPage aboutTab;
         private System.Windows.Forms.GroupBox aboutGroupBox;
-        private System.Windows.Forms.PictureBox ssbAboutPictureBox;
-        private System.Windows.Forms.Label aboutLabel1;
-        private System.Windows.Forms.Label aboutLabel2;
-        private System.Windows.Forms.Label aboutVersPlaceHolder;
-        private System.Windows.Forms.Label aboutAuthorLabel;
-        private System.Windows.Forms.Label aboutLabelVersion;
-        private System.Windows.Forms.Label aboutLabel3;
-        private System.Windows.Forms.Button aboutSsbWebButton;
-        private System.Windows.Forms.Button saveSettingsButton;
-        private System.Windows.Forms.Button loadSettingsButton;
-        private System.Windows.Forms.GroupBox settingsGroupBox;
+        private System.Windows.Forms.PictureBox abtIconPictureBox;
+        private System.Windows.Forms.Label abtSSBColorLabel;
+        private System.Windows.Forms.Label abtDescLabel;
+        private System.Windows.Forms.Label abtVersPlaceHolderLabel;
+        private System.Windows.Forms.Label abtCopyrightLabel;
+        private System.Windows.Forms.Label abtVersLabel;
+        private System.Windows.Forms.Label abtIrcInfoLabel;
+        private System.Windows.Forms.Button abtWebsiteButton;
+        private System.Windows.Forms.Button coreSaveSettingsButton;
+        private System.Windows.Forms.Button coreLoadSettingsButton;
+        private System.Windows.Forms.GroupBox coreSettingsGroupBox;
         private System.Windows.Forms.TabControl moduleTabControl;
         private System.Windows.Forms.TabPage accountDateTab;
         private System.Windows.Forms.TabPage accuracyTab;
@@ -3687,217 +3869,231 @@
         private System.Windows.Forms.TabPage motdTab;
         private System.Windows.Forms.TabPage pickupTab;
         private System.Windows.Forms.TabPage serversTab;
-        private System.Windows.Forms.CheckBox qlConNoPrintCheckbox;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Button button13;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Button button14;
-        private System.Windows.Forms.Button button15;
-        private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.GroupBox groupBox11;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.Button button17;
-        private System.Windows.Forms.Button button18;
-        private System.Windows.Forms.Button button19;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.PictureBox pictureBox5;
-        private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.GroupBox groupBox13;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox14;
-        private System.Windows.Forms.GroupBox groupBox15;
-        private System.Windows.Forms.Button button20;
-        private System.Windows.Forms.Button button21;
-        private System.Windows.Forms.Button button22;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.GroupBox groupBox16;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.GroupBox groupBox17;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.PictureBox pictureBox6;
-        private System.Windows.Forms.GroupBox groupBox18;
-        private System.Windows.Forms.GroupBox groupBox19;
-        private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.CheckBox checkBox6;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.GroupBox groupBox20;
-        private System.Windows.Forms.Button button23;
-        private System.Windows.Forms.Button button24;
-        private System.Windows.Forms.Button button25;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.PictureBox pictureBox7;
-        private System.Windows.Forms.TextBox textBox11;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.GroupBox groupBox21;
-        private System.Windows.Forms.CheckBox checkBox8;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private System.Windows.Forms.TextBox textBox16;
-        private System.Windows.Forms.Label label31;
-        private System.Windows.Forms.TextBox textBox15;
-        private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.CheckBox checkBox9;
+        private System.Windows.Forms.CheckBox coreHideQlConsoleCheckBox;
+        private System.Windows.Forms.GroupBox modAccDateContainerGroupBox;
+        private System.Windows.Forms.Label modAccDateAccAgeLabel;
+        private System.Windows.Forms.Label modAccDateHeaderDescLabel;
+        private System.Windows.Forms.Label modAccDateHeaderLabel;
+        private System.Windows.Forms.PictureBox modAccDateHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modAccDateSettingsGroupBox;
+        private System.Windows.Forms.Button modAccDateLoadSettingsButton;
+        private System.Windows.Forms.Button modAccDateSaveSettingsButton;
+        private System.Windows.Forms.TextBox modAccDateAccAgeTextBox;
+        private System.Windows.Forms.CheckBox modAccDateEnableCheckBox;
+        private System.Windows.Forms.Button coreResetDefaultsCheckBox;
+        private System.Windows.Forms.Button modAccDateResetSettingsButton;
+        private System.Windows.Forms.GroupBox modAutoVoterContainerGroupBox;
+        private System.Windows.Forms.CheckBox modAutoVoterEnableCheckBox;
+        private System.Windows.Forms.GroupBox modAutoVoterSettingsGroupBox;
+        private System.Windows.Forms.Button modAutoVoterResetSettingsButton;
+        private System.Windows.Forms.Button modAutoVoterLoadSettingsButton;
+        private System.Windows.Forms.Button modAutoVoterSaveSettingsButton;
+        private System.Windows.Forms.Label modAutoVoterHeaderDescLabel;
+        private System.Windows.Forms.Label modAutoVoterHeaderLabel;
+        private System.Windows.Forms.PictureBox modAutoVoterHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modAutoVoterOptVoteDetailsGroupBox;
+        private System.Windows.Forms.Button modAutoVoterAddVoteButton;
+        private System.Windows.Forms.Label modAutoVoterContainingDescLabel;
+        private System.Windows.Forms.Label modAutoVoterTypeLabel;
+        private System.Windows.Forms.ComboBox modAutoVoterVoteTypeComboxBox;
+        private System.Windows.Forms.RadioButton modAutoVoterRejectRadioButton;
+        private System.Windows.Forms.RadioButton modAutoVoterPassRadioButton;
+        private System.Windows.Forms.Label modAutoVoterActionLabel;
+        private System.Windows.Forms.GroupBox modAutoVoterOptCurVotesGroupBox;
+        private System.Windows.Forms.Button modAutoVoterDelVoteButton;
+        private System.Windows.Forms.ListBox modAutoVoterCurVotesListBox;
+        private System.Windows.Forms.Button modAutoVoterClearVotesButton;
+        private System.Windows.Forms.TextBox modAutoVoterContainingTextBox;
+        private System.Windows.Forms.Label modAutoVoterContainingLabel;
+        private System.Windows.Forms.GroupBox modEarlyQuitContainerGroupBox;
+        private System.Windows.Forms.GroupBox modEarlyQuitOptCurQuitsGroupBox;
+        private System.Windows.Forms.Button modEarlyQuitClearQuitsButton;
+        private System.Windows.Forms.Button modEarlyQuitDelQuitButton;
+        private System.Windows.Forms.ListBox modEarlyQuitCurQuitsListBox;
+        private System.Windows.Forms.GroupBox modEarlyQuitOptDetailsGroupBox;
+        private System.Windows.Forms.TextBox modEarlyQuitMaxQuitsTextBox;
+        private System.Windows.Forms.Label modEarlyQuitTimeLabel;
+        private System.Windows.Forms.ComboBox modEarlyQuitTimeScaleComboxBox;
+        private System.Windows.Forms.Label modEarlyQuitMaxQuitsLabel;
+        private System.Windows.Forms.CheckBox modEarlyQuitEnableCheckBox;
+        private System.Windows.Forms.GroupBox modEarlyQuitSettingsGroupBox;
+        private System.Windows.Forms.Button modEarlyQuitResetSettingsButton;
+        private System.Windows.Forms.Button modEarlyQuitLoadSettingsButton;
+        private System.Windows.Forms.Button modEarlyQuitSaveSettingsButton;
+        private System.Windows.Forms.Label modEarlyQuitHeaderDescLabel;
+        private System.Windows.Forms.Label modEarlyQuitHeaderLabel;
+        private System.Windows.Forms.PictureBox modEarlyQuitHeaderPictureBox;
+        private System.Windows.Forms.Button modEarlyQuitForgiveQuitButton;
+        private System.Windows.Forms.TextBox modEarlyQuitTimeTextBox;
+        private System.Windows.Forms.GroupBox modAccDateOptGroupBox;
+        private System.Windows.Forms.GroupBox modAccuracyContainerGroupBox;
+        private System.Windows.Forms.GroupBox modAccuracyOptGroupBox;
+        private System.Windows.Forms.GroupBox modAccuracySettingsGroupBox;
+        private System.Windows.Forms.Button modAccuracyResetSettingsButton;
+        private System.Windows.Forms.Button modAccuracyLoadSettingsButton;
+        private System.Windows.Forms.Button modAccuracySaveSettingsButton;
+        private System.Windows.Forms.CheckBox modAccuracyEnableCheckBox;
+        private System.Windows.Forms.Label modAccuracyHeaderLabelDesc;
+        private System.Windows.Forms.Label modAccuracyHeaderLabel;
+        private System.Windows.Forms.PictureBox modAccuracyHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modEloLimiterContainerGroupBox;
+        private System.Windows.Forms.GroupBox modEloLimiterOptGroupBox;
+        private System.Windows.Forms.TextBox modEloLimiterMaxEloTextBox;
+        private System.Windows.Forms.Label modEloLimiterMaxEloLabel;
+        private System.Windows.Forms.TextBox modEloLimiterMinEloTextBox;
+        private System.Windows.Forms.CheckBox modEloLimiterEnableCheckBox;
+        private System.Windows.Forms.Label modEloLimiterMinEloLabel;
+        private System.Windows.Forms.GroupBox modEloLimiterSettingsGroupBox;
+        private System.Windows.Forms.Button modEloLimiterResetSettingsButton;
+        private System.Windows.Forms.Button modEloLimiterLoadSettingsButton;
+        private System.Windows.Forms.Button modEloLimiterSaveSettingsButton;
+        private System.Windows.Forms.Label modEloLimiterHeaderDescLabel;
+        private System.Windows.Forms.Label modEloLimiterHeaderLabel;
+        private System.Windows.Forms.PictureBox modEloLimiterHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modIRCContainerGroupBox;
+        private System.Windows.Forms.GroupBox modIRCOptGroupBox;
+        private System.Windows.Forms.TextBox modIRCBotNickNameTextBox;
+        private System.Windows.Forms.Label modIRCBotNickNameLabel;
+        private System.Windows.Forms.TextBox modIRCAdminNameTextBox;
+        private System.Windows.Forms.CheckBox modIRCEnableCheckBox;
+        private System.Windows.Forms.Label modIRCAdminNameLabel;
+        private System.Windows.Forms.GroupBox modIRCSettingsGroupBox;
+        private System.Windows.Forms.Button modIRCResetSettingsButton;
+        private System.Windows.Forms.Button modIRCLoadSettingsButton;
+        private System.Windows.Forms.Button modIRCSaveSettingsButton;
+        private System.Windows.Forms.Label modIRCHeaderDescLabel;
+        private System.Windows.Forms.Label modIRCHeaderLabel;
+        private System.Windows.Forms.PictureBox modIRCHeaderPictureBox;
+        private System.Windows.Forms.TextBox modIRCBotUserNameTextBox;
+        private System.Windows.Forms.Label modIRCBotUserNameLabel;
+        private System.Windows.Forms.GroupBox modIRCOptQuakeNetGroupBox;
+        private System.Windows.Forms.CheckBox modIRCQNetHideHostCheckBox;
+        private System.Windows.Forms.CheckBox modIRCQNetAutoAuthCheckBox;
+        private System.Windows.Forms.TextBox modIRCQNetPassTextBox;
+        private System.Windows.Forms.Label modIRCQNetPassLabel;
+        private System.Windows.Forms.TextBox modIRCQNetUserNameTextBox;
+        private System.Windows.Forms.Label modIRCQNetUserNameLabel;
+        private System.Windows.Forms.CheckBox modIRCAutoConnectCheckBox;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.GroupBox groupBox23;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.TextBox textBox14;
-        private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.TextBox textBox13;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.TextBox textBox12;
-        private System.Windows.Forms.GroupBox groupBox22;
-        private System.Windows.Forms.GroupBox groupBox24;
-        private System.Windows.Forms.GroupBox groupBox25;
-        private System.Windows.Forms.TextBox textBox18;
-        private System.Windows.Forms.TextBox textBox17;
-        private System.Windows.Forms.CheckBox checkBox10;
-        private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.GroupBox groupBox26;
-        private System.Windows.Forms.Button button26;
-        private System.Windows.Forms.Button button27;
-        private System.Windows.Forms.Button button28;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.PictureBox pictureBox8;
-        private System.Windows.Forms.GroupBox groupBox27;
-        private System.Windows.Forms.GroupBox groupBox28;
-        private System.Windows.Forms.GroupBox groupBox29;
-        private System.Windows.Forms.TextBox textBox19;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.ComboBox comboBox4;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.TextBox textBox20;
-        private System.Windows.Forms.GroupBox groupBox31;
-        private System.Windows.Forms.TextBox textBox25;
-        private System.Windows.Forms.Label label44;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.TextBox textBox24;
-        private System.Windows.Forms.CheckBox checkBox14;
-        private System.Windows.Forms.GroupBox groupBox30;
-        private System.Windows.Forms.Button button29;
-        private System.Windows.Forms.Button button30;
-        private System.Windows.Forms.Button button31;
-        private System.Windows.Forms.Label label48;
-        private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.PictureBox pictureBox9;
-        private System.Windows.Forms.GroupBox groupBox32;
-        private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.TextBox textBox22;
-        private System.Windows.Forms.GroupBox groupBox33;
-        private System.Windows.Forms.GroupBox groupBox34;
-        private System.Windows.Forms.GroupBox groupBox35;
-        private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.GroupBox groupBox36;
-        private System.Windows.Forms.GroupBox groupBox37;
-        private System.Windows.Forms.GroupBox groupBox38;
-        private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.TextBox textBox21;
-        private System.Windows.Forms.TextBox textBox23;
-        private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.CheckBox checkBox11;
-        private System.Windows.Forms.GroupBox groupBox39;
-        private System.Windows.Forms.Button button32;
-        private System.Windows.Forms.Button button33;
-        private System.Windows.Forms.Button button34;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.PictureBox pictureBox10;
+        private System.Windows.Forms.GroupBox modIRCOptServerGroupBox;
+        private System.Windows.Forms.Label modIRCChannelKeyLabel;
+        private System.Windows.Forms.TextBox modIRCChannelKeyTextBox;
+        private System.Windows.Forms.Label modIRCChannelLabel;
+        private System.Windows.Forms.TextBox modIRCChannelTextBox;
+        private System.Windows.Forms.Label modIRCServerAddressLabel;
+        private System.Windows.Forms.TextBox modIRCServerAddressTextBox;
+        private System.Windows.Forms.Label modIRCServerPortLabel;
+        private System.Windows.Forms.TextBox modIRCServerPortTextBox;
+        private System.Windows.Forms.Label modIRCServerPassLabel;
+        private System.Windows.Forms.TextBox modIRCServerPassTextBox;
+        private System.Windows.Forms.GroupBox modIRCOptNamingGroupBox;
+        private System.Windows.Forms.GroupBox modMOTDContainerGroupBox;
+        private System.Windows.Forms.GroupBox modMOTDOptGroupBox;
+        private System.Windows.Forms.TextBox modMOTDRepeatMsgTextBox;
+        private System.Windows.Forms.TextBox modMOTDRepeatTimeTextBox;
+        private System.Windows.Forms.CheckBox modMOTDEnableCheckBox;
+        private System.Windows.Forms.Label modMOTDRepeatTimeLabel;
+        private System.Windows.Forms.GroupBox modMOTDSettingsGroupBox;
+        private System.Windows.Forms.Button modMOTDResetSettingsButton;
+        private System.Windows.Forms.Button modMOTDLoadSettingsButton;
+        private System.Windows.Forms.Button modMOTDSaveSettingsButton;
+        private System.Windows.Forms.Label modMOTDHeaderDescLabel;
+        private System.Windows.Forms.Label modMOTDHeaderLabel;
+        private System.Windows.Forms.PictureBox modMOTDHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modPickupContainerGroupBox;
+        private System.Windows.Forms.GroupBox modPickupOptGroupBox;
+        private System.Windows.Forms.GroupBox modPickupOptNoShowsGroupBox;
+        private System.Windows.Forms.TextBox modPickupNoShowsTimeBanTextBox;
+        private System.Windows.Forms.Label modPickupNoShowsTimeBanLabel;
+        private System.Windows.Forms.ComboBox modPickupNoShowsTimeBanScaleComboBox;
+        private System.Windows.Forms.Label modPickupMaxNoShowsLabel;
+        private System.Windows.Forms.TextBox modPickupMaxNoShowsTextBox;
+        private System.Windows.Forms.GroupBox modPickupOptSubsGroupBox;
+        private System.Windows.Forms.TextBox modPickupSubsTimeBanTextBox;
+        private System.Windows.Forms.Label modPickupSubsTimeBanLabel;
+        private System.Windows.Forms.ComboBox modPickupSubsTimeBanScaleComboBox;
+        private System.Windows.Forms.Label modPickupMaxSubsLabel;
+        private System.Windows.Forms.TextBox modPickupMaxSubsTextBox;
+        private System.Windows.Forms.CheckBox modPickupEnableCheckBox;
+        private System.Windows.Forms.GroupBox modPickupSettingsGroupBox;
+        private System.Windows.Forms.Button modPickupResetSettingsButton;
+        private System.Windows.Forms.Button modPickupLoadSettingsButton;
+        private System.Windows.Forms.Button modPickupSaveSettingsButton;
+        private System.Windows.Forms.Label modPickupHeaderDescLabel;
+        private System.Windows.Forms.Label modPickupHeaderLabel;
+        private System.Windows.Forms.PictureBox modPickupHeaderPictureBox;
+        private System.Windows.Forms.GroupBox modPickupOptTeamSizeGroupBox;
+        private System.Windows.Forms.Label modPickupPlayersPerTeamLabel;
+        private System.Windows.Forms.TextBox modPickupPlayersPerTeamTextBox;
+        private System.Windows.Forms.GroupBox modAccDateOptAccAgeGroupBox;
+        private System.Windows.Forms.GroupBox modEloLimiterOptEloGroupBox;
+        private System.Windows.Forms.GroupBox modMOTDOptMsgRepeatGroupBox;
+        private System.Windows.Forms.Label modMOTDRepeatMsgLabel;
+        private System.Windows.Forms.GroupBox modServerListContainerGroupBox;
+        private System.Windows.Forms.GroupBox modServerListOptGroupBox;
+        private System.Windows.Forms.GroupBox modServerListOptDisplayGroupBox;
+        private System.Windows.Forms.Label modServerListMaxServersLabel;
+        private System.Windows.Forms.TextBox modServerListTimeBetweenTextBox;
+        private System.Windows.Forms.TextBox modServerListMaxServersTextBox;
+        private System.Windows.Forms.Label modServerListTimeBetweenLabel;
+        private System.Windows.Forms.CheckBox modServerListEnableCheckBox;
+        private System.Windows.Forms.GroupBox modServerListSettingsGroupBox;
+        private System.Windows.Forms.Button modServerListResetSettingsButton;
+        private System.Windows.Forms.Button modServerListLoadSettingsButton;
+        private System.Windows.Forms.Button modServerListSaveSettingsButton;
+        private System.Windows.Forms.Label modServerListHeaderDescLabel;
+        private System.Windows.Forms.Label modServerListHeaderLabel;
+        private System.Windows.Forms.PictureBox modServerListHeaderPictureBox;
         private System.Windows.Forms.TabPage usersTab;
         private System.Windows.Forms.TabPage banTab;
-        private System.Windows.Forms.GroupBox groupBox40;
-        private System.Windows.Forms.GroupBox groupBox41;
-        private System.Windows.Forms.Button button36;
-        private System.Windows.Forms.ListBox listBox3;
-        private System.Windows.Forms.GroupBox groupBox42;
-        private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.TextBox textBox26;
-        private System.Windows.Forms.Button button37;
-        private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.ComboBox comboBox5;
-        private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.PictureBox pictureBox11;
-        private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.PictureBox pictureBox12;
-        private System.Windows.Forms.TextBox textBox27;
-        private System.Windows.Forms.Label ownerLabel;
+        private System.Windows.Forms.GroupBox usrMContainerGroupBox;
+        private System.Windows.Forms.GroupBox usrMCurUsersGroupBox;
+        private System.Windows.Forms.Button usrMDelUserButton;
+        private System.Windows.Forms.ListBox usrMCurUsersListBox;
+        private System.Windows.Forms.GroupBox usrMAddUserGroupBox;
+        private System.Windows.Forms.Label usrMUserQlNameLabel;
+        private System.Windows.Forms.TextBox usrMUserQlNameTextBox;
+        private System.Windows.Forms.Button usrMAddUserButton;
+        private System.Windows.Forms.Label usrMUserAccessLabel;
+        private System.Windows.Forms.ComboBox usrMUserAccessComboBox;
+        private System.Windows.Forms.Label usrMHeaderDescLabel;
+        private System.Windows.Forms.Label usrMHeaderLabel;
+        private System.Windows.Forms.PictureBox usrMHeaderPictureBox;
+        private System.Windows.Forms.Label coreHeaderDescLabel;
+        private System.Windows.Forms.Label coreHeaderLabel;
+        private System.Windows.Forms.PictureBox coreHeaderPictureBox;
+        private System.Windows.Forms.TextBox coreOwnerNameTextBox;
+        private System.Windows.Forms.Label coreOwnerNameLabel;
         private System.Windows.Forms.PictureBox minimizeButton;
         private System.Windows.Forms.PictureBox closeButton;
-        private System.Windows.Forms.GroupBox groupBox43;
-        private System.Windows.Forms.GroupBox groupBox44;
-        private System.Windows.Forms.Button button35;
-        private System.Windows.Forms.ListBox listBox4;
-        private System.Windows.Forms.GroupBox groupBox45;
-        private System.Windows.Forms.TextBox textBox29;
-        private System.Windows.Forms.ComboBox comboBox6;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.TextBox textBox28;
-        private System.Windows.Forms.Button button38;
-        private System.Windows.Forms.Label label51;
-        private System.Windows.Forms.Label label56;
-        private System.Windows.Forms.Label label57;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label58;
+        private System.Windows.Forms.GroupBox banMContainerGroupBox;
+        private System.Windows.Forms.GroupBox banMCurBansGroupBox;
+        private System.Windows.Forms.Button banMDelBanButton;
+        private System.Windows.Forms.ListBox banMCurBansListBox;
+        private System.Windows.Forms.GroupBox banMAddBanGroupBox;
+        private System.Windows.Forms.TextBox banMBanDurationTextBox;
+        private System.Windows.Forms.ComboBox banMBanDurationScaleComboBox;
+        private System.Windows.Forms.Label banMUserQlNameLabel;
+        private System.Windows.Forms.TextBox banMUserQlNameTextBox;
+        private System.Windows.Forms.Button banMAddBanButton;
+        private System.Windows.Forms.Label banMBanDurationLabel;
+        private System.Windows.Forms.Label banMHeaderDescLabel;
+        private System.Windows.Forms.Label banMHeaderLabel;
+        private System.Windows.Forms.PictureBox banMHeaderPictureBox;
+        private System.Windows.Forms.Label titleBarVersionLabel;
+        private System.Windows.Forms.Label logHeaderDescLabel;
+        private System.Windows.Forms.Label logHeaderLabel;
+        private System.Windows.Forms.PictureBox logHeaderPictureBox;
+        private System.Windows.Forms.GroupBox logEventsGroupBox;
+        private System.Windows.Forms.Label abtHeaderDescLabel;
+        private System.Windows.Forms.Label abtHeaderLabel;
+        private System.Windows.Forms.PictureBox abtHeaderPictureBox;
+        private System.Windows.Forms.GroupBox logContainerGroupBox;
+        private System.Windows.Forms.GroupBox coreContainerGroupBox;
+        private System.Windows.Forms.GroupBox abtContainerGroupBox;
+        private System.Windows.Forms.Label abtAuthorLabel;
+        private System.Windows.Forms.PictureBox xaeroPictureBox;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.Button button1;
     }
 }
