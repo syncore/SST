@@ -95,7 +95,7 @@ namespace ParserDllGenerator
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdTinfo", "SSB.External.Parser",
                true);
             compilationList.Add(expr);
-            
+
             //servercommand: player's accuracy data
             // example: serverCommand: 579 : acc  0 0 0 21 17 0 0 0 0 0 0 0 0 0 0
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : acc  (?<accdata>.+)",
@@ -186,7 +186,7 @@ namespace ParserDllGenerator
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdScorelimitHit", "SSB.External.Parser",
                 true);
             compilationList.Add(expr);
-            
+
             //servercommand: vote called - player who called vote (includes clantag and player name)
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<clanandplayer>.+) called a vote",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdVoteCalledTagAndPlayer", "SSB.External.Parser",
@@ -234,7 +234,7 @@ namespace ParserDllGenerator
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPakInfo", "SSB.External.Parser",
                true);
             compilationList.Add(expr);
-            
+
             //servercommand: gamestate change (\time\# less accurate method)
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : cs 5 ""(?<time>.+)""",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdGameStateTimeChange", "SSB.External.Parser",
@@ -252,7 +252,7 @@ namespace ParserDllGenerator
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdBlueScore", "SSB.External.Parser",
                true);
             compilationList.Add(expr);
-            
+
             // serverinfo cmd - Find sv_gtid after issuing 'serverinfo' command
             /*
             ]/serverinfo
@@ -295,6 +295,14 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
+            // clientinfo - extract the player's state (see whether player is connected to server)
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^state: (?<state>\d+)",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "clInfoConnectionState",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
             // Misc regex (util, etc)
             expr = new RegexCompilationInfo(@"\^[0-9]",
                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "utilCaretColor",
@@ -308,8 +316,6 @@ namespace ParserDllGenerator
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
-
-
 
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];

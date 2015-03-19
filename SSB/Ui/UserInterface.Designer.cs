@@ -1,6 +1,6 @@
 ﻿namespace SSB.Ui
 {
-    partial class Main
+    partial class UserInterface
     {
         /// <summary>
         /// Required designer variable.
@@ -29,20 +29,20 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserInterface));
             this.ssbLogo = new System.Windows.Forms.PictureBox();
             this.UiTabCtl = new System.Windows.Forms.TabControl();
             this.logTab = new System.Windows.Forms.TabPage();
+            this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.logEventsGroupBox = new System.Windows.Forms.GroupBox();
+            this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.logHeaderDescLabel = new System.Windows.Forms.Label();
             this.logHeaderLabel = new System.Windows.Forms.Label();
             this.logHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.logAppendEventCheckBox = new System.Windows.Forms.CheckBox();
-            this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
-            this.coreHeaderDescLabel = new System.Windows.Forms.Label();
-            this.coreHeaderLabel = new System.Windows.Forms.Label();
-            this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
             this.coreOwnerNameTextBox = new System.Windows.Forms.TextBox();
             this.coreHideQlConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.coreSettingsGroupBox = new System.Windows.Forms.GroupBox();
@@ -55,6 +55,9 @@
             this.coreOwnerNameLabel = new System.Windows.Forms.Label();
             this.coreAccountNameTextBox = new System.Windows.Forms.TextBox();
             this.coreAccountNameLabel = new System.Windows.Forms.Label();
+            this.coreHeaderDescLabel = new System.Windows.Forms.Label();
+            this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreHeaderLabel = new System.Windows.Forms.Label();
             this.modulesTab = new System.Windows.Forms.TabPage();
             this.moduleTabControl = new System.Windows.Forms.TabControl();
             this.accountDateTab = new System.Windows.Forms.TabPage();
@@ -269,7 +272,10 @@
             this.banMHeaderLabel = new System.Windows.Forms.Label();
             this.banMHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.aboutTab = new System.Windows.Forms.TabPage();
+            this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.aboutGroupBox = new System.Windows.Forms.GroupBox();
+            this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
+            this.abtAuthorLabel = new System.Windows.Forms.Label();
             this.abtIrcInfoLabel = new System.Windows.Forms.Label();
             this.abtWebsiteButton = new System.Windows.Forms.Button();
             this.abtCopyrightLabel = new System.Windows.Forms.Label();
@@ -278,32 +284,30 @@
             this.abtDescLabel = new System.Windows.Forms.Label();
             this.abtSSBColorLabel = new System.Windows.Forms.Label();
             this.abtIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.abtHeaderDescLabel = new System.Windows.Forms.Label();
+            this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.abtHeaderLabel = new System.Windows.Forms.Label();
             this.ssbStartButton = new System.Windows.Forms.Button();
             this.ssbExitButton = new System.Windows.Forms.Button();
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.statusBar = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
             this.closeButton = new System.Windows.Forms.PictureBox();
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
-            this.logEventsGroupBox = new System.Windows.Forms.GroupBox();
-            this.abtHeaderDescLabel = new System.Windows.Forms.Label();
-            this.abtHeaderLabel = new System.Windows.Forms.Label();
-            this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.abtAuthorLabel = new System.Windows.Forms.Label();
-            this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
+            this.logContainerGroupBox.SuspendLayout();
+            this.logEventsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).BeginInit();
             this.coreOptionsTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).BeginInit();
+            this.coreContainerGroupBox.SuspendLayout();
             this.coreCfgGroupBox.SuspendLayout();
             this.coreSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).BeginInit();
             this.modulesTab.SuspendLayout();
             this.moduleTabControl.SuspendLayout();
             this.accountDateTab.SuspendLayout();
@@ -374,17 +378,15 @@
             this.banMAddBanGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).BeginInit();
             this.aboutTab.SuspendLayout();
+            this.abtContainerGroupBox.SuspendLayout();
             this.aboutGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).BeginInit();
             this.statusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
-            this.logEventsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).BeginInit();
-            this.logContainerGroupBox.SuspendLayout();
-            this.coreContainerGroupBox.SuspendLayout();
-            this.abtContainerGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -427,6 +429,49 @@
             this.logTab.TabIndex = 0;
             this.logTab.Text = "Log";
             // 
+            // logContainerGroupBox
+            // 
+            this.logContainerGroupBox.Controls.Add(this.logEventsGroupBox);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderDescLabel);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderLabel);
+            this.logContainerGroupBox.Controls.Add(this.logHeaderPictureBox);
+            this.logContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.logContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.logContainerGroupBox.Name = "logContainerGroupBox";
+            this.logContainerGroupBox.Size = new System.Drawing.Size(737, 479);
+            this.logContainerGroupBox.TabIndex = 10;
+            this.logContainerGroupBox.TabStop = false;
+            this.logContainerGroupBox.Text = "Activity Log";
+            // 
+            // logEventsGroupBox
+            // 
+            this.logEventsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.logEventsGroupBox.Controls.Add(this.logConsoleTextBox);
+            this.logEventsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logEventsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.logEventsGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.logEventsGroupBox.Margin = new System.Windows.Forms.Padding(0);
+            this.logEventsGroupBox.Name = "logEventsGroupBox";
+            this.logEventsGroupBox.Padding = new System.Windows.Forms.Padding(0);
+            this.logEventsGroupBox.Size = new System.Drawing.Size(730, 385);
+            this.logEventsGroupBox.TabIndex = 9;
+            this.logEventsGroupBox.TabStop = false;
+            this.logEventsGroupBox.Text = "Events";
+            // 
+            // logConsoleTextBox
+            // 
+            this.logConsoleTextBox.BackColor = System.Drawing.Color.Black;
+            this.logConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logConsoleTextBox.ForeColor = System.Drawing.Color.White;
+            this.logConsoleTextBox.Location = new System.Drawing.Point(6, 21);
+            this.logConsoleTextBox.Multiline = true;
+            this.logConsoleTextBox.Name = "logConsoleTextBox";
+            this.logConsoleTextBox.ReadOnly = true;
+            this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logConsoleTextBox.Size = new System.Drawing.Size(722, 358);
+            this.logConsoleTextBox.TabIndex = 0;
+            // 
             // logHeaderDescLabel
             // 
             this.logHeaderDescLabel.AutoSize = true;
@@ -457,30 +502,6 @@
             this.logHeaderPictureBox.TabIndex = 6;
             this.logHeaderPictureBox.TabStop = false;
             // 
-            // logAppendEventCheckBox
-            // 
-            this.logAppendEventCheckBox.AutoSize = true;
-            this.logAppendEventCheckBox.ForeColor = System.Drawing.Color.White;
-            this.logAppendEventCheckBox.Location = new System.Drawing.Point(9, 17);
-            this.logAppendEventCheckBox.Name = "logAppendEventCheckBox";
-            this.logAppendEventCheckBox.Size = new System.Drawing.Size(171, 18);
-            this.logAppendEventCheckBox.TabIndex = 1;
-            this.logAppendEventCheckBox.Text = "Append SSB events to log";
-            this.logAppendEventCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // logConsoleTextBox
-            // 
-            this.logConsoleTextBox.BackColor = System.Drawing.Color.Black;
-            this.logConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logConsoleTextBox.ForeColor = System.Drawing.Color.White;
-            this.logConsoleTextBox.Location = new System.Drawing.Point(6, 42);
-            this.logConsoleTextBox.Multiline = true;
-            this.logConsoleTextBox.Name = "logConsoleTextBox";
-            this.logConsoleTextBox.ReadOnly = true;
-            this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logConsoleTextBox.Size = new System.Drawing.Size(722, 337);
-            this.logConsoleTextBox.TabIndex = 0;
-            // 
             // coreOptionsTab
             // 
             this.coreOptionsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
@@ -493,39 +514,25 @@
             this.coreOptionsTab.TabIndex = 1;
             this.coreOptionsTab.Text = "Core Options";
             // 
-            // coreHeaderDescLabel
+            // coreContainerGroupBox
             // 
-            this.coreHeaderDescLabel.AutoSize = true;
-            this.coreHeaderDescLabel.ForeColor = System.Drawing.Color.White;
-            this.coreHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
-            this.coreHeaderDescLabel.Name = "coreHeaderDescLabel";
-            this.coreHeaderDescLabel.Size = new System.Drawing.Size(129, 14);
-            this.coreHeaderDescLabel.TabIndex = 5;
-            this.coreHeaderDescLabel.Text = "Critical options for SSB";
-            // 
-            // coreHeaderLabel
-            // 
-            this.coreHeaderLabel.AutoSize = true;
-            this.coreHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.coreHeaderLabel.ForeColor = System.Drawing.Color.Silver;
-            this.coreHeaderLabel.Location = new System.Drawing.Point(79, 18);
-            this.coreHeaderLabel.Name = "coreHeaderLabel";
-            this.coreHeaderLabel.Size = new System.Drawing.Size(177, 25);
-            this.coreHeaderLabel.TabIndex = 4;
-            this.coreHeaderLabel.Text = "SSB Core Options";
-            // 
-            // coreHeaderPictureBox
-            // 
-            this.coreHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreHeaderPictureBox.Image")));
-            this.coreHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.coreHeaderPictureBox.Name = "coreHeaderPictureBox";
-            this.coreHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.coreHeaderPictureBox.TabIndex = 3;
-            this.coreHeaderPictureBox.TabStop = false;
+            this.coreContainerGroupBox.Controls.Add(this.coreCfgGroupBox);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderDescLabel);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderPictureBox);
+            this.coreContainerGroupBox.Controls.Add(this.coreHeaderLabel);
+            this.coreContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.coreContainerGroupBox.Name = "coreContainerGroupBox";
+            this.coreContainerGroupBox.Size = new System.Drawing.Size(733, 480);
+            this.coreContainerGroupBox.TabIndex = 6;
+            this.coreContainerGroupBox.TabStop = false;
+            this.coreContainerGroupBox.Text = "Core Options";
             // 
             // coreCfgGroupBox
             // 
             this.coreCfgGroupBox.BackColor = System.Drawing.Color.Black;
+            this.coreCfgGroupBox.Controls.Add(this.coreAppendEventsCheckBox);
             this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameTextBox);
             this.coreCfgGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
             this.coreCfgGroupBox.Controls.Add(this.coreSettingsGroupBox);
@@ -544,6 +551,19 @@
             this.coreCfgGroupBox.TabStop = false;
             this.coreCfgGroupBox.Text = "Configuration";
             // 
+            // coreAppendEventsCheckBox
+            // 
+            this.coreAppendEventsCheckBox.AutoSize = true;
+            this.coreAppendEventsCheckBox.ForeColor = System.Drawing.Color.White;
+            this.coreAppendEventsCheckBox.Location = new System.Drawing.Point(343, 236);
+            this.coreAppendEventsCheckBox.Name = "coreAppendEventsCheckBox";
+            this.coreAppendEventsCheckBox.Size = new System.Drawing.Size(171, 18);
+            this.coreAppendEventsCheckBox.TabIndex = 12;
+            this.coreAppendEventsCheckBox.Text = "Append SSB events to log";
+            this.coreToolTip.SetToolTip(this.coreAppendEventsCheckBox, "Select whether SSB events should be displayed in activity log\r\nunder the \"Log\" ta" +
+        "b.");
+            this.coreAppendEventsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // coreOwnerNameTextBox
             // 
             this.coreOwnerNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
@@ -556,11 +576,13 @@
             this.coreOwnerNameTextBox.TabIndex = 11;
             this.coreToolTip.SetToolTip(this.coreOwnerNameTextBox, "Enter the name of the QL account that is the owner (the main admin). \r\nDo not inc" +
         "lude the clan tag. This user will have the highest privileges.\r\n");
+            this.coreOwnerNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreOwnerNameTextBox_Validating);
+            this.coreOwnerNameTextBox.Validated += new System.EventHandler(this.coreOwnerNameTextBox_Validated);
             // 
             // coreHideQlConsoleCheckBox
             // 
             this.coreHideQlConsoleCheckBox.AutoSize = true;
-            this.coreHideQlConsoleCheckBox.Location = new System.Drawing.Point(14, 234);
+            this.coreHideQlConsoleCheckBox.Location = new System.Drawing.Point(343, 166);
             this.coreHideQlConsoleCheckBox.Name = "coreHideQlConsoleCheckBox";
             this.coreHideQlConsoleCheckBox.Size = new System.Drawing.Size(161, 18);
             this.coreHideQlConsoleCheckBox.TabIndex = 10;
@@ -595,6 +617,7 @@
             this.coreResetDefaultsCheckBox.Text = "Reset ALL to defaults";
             this.coreToolTip.SetToolTip(this.coreResetDefaultsCheckBox, "Reset all options to their defaults, \r\nincluding module options as well.");
             this.coreResetDefaultsCheckBox.UseVisualStyleBackColor = false;
+            this.coreResetDefaultsCheckBox.Click += new System.EventHandler(this.coreResetDefaultsCheckBox_Click);
             // 
             // coreLoadSettingsButton
             // 
@@ -609,6 +632,7 @@
             this.coreLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.coreLoadSettingsButton, "Load the current settings from the configuration file.");
             this.coreLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.coreLoadSettingsButton.Click += new System.EventHandler(this.coreLoadSettingsButton_Click);
             // 
             // coreSaveSettingsButton
             // 
@@ -623,11 +647,12 @@
             this.coreSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.coreSaveSettingsButton, "Save the current settings to the configuration file.");
             this.coreSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.coreSaveSettingsButton.Click += new System.EventHandler(this.coreSaveSettingsButton_Click);
             // 
             // coreLogEventsDiskCheckBox
             // 
             this.coreLogEventsDiskCheckBox.AutoSize = true;
-            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(343, 234);
+            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(14, 236);
             this.coreLogEventsDiskCheckBox.Name = "coreLogEventsDiskCheckBox";
             this.coreLogEventsDiskCheckBox.Size = new System.Drawing.Size(153, 18);
             this.coreLogEventsDiskCheckBox.TabIndex = 7;
@@ -647,6 +672,8 @@
             this.coreEloCacheTextBox.Size = new System.Drawing.Size(205, 22);
             this.coreEloCacheTextBox.TabIndex = 5;
             this.coreToolTip.SetToolTip(this.coreEloCacheTextBox, resources.GetString("coreEloCacheTextBox.ToolTip"));
+            this.coreEloCacheTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreEloCacheTextBox_Validating);
+            this.coreEloCacheTextBox.Validated += new System.EventHandler(this.coreEloCacheTextBox_Validated);
             // 
             // coreEloCacheLabel
             // 
@@ -681,6 +708,8 @@
             this.coreAccountNameTextBox.TabIndex = 1;
             this.coreToolTip.SetToolTip(this.coreAccountNameTextBox, "Enter the name of the QL account that\r\nwill be running the bot. Do not include th" +
         "e clan tag.\r\n");
+            this.coreAccountNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreAccountNameTextBox_Validating);
+            this.coreAccountNameTextBox.Validated += new System.EventHandler(this.coreAccountNameTextBox_Validated);
             // 
             // coreAccountNameLabel
             // 
@@ -690,6 +719,36 @@
             this.coreAccountNameLabel.Size = new System.Drawing.Size(132, 14);
             this.coreAccountNameLabel.TabIndex = 0;
             this.coreAccountNameLabel.Text = "SSB QL Account Name";
+            // 
+            // coreHeaderDescLabel
+            // 
+            this.coreHeaderDescLabel.AutoSize = true;
+            this.coreHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.coreHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.coreHeaderDescLabel.Name = "coreHeaderDescLabel";
+            this.coreHeaderDescLabel.Size = new System.Drawing.Size(129, 14);
+            this.coreHeaderDescLabel.TabIndex = 5;
+            this.coreHeaderDescLabel.Text = "Critical options for SSB";
+            // 
+            // coreHeaderPictureBox
+            // 
+            this.coreHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreHeaderPictureBox.Image")));
+            this.coreHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.coreHeaderPictureBox.Name = "coreHeaderPictureBox";
+            this.coreHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.coreHeaderPictureBox.TabIndex = 3;
+            this.coreHeaderPictureBox.TabStop = false;
+            // 
+            // coreHeaderLabel
+            // 
+            this.coreHeaderLabel.AutoSize = true;
+            this.coreHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.coreHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.coreHeaderLabel.Name = "coreHeaderLabel";
+            this.coreHeaderLabel.Size = new System.Drawing.Size(177, 25);
+            this.coreHeaderLabel.TabIndex = 4;
+            this.coreHeaderLabel.Text = "SSB Core Options";
             // 
             // modulesTab
             // 
@@ -793,6 +852,8 @@
             this.coreToolTip.SetToolTip(this.modAccDateAccAgeTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
         "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
         "server.");
+            this.modAccDateAccAgeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modAccDateAccAgeTextBox_Validating);
+            this.modAccDateAccAgeTextBox.Validated += new System.EventHandler(this.modAccDateAccAgeTextBox_Validated);
             // 
             // modAccDateAccAgeLabel
             // 
@@ -841,6 +902,7 @@
             this.modAccDateResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modAccDateResetSettingsButton, "Reset this module to its default settings.");
             this.modAccDateResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccDateResetSettingsButton.Click += new System.EventHandler(this.modAccDateResetSettingsButton_Click);
             // 
             // modAccDateLoadSettingsButton
             // 
@@ -855,6 +917,7 @@
             this.modAccDateLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modAccDateLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modAccDateLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccDateLoadSettingsButton.Click += new System.EventHandler(this.modAccDateLoadSettingsButton_Click);
             // 
             // modAccDateSaveSettingsButton
             // 
@@ -869,6 +932,7 @@
             this.modAccDateSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modAccDateSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modAccDateSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccDateSaveSettingsButton.Click += new System.EventHandler(this.modAccDateSaveSettingsButton_Click);
             // 
             // modAccDateHeaderDescLabel
             // 
@@ -3362,6 +3426,20 @@
             this.aboutTab.TabIndex = 3;
             this.aboutTab.Text = "About";
             // 
+            // abtContainerGroupBox
+            // 
+            this.abtContainerGroupBox.Controls.Add(this.aboutGroupBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderDescLabel);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderPictureBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderLabel);
+            this.abtContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.abtContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.abtContainerGroupBox.Name = "abtContainerGroupBox";
+            this.abtContainerGroupBox.Size = new System.Drawing.Size(736, 479);
+            this.abtContainerGroupBox.TabIndex = 9;
+            this.abtContainerGroupBox.TabStop = false;
+            this.abtContainerGroupBox.Text = "About SSB";
+            // 
             // aboutGroupBox
             // 
             this.aboutGroupBox.BackColor = System.Drawing.Color.Black;
@@ -3383,6 +3461,24 @@
             this.aboutGroupBox.TabIndex = 1;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "Application Info";
+            // 
+            // xaeroPictureBox
+            // 
+            this.xaeroPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("xaeroPictureBox.Image")));
+            this.xaeroPictureBox.Location = new System.Drawing.Point(499, 43);
+            this.xaeroPictureBox.Name = "xaeroPictureBox";
+            this.xaeroPictureBox.Size = new System.Drawing.Size(187, 250);
+            this.xaeroPictureBox.TabIndex = 9;
+            this.xaeroPictureBox.TabStop = false;
+            // 
+            // abtAuthorLabel
+            // 
+            this.abtAuthorLabel.AutoSize = true;
+            this.abtAuthorLabel.Location = new System.Drawing.Point(132, 93);
+            this.abtAuthorLabel.Name = "abtAuthorLabel";
+            this.abtAuthorLabel.Size = new System.Drawing.Size(251, 14);
+            this.abtAuthorLabel.TabIndex = 8;
+            this.abtAuthorLabel.Text = "Written by syncore <syncore@syncore.org>";
             // 
             // abtIrcInfoLabel
             // 
@@ -3459,6 +3555,36 @@
             this.abtIconPictureBox.TabIndex = 0;
             this.abtIconPictureBox.TabStop = false;
             // 
+            // abtHeaderDescLabel
+            // 
+            this.abtHeaderDescLabel.AutoSize = true;
+            this.abtHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.abtHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.abtHeaderDescLabel.Name = "abtHeaderDescLabel";
+            this.abtHeaderDescLabel.Size = new System.Drawing.Size(206, 14);
+            this.abtHeaderDescLabel.TabIndex = 8;
+            this.abtHeaderDescLabel.Text = "Information about the SSB software";
+            // 
+            // abtHeaderPictureBox
+            // 
+            this.abtHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtHeaderPictureBox.Image")));
+            this.abtHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.abtHeaderPictureBox.Name = "abtHeaderPictureBox";
+            this.abtHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.abtHeaderPictureBox.TabIndex = 6;
+            this.abtHeaderPictureBox.TabStop = false;
+            // 
+            // abtHeaderLabel
+            // 
+            this.abtHeaderLabel.AutoSize = true;
+            this.abtHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtHeaderLabel.ForeColor = System.Drawing.Color.Silver;
+            this.abtHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.abtHeaderLabel.Name = "abtHeaderLabel";
+            this.abtHeaderLabel.Size = new System.Drawing.Size(111, 25);
+            this.abtHeaderLabel.TabIndex = 7;
+            this.abtHeaderLabel.Text = "About SSB";
+            // 
             // ssbStartButton
             // 
             this.ssbStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
@@ -3488,6 +3614,7 @@
             this.ssbExitButton.Text = "Exit";
             this.coreToolTip.SetToolTip(this.ssbExitButton, "Exit SSB.");
             this.ssbExitButton.UseVisualStyleBackColor = false;
+            this.ssbExitButton.Click += new System.EventHandler(this.ssbExitButton_Click);
             // 
             // coreToolTip
             // 
@@ -3497,6 +3624,21 @@
             this.coreToolTip.InitialDelay = 500;
             this.coreToolTip.IsBalloon = true;
             this.coreToolTip.ReshowDelay = 100;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(166, 645);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(132, 28);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Stop Monitoring";
+            this.coreToolTip.SetToolTip(this.button1, "Start monitoring your server.");
+            this.button1.UseVisualStyleBackColor = false;
             // 
             // statusBar
             // 
@@ -3510,6 +3652,17 @@
             this.statusBar.SizingGrip = false;
             this.statusBar.TabIndex = 3;
             this.statusBar.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.statusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.Color.White;
+            this.statusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(62, 17);
+            this.statusLabel.Text = "Status: ...";
+            this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             // 
             // minimizeButton
             // 
@@ -3543,137 +3696,12 @@
             this.titleBarVersionLabel.TabIndex = 6;
             this.titleBarVersionLabel.Text = "version 0.0";
             // 
-            // logEventsGroupBox
+            // errorProvider
             // 
-            this.logEventsGroupBox.BackColor = System.Drawing.Color.Black;
-            this.logEventsGroupBox.Controls.Add(this.logConsoleTextBox);
-            this.logEventsGroupBox.Controls.Add(this.logAppendEventCheckBox);
-            this.logEventsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.logEventsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.logEventsGroupBox.Location = new System.Drawing.Point(3, 91);
-            this.logEventsGroupBox.Name = "logEventsGroupBox";
-            this.logEventsGroupBox.Size = new System.Drawing.Size(730, 385);
-            this.logEventsGroupBox.TabIndex = 9;
-            this.logEventsGroupBox.TabStop = false;
-            this.logEventsGroupBox.Text = "Events";
-            // 
-            // abtHeaderDescLabel
-            // 
-            this.abtHeaderDescLabel.AutoSize = true;
-            this.abtHeaderDescLabel.ForeColor = System.Drawing.Color.White;
-            this.abtHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
-            this.abtHeaderDescLabel.Name = "abtHeaderDescLabel";
-            this.abtHeaderDescLabel.Size = new System.Drawing.Size(206, 14);
-            this.abtHeaderDescLabel.TabIndex = 8;
-            this.abtHeaderDescLabel.Text = "Information about the SSB software";
-            // 
-            // abtHeaderLabel
-            // 
-            this.abtHeaderLabel.AutoSize = true;
-            this.abtHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.abtHeaderLabel.ForeColor = System.Drawing.Color.Silver;
-            this.abtHeaderLabel.Location = new System.Drawing.Point(79, 18);
-            this.abtHeaderLabel.Name = "abtHeaderLabel";
-            this.abtHeaderLabel.Size = new System.Drawing.Size(111, 25);
-            this.abtHeaderLabel.TabIndex = 7;
-            this.abtHeaderLabel.Text = "About SSB";
-            // 
-            // abtHeaderPictureBox
-            // 
-            this.abtHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtHeaderPictureBox.Image")));
-            this.abtHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.abtHeaderPictureBox.Name = "abtHeaderPictureBox";
-            this.abtHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.abtHeaderPictureBox.TabIndex = 6;
-            this.abtHeaderPictureBox.TabStop = false;
-            // 
-            // logContainerGroupBox
-            // 
-            this.logContainerGroupBox.Controls.Add(this.logEventsGroupBox);
-            this.logContainerGroupBox.Controls.Add(this.logHeaderDescLabel);
-            this.logContainerGroupBox.Controls.Add(this.logHeaderLabel);
-            this.logContainerGroupBox.Controls.Add(this.logHeaderPictureBox);
-            this.logContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.logContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.logContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.logContainerGroupBox.Name = "logContainerGroupBox";
-            this.logContainerGroupBox.Size = new System.Drawing.Size(737, 479);
-            this.logContainerGroupBox.TabIndex = 10;
-            this.logContainerGroupBox.TabStop = false;
-            this.logContainerGroupBox.Text = "Activity Log";
-            // 
-            // coreContainerGroupBox
-            // 
-            this.coreContainerGroupBox.Controls.Add(this.coreCfgGroupBox);
-            this.coreContainerGroupBox.Controls.Add(this.coreHeaderDescLabel);
-            this.coreContainerGroupBox.Controls.Add(this.coreHeaderPictureBox);
-            this.coreContainerGroupBox.Controls.Add(this.coreHeaderLabel);
-            this.coreContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.coreContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.coreContainerGroupBox.Location = new System.Drawing.Point(5, 3);
-            this.coreContainerGroupBox.Name = "coreContainerGroupBox";
-            this.coreContainerGroupBox.Size = new System.Drawing.Size(733, 480);
-            this.coreContainerGroupBox.TabIndex = 6;
-            this.coreContainerGroupBox.TabStop = false;
-            this.coreContainerGroupBox.Text = "Core Options";
-            // 
-            // abtContainerGroupBox
-            // 
-            this.abtContainerGroupBox.Controls.Add(this.aboutGroupBox);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderDescLabel);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderPictureBox);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderLabel);
-            this.abtContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.abtContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.abtContainerGroupBox.Name = "abtContainerGroupBox";
-            this.abtContainerGroupBox.Size = new System.Drawing.Size(736, 479);
-            this.abtContainerGroupBox.TabIndex = 9;
-            this.abtContainerGroupBox.TabStop = false;
-            this.abtContainerGroupBox.Text = "About SSB";
-            // 
-            // abtAuthorLabel
-            // 
-            this.abtAuthorLabel.AutoSize = true;
-            this.abtAuthorLabel.Location = new System.Drawing.Point(132, 93);
-            this.abtAuthorLabel.Name = "abtAuthorLabel";
-            this.abtAuthorLabel.Size = new System.Drawing.Size(251, 14);
-            this.abtAuthorLabel.TabIndex = 8;
-            this.abtAuthorLabel.Text = "Written by syncore <syncore@syncore.org>";
-            // 
-            // xaeroPictureBox
-            // 
-            this.xaeroPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("xaeroPictureBox.Image")));
-            this.xaeroPictureBox.Location = new System.Drawing.Point(499, 43);
-            this.xaeroPictureBox.Name = "xaeroPictureBox";
-            this.xaeroPictureBox.Size = new System.Drawing.Size(187, 250);
-            this.xaeroPictureBox.TabIndex = 9;
-            this.xaeroPictureBox.TabStop = false;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.statusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.ForeColor = System.Drawing.Color.White;
-            this.statusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(62, 17);
-            this.statusLabel.Text = "Status: ...";
-            this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(166, 645);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(132, 28);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Stop Monitoring";
-            this.coreToolTip.SetToolTip(this.button1, "Start monitoring your server.");
-            this.button1.UseVisualStyleBackColor = false;
+            this.errorProvider.BlinkRate = 300;
+            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.AlwaysBlink;
+            this.errorProvider.ContainerControl = this;
+            this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
             // 
             // Main
             // 
@@ -3697,12 +3725,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).EndInit();
             this.UiTabCtl.ResumeLayout(false);
             this.logTab.ResumeLayout(false);
+            this.logContainerGroupBox.ResumeLayout(false);
+            this.logContainerGroupBox.PerformLayout();
+            this.logEventsGroupBox.ResumeLayout(false);
+            this.logEventsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).EndInit();
             this.coreOptionsTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).EndInit();
+            this.coreContainerGroupBox.ResumeLayout(false);
+            this.coreContainerGroupBox.PerformLayout();
             this.coreCfgGroupBox.ResumeLayout(false);
             this.coreCfgGroupBox.PerformLayout();
             this.coreSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).EndInit();
             this.modulesTab.ResumeLayout(false);
             this.moduleTabControl.ResumeLayout(false);
             this.accountDateTab.ResumeLayout(false);
@@ -3805,23 +3839,18 @@
             this.banMAddBanGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).EndInit();
             this.aboutTab.ResumeLayout(false);
+            this.abtContainerGroupBox.ResumeLayout(false);
+            this.abtContainerGroupBox.PerformLayout();
             this.aboutGroupBox.ResumeLayout(false);
             this.aboutGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).EndInit();
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
-            this.logEventsGroupBox.ResumeLayout(false);
-            this.logEventsGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).EndInit();
-            this.logContainerGroupBox.ResumeLayout(false);
-            this.logContainerGroupBox.PerformLayout();
-            this.coreContainerGroupBox.ResumeLayout(false);
-            this.coreContainerGroupBox.PerformLayout();
-            this.abtContainerGroupBox.ResumeLayout(false);
-            this.abtContainerGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3844,7 +3873,6 @@
         private System.Windows.Forms.CheckBox coreLogEventsDiskCheckBox;
         private System.Windows.Forms.ToolTip coreToolTip;
         private System.Windows.Forms.StatusStrip statusBar;
-        private System.Windows.Forms.CheckBox logAppendEventCheckBox;
         private System.Windows.Forms.TabPage modulesTab;
         private System.Windows.Forms.TabPage aboutTab;
         private System.Windows.Forms.GroupBox aboutGroupBox;
@@ -4095,5 +4123,7 @@
         private System.Windows.Forms.PictureBox xaeroPictureBox;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox coreAppendEventsCheckBox;
+        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }

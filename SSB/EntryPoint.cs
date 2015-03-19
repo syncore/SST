@@ -36,7 +36,7 @@ namespace SSB
                 _qlProcessDetectionTimer = new Timer(15000);
                 _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
                 _qlProcessDetectionTimer.Enabled = true;
-                Application.Run(new Gui(_ssb));
+                Application.Run(new UserInterface(_ssb));
             }
             else
             {

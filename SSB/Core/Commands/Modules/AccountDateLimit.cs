@@ -38,7 +38,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The minimum days that an account must be registered.
         /// </value>
-        public static int MinimumDaysRequired { get; set; }
+        public static uint MinimumDaysRequired { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -132,8 +132,8 @@ namespace SSB.Core.Commands.Modules
                 await DisableAccountDateLimiter(c);
                 return true;
             }
-            int days;
-            var isValidNum = ((int.TryParse(Helpers.GetArgVal(c, 2), out days) && days > 0));
+            uint days;
+            var isValidNum = ((uint.TryParse(Helpers.GetArgVal(c, 2), out days) && days != 0));
             if ((!isValidNum))
             {
                 await DisplayArgLengthError(c);
@@ -267,7 +267,7 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="days">The minimum amount of days.</param>
-        private async Task EnableAccountDateLimiter(CmdArgs c, int days)
+        private async Task EnableAccountDateLimiter(CmdArgs c, uint days)
         {
             MinimumDaysRequired = days;
             UpdateConfig(true);
@@ -283,9 +283,9 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         /// <param name="days">The days.</param>
         /// <remarks>
-        ///     This is for use with the auto Init() method and does not produce a message.
+        ///     This is for use with the auto Init() method and the UI and does not produce a message.
         /// </remarks>
-        private async Task EnableAccountDateLimiter(int days)
+        public async Task EnableAccountDateLimiter(uint days)
         {
             MinimumDaysRequired = days;
             UpdateConfig(true);

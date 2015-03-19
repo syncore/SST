@@ -21,7 +21,7 @@
         ///     The minimum days that an account must be registered.
         /// </value>
         // ReSharper disable once InconsistentNaming
-        public int minimumDaysRequired { get; set; }
+        public uint minimumDaysRequired { get; set; }
 
         /// <summary>
         /// Sets the defaults.
@@ -29,7 +29,7 @@
         public void SetDefaults()
         {
             isActive = false;
-            minimumDaysRequired = 0;
+            minimumDaysRequired = 1;
         }
     }
 }

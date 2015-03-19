@@ -145,7 +145,6 @@
             this.newGuiButton.TabIndex = 10;
             this.newGuiButton.Text = "New GUI Test";
             this.newGuiButton.UseVisualStyleBackColor = true;
-            this.newGuiButton.Click += new System.EventHandler(this.newGuiButton_Click);
             // 
             // Gui
             // 

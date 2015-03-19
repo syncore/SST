@@ -50,6 +50,7 @@ namespace SSB.Util
             SvInfoGameType = new svInfoGameType();
             SvInfoGameState = new svInfoGameState();
             SvInfoServerPublicId = new svInfoServerPublicId();
+            ClInfoConnectionState = new clInfoConnectionState();
             UtilCaretColor = new utilCaretColor();
         }
 
@@ -475,6 +476,19 @@ namespace SSB.Util
         ///     Contains a named group 'serverid' that has the serverid.
         /// </remarks>
         public Regex SvInfoServerPublicId { get; private set; }
+
+        /// <summary>
+        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
+        /// </summary>
+        /// <value>
+        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'state' that contains the connection state.
+        ///     If the state is anything other than 8 (which is CA_ACTIVE)
+        ///     then the Quake Live client is not on a server (see Q3 source, q_shared.h:1333)
+        /// </remarks>
+        public Regex ClInfoConnectionState { get; private set; }
 
         /// <summary>
         ///     Regex for matching the caret and color of a player name and/or chat message.

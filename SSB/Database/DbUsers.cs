@@ -20,7 +20,7 @@ namespace SSB.Database
     {
         private readonly string _sqlConString = "Data Source=" + Filepaths.UserDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.UserDatabaseFilePath;
-        private HashSet<string> _owners = new HashSet<string>();
+        private string _owner;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DbUsers" /> class.
@@ -29,7 +29,7 @@ namespace SSB.Database
         {
             VerifyDb();
             LoadCfg();
-            AddOwnersToDb();
+            AddOwnerToDb();
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace SSB.Database
             }
             var cfgHandler = new ConfigHandler();
             cfgHandler.ReadConfiguration();
-            _owners = cfgHandler.Config.CoreOptions.owners;
+            _owner = cfgHandler.Config.CoreOptions.owner;
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace SSB.Database
         {
             var cfgHandler = new ConfigHandler();
             cfgHandler.ReadConfiguration();
-            cfgHandler.Config.CoreOptions.owners = _owners;
+            cfgHandler.Config.CoreOptions.owner = _owner;
             cfgHandler.WriteConfiguration();
         }
 
@@ -382,15 +382,12 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Adds the owners (from the config file on the disk) to the database.
+        ///     Adds the owner (from the config file on the disk) to the database.
         /// </summary>
-        private void AddOwnersToDb()
+        private void AddOwnerToDb()
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            foreach (string owner in _owners)
-            {
-                AddUserToDb(owner, UserLevel.Owner, "AUTO", date);
-            }
+            AddUserToDb(_owner, UserLevel.Owner, "AUTO", date);
         }
     }
 }

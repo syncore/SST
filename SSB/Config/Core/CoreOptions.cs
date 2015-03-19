@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable InconsistentNaming
 
 namespace SSB.Config.Core
 {
@@ -13,8 +13,17 @@ namespace SSB.Config.Core
         /// <value>
         ///     The name of the bot.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public string accountName { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether SSB events should be appended
+        ///     to the activity log in the UI.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if SSB events should be appended to the activity log
+        ///     in the UI; otherwise, <c>false</c>.
+        /// </value>
+        public bool appendToActivityLog { get; set; }
 
         /// <summary>
         ///     Gets or sets the elo cache interval, which is
@@ -23,28 +32,51 @@ namespace SSB.Config.Core
         /// <value>
         ///     The elo cache interval.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public uint eloCacheExpiration { get; set; }
 
         /// <summary>
-        ///     Gets or sets the list of SBB owner(s).
+        ///     Gets or sets a value indicating whether all console text should be
+        ///     hidden in Quake Live.
         /// </summary>
         /// <value>
-        ///     The list of SSB owner(s).
+        ///     <c>true</c> if console text should be hidden in Quake Live;
+        ///     otherwise, <c>false</c>.
         /// </value>
-        // ReSharper disable once InconsistentNaming
-        public HashSet<string> owners { get; set; }
+        /// <remarks>
+        ///     This represents whether SSB should set "con_noprint" to 1 or 0.
+        /// </remarks>
+        public bool hideAllQlConsoleText { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether SSB events should be logged
+        ///     to the disk.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if SSB events should be logged to the disk;
+        ///     otherwise, <c>false</c>.
+        /// </value>
+        public bool logSsbEventsToDisk { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the SBB owner.
+        /// </summary>
+        /// <value>
+        ///     The SSB owner.
+        /// </value>
+        public string owner { get; set; }
 
         /// <summary>
         ///     Sets the defaults.
         /// </summary>
         public void SetDefaults()
         {
-            // TODO: prior to release, change this default bot name to something completely random
+            // TODO: prior to release, change these default bot & account names to something completely random
             accountName = "syncore";
-            var o = new HashSet<string> {"syncore"};
-            owners = o;
+            appendToActivityLog = true;
+            owner = "syncore";
             eloCacheExpiration = 300; // 5 hours
+            hideAllQlConsoleText = true;
+            logSsbEventsToDisk = true;
         }
     }
 }
