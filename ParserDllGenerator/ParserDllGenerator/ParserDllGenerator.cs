@@ -11,9 +11,9 @@ namespace ParserDllGenerator
         /// </summary>
         /// <remarks>
         ///     When this runs, it generates an assembly (.dll) containing the regexes that SSB will use.
-        ///     The SSB Visual Studio solution is currently set to silently execute this Main method to generate the .dll
-        ///     Every time the ParserDllGenerator solution successfully builds (before SSB itself builds) to keep the
-        ///     referenced assembly up to date.
+        ///     The SSB Visual Studio solution is currently set to silently execute ParserDllGenerator.exe 
+        ///     to generate the .dll every time the ParserDllGenerator solution successfully builds
+        ///     (before SSB itself builds) to keep the referenced assembly up to date.
         /// </remarks>
         public static void Main()
         {
@@ -273,8 +273,9 @@ namespace ParserDllGenerator
             compilationList.Add(expr);
 
             // standard cvar and its value
-            expr = new RegexCompilationInfo("\"(?<cvarname>.+)\" is:\"(?<cvarvalue>.+)\" default:.*",
-               RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "cvarNameAndValue",
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo("^\"(?<cvarname>.+)\" is:\"(?<cvarvalue>.+)\" default:.*",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarNameAndValue",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
@@ -310,9 +311,27 @@ namespace ParserDllGenerator
                true);
             compilationList.Add(expr);
 
-            // Cvar_Set2 in developer mode
-            expr = new RegexCompilationInfo(@"^Cvar_Set2:.*",
-               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarSetTwo",
+            // SSB disconnection: Cvar_Set2: com_errorMessage (Disconnected from server) in developer mode
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo("^Cvar_Set2: com_errorMessage (Disconnected from server)",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "cvarSetQlDisconnected",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+            // SSB disconnection: "ERROR: Disconnected from server"
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo("^ERROR: Disconnected from server",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "msgErrorDisconnected",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+
+            // "Not connected to a server." message
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^Not connected to a server.*",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "msgNotConnected",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using SSB.Enum;
 using SSB.Model;
@@ -13,7 +14,7 @@ namespace SSB.Core
     public class ServerInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServerInfo"/> class.
+        ///     Initializes a new instance of the <see cref="ServerInfo" /> class.
         /// </summary>
         public ServerInfo()
         {
@@ -31,77 +32,91 @@ namespace SSB.Core
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
-        /// Gets or sets the server's current game state.
+        ///     Gets or sets the server's current game state.
         /// </summary>
         /// <value>
-        /// The server's current gamestate.
+        ///     The server's current gamestate.
         /// </value>
         public QlGameStates CurrentServerGameState { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of game for the current server.
+        ///     Gets or sets the type of game for the current server.
         /// </summary>
         /// <value>
-        /// The type of game for the current server.
+        ///     The type of game for the current server.
         /// </value>
         public QlGameTypes CurrentServerGameType { get; set; }
 
         /// <summary>
-        /// Gets or sets the current server identifier.
+        ///     Gets or sets the current server identifier.
         /// </summary>
         /// <value>
-        /// The current server identifier.
+        ///     The current server identifier.
         /// </value>
         public string CurrentServerId { get; set; }
 
         /// <summary>
-        /// Gets or sets the player the bot is currently following (spectating), if any.
+        ///     Gets or sets a value indicating whether the Quake Live client is actually
+        ///     connected to a server or not.
         /// </summary>
         /// <value>
-        /// The player the bot is currently following (spectating), if any.
+        ///     <c>true</c> if the Quake Live client is connected to server; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsQlConnectedToServer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the player the bot is currently following (spectating), if any.
+        /// </summary>
+        /// <value>
+        ///     The player the bot is currently following (spectating), if any.
         /// </value>
         public string PlayerCurrentlyFollowing { get; set; }
 
         /// <summary>
-        /// Gets or sets the blue team's score.
+        ///     Gets or sets the blue team's score.
         /// </summary>
         /// <value>
-        /// The blue team's score.
+        ///     The blue team's score.
         /// </value>
         public int ScoreBlueTeam { get; set; }
 
         /// <summary>
-        /// Gets or sets the red team's score.
+        ///     Gets or sets the red team's score.
         /// </summary>
         /// <value>
-        /// The red team's score.
+        ///     The red team's score.
         /// </value>
         public int ScoreRedTeam { get; set; }
 
         /// <summary>
-        /// Gets the team.
+        ///     Gets the team.
         /// </summary>
         /// <param name="t">The Team enum.</param>
-        /// <returns>A list of <see cref="PlayerInfo"/>objects for a given Team enum.</returns>
+        /// <returns>A list of <see cref="PlayerInfo" />objects for a given Team enum.</returns>
         public List<PlayerInfo> GetTeam(Team t)
         {
-            return CurrentPlayers.Where(player => player.Value.Team.Equals(t)).Select(player => player.Value).ToList();
+            return
+                CurrentPlayers.Where(player => player.Value.Team.Equals(t))
+                    .Select(player => player.Value)
+                    .ToList();
         }
 
         /// <summary>
-        /// Determines whether the active player count on the server is an even number.
+        ///     Determines whether the active player count on the server is an even number.
         /// </summary>
-        /// <returns><c>true</c> if the server's active (team red or team blue) player count is
-        /// an even number; otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the server's active (team red or team blue) player count is
+        ///     an even number; otherwise <c>false</c>.
+        /// </returns>
         public bool HasEvenTeams()
         {
             var red = GetTeam(Team.Red);
             var blue = GetTeam(Team.Blue);
-            return (red.Count + blue.Count) % 2 == 0;
+            return (red.Count + blue.Count)%2 == 0;
         }
 
         /// <summary>
-        /// Determines whether the specified player is an active player (on red or blue team).
+        ///     Determines whether the specified player is an active player (on red or blue team).
         /// </summary>
         /// <param name="player">The player.</param>
         /// <returns><c>true</c> if the specified player is an active player, otherwise <c>false</c></returns>
@@ -116,12 +131,28 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the current gametype is a team-based game.
+        ///     Determines whether the current gametype is a team-based game.
         /// </summary>
         /// <returns><c>true</c> if the current gametype is a team-based game; otherwise <c>false</c></returns>
         public bool IsATeamGame()
         {
             return Helpers.IsQuakeLiveTeamGame(CurrentServerGameType);
+        }
+
+        /// <summary>
+        ///     Resets the server information.
+        /// </summary>
+        public void Reset()
+        {
+            CurrentPlayers.Clear();
+            CurrentServerGameState = QlGameStates.Unspecified;
+            CurrentServerGameType = QlGameTypes.Unspecified;
+            CurrentServerId = string.Empty;
+            IsQlConnectedToServer = false;
+            PlayerCurrentlyFollowing = string.Empty;
+            ScoreBlueTeam = 0;
+            ScoreRedTeam = 0;
+            Debug.WriteLine("SSB: Reset server information.");
         }
     }
 }

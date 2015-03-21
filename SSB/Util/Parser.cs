@@ -15,13 +15,15 @@ namespace SSB.Util
         {
             CfgStringPlayerInfo = new cfgStringPlayerInfo();
             CfgStringGameType = new cfgStringGameType();
-            CvarSetTwo = new cvarSetTwo();
+            CvarSetQlDisconnected = new cvarSetQlDisconnected();
             PlPlayerNameAndId = new plPlayerNameAndId();
             EvPlayerDisconnected = new evPlayerDisconnected();
             EvPlayerKicked = new evPlayerKicked();
             EvPlayerRageQuit = new evPlayerRageQuit();
             CvarNameAndValue = new cvarNameAndValue();
             EvMapLoaded = new evMapLoaded();
+            MsgNotConnected = new msgNotConnected();
+            MsgErrorDisconnected = new msgErrorDisconnected();
             ScmdAccuracy = new scmdAccuracy();
             ScmdPakInfo = new scmdPakInfo();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
@@ -80,6 +82,19 @@ namespace SSB.Util
         public Regex CfgStringPlayerInfo { get; private set; }
 
         /// <summary>
+        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
+        /// </summary>
+        /// <value>
+        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
+        /// </value>
+        /// <remarks>
+        ///     Contains a named group 'state' that contains the connection state.
+        ///     If the state is anything other than 8 (which is CA_ACTIVE)
+        ///     then the Quake Live client is not on a server (see Q3 source, q_shared.h:1333)
+        /// </remarks>
+        public Regex ClInfoConnectionState { get; private set; }
+
+        /// <summary>
         ///     Regex for matching a standard cvar and its current value.
         /// </summary>
         /// <value>
@@ -92,15 +107,16 @@ namespace SSB.Util
         public Regex CvarNameAndValue { get; private set; }
 
         /// <summary>
-        /// Regex for matching Cvar_Set2 strings which should typically be ignored in 'developer 1' mode.
+        /// Regex for matching "Cvar_Set2: com_errorMessage (Disconnected from server)" message.
         /// </summary>
         /// <value>
-        /// Regex for matching Cvar_Set2 strings which should typically be ignored in 'developer 1' mode.
+        /// Regex for matching "Cvar_Set2: com_errorMessage (Disconnected from server)" message.
         /// </value>
         /// <remarks>
-        /// This matches Cvar_Set2: text which should be ignored in developer 1 mode.
+        /// This matches "Cvar_Set2: com_errorMessage (Disconnected from server)" text when developer
+        /// mode is enabled.
         /// </remarks>
-        public Regex CvarSetTwo { get; private set; }
+        public Regex CvarSetQlDisconnected { get; private set; }
 
         /// <summary>
         ///     Regex for detecting when the map has loaded.
@@ -133,6 +149,23 @@ namespace SSB.Util
         ///     Regex for player has ragequit event.
         /// </value>
         public Regex EvPlayerRageQuit { get; private set; }
+
+        /// <summary>
+        /// Regex for matching "ERROR: Disconnected from server" text.
+        /// </summary>
+        /// <value>
+        /// Regex for matching "ERROR: Disconnected from server" text.
+        /// </value>
+        public Regex MsgErrorDisconnected { get; private set; }
+
+        /// <summary>
+        /// Regex for detecting the "Not connected to a server." text,
+        /// used for server connection detection.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting the "Not connected to a server." text.
+        /// </value>
+        public Regex MsgNotConnected { get; private set; }
 
         /// <summary>
         ///     Regex for finding player's name and id after issuing 'players' command.
@@ -476,19 +509,6 @@ namespace SSB.Util
         ///     Contains a named group 'serverid' that has the serverid.
         /// </remarks>
         public Regex SvInfoServerPublicId { get; private set; }
-
-        /// <summary>
-        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
-        /// </summary>
-        /// <value>
-        ///     Regex for finding the 'state' value after issuing 'clientinfo' command.
-        /// </value>
-        /// <remarks>
-        ///     Contains a named group 'state' that contains the connection state.
-        ///     If the state is anything other than 8 (which is CA_ACTIVE)
-        ///     then the Quake Live client is not on a server (see Q3 source, q_shared.h:1333)
-        /// </remarks>
-        public Regex ClInfoConnectionState { get; private set; }
 
         /// <summary>
         ///     Regex for matching the caret and color of a player name and/or chat message.

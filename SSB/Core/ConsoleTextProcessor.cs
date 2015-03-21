@@ -30,6 +30,8 @@ namespace SSB.Core
             _voteHandler = new VoteHandler(_ssb);
         }
 
+        private delegate void ProcessEntireConsoleTextCb(string text, int length);
+
         /// <summary>
         ///     Gets or sets the old length of the last line.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SSB.Core
             Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -144,15 +146,15 @@ namespace SSB.Core
         private void AppendConsoleTextToGui(string text, int length)
         {
             // Can't update UI control from different thread
-            if (_ssb.GuiControls.ConsoleTextBox.InvokeRequired)
+            if (_ssb.AppWideUiControls.LogConsoleTextBox.InvokeRequired)
             {
                 var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.GuiControls.ConsoleTextBox.BeginInvoke(a, text, length);
+                _ssb.AppWideUiControls.LogConsoleTextBox.BeginInvoke(a, text, length);
                 return;
             }
             // If appending to textbox, must clear first
-            _ssb.GuiControls.ConsoleTextBox.Clear();
-            _ssb.GuiControls.ConsoleTextBox.AppendText(text);
+            _ssb.AppWideUiControls.LogConsoleTextBox.Clear();
+            _ssb.AppWideUiControls.LogConsoleTextBox.AppendText(text);
         }
 
         /// <summary>
@@ -172,6 +174,28 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether the text matches that of a cvar request that has been
+        ///  made either by SSB or the user, and handles it if it does.
+        ///
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if a cvar request was detected and handled,
+        ///  otherwise <c>false</c>.
+        /// </returns>
+        private bool CvarRequestDetected(string text)
+        {
+            if (!_ssb.Parser.CvarNameAndValue.IsMatch(text)) return false;
+            var m = _ssb.Parser.CvarNameAndValue.Match(text);
+            // ui_mainmenu
+            if (m.Groups["cvarname"].Value.Equals("ui_mainmenu",
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ssb.ServerEventProcessor.QlServerConnectionExists(m.Groups["cvarvalue"].Value);
+            }
+            return true;
+        }
+
+        /// <summary>
         ///     Detects various events (such as connections, disconnections, chat messages, etc.)
         ///     that occur as short lines of text within the console.
         /// </summary>
@@ -181,8 +205,18 @@ namespace SSB.Core
             // Most of time the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
-                // unncessary debug (developer mode) info to be ignored
-                //if (UnncessaryDebugInfoDetected(text)) continue;
+                // Cvar requests (i.e., ui_mainmenu for connection detection) need to come first
+                // cvar request
+                if (CvarRequestDetected(text)) continue;
+                // 'Not connected to a server.' message detected
+                if (NotConnectedMsgDetected(text)) continue;
+
+                // Avoid event detection below if there's no connection to a server
+                if (!_ssb.IsMonitoringServer)
+                {
+                    return;
+                }
+
                 // 'player connected' detected.
                 if (IncomingPlayerDetected(text).Result) continue;
                 // player configstring info detected (configstrings command)
@@ -215,6 +249,8 @@ namespace SSB.Core
                 if (ScorelimitReachedDetected(text)) continue;
                 // change of a team's score detected
                 if (TeamScoreChangeDetected(text)) continue;
+                // SSB client disconnected from QL server.
+                if (QuakeLiveDisconnectedDetected(text)) continue;
                 // chat message
                 if (ChatMessageDetected(text))
                 {
@@ -234,6 +270,12 @@ namespace SSB.Core
         /// </remarks>
         private void DetectMultiLineEvent(string text)
         {
+            // Avoid event detection if user hasn't initiated monitoring.
+            if (!_ssb.ServerInfo.IsQlConnectedToServer)
+            {
+                return;
+            }
+
             // 'players' command has been detected; extract the player names and ids from it.
             if (_ssb.Parser.PlPlayerNameAndId.IsMatch(text))
             {
@@ -323,24 +365,6 @@ namespace SSB.Core
             return true;
         }
 
-        /*
-        /// <summary>
-        ///     Handles pre-defined cvar requests.
-        /// </summary>
-        /// <param name="m">The match.</param>
-        private void HandleCvarRequest(Match m)
-        {
-            string cvar = m.Groups["cvarname"].Value;
-            string value = m.Groups["cvarvalue"].Value;
-            switch (cvar)
-            {
-                case "name":
-                    _ssb.ServerEventProcessor.SetBotAccountName(value);
-                    break;
-            }
-        }
-        */
-
         /// <summary>
         ///     Determines whether the text matches that of the gametype information returned from the configstrings
         ///     command, and handles it if it does.
@@ -400,6 +424,21 @@ namespace SSB.Core
             if (!_ssb.Parser.ScmdMatchAborted.IsMatch(text)) return false;
             _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
             Debug.WriteLine("Match abort detected. Resetting to warmup.");
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of the "Not connected to a server." message
+        /// and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns><c>true</c> if the text matches that of the "not connected to a server"
+        /// message; otherwise <c>false</c>.</returns>
+        private bool NotConnectedMsgDetected(string text)
+        {
+            if (!_ssb.Parser.MsgNotConnected.IsMatch(text)) return false;
+            var m = _ssb.Parser.MsgNotConnected.Match(text);
+            _ssb.ServerEventProcessor.QlServerConnectionExists(m.Value);
             return true;
         }
 
@@ -500,8 +539,6 @@ namespace SSB.Core
             return true;
         }
 
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
-
         /// <summary>
         ///     Processes the command.
         /// </summary>
@@ -544,6 +581,37 @@ namespace SSB.Core
                 //    break;
             }
         }
+
+        private bool QuakeLiveDisconnectedDetected(string text)
+        {
+            if (!_ssb.Parser.CvarSetQlDisconnected.IsMatch(text) &&
+                !_ssb.Parser.MsgErrorDisconnected.IsMatch(text))
+            {
+                return false;
+            }
+            _ssb.IsMonitoringServer = false;
+            _ssb.ServerInfo.IsQlConnectedToServer = false;
+            Debug.WriteLine("Detected SSB disconnection from Quake Live server. Stopping monitoring.");
+            return true;
+        }
+
+        /*
+        /// <summary>
+        ///     Handles pre-defined cvar requests.
+        /// </summary>
+        /// <param name="m">The match.</param>
+        private void HandleCvarRequest(Match m)
+        {
+            string cvar = m.Groups["cvarname"].Value;
+            string value = m.Groups["cvarvalue"].Value;
+            switch (cvar)
+            {
+                case "name":
+                    _ssb.ServerEventProcessor.SetBotAccountName(value);
+                    break;
+            }
+        }
+        */
 
         /// <summary>
         ///     Determines whether the text matches that of the game's end due to the score/frag/roundlimit

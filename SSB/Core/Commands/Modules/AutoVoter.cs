@@ -21,7 +21,6 @@ namespace SSB.Core.Commands.Modules
         private readonly bool _isIrcAccessAllowed = true;
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
-        private readonly List<string> _validCallVotes;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AutoVoter" /> class.
@@ -31,21 +30,21 @@ namespace SSB.Core.Commands.Modules
         {
             _ssb = ssb;
             _configHandler = new ConfigHandler();
-            _validCallVotes = new List<string>
+            ValidCallVotes = new List<Vote>
             {
-                "clientkick",
-                //"cointoss",
-                "fraglimit",
-                "g_gametype",
-                "kick",
-                "map",
-                "map_restart",
-                "nextmap",
-                "ruleset",
-                "shuffle",
-                "teamsize",
-                "timelimit"
+                new Vote { Name = "clientkick", Type = VoteType.Clientkick },
+                new Vote { Name = "fraglimit", Type = VoteType.Fraglimit },
+                new Vote { Name = "g_gametype", Type = VoteType.GGametype },
+                new Vote { Name = "kick", Type = VoteType.Kick },
+                new Vote { Name = "map", Type = VoteType.Map },
+                new Vote { Name = "map_restart", Type = VoteType.MapRestart },
+                new Vote { Name = "nextmap", Type = VoteType.Nextmap },
+                new Vote { Name = "ruleset", Type = VoteType.Ruleset },
+                new Vote { Name = "shuffle", Type = VoteType.Shuffle },
+                new Vote { Name = "teamsize", Type = VoteType.Teamsize },
+                new Vote { Name = "timelimit", Type = VoteType.Timelimit}
             };
+
             LoadConfig();
         }
 
@@ -116,6 +115,14 @@ namespace SSB.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the valid callvotes.
+        /// </summary>
+        /// <value>
+        /// The valid callvotes.
+        /// </value>
+        public List<Vote> ValidCallVotes { get; set; } 
 
         /// <summary>
         ///     Displays the argument length error.
@@ -379,7 +386,9 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         private async Task<bool> HandleAutoVoteAddition(CmdArgs c)
         {
-            if (!_validCallVotes.Contains(Helpers.GetArgVal(c, 3)))
+            var isValidCallVote = (ValidCallVotes.Any(v => v.Name.Equals(Helpers.GetArgVal(c, 3), StringComparison.InvariantCultureIgnoreCase)));
+
+            if (!isValidCallVote)
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 {0} isn't valid or applicable. In console: /callvote to see valid types.",

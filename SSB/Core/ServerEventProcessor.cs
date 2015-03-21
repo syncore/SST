@@ -158,7 +158,30 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sets the end of game (frag/time/roundlimit reached)
+        ///     Detects whether the Quake Live client is currently on a server.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>
+        ///     <c>true</c> if the client is on a server, otherwise <c>false</c>.
+        /// </returns>
+        public bool QlServerConnectionExists(string text)
+        {
+            // ui_mainmenu "1", result of /cmd, or result of a command requiring connection.
+            if ((text.Equals("1") || text.Equals("Not connected to a server.",
+                StringComparison.InvariantCultureIgnoreCase)))
+            {
+                _ssb.ServerInfo.IsQlConnectedToServer = false;
+                Debug.WriteLine("*** SSB did NOT detect that Quake Live server connection exists! ***");
+                return false;
+            }
+
+            _ssb.ServerInfo.IsQlConnectedToServer = true;
+            Debug.WriteLine("*** SSB detected that Quake Live connection exists! ***");
+            return true;
+        }
+
+        /// <summary>
+        ///     Sets the end of game (frag/time/roundlimit reached)
         /// </summary>
         public void SetEndOfGameLimitReached()
         {
@@ -167,7 +190,8 @@ namespace SSB.Core
             _ssb.ServerInfo.CurrentServerGameState = gameState;
             // Large batch of text incoming
             _ssb.QlCommands.ClearQlWinConsole();
-            Debug.WriteLine("End of game (frag/time/roundlimit reached) detected: setting status back to warm-up mode.");
+            Debug.WriteLine(
+                "End of game (frag/time/roundlimit reached) detected: setting status back to warm-up mode.");
             // Pickup module
             if (_ssb.Mod.Pickup.Active)
             {
@@ -177,7 +201,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Handles the start of the game intermission (period between game's end and end of endgame map-voting)
+        ///     Handles the start of the game intermission (period between game's end and end of endgame map-voting)
         /// </summary>
         public void SetIntermissionStart()
         {
@@ -186,7 +210,8 @@ namespace SSB.Core
             _ssb.ServerInfo.CurrentServerGameState = gameState;
             // Large batch of text incoming
             _ssb.QlCommands.ClearQlWinConsole();
-            Debug.WriteLine("START of Intermission (game end/map voting) detected: setting status back to warm-up mode.");
+            Debug.WriteLine(
+                "START of Intermission (game end/map voting) detected: setting status back to warm-up mode.");
             // Pickup module
             if (_ssb.Mod.Pickup.Active)
             {
@@ -201,8 +226,8 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         /// <returns>The current server's gamestate as a <see cref="QlGameStates" />enum value.</returns>
         /// <remarks>
-        /// This method sets the server's gamestate received through either the serverinfo command or a bcs0/cs
-        /// configstring.
+        ///     This method sets the server's gamestate received through either the serverinfo command or a bcs0/cs
+        ///     configstring.
         /// </remarks>
         public QlGameStates SetServerGameState(string text)
         {
@@ -249,8 +274,8 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
-                gameType = (QlGameTypes)gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
+                gameType = (QlGameTypes) gt;
                 Debug.WriteLine("*** Found server gametype: " + gameType);
             }
             else
@@ -278,7 +303,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Sets the team score.
+        ///     Sets the team score.
         /// </summary>
         /// <param name="team">The team.</param>
         /// <param name="score">The score.</param>
@@ -295,7 +320,7 @@ namespace SSB.Core
             Debug.WriteLine("Setting {0} team's score to {1}",
                 ((team == Team.Blue) ? "BLUE" : "RED"), score);
         }
-        
+
         /// <summary>
         ///     Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>

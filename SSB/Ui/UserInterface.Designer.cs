@@ -290,13 +290,15 @@
             this.ssbStartButton = new System.Windows.Forms.Button();
             this.ssbExitButton = new System.Windows.Forms.Button();
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.ssbStopButton = new System.Windows.Forms.Button();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
             this.closeButton = new System.Windows.Forms.PictureBox();
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.modAutoVoterVoteTypeBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ssbResetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -387,6 +389,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -1033,6 +1036,7 @@
             this.modAccuracyResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modAccuracyResetSettingsButton, "Reset this module to its default settings.");
             this.modAccuracyResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccuracyResetSettingsButton.Click += new System.EventHandler(this.modAccuracyResetSettingsButton_Click);
             // 
             // modAccuracyLoadSettingsButton
             // 
@@ -1047,6 +1051,7 @@
             this.modAccuracyLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modAccuracyLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modAccuracyLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccuracyLoadSettingsButton.Click += new System.EventHandler(this.modAccuracyLoadSettingsButton_Click);
             // 
             // modAccuracySaveSettingsButton
             // 
@@ -1061,6 +1066,7 @@
             this.modAccuracySaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modAccuracySaveSettingsButton, "Save the current settings to the configuration file.");
             this.modAccuracySaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modAccuracySaveSettingsButton.Click += new System.EventHandler(this.modAccuracySaveSettingsButton_Click);
             // 
             // modAccuracyEnableCheckBox
             // 
@@ -1280,6 +1286,7 @@
             // modAutoVoterVoteTypeComboxBox
             // 
             this.modAutoVoterVoteTypeComboxBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modAutoVoterVoteTypeComboxBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.modAutoVoterVoteTypeComboxBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterVoteTypeComboxBox.ForeColor = System.Drawing.Color.White;
             this.modAutoVoterVoteTypeComboxBox.FormattingEnabled = true;
@@ -3121,8 +3128,8 @@
             this.usrMCurUsersListBox.Name = "usrMCurUsersListBox";
             this.usrMCurUsersListBox.Size = new System.Drawing.Size(281, 310);
             this.usrMCurUsersListBox.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.usrMCurUsersListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
-        "s loaded.");
+            this.coreToolTip.SetToolTip(this.usrMCurUsersListBox, "This box displays users who are currently added to SSB\'s\r\nuser database as well a" +
+        "s their access levels.");
             // 
             // usrMAddUserGroupBox
             // 
@@ -3295,8 +3302,7 @@
             this.banMCurBansListBox.Name = "banMCurBansListBox";
             this.banMCurBansListBox.Size = new System.Drawing.Size(281, 310);
             this.banMCurBansListBox.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.banMCurBansListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
-        "s loaded.");
+            this.coreToolTip.SetToolTip(this.banMCurBansListBox, "This box displays the users who are currently banned\r\nby SSB.");
             // 
             // banMAddBanGroupBox
             // 
@@ -3599,6 +3605,7 @@
             this.ssbStartButton.Text = "Start Monitoring";
             this.coreToolTip.SetToolTip(this.ssbStartButton, "Start monitoring your server.");
             this.ssbStartButton.UseVisualStyleBackColor = false;
+            this.ssbStartButton.Click += new System.EventHandler(this.ssbStartButton_Click);
             // 
             // ssbExitButton
             // 
@@ -3625,20 +3632,22 @@
             this.coreToolTip.IsBalloon = true;
             this.coreToolTip.ReshowDelay = 100;
             // 
-            // button1
+            // ssbStopButton
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(166, 645);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(132, 28);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Stop Monitoring";
-            this.coreToolTip.SetToolTip(this.button1, "Start monitoring your server.");
-            this.button1.UseVisualStyleBackColor = false;
+            this.ssbStopButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.ssbStopButton.Enabled = false;
+            this.ssbStopButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ssbStopButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ssbStopButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ssbStopButton.ForeColor = System.Drawing.Color.White;
+            this.ssbStopButton.Location = new System.Drawing.Point(158, 645);
+            this.ssbStopButton.Name = "ssbStopButton";
+            this.ssbStopButton.Size = new System.Drawing.Size(132, 28);
+            this.ssbStopButton.TabIndex = 7;
+            this.ssbStopButton.Text = "Stop Monitoring";
+            this.coreToolTip.SetToolTip(this.ssbStopButton, "Stop monitoring your server.");
+            this.ssbStopButton.UseVisualStyleBackColor = false;
+            this.ssbStopButton.Click += new System.EventHandler(this.ssbStopButton_Click);
             // 
             // statusBar
             // 
@@ -3660,8 +3669,8 @@
             this.statusLabel.ForeColor = System.Drawing.Color.White;
             this.statusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(62, 17);
-            this.statusLabel.Text = "Status: ...";
+            this.statusLabel.Size = new System.Drawing.Size(183, 17);
+            this.statusLabel.Text = "Status: Not monitoring a server.";
             this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             // 
             // minimizeButton
@@ -3703,13 +3712,30 @@
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
             // 
-            // Main
+            // ssbResetButton
+            // 
+            this.ssbResetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.ssbResetButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ssbResetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ssbResetButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ssbResetButton.ForeColor = System.Drawing.Color.White;
+            this.ssbResetButton.Location = new System.Drawing.Point(307, 645);
+            this.ssbResetButton.Name = "ssbResetButton";
+            this.ssbResetButton.Size = new System.Drawing.Size(68, 28);
+            this.ssbResetButton.TabIndex = 8;
+            this.ssbResetButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.ssbResetButton, "Stop monitoring if it\'s active, or start monitoring if it\'s\r\nnot active.");
+            this.ssbResetButton.UseVisualStyleBackColor = false;
+            this.ssbResetButton.Click += new System.EventHandler(this.ssbResetButton_Click);
+            // 
+            // UserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(752, 705);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ssbResetButton);
+            this.Controls.Add(this.ssbStopButton);
             this.Controls.Add(this.titleBarVersionLabel);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.minimizeButton);
@@ -3720,7 +3746,7 @@
             this.Controls.Add(this.ssbLogo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Main";
+            this.Name = "UserInterface";
             this.Text = "SSB";
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).EndInit();
             this.UiTabCtl.ResumeLayout(false);
@@ -3851,6 +3877,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4122,8 +4149,10 @@
         private System.Windows.Forms.Label abtAuthorLabel;
         private System.Windows.Forms.PictureBox xaeroPictureBox;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button ssbStopButton;
         private System.Windows.Forms.CheckBox coreAppendEventsCheckBox;
         private System.Windows.Forms.ErrorProvider errorProvider;
+        private System.Windows.Forms.BindingSource modAutoVoterVoteTypeBindingSource;
+        private System.Windows.Forms.Button ssbResetButton;
     }
 }

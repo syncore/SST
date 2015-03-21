@@ -20,8 +20,10 @@ namespace SSB.Core
     public class SynServerBot
     {
         private Timer _initTimer;
+        private bool _isMonitoringServer;
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
+        private Timer _qlProcessDetectionTimer;
         public double InitDelay = 6.5;
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace SSB.Core
         public SynServerBot()
         {
             GuiOptions = new GuiOptions();
-            GuiControls = new GuiControls();
+            AppWideUiControls = new AppWideUiControls();
             ServerInfo = new ServerInfo();
             QlCommands = new QlCommands(this);
             Parser = new Parser();
@@ -43,16 +45,8 @@ namespace SSB.Core
             AccountName = GetAccountNameFromConfig();
             // Hook up modules
             Mod = new ModuleManager(this);
-            // Start reading the console
-            StartConsoleReadThread();
-            // Set the important details of the server
-            InitServerInformation();
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
-            
-            // Delay some initilization tasks and complete initilization
-            StartDelayedInit(InitDelay);
-            QlCommands.ClearQlWinConsole();
         }
 
         /// <summary>
@@ -62,6 +56,14 @@ namespace SSB.Core
         ///     The name of the account that is running the bot.
         /// </value>
         public string AccountName { get; set; }
+
+        /// <summary>
+        ///     Gets the app-wide UI controls.
+        /// </summary>
+        /// <value>
+        ///     The app-wide UI controls.
+        /// </value>
+        public AppWideUiControls AppWideUiControls { get; private set; }
 
         /// <summary>
         ///     Gets the command processor.
@@ -80,14 +82,6 @@ namespace SSB.Core
         public ConsoleTextProcessor ConsoleTextProcessor { get; private set; }
 
         /// <summary>
-        ///     Gets the GUI controls.
-        /// </summary>
-        /// <value>
-        ///     The GUI controls.
-        /// </value>
-        public GuiControls GuiControls { get; private set; }
-
-        /// <summary>
         ///     Gets the GUI options.
         /// </summary>
         /// <value>
@@ -102,6 +96,24 @@ namespace SSB.Core
         ///     <c>true</c> if initialization has completed; otherwise, <c>false</c>.
         /// </value>
         public bool IsInitComplete { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether SSB is currently monitoring a QL server.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if SSB is monitoring a QL server; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMonitoringServer
+        {
+            get { return _isMonitoringServer; }
+            set
+            {
+                _isMonitoringServer = value;
+                // UI
+                AppWideUiControls.UpdateAppWideControls(value,
+                    ServerInfo.CurrentServerId);
+            }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is reading the console.
@@ -172,6 +184,69 @@ namespace SSB.Core
         public VoteManager VoteManager { get; private set; }
 
         /// <summary>
+        ///     Attempt to start monitoring the server, per the user's request.
+        /// </summary>
+        public async Task BeginMonitoring()
+        {
+            // We might've been previously monitoring without restarting the application,
+            // so also reset any server information.
+            ServerInfo.Reset();
+            // Start timer to continuously detect if QL process is running
+            StartProcessDetectionTimer();
+            // Start reading the console
+            StartConsoleReadThread();
+            // Are we connected?
+            await CheckQlServerConnectionExists();
+            if (!ServerInfo.IsQlConnectedToServer)
+            {
+                MessageBox.Show(
+                    @"Could not detect connection to a Quake Live server, monitoring cannot begin!",
+                    @"Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Get player listing and perform initilization tasks
+            GetServerInformation();
+            // We're live
+            IsMonitoringServer = true;
+        }
+
+        /// <summary>
+        ///     Sends commands to Quake Live to verify that a server connection exists.
+        /// </summary>
+        public async Task CheckQlServerConnectionExists()
+        {
+            QlCommands.ClearQlWinConsole();
+            await QlCommands.CheckMainMenuStatus();
+            await QlCommands.CheckCmdStatus();
+            QlCommands.QlCmdClear();
+        }
+
+        /// <summary>
+        ///     Gets the server information.
+        /// </summary>
+        public void GetServerInformation()
+        {
+            // First and foremost, clear the console and get the player listing.
+            QlCommands.ClearQlWinConsole();
+            // Re-focus the window
+            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
+            // Disable developer mode if it's already set, so we can get accurate player listing.
+            QlCommands.DisableDeveloperMode();
+            // Initially get the player listing when we start. Synchronous since initilization.
+            // ReSharper disable once UnusedVariable
+            var q = QlCommands.QlCmdPlayers();
+            // Get the server's id
+            QlCommands.SendToQl("serverinfo", true);
+            // Enable developer mode
+            QlCommands.EnableDeveloperMode();
+            // Delay some initilization tasks and complete initilization
+            StartDelayedInit(InitDelay);
+            QlCommands.ClearQlWinConsole();
+            Debug.WriteLine("SSB: Requesting server information.");
+        }
+
+        /// <summary>
         ///     Reloads the initialization step.
         /// </summary>
         /// <remarks>
@@ -180,7 +255,7 @@ namespace SSB.Core
         public void ReloadInit()
         {
             IsInitComplete = false;
-            InitServerInformation();
+            GetServerInformation();
             StartDelayedInit(InitDelay);
             QlCommands.ClearQlWinConsole();
         }
@@ -191,10 +266,22 @@ namespace SSB.Core
         public void StartConsoleReadThread()
         {
             if (IsReadingConsole) return;
-            Debug.WriteLine("...starting a thread to read QL console.");
+            Debug.WriteLine("SSB: Starting a thread to read QL console.");
             IsReadingConsole = true;
             var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
+        }
+
+        /// <summary>
+        ///     Hook up the process up the detection timer.
+        /// </summary>
+        public void StartProcessDetectionTimer()
+        {
+            if (_qlProcessDetectionTimer != null) return;
+            _qlProcessDetectionTimer = new Timer(15000);
+            _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
+            _qlProcessDetectionTimer.Enabled = true;
+            Debug.WriteLine("SSB: Process detection timer did not exist; enabling.");
         }
 
         /// <summary>
@@ -203,9 +290,7 @@ namespace SSB.Core
         public void StopConsoleReadThread()
         {
             IsReadingConsole = false;
-            Debug.WriteLine("...stopping QL console read thread.");
-            MessageBox.Show(@"Stopped reading Quake Live events, because Quake Live is not detected.",
-                @"Stopped reading events", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            Debug.WriteLine("SSB: Stopping QL console read thread.");
         }
 
         /// <summary>
@@ -226,31 +311,11 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Initializes the server information.
-        /// </summary>
-        private void InitServerInformation()
-        {
-            // First and foremost, clear the console and get the player listing.
-            QlCommands.ClearQlWinConsole();
-            // Re-focus the window
-            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
-            // Disable developer mode if it's already set, so we can get accurate player listing.
-            QlCommands.DisableDeveloperMode();
-            // Initially get the player listing when we start. Synchronous since initilization.
-            // ReSharper disable once UnusedVariable
-            Task q = QlCommands.QlCmdPlayers();
-            // Get the server's id
-            QlCommands.SendToQl("serverinfo", true);
-            // Enable developer mode
-            QlCommands.EnableDeveloperMode();
-        }
-
-        /// <summary>
         ///     Method that is executed to finalize the delayed initilization tasks.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
-        private void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
+        private async void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             QlCommands.ClearQlWinConsole();
             // Synchronous
@@ -258,9 +323,14 @@ namespace SSB.Core
             // Request the configstrings after the current players have already been gathered in order
             // to get an accurate listing of the teams. This will also take care of any players that might have
             // been initially missed by the 'players' command.
-            Task c = QlCommands.QlCmdConfigStrings();
+            var c = QlCommands.QlCmdConfigStrings();
 
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
+
+            // Wait 2 sec then clear the internal console
+            await Task.Delay(2*1000);
+            QlCommands.ClearQlWinConsole();
+
             // Initialization is fully complete, we can accept user commands now.
             IsInitComplete = true;
             _initTimer.Enabled = false;
@@ -268,18 +338,40 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Method that runs when the QL Process Detection Timer has elapsed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        private void QlProcessDetectionTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            var qlWindExists = QlWindowUtils.QlWindowHandle != IntPtr.Zero;
+            // Quake Live not found
+            if (!qlWindExists)
+            {
+                // Kill console read only if it exists
+                if (IsReadingConsole)
+                {
+                    Debug.WriteLine("SSB: Quake Live not found...Stopping console read thread.");
+                    StopConsoleReadThread();
+                    IsMonitoringServer = false;
+                    ServerInfo.IsQlConnectedToServer = false;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Reads the QL console window.
         /// </summary>
         private void ReadQlConsole()
         {
-            IntPtr consoleWindow = QlWindowUtils.GetQuakeLiveConsoleWindow();
-            IntPtr cText = QlWindowUtils.GetQuakeLiveConsoleTextArea(consoleWindow,
+            var consoleWindow = QlWindowUtils.GetQuakeLiveConsoleWindow();
+            var cText = QlWindowUtils.GetQuakeLiveConsoleTextArea(consoleWindow,
                 QlWindowUtils.GetQuakeLiveConsoleInputArea(consoleWindow));
             if (cText != IntPtr.Zero)
             {
                 while (IsReadingConsole)
                 {
-                    int textLength = Win32Api.SendMessage(cText, Win32Api.WM_GETTEXTLENGTH, IntPtr.Zero,
+                    var textLength = Win32Api.SendMessage(cText, Win32Api.WM_GETTEXTLENGTH, IntPtr.Zero,
                         IntPtr.Zero);
                     if ((textLength == 0) || (ConsoleTextProcessor.OldWholeConsoleLineLength == textLength))
                         continue;
@@ -287,10 +379,10 @@ namespace SSB.Core
                     // Entire console window text
                     var entireBuffer = new StringBuilder(textLength + 1);
                     Win32Api.SendMessage(cText, Win32Api.WM_GETTEXT, new IntPtr(textLength + 1), entireBuffer);
-                    string received = entireBuffer.ToString();
+                    var received = entireBuffer.ToString();
                     ConsoleTextProcessor.ProcessEntireConsoleText(received, textLength);
 
-                    int lengthDifference = Math.Abs(textLength - _oldLength);
+                    var lengthDifference = Math.Abs(textLength - _oldLength);
 
                     if (received.Length > lengthDifference)
                     {

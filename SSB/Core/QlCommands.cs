@@ -25,6 +25,23 @@ namespace SSB.Core
             _ssb = ssb;
         }
 
+        public async Task CheckCmdStatus()
+        {
+            await SendToQlAsync("cmd", false);
+            //QlCmdClear();
+            Debug.WriteLine("Checking status of server connection by sending cmd...");
+        }
+
+        /// <summary>
+        /// Checks the main menu (ui_mainmenu) status.
+        /// </summary>
+        public async Task CheckMainMenuStatus()
+        {
+            await SendToQlAsync("ui_mainmenu", false);
+            //QlCmdClear();
+            Debug.WriteLine("Checking status of main menu by sending ui_mainmenu...");
+        }
+
         /// <summary>
         ///     Clear both the QL WinConsole and the in-game console.
         /// </summary>
@@ -124,7 +141,7 @@ namespace SSB.Core
         /// <returns></returns>
         public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await CustCmdPutPlayer(player, team);
         }
 
@@ -192,6 +209,8 @@ namespace SSB.Core
         public async Task QlCmdConfigStrings()
         {
             await SendToQlAsync("configstrings", true);
+            // ...
+            QlCmdClear();
         }
 
         /// <summary>
@@ -201,7 +220,7 @@ namespace SSB.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await QlCmdSay(text);
         }
 
@@ -213,7 +232,7 @@ namespace SSB.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
         public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await QlCmdTell(text, player);
         }
 
@@ -250,7 +269,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -287,7 +306,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<string> say = DoSay;
                         say(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -322,7 +341,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -359,7 +378,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<string> sayTeam = DoSayTeam;
                         sayTeam(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -408,7 +427,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -445,7 +464,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<int, string> tell = DoTell;
                         tell(playerId, multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -502,7 +521,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }
