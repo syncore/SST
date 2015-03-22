@@ -386,7 +386,8 @@ namespace SSB.Core.Commands.Modules
         /// </returns>
         private async Task<bool> HandleAutoVoteAddition(CmdArgs c)
         {
-            var isValidCallVote = (ValidCallVotes.Any(v => v.Name.Equals(Helpers.GetArgVal(c, 3), StringComparison.InvariantCultureIgnoreCase)));
+            var isValidCallVote = (ValidCallVotes.Any(v => v.Name.Equals(Helpers.GetArgVal(c, 3),
+                StringComparison.InvariantCultureIgnoreCase)));
 
             if (!isValidCallVote)
             {

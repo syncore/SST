@@ -26,6 +26,17 @@ namespace SSB.Config.Core
         public bool appendToActivityLog { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether SSB should attempt to automatically
+        /// monitor a server on program start, as opposed to requiring the user to manully
+        /// start server monitoring via the UI.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if automatic server monitoring should occur on start;
+        ///  otherwise, <c>false</c>.
+        /// </value>
+        public bool autoMonitorServerOnStart { get; set; }
+
+        /// <summary>
         ///     Gets or sets the elo cache interval, which is
         ///     the time in minutes after which the cached elo data will expire.
         /// </summary>
@@ -73,6 +84,7 @@ namespace SSB.Config.Core
             // TODO: prior to release, change these default bot & account names to something completely random
             accountName = "syncore";
             appendToActivityLog = true;
+            autoMonitorServerOnStart = false;
             owner = "syncore";
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;

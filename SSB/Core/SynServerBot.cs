@@ -183,6 +183,20 @@ namespace SSB.Core
         /// </value>
         public VoteManager VoteManager { get; private set; }
 
+        public async Task AttemptAutoMonitorStart()
+        {
+            var qlw = new QlWindowUtils();
+            if (!qlw.QuakeLiveConsoleWindowExists())
+            {
+                Debug.WriteLine("Auto server monitoring on start is enabled, but QL window not found. Won't allow.");
+                MessageBox.Show(@"Could not auto-start server monitoring because a running instance of Quake Live was not found!",
+                    @"Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            await BeginMonitoring();
+        }
+        
         /// <summary>
         ///     Attempt to start monitoring the server, per the user's request.
         /// </summary>

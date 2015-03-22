@@ -291,6 +291,7 @@
             this.ssbExitButton = new System.Windows.Forms.Button();
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ssbStopButton = new System.Windows.Forms.Button();
+            this.ssbResetButton = new System.Windows.Forms.Button();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
@@ -298,7 +299,8 @@
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.modAutoVoterVoteTypeBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ssbResetButton = new System.Windows.Forms.Button();
+            this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -390,6 +392,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -535,6 +538,7 @@
             // coreCfgGroupBox
             // 
             this.coreCfgGroupBox.BackColor = System.Drawing.Color.Black;
+            this.coreCfgGroupBox.Controls.Add(this.coreAutoMonitorStartCheckBox);
             this.coreCfgGroupBox.Controls.Add(this.coreAppendEventsCheckBox);
             this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameTextBox);
             this.coreCfgGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
@@ -783,6 +787,7 @@
             this.moduleTabControl.SelectedIndex = 0;
             this.moduleTabControl.Size = new System.Drawing.Size(742, 489);
             this.moduleTabControl.TabIndex = 0;
+            this.moduleTabControl.SelectedIndexChanged += new System.EventHandler(this.moduleTabControl_SelectedIndexChanged);
             // 
             // accountDateTab
             // 
@@ -1152,7 +1157,7 @@
             this.modAutoVoterOptCurVotesGroupBox.Size = new System.Drawing.Size(288, 300);
             this.modAutoVoterOptCurVotesGroupBox.TabIndex = 12;
             this.modAutoVoterOptCurVotesGroupBox.TabStop = false;
-            this.modAutoVoterOptCurVotesGroupBox.Text = "Current Votes";
+            this.modAutoVoterOptCurVotesGroupBox.Text = "Current Automatic Votes";
             // 
             // modAutoVoterClearVotesButton
             // 
@@ -1167,6 +1172,7 @@
             this.modAutoVoterClearVotesButton.Text = "Clear All";
             this.coreToolTip.SetToolTip(this.modAutoVoterClearVotesButton, "Click this button to remove all of the current automatic votes.");
             this.modAutoVoterClearVotesButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterClearVotesButton.Click += new System.EventHandler(this.modAutoVoterClearVotesButton_Click);
             // 
             // modAutoVoterDelVoteButton
             // 
@@ -1181,6 +1187,7 @@
             this.modAutoVoterDelVoteButton.Text = "Remove Selected";
             this.coreToolTip.SetToolTip(this.modAutoVoterDelVoteButton, "Click this button to remove the selected automatic vote.");
             this.modAutoVoterDelVoteButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterDelVoteButton.Click += new System.EventHandler(this.modAutoVoterDelVoteButton_Click);
             // 
             // modAutoVoterCurVotesListBox
             // 
@@ -1263,6 +1270,7 @@
             this.modAutoVoterAddVoteButton.Text = "Add Automatic Vote";
             this.coreToolTip.SetToolTip(this.modAutoVoterAddVoteButton, "Click this button to add this vote.");
             this.modAutoVoterAddVoteButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterAddVoteButton.Click += new System.EventHandler(this.modAutoVoterAddVoteButton_Click);
             // 
             // modAutoVoterContainingDescLabel
             // 
@@ -1270,9 +1278,9 @@
             this.modAutoVoterContainingDescLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.modAutoVoterContainingDescLabel.Location = new System.Drawing.Point(19, 247);
             this.modAutoVoterContainingDescLabel.Name = "modAutoVoterContainingDescLabel";
-            this.modAutoVoterContainingDescLabel.Size = new System.Drawing.Size(236, 28);
+            this.modAutoVoterContainingDescLabel.Size = new System.Drawing.Size(250, 28);
             this.modAutoVoterContainingDescLabel.TabIndex = 11;
-            this.modAutoVoterContainingDescLabel.Text = "if empty then ALL [VOTETYPE] votes will\r\nautomatically [PASS]/[FAIL].";
+            this.modAutoVoterContainingDescLabel.Text = "If empty then ALL votes of a selected type \r\nwill automatically pass (or fail).";
             // 
             // modAutoVoterTypeLabel
             // 
@@ -1295,6 +1303,7 @@
             this.modAutoVoterVoteTypeComboxBox.Size = new System.Drawing.Size(183, 22);
             this.modAutoVoterVoteTypeComboxBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modAutoVoterVoteTypeComboxBox, "This list contains the types of votes to automatically pass\r\nor reject.");
+            this.modAutoVoterVoteTypeComboxBox.SelectedIndexChanged += new System.EventHandler(this.modAutoVoterVoteTypeComboxBox_SelectedIndexChanged);
             // 
             // modAutoVoterRejectRadioButton
             // 
@@ -1307,6 +1316,7 @@
             this.modAutoVoterRejectRadioButton.Text = "Reject";
             this.coreToolTip.SetToolTip(this.modAutoVoterRejectRadioButton, "Select this option to automatically vote \"no.\"");
             this.modAutoVoterRejectRadioButton.UseVisualStyleBackColor = true;
+            this.modAutoVoterRejectRadioButton.CheckedChanged += new System.EventHandler(this.modAutoVoterRejectRadioButton_CheckedChanged);
             // 
             // modAutoVoterPassRadioButton
             // 
@@ -1319,6 +1329,7 @@
             this.modAutoVoterPassRadioButton.Text = "Pass";
             this.coreToolTip.SetToolTip(this.modAutoVoterPassRadioButton, "Select this option to automatically vote \"yes.\"");
             this.modAutoVoterPassRadioButton.UseVisualStyleBackColor = true;
+            this.modAutoVoterPassRadioButton.CheckedChanged += new System.EventHandler(this.modAutoVoterPassRadioButton_CheckedChanged);
             // 
             // modAutoVoterActionLabel
             // 
@@ -1357,6 +1368,7 @@
             this.modAutoVoterResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modAutoVoterResetSettingsButton, "Reset this module to its default settings.");
             this.modAutoVoterResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterResetSettingsButton.Click += new System.EventHandler(this.modAutoVoterResetSettingsButton_Click);
             // 
             // modAutoVoterLoadSettingsButton
             // 
@@ -1371,6 +1383,7 @@
             this.modAutoVoterLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modAutoVoterLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modAutoVoterLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterLoadSettingsButton.Click += new System.EventHandler(this.modAutoVoterLoadSettingsButton_Click);
             // 
             // modAutoVoterSaveSettingsButton
             // 
@@ -1385,6 +1398,7 @@
             this.modAutoVoterSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modAutoVoterSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modAutoVoterSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterSaveSettingsButton.Click += new System.EventHandler(this.modAutoVoterSaveSettingsButton_Click);
             // 
             // modAutoVoterHeaderDescLabel
             // 
@@ -3649,6 +3663,22 @@
             this.ssbStopButton.UseVisualStyleBackColor = false;
             this.ssbStopButton.Click += new System.EventHandler(this.ssbStopButton_Click);
             // 
+            // ssbResetButton
+            // 
+            this.ssbResetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.ssbResetButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ssbResetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ssbResetButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ssbResetButton.ForeColor = System.Drawing.Color.White;
+            this.ssbResetButton.Location = new System.Drawing.Point(307, 645);
+            this.ssbResetButton.Name = "ssbResetButton";
+            this.ssbResetButton.Size = new System.Drawing.Size(68, 28);
+            this.ssbResetButton.TabIndex = 8;
+            this.ssbResetButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.ssbResetButton, "Stop monitoring if it\'s active, or start monitoring if it\'s\r\nnot active.");
+            this.ssbResetButton.UseVisualStyleBackColor = false;
+            this.ssbResetButton.Click += new System.EventHandler(this.ssbResetButton_Click);
+            // 
             // statusBar
             // 
             this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
@@ -3712,21 +3742,17 @@
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
             // 
-            // ssbResetButton
+            // coreAutoMonitorStartCheckBox
             // 
-            this.ssbResetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.ssbResetButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.ssbResetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ssbResetButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ssbResetButton.ForeColor = System.Drawing.Color.White;
-            this.ssbResetButton.Location = new System.Drawing.Point(307, 645);
-            this.ssbResetButton.Name = "ssbResetButton";
-            this.ssbResetButton.Size = new System.Drawing.Size(68, 28);
-            this.ssbResetButton.TabIndex = 8;
-            this.ssbResetButton.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.ssbResetButton, "Stop monitoring if it\'s active, or start monitoring if it\'s\r\nnot active.");
-            this.ssbResetButton.UseVisualStyleBackColor = false;
-            this.ssbResetButton.Click += new System.EventHandler(this.ssbResetButton_Click);
+            this.coreAutoMonitorStartCheckBox.AutoSize = true;
+            this.coreAutoMonitorStartCheckBox.Location = new System.Drawing.Point(14, 302);
+            this.coreAutoMonitorStartCheckBox.Name = "coreAutoMonitorStartCheckBox";
+            this.coreAutoMonitorStartCheckBox.Size = new System.Drawing.Size(206, 32);
+            this.coreAutoMonitorStartCheckBox.TabIndex = 13;
+            this.coreAutoMonitorStartCheckBox.Text = "Try to Automatically Start Server\r\nMonitoring on Program Start";
+            this.coreToolTip.SetToolTip(this.coreAutoMonitorStartCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
+        "ainly for debugging purposes).");
+            this.coreAutoMonitorStartCheckBox.UseVisualStyleBackColor = true;
             // 
             // UserInterface
             // 
@@ -3878,6 +3904,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4154,5 +4181,7 @@
         private System.Windows.Forms.ErrorProvider errorProvider;
         private System.Windows.Forms.BindingSource modAutoVoterVoteTypeBindingSource;
         private System.Windows.Forms.Button ssbResetButton;
+        private System.Windows.Forms.BindingSource modAutoVoterCurrentVotesBindingSource;
+        private System.Windows.Forms.CheckBox coreAutoMonitorStartCheckBox;
     }
 }
