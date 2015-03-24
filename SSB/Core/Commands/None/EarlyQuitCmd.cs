@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
 using SSB.Database;
@@ -31,12 +32,15 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -90,12 +94,12 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
@@ -144,8 +148,10 @@ namespace SSB.Core.Commands.None
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <list> <check>",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                c.CmdName, c.Args[1])) : c.CmdName));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>
@@ -199,8 +205,10 @@ namespace SSB.Core.Commands.None
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} <check> <name> - name is without the clan tag",
                     CommandList.GameCommandPrefix,
-                    ((c.FromIrc) ? (string.Format("{0} {1}"
-                    , c.CmdName, c.Args[1])) : c.CmdName));
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}"
+                            , c.CmdName, c.Args[1]))
+                        : c.CmdName));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -214,12 +222,18 @@ namespace SSB.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         private async Task ListQuits(CmdArgs c)
         {
-            var quits = _quitDb.GetAllQuits();
+            var quits = _quitDb.GetAllQuitters();
+            var quitBuilder = new StringBuilder();
+            foreach (var q in quits)
+            {
+                quitBuilder.Append(string.Format("{0}({1})", q.Name, q.QuitCount));
+            }
+
             StatusMessage = string.Format("^5[EARLYQUIT]^7 {0}",
-                ((!string.IsNullOrEmpty(quits))
+                ((quits.Count != 0)
                     ? (string.Format(
                         "Early quitters: ^1{0}^7 - To see quits remaining: ^3{1}{2} check <player>",
-                        quits, CommandList.GameCommandPrefix,
+                        quitBuilder, CommandList.GameCommandPrefix,
                         ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)))
                     : "No players have quit early."));
             await SendServerSay(c, StatusMessage);

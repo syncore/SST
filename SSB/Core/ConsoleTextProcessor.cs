@@ -174,13 +174,13 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of a cvar request that has been
-        ///  made either by SSB or the user, and handles it if it does.
-        ///
+        ///     Determines whether the text matches that of a cvar request that has been
+        ///     made either by SSB or the user, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a cvar request was detected and handled,
-        ///  otherwise <c>false</c>.
+        /// <returns>
+        ///     <c>true</c> if a cvar request was detected and handled,
+        ///     otherwise <c>false</c>.
         /// </returns>
         private bool CvarRequestDetected(string text)
         {
@@ -205,18 +205,20 @@ namespace SSB.Core
             // Most of time the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
-                // Cvar requests (i.e., ui_mainmenu for connection detection) need to come first
+                // Server connection detection events (i.e. cvar requests (ui_mainmenu), "not connected" messages
+                // need to be evaluated even if we're not monitoring the server, to see if server monitoring can begin
+                // when the user makes the request for it to do so.
+                // -----------------------------------------------------------------
                 // cvar request
                 if (CvarRequestDetected(text)) continue;
                 // 'Not connected to a server.' message detected
                 if (NotConnectedMsgDetected(text)) continue;
-
+                // render init start or init finished message detected
+                if (RenderInitDetected(text)) continue;
+                // -----------------------------------------------------------------
                 // Avoid event detection below if there's no connection to a server
-                if (!_ssb.IsMonitoringServer)
-                {
-                    return;
-                }
-
+                if (!_ssb.IsMonitoringServer) return;
+                // -----------------------------------------------------------------
                 // 'player connected' detected.
                 if (IncomingPlayerDetected(text).Result) continue;
                 // player configstring info detected (configstrings command)
@@ -428,12 +430,14 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of the "Not connected to a server." message
-        /// and handles it if it does.
+        ///     Determines whether the text matches that of the "Not connected to a server." message
+        ///     and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the text matches that of the "not connected to a server"
-        /// message; otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the text matches that of the "not connected to a server"
+        ///     message; otherwise <c>false</c>.
+        /// </returns>
         private bool NotConnectedMsgDetected(string text)
         {
             if (!_ssb.Parser.MsgNotConnected.IsMatch(text)) return false;
@@ -575,13 +579,17 @@ namespace SSB.Core
                 case QlCommandType.InitInfo:
                     _ssb.ServerEventProcessor.HandleMapLoad(t as string);
                     break;
-
-                //case QlCommandType.CvarRequest:
-                //    HandleCvarRequest(t as Match);
-                //    break;
             }
         }
 
+        /// <summary>
+        ///     Determines whether the text matches that of a message that would indicate
+        ///     that the client running SSB has left the server, and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>
+        ///     <c>true</c> if a disconnect message was detected, otherwise <c>false</c>
+        /// </returns>
         private bool QuakeLiveDisconnectedDetected(string text)
         {
             if (!_ssb.Parser.CvarSetQlDisconnected.IsMatch(text) &&
@@ -589,29 +597,34 @@ namespace SSB.Core
             {
                 return false;
             }
-            _ssb.IsMonitoringServer = false;
-            _ssb.ServerInfo.IsQlConnectedToServer = false;
+
+            // Stop monitoring, stop reading console, set server as disconnected.
+            _ssb.StopMonitoring();
+
             Debug.WriteLine("Detected SSB disconnection from Quake Live server. Stopping monitoring.");
             return true;
         }
 
-        /*
         /// <summary>
-        ///     Handles pre-defined cvar requests.
+        ///     Determines whether the text matches that of a message that signals
+        ///     renderer initlization, and handles it if it does.
         /// </summary>
-        /// <param name="m">The match.</param>
-        private void HandleCvarRequest(Match m)
+        /// <param name="text">The text.</param>
+        /// <returns>
+        ///     <c>true</c> if the renderer initilization message was detected,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        private bool RenderInitDetected(string text)
         {
-            string cvar = m.Groups["cvarname"].Value;
-            string value = m.Groups["cvarvalue"].Value;
-            switch (cvar)
+            if (!_ssb.Parser.MsgRInit.IsMatch(text) &&
+                !_ssb.Parser.MsgFinishedRInit.IsMatch(text))
             {
-                case "name":
-                    _ssb.ServerEventProcessor.SetBotAccountName(value);
-                    break;
+                return false;
             }
+            Debug.WriteLine("Detected a render initilization message. Will evaluate connection status.");
+            _ssb.ServerEventProcessor.HandleDisconnectionScan();
+            return true;
         }
-        */
 
         /// <summary>
         ///     Determines whether the text matches that of the game's end due to the score/frag/roundlimit

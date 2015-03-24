@@ -14,8 +14,8 @@ namespace SSB.Util
         // The time scales that are valid for our purposes (primarily used for adding various bans)
         public static string[] ValidTimeScales =
         {
-            "sec", "secs", "min", "mins", "hour", "hours", "day", "days",
-            "month", "months", "year", "years"
+            "secs", "mins", "hours", "days",
+            "months", "years"
         };
 
         /// <summary>
@@ -49,6 +49,26 @@ namespace SSB.Util
             return name.LastIndexOf(" ", StringComparison.Ordinal) != -1
                 ? name.Substring(name.LastIndexOf(" ", StringComparison.Ordinal) + 1).ToLowerInvariant()
                 : name.ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// Gets the array index of a given scale from the time scale array.
+        /// </summary>
+        /// <param name="scale">The scale.</param>
+        /// <returns>The array index of a given scale from the time scale array.
+        /// </returns>
+        public static int GetTimeScaleIndex(string scale)
+        {
+            int index = 0;
+            for (int i = 0; i < ValidTimeScales.Length; i++)
+            {
+                if (scale.Equals(ValidTimeScales[i],
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    index = i;
+                }
+            }
+            return index;
         }
 
         /// <summary>

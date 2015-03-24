@@ -42,6 +42,7 @@
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
             this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
             this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
             this.coreOwnerNameTextBox = new System.Windows.Forms.TextBox();
             this.coreHideQlConsoleCheckBox = new System.Windows.Forms.CheckBox();
@@ -112,6 +113,7 @@
             this.earlyQuitTab = new System.Windows.Forms.TabPage();
             this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modEarlyQuitOptCurQuitsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitRefreshQuitsButton = new System.Windows.Forms.Button();
             this.modEarlyQuitForgiveQuitButton = new System.Windows.Forms.Button();
             this.modEarlyQuitClearQuitsButton = new System.Windows.Forms.Button();
             this.modEarlyQuitDelQuitButton = new System.Windows.Forms.Button();
@@ -298,9 +300,9 @@
             this.closeButton = new System.Windows.Forms.PictureBox();
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.modAutoVoterVoteTypeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
+            this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.modAutoVoterRefreshVotesButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -391,8 +393,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -558,15 +560,27 @@
             this.coreCfgGroupBox.TabStop = false;
             this.coreCfgGroupBox.Text = "Configuration";
             // 
+            // coreAutoMonitorStartCheckBox
+            // 
+            this.coreAutoMonitorStartCheckBox.AutoSize = true;
+            this.coreAutoMonitorStartCheckBox.Location = new System.Drawing.Point(14, 302);
+            this.coreAutoMonitorStartCheckBox.Name = "coreAutoMonitorStartCheckBox";
+            this.coreAutoMonitorStartCheckBox.Size = new System.Drawing.Size(206, 32);
+            this.coreAutoMonitorStartCheckBox.TabIndex = 13;
+            this.coreAutoMonitorStartCheckBox.Text = "Try to Automatically Start Server\r\nMonitoring on Program Start";
+            this.coreToolTip.SetToolTip(this.coreAutoMonitorStartCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
+        "ainly for debugging purposes).");
+            this.coreAutoMonitorStartCheckBox.UseVisualStyleBackColor = true;
+            // 
             // coreAppendEventsCheckBox
             // 
             this.coreAppendEventsCheckBox.AutoSize = true;
             this.coreAppendEventsCheckBox.ForeColor = System.Drawing.Color.White;
             this.coreAppendEventsCheckBox.Location = new System.Drawing.Point(343, 236);
             this.coreAppendEventsCheckBox.Name = "coreAppendEventsCheckBox";
-            this.coreAppendEventsCheckBox.Size = new System.Drawing.Size(171, 18);
+            this.coreAppendEventsCheckBox.Size = new System.Drawing.Size(219, 18);
             this.coreAppendEventsCheckBox.TabIndex = 12;
-            this.coreAppendEventsCheckBox.Text = "Append SSB events to log";
+            this.coreAppendEventsCheckBox.Text = "Append SSB Events to Activity Log";
             this.coreToolTip.SetToolTip(this.coreAppendEventsCheckBox, "Select whether SSB events should be displayed in activity log\r\nunder the \"Log\" ta" +
         "b.");
             this.coreAppendEventsCheckBox.UseVisualStyleBackColor = true;
@@ -1147,14 +1161,15 @@
             // modAutoVoterOptCurVotesGroupBox
             // 
             this.modAutoVoterOptCurVotesGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterRefreshVotesButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterClearVotesButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterDelVoteButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterCurVotesListBox);
             this.modAutoVoterOptCurVotesGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterOptCurVotesGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterOptCurVotesGroupBox.Location = new System.Drawing.Point(434, 91);
+            this.modAutoVoterOptCurVotesGroupBox.Location = new System.Drawing.Point(366, 91);
             this.modAutoVoterOptCurVotesGroupBox.Name = "modAutoVoterOptCurVotesGroupBox";
-            this.modAutoVoterOptCurVotesGroupBox.Size = new System.Drawing.Size(288, 300);
+            this.modAutoVoterOptCurVotesGroupBox.Size = new System.Drawing.Size(356, 300);
             this.modAutoVoterOptCurVotesGroupBox.TabIndex = 12;
             this.modAutoVoterOptCurVotesGroupBox.TabStop = false;
             this.modAutoVoterOptCurVotesGroupBox.Text = "Current Automatic Votes";
@@ -1165,12 +1180,13 @@
             this.modAutoVoterClearVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterClearVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterClearVotesButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(191, 271);
+            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(134, 268);
             this.modAutoVoterClearVotesButton.Name = "modAutoVoterClearVotesButton";
             this.modAutoVoterClearVotesButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterClearVotesButton.TabIndex = 15;
-            this.modAutoVoterClearVotesButton.Text = "Clear All";
-            this.coreToolTip.SetToolTip(this.modAutoVoterClearVotesButton, "Click this button to remove all of the current automatic votes.");
+            this.modAutoVoterClearVotesButton.Text = "Remove All";
+            this.coreToolTip.SetToolTip(this.modAutoVoterClearVotesButton, "Click this button to remove all of the current automatic votes.\r\nThis will also d" +
+        "isable the auto voter module since there will be\r\nno votes to enforce.");
             this.modAutoVoterClearVotesButton.UseVisualStyleBackColor = false;
             this.modAutoVoterClearVotesButton.Click += new System.EventHandler(this.modAutoVoterClearVotesButton_Click);
             // 
@@ -1180,11 +1196,11 @@
             this.modAutoVoterDelVoteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterDelVoteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterDelVoteButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(6, 271);
+            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(6, 268);
             this.modAutoVoterDelVoteButton.Name = "modAutoVoterDelVoteButton";
-            this.modAutoVoterDelVoteButton.Size = new System.Drawing.Size(122, 23);
+            this.modAutoVoterDelVoteButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterDelVoteButton.TabIndex = 14;
-            this.modAutoVoterDelVoteButton.Text = "Remove Selected";
+            this.modAutoVoterDelVoteButton.Text = "Remove";
             this.coreToolTip.SetToolTip(this.modAutoVoterDelVoteButton, "Click this button to remove the selected automatic vote.");
             this.modAutoVoterDelVoteButton.UseVisualStyleBackColor = false;
             this.modAutoVoterDelVoteButton.Click += new System.EventHandler(this.modAutoVoterDelVoteButton_Click);
@@ -1198,7 +1214,7 @@
             this.modAutoVoterCurVotesListBox.ItemHeight = 14;
             this.modAutoVoterCurVotesListBox.Location = new System.Drawing.Point(6, 16);
             this.modAutoVoterCurVotesListBox.Name = "modAutoVoterCurVotesListBox";
-            this.modAutoVoterCurVotesListBox.Size = new System.Drawing.Size(276, 240);
+            this.modAutoVoterCurVotesListBox.Size = new System.Drawing.Size(344, 240);
             this.modAutoVoterCurVotesListBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modAutoVoterCurVotesListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
         "s loaded.");
@@ -1220,7 +1236,7 @@
             this.modAutoVoterOptVoteDetailsGroupBox.ForeColor = System.Drawing.Color.White;
             this.modAutoVoterOptVoteDetailsGroupBox.Location = new System.Drawing.Point(6, 91);
             this.modAutoVoterOptVoteDetailsGroupBox.Name = "modAutoVoterOptVoteDetailsGroupBox";
-            this.modAutoVoterOptVoteDetailsGroupBox.Size = new System.Drawing.Size(416, 356);
+            this.modAutoVoterOptVoteDetailsGroupBox.Size = new System.Drawing.Size(346, 356);
             this.modAutoVoterOptVoteDetailsGroupBox.TabIndex = 5;
             this.modAutoVoterOptVoteDetailsGroupBox.TabStop = false;
             this.modAutoVoterOptVoteDetailsGroupBox.Text = "Vote Details";
@@ -1348,9 +1364,9 @@
             this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterSaveSettingsButton);
             this.modAutoVoterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterSettingsGroupBox.Location = new System.Drawing.Point(434, 397);
+            this.modAutoVoterSettingsGroupBox.Location = new System.Drawing.Point(366, 397);
             this.modAutoVoterSettingsGroupBox.Name = "modAutoVoterSettingsGroupBox";
-            this.modAutoVoterSettingsGroupBox.Size = new System.Drawing.Size(288, 50);
+            this.modAutoVoterSettingsGroupBox.Size = new System.Drawing.Size(356, 50);
             this.modAutoVoterSettingsGroupBox.TabIndex = 10;
             this.modAutoVoterSettingsGroupBox.TabStop = false;
             this.modAutoVoterSettingsGroupBox.Text = "Settings";
@@ -1361,9 +1377,9 @@
             this.modAutoVoterResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(198, 20);
+            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(260, 20);
             this.modAutoVoterResetSettingsButton.Name = "modAutoVoterResetSettingsButton";
-            this.modAutoVoterResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterResetSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterResetSettingsButton.TabIndex = 9;
             this.modAutoVoterResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modAutoVoterResetSettingsButton, "Reset this module to its default settings.");
@@ -1376,9 +1392,9 @@
             this.modAutoVoterLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(104, 20);
+            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(134, 20);
             this.modAutoVoterLoadSettingsButton.Name = "modAutoVoterLoadSettingsButton";
-            this.modAutoVoterLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterLoadSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterLoadSettingsButton.TabIndex = 1;
             this.modAutoVoterLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modAutoVoterLoadSettingsButton, "Load the current settings from the configuration file.");
@@ -1391,9 +1407,9 @@
             this.modAutoVoterSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(10, 20);
+            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(6, 20);
             this.modAutoVoterSaveSettingsButton.Name = "modAutoVoterSaveSettingsButton";
-            this.modAutoVoterSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modAutoVoterSaveSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterSaveSettingsButton.TabIndex = 8;
             this.modAutoVoterSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modAutoVoterSaveSettingsButton, "Save the current settings to the configuration file.");
@@ -1462,18 +1478,35 @@
             // modEarlyQuitOptCurQuitsGroupBox
             // 
             this.modEarlyQuitOptCurQuitsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitRefreshQuitsButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitForgiveQuitButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitClearQuitsButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitDelQuitButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitCurQuitsListBox);
             this.modEarlyQuitOptCurQuitsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitOptCurQuitsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitOptCurQuitsGroupBox.Location = new System.Drawing.Point(377, 91);
+            this.modEarlyQuitOptCurQuitsGroupBox.Location = new System.Drawing.Point(319, 91);
             this.modEarlyQuitOptCurQuitsGroupBox.Name = "modEarlyQuitOptCurQuitsGroupBox";
-            this.modEarlyQuitOptCurQuitsGroupBox.Size = new System.Drawing.Size(345, 300);
+            this.modEarlyQuitOptCurQuitsGroupBox.Size = new System.Drawing.Size(403, 300);
             this.modEarlyQuitOptCurQuitsGroupBox.TabIndex = 12;
             this.modEarlyQuitOptCurQuitsGroupBox.TabStop = false;
             this.modEarlyQuitOptCurQuitsGroupBox.Text = "Current Early Quits";
+            // 
+            // modEarlyQuitRefreshQuitsButton
+            // 
+            this.modEarlyQuitRefreshQuitsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modEarlyQuitRefreshQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modEarlyQuitRefreshQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitRefreshQuitsButton.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitRefreshQuitsButton.Location = new System.Drawing.Point(323, 266);
+            this.modEarlyQuitRefreshQuitsButton.Name = "modEarlyQuitRefreshQuitsButton";
+            this.modEarlyQuitRefreshQuitsButton.Size = new System.Drawing.Size(74, 23);
+            this.modEarlyQuitRefreshQuitsButton.TabIndex = 17;
+            this.modEarlyQuitRefreshQuitsButton.Text = "Refresh";
+            this.coreToolTip.SetToolTip(this.modEarlyQuitRefreshQuitsButton, "Click this button to re-sync the internal early quit database to ensure that any " +
+        "early \r\nquit changes that occurred in-game or via IRC are reflected here.");
+            this.modEarlyQuitRefreshQuitsButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitRefreshQuitsButton.Click += new System.EventHandler(this.modEarlyQuitRefreshQuitsButton_Click);
             // 
             // modEarlyQuitForgiveQuitButton
             // 
@@ -1481,13 +1514,14 @@
             this.modEarlyQuitForgiveQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitForgiveQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitForgiveQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(8, 266);
+            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(6, 266);
             this.modEarlyQuitForgiveQuitButton.Name = "modEarlyQuitForgiveQuitButton";
-            this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(92, 23);
+            this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(74, 23);
             this.modEarlyQuitForgiveQuitButton.TabIndex = 16;
-            this.modEarlyQuitForgiveQuitButton.Text = "Forgive Quit";
+            this.modEarlyQuitForgiveQuitButton.Text = "Forgive";
             this.coreToolTip.SetToolTip(this.modEarlyQuitForgiveQuitButton, "Click this button to forgive one of the player\'s early quits.");
             this.modEarlyQuitForgiveQuitButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitForgiveQuitButton.Click += new System.EventHandler(this.modEarlyQuitForgiveQuitButton_Click);
             // 
             // modEarlyQuitClearQuitsButton
             // 
@@ -1495,13 +1529,14 @@
             this.modEarlyQuitClearQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitClearQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitClearQuitsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(248, 266);
+            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(206, 266);
             this.modEarlyQuitClearQuitsButton.Name = "modEarlyQuitClearQuitsButton";
             this.modEarlyQuitClearQuitsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitClearQuitsButton.TabIndex = 15;
-            this.modEarlyQuitClearQuitsButton.Text = "Clear All";
+            this.modEarlyQuitClearQuitsButton.Text = "Remove All";
             this.coreToolTip.SetToolTip(this.modEarlyQuitClearQuitsButton, "Click this button to remove all players\' early quits.");
             this.modEarlyQuitClearQuitsButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitClearQuitsButton.Click += new System.EventHandler(this.modEarlyQuitClearQuitsButton_Click);
             // 
             // modEarlyQuitDelQuitButton
             // 
@@ -1509,13 +1544,14 @@
             this.modEarlyQuitDelQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitDelQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitDelQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(118, 266);
+            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(110, 266);
             this.modEarlyQuitDelQuitButton.Name = "modEarlyQuitDelQuitButton";
-            this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(112, 23);
+            this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(74, 23);
             this.modEarlyQuitDelQuitButton.TabIndex = 14;
-            this.modEarlyQuitDelQuitButton.Text = "Remove selected";
+            this.modEarlyQuitDelQuitButton.Text = "Remove";
             this.coreToolTip.SetToolTip(this.modEarlyQuitDelQuitButton, "Click this button to remove all of the selected player\'s\r\nearly quits.");
             this.modEarlyQuitDelQuitButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitDelQuitButton.Click += new System.EventHandler(this.modEarlyQuitDelQuitButton_Click);
             // 
             // modEarlyQuitCurQuitsListBox
             // 
@@ -1526,10 +1562,10 @@
             this.modEarlyQuitCurQuitsListBox.ItemHeight = 14;
             this.modEarlyQuitCurQuitsListBox.Location = new System.Drawing.Point(6, 21);
             this.modEarlyQuitCurQuitsListBox.Name = "modEarlyQuitCurQuitsListBox";
-            this.modEarlyQuitCurQuitsListBox.Size = new System.Drawing.Size(330, 226);
+            this.modEarlyQuitCurQuitsListBox.Size = new System.Drawing.Size(391, 226);
             this.modEarlyQuitCurQuitsListBox.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.modEarlyQuitCurQuitsListBox, "This box displays the current automatic votes that are\r\nin effect if the module i" +
-        "s loaded.");
+            this.coreToolTip.SetToolTip(this.modEarlyQuitCurQuitsListBox, "This box displays the users who have quit games early and\r\ntheir total number of " +
+        "early quits.");
             // 
             // modEarlyQuitOptDetailsGroupBox
             // 
@@ -1544,7 +1580,7 @@
             this.modEarlyQuitOptDetailsGroupBox.ForeColor = System.Drawing.Color.White;
             this.modEarlyQuitOptDetailsGroupBox.Location = new System.Drawing.Point(6, 91);
             this.modEarlyQuitOptDetailsGroupBox.Name = "modEarlyQuitOptDetailsGroupBox";
-            this.modEarlyQuitOptDetailsGroupBox.Size = new System.Drawing.Size(359, 356);
+            this.modEarlyQuitOptDetailsGroupBox.Size = new System.Drawing.Size(307, 356);
             this.modEarlyQuitOptDetailsGroupBox.TabIndex = 5;
             this.modEarlyQuitOptDetailsGroupBox.TabStop = false;
             this.modEarlyQuitOptDetailsGroupBox.Text = "Early Quit Details";
@@ -1554,13 +1590,15 @@
             this.modEarlyQuitTimeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.modEarlyQuitTimeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.modEarlyQuitTimeTextBox.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitTimeTextBox.Location = new System.Drawing.Point(9, 252);
+            this.modEarlyQuitTimeTextBox.Location = new System.Drawing.Point(9, 266);
             this.modEarlyQuitTimeTextBox.MaxLength = 15;
             this.modEarlyQuitTimeTextBox.Name = "modEarlyQuitTimeTextBox";
             this.modEarlyQuitTimeTextBox.Size = new System.Drawing.Size(99, 22);
             this.modEarlyQuitTimeTextBox.TabIndex = 16;
             this.coreToolTip.SetToolTip(this.modEarlyQuitTimeTextBox, "Specify the time to ban the player for after the maximum quits\r\nare exceeded. Thi" +
         "s must be a number.");
+            this.modEarlyQuitTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modEarlyQuitTimeTextBox_Validating);
+            this.modEarlyQuitTimeTextBox.Validated += new System.EventHandler(this.modEarlyQuitTimeTextBox_Validated);
             // 
             // modEarlyQuitMaxQuitsTextBox
             // 
@@ -1574,6 +1612,8 @@
             this.modEarlyQuitMaxQuitsTextBox.TabIndex = 15;
             this.coreToolTip.SetToolTip(this.modEarlyQuitMaxQuitsTextBox, "Specify the maximum number of times a player can leave early.\r\nThis must be a num" +
         "ber.");
+            this.modEarlyQuitMaxQuitsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modEarlyQuitMaxQuitsTextBox_Validating);
+            this.modEarlyQuitMaxQuitsTextBox.Validated += new System.EventHandler(this.modEarlyQuitMaxQuitsTextBox_Validated);
             // 
             // modEarlyQuitEnableCheckBox
             // 
@@ -1589,19 +1629,20 @@
             // modEarlyQuitTimeLabel
             // 
             this.modEarlyQuitTimeLabel.AutoSize = true;
-            this.modEarlyQuitTimeLabel.Location = new System.Drawing.Point(6, 213);
+            this.modEarlyQuitTimeLabel.Location = new System.Drawing.Point(6, 201);
             this.modEarlyQuitTimeLabel.Name = "modEarlyQuitTimeLabel";
-            this.modEarlyQuitTimeLabel.Size = new System.Drawing.Size(323, 14);
+            this.modEarlyQuitTimeLabel.Size = new System.Drawing.Size(265, 28);
             this.modEarlyQuitTimeLabel.TabIndex = 9;
-            this.modEarlyQuitTimeLabel.Text = "Time to ban player for after max early quits are exceeded";
+            this.modEarlyQuitTimeLabel.Text = "Time to ban player for after max early quits are\r\nexceeded";
             // 
             // modEarlyQuitTimeScaleComboxBox
             // 
             this.modEarlyQuitTimeScaleComboxBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.modEarlyQuitTimeScaleComboxBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.modEarlyQuitTimeScaleComboxBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitTimeScaleComboxBox.ForeColor = System.Drawing.Color.White;
             this.modEarlyQuitTimeScaleComboxBox.FormattingEnabled = true;
-            this.modEarlyQuitTimeScaleComboxBox.Location = new System.Drawing.Point(126, 251);
+            this.modEarlyQuitTimeScaleComboxBox.Location = new System.Drawing.Point(141, 266);
             this.modEarlyQuitTimeScaleComboxBox.Name = "modEarlyQuitTimeScaleComboxBox";
             this.modEarlyQuitTimeScaleComboxBox.Size = new System.Drawing.Size(124, 22);
             this.modEarlyQuitTimeScaleComboxBox.TabIndex = 8;
@@ -1625,9 +1666,9 @@
             this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitSaveSettingsButton);
             this.modEarlyQuitSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitSettingsGroupBox.Location = new System.Drawing.Point(377, 397);
+            this.modEarlyQuitSettingsGroupBox.Location = new System.Drawing.Point(319, 397);
             this.modEarlyQuitSettingsGroupBox.Name = "modEarlyQuitSettingsGroupBox";
-            this.modEarlyQuitSettingsGroupBox.Size = new System.Drawing.Size(345, 50);
+            this.modEarlyQuitSettingsGroupBox.Size = new System.Drawing.Size(403, 50);
             this.modEarlyQuitSettingsGroupBox.TabIndex = 10;
             this.modEarlyQuitSettingsGroupBox.TabStop = false;
             this.modEarlyQuitSettingsGroupBox.Text = "Settings";
@@ -1638,7 +1679,7 @@
             this.modEarlyQuitResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(257, 19);
+            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(290, 19);
             this.modEarlyQuitResetSettingsButton.Name = "modEarlyQuitResetSettingsButton";
             this.modEarlyQuitResetSettingsButton.Size = new System.Drawing.Size(79, 23);
             this.modEarlyQuitResetSettingsButton.TabIndex = 9;
@@ -1652,7 +1693,7 @@
             this.modEarlyQuitLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(140, 19);
+            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(163, 19);
             this.modEarlyQuitLoadSettingsButton.Name = "modEarlyQuitLoadSettingsButton";
             this.modEarlyQuitLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
             this.modEarlyQuitLoadSettingsButton.TabIndex = 1;
@@ -1666,7 +1707,7 @@
             this.modEarlyQuitSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(19, 19);
+            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(36, 19);
             this.modEarlyQuitSaveSettingsButton.Name = "modEarlyQuitSaveSettingsButton";
             this.modEarlyQuitSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
             this.modEarlyQuitSaveSettingsButton.TabIndex = 8;
@@ -3742,17 +3783,21 @@
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
             // 
-            // coreAutoMonitorStartCheckBox
+            // modAutoVoterRefreshVotesButton
             // 
-            this.coreAutoMonitorStartCheckBox.AutoSize = true;
-            this.coreAutoMonitorStartCheckBox.Location = new System.Drawing.Point(14, 302);
-            this.coreAutoMonitorStartCheckBox.Name = "coreAutoMonitorStartCheckBox";
-            this.coreAutoMonitorStartCheckBox.Size = new System.Drawing.Size(206, 32);
-            this.coreAutoMonitorStartCheckBox.TabIndex = 13;
-            this.coreAutoMonitorStartCheckBox.Text = "Try to Automatically Start Server\r\nMonitoring on Program Start";
-            this.coreToolTip.SetToolTip(this.coreAutoMonitorStartCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
-        "ainly for debugging purposes).");
-            this.coreAutoMonitorStartCheckBox.UseVisualStyleBackColor = true;
+            this.modAutoVoterRefreshVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterRefreshVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterRefreshVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterRefreshVotesButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterRefreshVotesButton.Location = new System.Drawing.Point(260, 268);
+            this.modAutoVoterRefreshVotesButton.Name = "modAutoVoterRefreshVotesButton";
+            this.modAutoVoterRefreshVotesButton.Size = new System.Drawing.Size(90, 23);
+            this.modAutoVoterRefreshVotesButton.TabIndex = 16;
+            this.modAutoVoterRefreshVotesButton.Text = "Refresh";
+            this.coreToolTip.SetToolTip(this.modAutoVoterRefreshVotesButton, "Click this button to re-sync any auto vote changes that\r\nmight have occurred in-g" +
+        "ame or via IRC.");
+            this.modAutoVoterRefreshVotesButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterRefreshVotesButton.Click += new System.EventHandler(this.modAutoVoterRefreshVotesButton_Click);
             // 
             // UserInterface
             // 
@@ -3903,8 +3948,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterVoteTypeBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4179,9 +4224,11 @@
         private System.Windows.Forms.Button ssbStopButton;
         private System.Windows.Forms.CheckBox coreAppendEventsCheckBox;
         private System.Windows.Forms.ErrorProvider errorProvider;
-        private System.Windows.Forms.BindingSource modAutoVoterVoteTypeBindingSource;
         private System.Windows.Forms.Button ssbResetButton;
         private System.Windows.Forms.BindingSource modAutoVoterCurrentVotesBindingSource;
         private System.Windows.Forms.CheckBox coreAutoMonitorStartCheckBox;
+        private System.Windows.Forms.BindingSource modEarlyQuitCurrentQuitBindingSource;
+        private System.Windows.Forms.Button modEarlyQuitRefreshQuitsButton;
+        private System.Windows.Forms.Button modAutoVoterRefreshVotesButton;
     }
 }

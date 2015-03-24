@@ -1380,23 +1380,10 @@
         E7u/TIkkP/j1h//e70MzB3Cn1ELbR9/+fYa7c/IXvvvDP/z/AaBW9RkcCahLAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="modAutoVoterContainingTextBox.ToolTip" xml:space="preserve">
-    <value>Specify an optional parameter. For example, if you selected "kick", then 
-here you can specify the name of a player; or if you selected "teamsize", then
-you could specify the # of players. Votes matching this will be automatically passed
-or rejected. Note: If you leave this blank, then ALL votes of that type will be
-passed or rejected.</value>
-  </data>
   <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>15, 19</value>
   </metadata>
-  <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>15, 19</value>
-  </metadata>
-  <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>15, 19</value>
-  </metadata>
-  <data name="modAutoVoterHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="modEarlyQuitHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABQsSURBVHhe5Zt5cFXnecZv2k7GcafpuH90melM23+a
@@ -1557,6 +1544,9 @@ passed or rejected.</value>
         PpidAbkJuZZ35WVR5Qcs7k98xu0NaJRKNjYmJf+H4saj0OR/UYqwgl1JlzUAAAAASUVORK5CYII=
 </value>
   </data>
+  <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>15, 19</value>
+  </metadata>
   <data name="coreHideQlConsoleCheckBox.ToolTip" xml:space="preserve">
     <value>Select whether you want to hide ALL QL console text. Note:
 SSB uses QL debug text to get information, which can send
@@ -1843,7 +1833,14 @@ not be given out freely.
         Ff45i/8Z+l7P2JdC0sHLCUkHLyck/Y/qywlJBy8fWOx/AGisE9j08ZXdAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="modEarlyQuitHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="modAutoVoterContainingTextBox.ToolTip" xml:space="preserve">
+    <value>Specify an optional parameter. For example, if you selected "kick", then 
+here you can specify the name of a player; or if you selected "teamsize", then
+you could specify the # of players. Votes matching this will be automatically passed
+or rejected. Note: If you leave this blank, then ALL votes of that type will be
+passed or rejected.</value>
+  </data>
+  <data name="modAutoVoterHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABQsSURBVHhe5Zt5cFXnecZv2k7GcafpuH90melM23+a
@@ -3107,9 +3104,6 @@ this maximum value will be kicked when they attempt to connect to your server.
         RK5CYII=
 </value>
   </data>
-  <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>15, 19</value>
-  </metadata>
   <metadata name="statusBar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>156, 19</value>
   </metadata>
@@ -3713,11 +3707,11 @@ this maximum value will be kicked when they attempt to connect to your server.
         AADgAwAA8AcAAA==
 </value>
   </data>
-  <metadata name="modAutoVoterVoteTypeBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>437, 19</value>
-  </metadata>
   <metadata name="modAutoVoterCurrentVotesBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>755, 19</value>
+    <value>429, 21</value>
+  </metadata>
+  <metadata name="modEarlyQuitCurrentQuitBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>779, 21</value>
   </metadata>
   <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>15, 19</value>

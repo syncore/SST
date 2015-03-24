@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
-using SSB.Enum;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -51,6 +50,14 @@ namespace SSB.Core.Commands.Modules
         /// </value>
         public string BanTimeScale { get; set; }
 
+        /// <summary>
+        /// Gets or sets the array index of the ban time scale.
+        /// </summary>
+        /// <value>
+        /// The array index of the ban time scale.
+        /// </value>
+        public int BanTimeScaleIndex { get; set; }
+        
         /// <summary>
         ///     Gets or sets the maximum quits allowed before a user is banned.
         /// </summary>
@@ -250,6 +257,7 @@ namespace SSB.Core.Commands.Modules
                 _configHandler.Config.EarlyQuitOptions.isActive = true;
                 _configHandler.Config.EarlyQuitOptions.banTime = BanTime;
                 _configHandler.Config.EarlyQuitOptions.banTimeScale = BanTimeScale;
+                _configHandler.Config.EarlyQuitOptions.banTimeScaleIndex = BanTimeScaleIndex;
                 _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
             }
             else
@@ -274,20 +282,7 @@ namespace SSB.Core.Commands.Modules
             Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.",
                 Helpers.GetArgVal(c, 3)));
             // See if there is an early quit-related ban and remove it as well
-            var banDb = new DbBans();
-            if (banDb.UserAlreadyBanned(Helpers.GetArgVal(c, 3)))
-            {
-                var bi = banDb.GetBanInfo(Helpers.GetArgVal(c, 3));
-                if (bi.BanType == BanType.AddedByEarlyQuit)
-                {
-                    banDb.DeleteUserFromDb(Helpers.GetArgVal(c, 3));
-                    await
-                        _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", Helpers.GetArgVal(c, 1)),
-                            false);
-                    Debug.WriteLine(string.Format("Also removed early quit-related ban for player {0}.",
-                        Helpers.GetArgVal(c, 3)));
-                }
-            }
+            await qdb.RemoveQuitRelatedBan(_ssb, Helpers.GetArgVal(c, 3));
         }
 
         /// <summary>
@@ -316,6 +311,7 @@ namespace SSB.Core.Commands.Modules
             MaxQuitsAllowed = maxQuits;
             BanTime = time;
             BanTimeScale = scale;
+            BanTimeScaleIndex = Helpers.GetTimeScaleIndex(scale);
             UpdateConfig(true);
             StatusMessage = string.Format(
                 "^5[EARLYQUIT]^7 Early quit tracker is now ^2ON^7. Players who spectate or quit " +

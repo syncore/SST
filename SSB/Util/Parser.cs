@@ -24,6 +24,8 @@ namespace SSB.Util
             EvMapLoaded = new evMapLoaded();
             MsgNotConnected = new msgNotConnected();
             MsgErrorDisconnected = new msgErrorDisconnected();
+            MsgRInit = new msgRInit();
+            MsgFinishedRInit = new msgFinishedRInit();
             ScmdAccuracy = new scmdAccuracy();
             ScmdPakInfo = new scmdPakInfo();
             ScmdPlayerConfigString = new scmdPlayerConfigString();
@@ -159,6 +161,15 @@ namespace SSB.Util
         public Regex MsgErrorDisconnected { get; private set; }
 
         /// <summary>
+        /// Regex for detecting the "----- finished R_Init -----" text, used for
+        /// server (dis)connection detection.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting the "----- finished R_Init -----" text.
+        /// </value>
+        public Regex MsgFinishedRInit { get; private set; }
+
+        /// <summary>
         /// Regex for detecting the "Not connected to a server." text,
         /// used for server connection detection.
         /// </summary>
@@ -166,6 +177,15 @@ namespace SSB.Util
         /// Regex for detecting the "Not connected to a server." text.
         /// </value>
         public Regex MsgNotConnected { get; private set; }
+
+        /// <summary>
+        /// Regex for detecting the "----- R_Init -----" text, used for
+        /// server (dis)connection detection.
+        /// </summary>
+        /// <value>
+        /// Regex for detecting the "----- R_Init -----" text.
+        /// </value>
+        public Regex MsgRInit { get; private set; }
 
         /// <summary>
         ///     Regex for finding player's name and id after issuing 'players' command.

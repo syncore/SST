@@ -330,11 +330,28 @@ namespace ParserDllGenerator
 
             // "Not connected to a server." message
             // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
-            expr = new RegexCompilationInfo(@"^Not connected to a server.*",
+            expr = new RegexCompilationInfo(@"^Not connected to a server.",
                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "msgNotConnected",
                "SSB.External.Parser",
                true);
             compilationList.Add(expr);
+
+            // "----- R_Init -----" message
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^----- R_Init -----",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "msgRInit",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
+            // "----- finished R_Init -----" message
+            // This requires the multiline (RegexOptions.Multiline) option and ^ for proper parsing
+            expr = new RegexCompilationInfo(@"^----- finished R_Init -----",
+               RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "msgFinishedRInit",
+               "SSB.External.Parser",
+               true);
+            compilationList.Add(expr);
+
 
             // Generate the assembly
             var compilationArray = new RegexCompilationInfo[compilationList.Count];

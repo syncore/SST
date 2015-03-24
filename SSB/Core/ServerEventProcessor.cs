@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
@@ -17,6 +18,7 @@ namespace SSB.Core
     {
         private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
+        private Timer _disconnectScanTimer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServerEventProcessor" /> class.
@@ -50,7 +52,10 @@ namespace SSB.Core
         ///     Gets the player name from the player identifier.
         /// </summary>
         /// <param name="id">The player identifier.</param>
-        /// <returns>The player name as a string if the id matches the id parameter, otherwise a blank string.</returns>
+        /// <returns>
+        ///     The player name as a string if the id matches the id parameter,
+        ///     otherwise a blank string.
+        /// </returns>
         public string GetPlayerNameFromId(int id)
         {
             var name = string.Empty;
@@ -65,6 +70,19 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Handles the scan to check to see if SSB is still connected to a Quake Live server.
+        /// </summary>
+        public void HandleDisconnectionScan()
+        {
+            if (_ssb.IsDisconnectionScanPending) return;
+            if (!_ssb.IsInitComplete) return;
+            _disconnectScanTimer = new Timer(10000) {AutoReset = false, Enabled = true};
+            _disconnectScanTimer.Elapsed += DisconnectScanElapsed;
+            _ssb.IsDisconnectionScanPending = true;
+            Debug.WriteLine("Will check if server connection still exists in 10 seconds.");
+        }
+
+        /// <summary>
         ///     Handles the map load or change.
         /// </summary>
         /// <param name="text">The text.</param>
@@ -76,7 +94,8 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Handles the player information from the 'players' command and performs various actions based on the data.
+        ///     Handles the player information from the 'players' command and performs various
+        ///     actions based on the data.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
@@ -351,6 +370,34 @@ namespace SSB.Core
                         _ssb.Mod.EloLimit.CheckPlayerEloRequirement(player.Key);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Method that is executed when the disconnection scan timer elapses.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">
+        ///     The <see cref="ElapsedEventArgs" /> instance containing the
+        ///     event data.
+        /// </param>
+        private async void DisconnectScanElapsed(object sender, ElapsedEventArgs e)
+        {
+            await _ssb.CheckQlServerConnectionExists();
+
+            // If connection no longer exists then we need to stop
+            // monitoring the non-existent server and shutdown all console reading.
+            if (!_ssb.ServerInfo.IsQlConnectedToServer)
+            {
+                Debug.WriteLine("Disconnection scan determined that server connection" +
+                                " no-longer exists; stopping monitoring.");
+
+                // Stop monitoring, stop reading console, set server as disconnected.
+                _ssb.StopMonitoring();
+            }
+
+            _ssb.IsDisconnectionScanPending = false;
+            _disconnectScanTimer.Enabled = false;
+            _disconnectScanTimer = null;
         }
 
         /// <summary>

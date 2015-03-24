@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSB.Config;
 using SSB.Core;
+using SSB.Database;
 using SSB.Enum;
 using SSB.Model;
 using SSB.Ui.Validation;
@@ -19,17 +22,20 @@ namespace SSB.Ui
         private readonly AccountDateLimitValidator _accountDateLimitValidator;
         private readonly ConfigHandler _cfgHandler;
         private readonly CoreOptionsValidator _coreOptionsValidator;
+        private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly SynServerBot _ssb;
+        private List<EarlyQuitter> _earlyQuittersFromDb;
 
         public UserInterface(SynServerBot ssb)
         {
             InitializeComponent();
             titleBarVersionLabel.Text = string.Format("version {0}",
-                typeof(EntryPoint).Assembly.GetName().Version);
+                typeof (EntryPoint).Assembly.GetName().Version);
             _cfgHandler = new ConfigHandler();
             _ssb = ssb;
             _coreOptionsValidator = new CoreOptionsValidator();
             _accountDateLimitValidator = new AccountDateLimitValidator();
+            _earlyQuitValidator = new EarlyQuitValidator();
             SetAppWideUiControls();
             PopulateAllUiTabs();
             CheckForAutoMonitoring();
@@ -40,7 +46,7 @@ namespace SSB.Ui
             _cfgHandler.ReadConfiguration();
             if (!_cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
             Debug.WriteLine("User has auto monitor on start specified. Attempting to start monitoring.");
-            
+
             // ReSharper disable once UnusedVariable
             // Synchronous
             var a = _ssb.AttemptAutoMonitorStart();
@@ -278,9 +284,10 @@ namespace SSB.Ui
             var fullVoteText = string.Format("{0} {1}",
                 modAutoVoterVoteTypeComboxBox.SelectedValue,
                 (containsParam) ? modAutoVoterContainingTextBox.Text : string.Empty).ToLowerInvariant().Trim();
-
+            
             if (_ssb.Mod.AutoVoter.AutoVotes.Any(v => v.VoteText.Equals(fullVoteText,
                 StringComparison.InvariantCultureIgnoreCase)))
+            
             {
                 ShowErrorMessage("There is already an existing vote that matches that type!",
                     "Vote already exists");
@@ -300,10 +307,13 @@ namespace SSB.Ui
             _cfgHandler.ReadConfiguration();
             var addedByAdmin = _cfgHandler.Config.CoreOptions.owner;
 
-            _ssb.Mod.AutoVoter.AutoVotes.Add(new AutoVote(fullVoteText, containsParam, intendedResult,
-                addedByAdmin));
+            modAutoVoterCurrentVotesBindingSource.Add(new AutoVote(fullVoteText,
+                containsParam, intendedResult, addedByAdmin));
 
             RefreshCurrentVotesDataSource();
+            modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
+                ? 0
+                : -1);
             modAutoVoterVoteTypeComboxBox.SelectedIndex = 0;
             modAutoVoterContainingTextBox.Clear();
 
@@ -314,36 +324,40 @@ namespace SSB.Ui
 
         private void modAutoVoterClearVotesButton_Click(object sender, EventArgs e)
         {
-            _ssb.Mod.AutoVoter.AutoVotes.Clear();
-            // Disable auto voter since there are now no votes
-            _cfgHandler.Config.AutoVoterOptions.isActive = false;
-            _cfgHandler.WriteConfiguration();
+            modAutoVoterCurrentVotesBindingSource.Clear();
             modAutoVoterEnableCheckBox.Checked = false;
             HandleAutoVoterModActivation(modAutoVoterEnableCheckBox.Checked);
+            modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
+                ? 0
+                : -1);
+            
+            
             RefreshCurrentVotesDataSource();
+
+            // Disable auto voter since there are now no votes
+            _cfgHandler.Config.AutoVoterOptions.isActive = false;
+            _cfgHandler.Config.AutoVoterOptions.autoVotes = new List<AutoVote>();
+            _cfgHandler.WriteConfiguration();
 
             Debug.WriteLine("[UI]: All automatic votes were cleared by owner.");
         }
 
         private void modAutoVoterDelVoteButton_Click(object sender, EventArgs e)
         {
-            if (_ssb.Mod.AutoVoter.AutoVotes.Count == 0 ||
+            if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
-            
+
+            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
+            modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Debug.WriteLine("[UI]: Owner removed auto {0} vote: {1}",
-                ((_ssb.Mod.AutoVoter.AutoVotes[modAutoVoterCurVotesListBox.SelectedIndex].
-                IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
-                _ssb.Mod.AutoVoter.AutoVotes[modAutoVoterCurVotesListBox.SelectedIndex].VoteText);
+                ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
+                selectedVote.VoteText);
 
-
-            try
-            {
-                _ssb.Mod.AutoVoter.AutoVotes.RemoveAt(modAutoVoterCurVotesListBox.SelectedIndex);
-            }
-            catch
-            {
-                // ignored
-            }
+            // Set appropriate index to prevent weird ArgumentOutOfRangeException when
+            //re-binding the datasource (RefreshCurrentVotesDataSource())
+            modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
+                ? 0
+                : -1);
             RefreshCurrentVotesDataSource();
         }
 
@@ -351,6 +365,16 @@ namespace SSB.Ui
         {
             PopulateModAutoVoterUi();
             ShowInfoMessage("Auto voter display settings loaded.", "Settings Loaded");
+        }
+
+        private void modAutoVoterPassRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SetAutoVoteOptionalText();
+        }
+
+        private void modAutoVoterRejectRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SetAutoVoteOptionalText();
         }
 
         private void modAutoVoterResetSettingsButton_Click(object sender, EventArgs e)
@@ -381,6 +405,43 @@ namespace SSB.Ui
             }
         }
 
+        private void modAutoVoterVoteTypeComboxBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetAutoVoteOptionalText();
+        }
+
+        private void modEarlyQuitMaxQuitsTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEarlyQuitMaxQuitsTextBox, string.Empty);
+        }
+
+        private void modEarlyQuitMaxQuitsTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_earlyQuitValidator.IsValidMaximumNumQuits(modEarlyQuitMaxQuitsTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEarlyQuitMaxQuitsTextBox.Select(0, modEarlyQuitMaxQuitsTextBox.Text.Length);
+                errorProvider.SetError(modEarlyQuitMaxQuitsTextBox, errorMsg);
+            }
+        }
+
+        private void modEarlyQuitTimeTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEarlyQuitTimeTextBox, string.Empty);
+        }
+
+        private void modEarlyQuitTimeTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_earlyQuitValidator.IsValidTimeBanNum(modEarlyQuitTimeTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEarlyQuitTimeTextBox.Select(0, modEarlyQuitTimeTextBox.Text.Length);
+                errorProvider.SetError(modEarlyQuitTimeTextBox, errorMsg);
+            }
+        }
+
         private void moduleTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tabControl = sender as TabControl;
@@ -403,6 +464,7 @@ namespace SSB.Ui
             }
             else if (currentTabPage == earlyQuitTab)
             {
+                PopulateModEarlyQuitUi();
             }
             else if (currentTabPage == eloLimitTab)
             {
@@ -427,6 +489,7 @@ namespace SSB.Ui
             PopulateModAccountDateUi();
             PopulateModAccuracyUi();
             PopulateModAutoVoterUi();
+            PopulateModEarlyQuitUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -462,21 +525,47 @@ namespace SSB.Ui
         private void PopulateModAutoVoterUi()
         {
             _cfgHandler.ReadConfiguration();
-            var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
-            modAutoVoterEnableCheckBox.Checked = autoVoterOptions.isActive;
-            autoVoterOptions.autoVotes = _ssb.Mod.AutoVoter.AutoVotes;
+            modAutoVoterEnableCheckBox.Checked = _cfgHandler.Config.AutoVoterOptions.isActive;
             
             // Radio buttons
             modAutoVoterPassRadioButton.Checked = true;
             // Vote types combo box
             modAutoVoterVoteTypeComboxBox.DisplayMember = "Name";
-            modAutoVoterVoteTypeComboxBox.ValueMember = "Type";
-            modAutoVoterVoteTypeBindingSource.DataSource = _ssb.Mod.AutoVoter.ValidCallVotes;
-            modAutoVoterVoteTypeComboxBox.DataSource = modAutoVoterVoteTypeBindingSource.DataSource;
+            modAutoVoterVoteTypeComboxBox.ValueMember = "Name";
+            modAutoVoterVoteTypeComboxBox.DataSource = _ssb.Mod.AutoVoter.ValidCallVotes;
             modAutoVoterVoteTypeComboxBox.SelectedIndex = 0;
             // Current votes listbox
             RefreshCurrentVotesDataSource();
             Debug.WriteLine("Populated auto voter module user interface.");
+        }
+
+        private void PopulateModEarlyQuitUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+            modEarlyQuitEnableCheckBox.Checked = earlyQuitOptions.isActive;
+            modEarlyQuitMaxQuitsTextBox.Text = earlyQuitOptions.maxQuitsAllowed.ToString();
+            modEarlyQuitTimeTextBox.Text = earlyQuitOptions.banTime.ToString(CultureInfo.InvariantCulture);
+            modEarlyQuitTimeScaleComboxBox.DataSource = Helpers.ValidTimeScales;
+            modEarlyQuitTimeScaleComboxBox.SelectedIndex = earlyQuitOptions.banTimeScaleIndex;
+            // Current early quitters listbox
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("Populated early quit banner module user interface.");
+        }
+
+        private void RefreshCurrentQuittersDataSource()
+        {
+            modEarlyQuitCurQuitsListBox.DataSource = null;
+            modEarlyQuitCurQuitsListBox.DisplayMember = "EarlyQuitFormatDisplay";
+            modEarlyQuitCurQuitsListBox.ValueMember = "Name";
+            var earlyQuitDb = new DbQuits();
+            _earlyQuittersFromDb = earlyQuitDb.GetAllQuitters();
+            modEarlyQuitCurrentQuitBindingSource.DataSource =
+                new BindingList<EarlyQuitter>(_earlyQuittersFromDb);
+            if (modEarlyQuitCurrentQuitBindingSource.Count != 0)
+            {
+                modEarlyQuitCurQuitsListBox.DataSource = modEarlyQuitCurrentQuitBindingSource.DataSource;
+            }
         }
 
         private void RefreshCurrentVotesDataSource()
@@ -484,12 +573,14 @@ namespace SSB.Ui
             modAutoVoterCurVotesListBox.DataSource = null;
             modAutoVoterCurVotesListBox.DisplayMember = "VoteFormatDisplay";
             modAutoVoterCurVotesListBox.ValueMember = "VoteText";
-            modAutoVoterCurrentVotesBindingSource.DataSource = _ssb.Mod.AutoVoter.AutoVotes;
-            if (_ssb.Mod.AutoVoter.AutoVotes.Count != 0)
+            modAutoVoterCurrentVotesBindingSource.DataSource =
+                new BindingList<AutoVote>(_ssb.Mod.AutoVoter.AutoVotes);
+            if (modAutoVoterCurrentVotesBindingSource.Count != 0)
+            //if (_ssb.Mod.AutoVoter.AutoVotes.Count != 0)
             {
                 // Only set the listbox's datasource if there are elements
+                // otherwise, ArgumentOutOfRange is unfortunately possible
                 // see: http://stackoverflow.com/a/26762624
-                
                 modAutoVoterCurVotesListBox.DataSource = modAutoVoterCurrentVotesBindingSource.DataSource;
             }
         }
@@ -504,6 +595,14 @@ namespace SSB.Ui
             _ssb.AppWideUiControls.StatusBar = statusLabel;
             _ssb.AppWideUiControls.StartMonitoringButton = ssbStartButton;
             _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
+        }
+
+        private void SetAutoVoteOptionalText()
+        {
+            modAutoVoterContainingDescLabel.Text =
+                string.Format("If empty then ALL {0} votes will {1}",
+                    (modAutoVoterVoteTypeComboxBox.SelectedItem), (string.Format("{0}automatically {1}",
+                        Environment.NewLine, ((modAutoVoterPassRadioButton.Checked) ? "PASS." : "FAIL."))));
         }
 
         private void ShowErrorMessage(string text, string title)
@@ -543,10 +642,13 @@ namespace SSB.Ui
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            Debug.WriteLine("Got user request to reset server monitoring; Stopping if exists," +
+                            " starting if it doesn't.");
+
             if (_ssb.IsMonitoringServer)
             {
-                _ssb.IsMonitoringServer = false;
-                _ssb.ServerInfo.Reset();
+                _ssb.StopMonitoring();
             }
             else
             {
@@ -588,32 +690,94 @@ namespace SSB.Ui
                     "SSB was not previously monitoring server; ignoring user's request to stop monitoring.");
                 return;
             }
-            _ssb.IsMonitoringServer = false;
-            _ssb.ServerInfo.Reset();
+
+            _ssb.StopMonitoring();
             Debug.WriteLine("Got user request to stop monitoring server. Stopping monitoring.");
         }
 
-        private void SetAutoVoteOptionalText()
+        private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
-            modAutoVoterContainingDescLabel.Text =
-                string.Format("If empty then ALL {0} votes will {1}",
-                (modAutoVoterVoteTypeComboxBox.SelectedItem), (string.Format("{0}automatically {1}",
-                Environment.NewLine, ((modAutoVoterPassRadioButton.Checked) ? "PASS." : "FAIL."))));
-        }
-        
-        private void modAutoVoterVoteTypeComboxBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetAutoVoteOptionalText();
+            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var earlyQuitDb = new DbQuits();
+            // Might've been removed in-game
+            if (!earlyQuitDb.UserExistsInDb(player.Name))
+            {
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+            if (player.QuitCount == 1)
+            {
+                earlyQuitDb.DeleteUserFromDb(player.Name);
+                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+            
+            earlyQuitDb.DecrementUserQuitCount(player.Name, 1);
+            Debug.WriteLine(string.Format("[UI]: Forgave 1 early quit for {0}",
+                player.Name));
+            RefreshCurrentQuittersDataSource();
         }
 
-        private void modAutoVoterPassRadioButton_CheckedChanged(object sender, EventArgs e)
+        private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
-            SetAutoVoteOptionalText();
+            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var earlyQuitDb = new DbQuits();
+            // Might've been removed in-game
+            if (!earlyQuitDb.UserExistsInDb(player.Name))
+            {
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+            earlyQuitDb.DeleteUserFromDb(player.Name);
+            await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+            Debug.WriteLine(string.Format("[UI]: Removed {0} from early quit database",
+                player.Name));
+
+            // ...
+            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
+                ? 0
+                : -1);
+            
+            RefreshCurrentQuittersDataSource();
         }
 
-        private void modAutoVoterRejectRadioButton_CheckedChanged(object sender, EventArgs e)
+        private async void modEarlyQuitClearQuitsButton_Click(object sender, EventArgs e)
         {
-            SetAutoVoteOptionalText();
+            var earlyQuitDb = new DbQuits();
+            
+            // Initial read of database
+            RefreshCurrentQuittersDataSource();
+            
+            foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
+            {
+                var player = (EarlyQuitter) p;
+                earlyQuitDb.DeleteUserFromDb(player.Name);
+                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+            }
+
+            // ... 
+            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
+                ? 0
+                : -1);
+            
+            // Update
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("[UI]: Cleared early quit database.");
+        }
+
+        private void modEarlyQuitRefreshQuitsButton_Click(object sender, EventArgs e)
+        {
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("[UI]: Received user request to refresh current quitters data source.");
+        }
+
+        private void modAutoVoterRefreshVotesButton_Click(object sender, EventArgs e)
+        {
+            RefreshCurrentVotesDataSource();
+            Debug.WriteLine("[UI]: Received user request to refresh current auto votes data source.");
         }
     }
 }

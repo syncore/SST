@@ -19,12 +19,12 @@ namespace SSB.Core
     /// </summary>
     public class SynServerBot
     {
+        public double InitDelay = 6.5;
         private Timer _initTimer;
         private bool _isMonitoringServer;
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
-        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
@@ -88,6 +88,14 @@ namespace SSB.Core
         ///     The GUI options.
         /// </value>
         public GuiOptions GuiOptions { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a server disconnection scan is pending.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> a server disconnection scan is pending; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsDisconnectionScanPending { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether initialization has completed.
@@ -196,12 +204,13 @@ namespace SSB.Core
             }
             await BeginMonitoring();
         }
-        
+
         /// <summary>
         ///     Attempt to start monitoring the server, per the user's request.
         /// </summary>
         public async Task BeginMonitoring()
         {
+            IsInitComplete = false;
             // We might've been previously monitoring without restarting the application,
             // so also reset any server information.
             ServerInfo.Reset();
@@ -270,7 +279,6 @@ namespace SSB.Core
         {
             IsInitComplete = false;
             GetServerInformation();
-            StartDelayedInit(InitDelay);
             QlCommands.ClearQlWinConsole();
         }
 
@@ -282,7 +290,7 @@ namespace SSB.Core
             if (IsReadingConsole) return;
             Debug.WriteLine("SSB: Starting a thread to read QL console.");
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
@@ -305,6 +313,18 @@ namespace SSB.Core
         {
             IsReadingConsole = false;
             Debug.WriteLine("SSB: Stopping QL console read thread.");
+        }
+
+        /// <summary>
+        /// Stops the monitoring of a server.
+        /// </summary>
+        public void StopMonitoring()
+        {
+            Debug.WriteLine("Got request to stop all monitoring and console reading.");
+            IsMonitoringServer = false;
+            StopConsoleReadThread();
+            ServerInfo.IsQlConnectedToServer = false;
+            ServerInfo.Reset();
         }
 
         /// <summary>
@@ -342,7 +362,7 @@ namespace SSB.Core
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
 
             // Wait 2 sec then clear the internal console
-            await Task.Delay(2*1000);
+            await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();
 
             // Initialization is fully complete, we can accept user commands now.
@@ -362,14 +382,10 @@ namespace SSB.Core
             // Quake Live not found
             if (!qlWindExists)
             {
-                // Kill console read only if it exists
-                if (IsReadingConsole)
-                {
-                    Debug.WriteLine("SSB: Quake Live not found...Stopping console read thread.");
-                    StopConsoleReadThread();
-                    IsMonitoringServer = false;
-                    ServerInfo.IsQlConnectedToServer = false;
-                }
+                Debug.WriteLine("SSB: Quake Live not found...Stopping all monitoring and process detection.");
+                StopMonitoring();
+                _qlProcessDetectionTimer.Enabled = false;
+                _qlProcessDetectionTimer = null;
             }
         }
 
@@ -450,7 +466,7 @@ namespace SSB.Core
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInit(double seconds)
         {
-            _initTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
+            _initTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
             _initTimer.Elapsed += InitTimerOnElapsed;
         }
     }

@@ -184,6 +184,7 @@
     <Compile Include="Model\BanInfo.cs" />
     <Compile Include="Model\CmdArgs.cs" />
     <Compile Include="Model\CommonSqliteDb.cs" />
+    <Compile Include="Model\EarlyQuitter.cs" />
     <Compile Include="Model\PickupInfo.cs" />
     <Compile Include="Model\QlRanks\Ca.cs" />
     <Compile Include="Model\QlRanks\Ctf.cs" />
@@ -205,6 +206,7 @@
       <DependentUpon>UserInterface.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\Validation\CoreOptionsValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\EarlyQuitValidator.cs" />
     <Compile Include="Ui\Validation\Modules\AccountDateLimitValidator.cs" />
     <Compile Include="Util\ExpirationDateGenerator.cs" />
     <Compile Include="Util\Filepaths.cs" />
