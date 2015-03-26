@@ -30,7 +30,7 @@
         ///     The repeat time in minutes.
         /// </value>
         // ReSharper disable once InconsistentNaming
-        public uint repeatInterval { get; set; }
+        public int repeatInterval { get; set; }
 
         /// <summary>
         /// Sets the defaults.

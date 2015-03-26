@@ -557,7 +557,7 @@ namespace SSB.Core
                     // Synchronous
                     // ReSharper disable once UnusedVariable
                     var g =
-                        _ssb.ServerEventProcessor.HandlePlayersAndIdsFromPlayersCmd(t as IEnumerable<string>);
+                        _ssb.ServerEventProcessor.HandlePlayersFromPlayersCmd(t as IEnumerable<string>);
                     break;
 
                 case QlCommandType.ConfigStrings:

@@ -16,6 +16,7 @@ namespace SSB.Core
     /// </summary>
     public class ServerEventProcessor
     {
+        private readonly List<string> _qlranksToUpdateFromPlayers;
         private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
         private Timer _disconnectScanTimer;
@@ -28,6 +29,7 @@ namespace SSB.Core
         {
             _ssb = ssb;
             _seenDb = new DbSeenDates();
+            _qlranksToUpdateFromPlayers = new List<string>();
         }
 
         /// <summary>
@@ -99,80 +101,44 @@ namespace SSB.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
-        public async Task HandlePlayersAndIdsFromPlayersCmd<T>(
+        /// <remarks>
+        /// playersText is sent as an IEnumerable, with each element representing a line of
+        /// the text containing the player information from the /players command.
+        /// </remarks>
+        public async Task HandlePlayersFromPlayersCmd<T>(
             IEnumerable<T> playersText)
         {
-            var eloNeedsUpdating = new List<string>();
+            _qlranksToUpdateFromPlayers.Clear();
             var qlranksHelper = new QlRanksHelper();
-            foreach (var p in playersText)
+
+            foreach (var line in playersText)
             {
-                var text = p.ToString();
+                var text = line.ToString();
                 var playerNameOnly =
                     text.Substring(
                         text.LastIndexOf(" ", StringComparison.Ordinal) + 1)
                         .ToLowerInvariant();
-                var sndspace = (Helpers.NthIndexOf(text, " ", 2));
-                var clanLength =
-                    ((text.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
-                var clan = text.Substring(sndspace, (clanLength)).Trim();
-                var idText = text.Substring(0, 2).Trim();
-                int id;
-                if (!int.TryParse(idText, out id))
-                {
-                    Debug.WriteLine(
-                        "Unable to extract player's ID from players.");
-                    return;
-                }
-                Debug.Write(
-                    string.Format(
-                        "Found player {0} with client id {1} - setting info.\n",
-                        playerNameOnly, id));
-                _ssb.ServerInfo.CurrentPlayers[playerNameOnly] =
-                    new PlayerInfo(playerNameOnly, clan,
-                        Team.None,
-                        id);
 
-                if (qlranksHelper.DoesCachedEloExist(playerNameOnly))
-                {
-                    if (!qlranksHelper.IsCachedEloDataOutdated(playerNameOnly))
-                    {
-                        qlranksHelper.SetCachedEloData(
-                            _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
-                        Debug.WriteLine(
-                            string.Format(
-                                "Setting non-expired cached elo result for {0} from database",
-                                playerNameOnly));
-                    }
-                    else
-                    {
-                        qlranksHelper.CreateNewPlayerEloData(
-                            _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
-                        eloNeedsUpdating.Add(playerNameOnly);
-                        Debug.WriteLine(
-                            string.Format(
-                                "Outdated cached elo data found in DB for {0}. Adding to queue to update.",
-                                playerNameOnly));
-                    }
-                }
-                else
-                {
-                    qlranksHelper.CreateNewPlayerEloData(
-                        _ssb.ServerInfo.CurrentPlayers, playerNameOnly);
-                    eloNeedsUpdating.Add(playerNameOnly);
-                }
+                // Try to create the player info (name, clan, id)
+                if (!CreatePlayerFromPlayersText(text)) return;
+                // Set the cached Elo for a player or add to list to be updated
+                HandleEloFromPlayersText(qlranksHelper, playerNameOnly);
                 // Store user's last seen date
                 _seenDb.UpdateLastSeenDate(playerNameOnly, DateTime.Now);
             }
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
-            // Get the QLRanks info for these players if required
-            if (eloNeedsUpdating.Any())
+
+            // Do any necessary Elo updates
+            if (_qlranksToUpdateFromPlayers.Any())
             {
                 await
                     qlranksHelper.RetrieveEloDataFromApiAsync(
-                        _ssb.ServerInfo.CurrentPlayers, eloNeedsUpdating);
+                        _ssb.ServerInfo.CurrentPlayers, _qlranksToUpdateFromPlayers);
             }
-            // If any players should be kicked (i.e. due to a module setting), then do so
+            // If any players should be kicked (i.e. due to a module), then do so, but wait a
+            // few (10) seconds since we might have to hit network for retrieval (i.e. QLRanks)
+            await Task.Delay(10000);
             await DoRequiredPlayerKicks();
         }
 
@@ -373,6 +339,42 @@ namespace SSB.Core
         }
 
         /// <summary>
+        ///     Creates the player from the players command text.
+        /// </summary>
+        /// <param name="playerText">The player text.</param>
+        /// <returns>
+        ///     <c>true</c> if the playerinfo could be created, otherwise <c>false</c>
+        /// </returns>
+        private bool CreatePlayerFromPlayersText(string playerText)
+        {
+            var playerNameOnly =
+                playerText.Substring(
+                    playerText.LastIndexOf(" ", StringComparison.Ordinal) + 1)
+                    .ToLowerInvariant();
+            var sndspace = (Helpers.NthIndexOf(playerText, " ", 2));
+            var clanLength =
+                ((playerText.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
+            var clan = playerText.Substring(sndspace, (clanLength)).Trim();
+            var idText = playerText.Substring(0, 2).Trim();
+            int id;
+            if (!int.TryParse(idText, out id))
+            {
+                Debug.WriteLine(
+                    "Unable to extract player's ID from players.");
+                return false;
+            }
+            Debug.Write(
+                string.Format(
+                    "Found player {0} with client id {1} - setting info.\n",
+                    playerNameOnly, id));
+            _ssb.ServerInfo.CurrentPlayers[playerNameOnly] =
+                new PlayerInfo(playerNameOnly, clan,
+                    Team.None,
+                    id);
+            return true;
+        }
+
+        /// <summary>
         ///     Method that is executed when the disconnection scan timer elapses.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -389,7 +391,7 @@ namespace SSB.Core
             if (!_ssb.ServerInfo.IsQlConnectedToServer)
             {
                 Debug.WriteLine("Disconnection scan determined that server connection" +
-                                " no-longer exists; stopping monitoring.");
+                                " no longer exists; stopping monitoring.");
 
                 // Stop monitoring, stop reading console, set server as disconnected.
                 _ssb.StopMonitoring();
@@ -412,6 +414,44 @@ namespace SSB.Core
             // Check for time-bans
             var autoBanner = new PlayerAutoBanner(_ssb);
             await autoBanner.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
+        ///     Handles the setting or updating of Elo from the players command text.
+        /// </summary>
+        /// <param name="qlranksHelper">The QLRanks helper.</param>
+        /// <param name="player">The player.</param>
+        private void HandleEloFromPlayersText(QlRanksHelper qlranksHelper, string player)
+        {
+            // Set cached Elo or update
+            if (qlranksHelper.DoesCachedEloExist(player))
+            {
+                if (!qlranksHelper.IsCachedEloDataOutdated(player))
+                {
+                    qlranksHelper.SetCachedEloData(
+                        _ssb.ServerInfo.CurrentPlayers, player);
+                    Debug.WriteLine(
+                        string.Format(
+                            "Setting non-expired cached elo result for {0} from database",
+                            player));
+                }
+                else
+                {
+                    qlranksHelper.CreateNewPlayerEloData(
+                        _ssb.ServerInfo.CurrentPlayers, player);
+                    _qlranksToUpdateFromPlayers.Add(player);
+                    Debug.WriteLine(
+                        string.Format(
+                            "Outdated cached elo data found in DB for {0}. Adding to queue to update.",
+                            player));
+                }
+            }
+            else
+            {
+                qlranksHelper.CreateNewPlayerEloData(
+                    _ssb.ServerInfo.CurrentPlayers, player);
+                _qlranksToUpdateFromPlayers.Add(player);
+            }
         }
 
         /// <summary>

@@ -327,9 +327,12 @@ namespace SSB.Database
                 if (bi.BanType == BanType.AddedByEarlyQuit)
                 {
                     banDb.DeleteUserFromDb(user);
-                    await
-                        ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user),
-                            false);
+                    if (ssb.IsMonitoringServer)
+                    {
+                        await
+                            ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user),
+                                false);
+                    }
                     Debug.WriteLine(string.Format("Removed early quit-related ban for player {0}.",
                         user));
                 }

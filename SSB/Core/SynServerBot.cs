@@ -47,6 +47,9 @@ namespace SSB.Core
             Mod = new ModuleManager(this);
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
+
+            // Should we begin monitoring a server immediately?
+            CheckForAutoMonitoring();
         }
 
         /// <summary>
@@ -191,6 +194,10 @@ namespace SSB.Core
         /// </value>
         public VoteManager VoteManager { get; private set; }
 
+        /// <summary>
+        /// Attempts to automatically start server monitoring on application launch,
+        /// if the user has this option specified in the SSB configuration file.
+        /// </summary>
         public async Task AttemptAutoMonitorStart()
         {
             var qlw = new QlWindowUtils();
@@ -328,6 +335,23 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Checks the user's configuration to see if automatic server monitoring
+        /// should occur on application launch, and attempts to automatically monitor
+        /// the server if possible.
+        /// </summary>
+        private void CheckForAutoMonitoring()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            if (!cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
+            Debug.WriteLine("User has auto monitor on start specified. Attempting to start monitoring.");
+
+            // ReSharper disable once UnusedVariable
+            // Synchronous
+            var a = AttemptAutoMonitorStart();
+        }
+
+        /// <summary>
         ///     Gets the bot's name from the configuration file.
         /// </summary>
         private string GetAccountNameFromConfig()
@@ -361,6 +385,8 @@ namespace SSB.Core
 
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
 
+            // TODO: Init() modules such as MOTD and others that can't be started until after we're live
+            
             // Wait 2 sec then clear the internal console
             await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();

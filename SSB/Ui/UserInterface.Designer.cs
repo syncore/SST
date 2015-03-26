@@ -89,6 +89,7 @@
             this.autoVoterTab = new System.Windows.Forms.TabPage();
             this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modAutoVoterOptCurVotesGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterRefreshVotesButton = new System.Windows.Forms.Button();
             this.modAutoVoterClearVotesButton = new System.Windows.Forms.Button();
             this.modAutoVoterDelVoteButton = new System.Windows.Forms.Button();
             this.modAutoVoterCurVotesListBox = new System.Windows.Forms.ListBox();
@@ -302,7 +303,6 @@
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.modAutoVoterRefreshVotesButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -1174,6 +1174,22 @@
             this.modAutoVoterOptCurVotesGroupBox.TabStop = false;
             this.modAutoVoterOptCurVotesGroupBox.Text = "Current Automatic Votes";
             // 
+            // modAutoVoterRefreshVotesButton
+            // 
+            this.modAutoVoterRefreshVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modAutoVoterRefreshVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modAutoVoterRefreshVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterRefreshVotesButton.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterRefreshVotesButton.Location = new System.Drawing.Point(260, 268);
+            this.modAutoVoterRefreshVotesButton.Name = "modAutoVoterRefreshVotesButton";
+            this.modAutoVoterRefreshVotesButton.Size = new System.Drawing.Size(90, 23);
+            this.modAutoVoterRefreshVotesButton.TabIndex = 16;
+            this.modAutoVoterRefreshVotesButton.Text = "Refresh";
+            this.coreToolTip.SetToolTip(this.modAutoVoterRefreshVotesButton, "Click this button to re-sync any auto vote changes that\r\nmight have occurred in-g" +
+        "ame or via IRC.");
+            this.modAutoVoterRefreshVotesButton.UseVisualStyleBackColor = false;
+            this.modAutoVoterRefreshVotesButton.Click += new System.EventHandler(this.modAutoVoterRefreshVotesButton_Click);
+            // 
             // modAutoVoterClearVotesButton
             // 
             this.modAutoVoterClearVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
@@ -1686,6 +1702,7 @@
             this.modEarlyQuitResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modEarlyQuitResetSettingsButton, "Reset this module to its default settings.");
             this.modEarlyQuitResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitResetSettingsButton.Click += new System.EventHandler(this.modEarlyQuitResetSettingsButton_Click);
             // 
             // modEarlyQuitLoadSettingsButton
             // 
@@ -1700,6 +1717,7 @@
             this.modEarlyQuitLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modEarlyQuitLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modEarlyQuitLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitLoadSettingsButton.Click += new System.EventHandler(this.modEarlyQuitLoadSettingsButton_Click);
             // 
             // modEarlyQuitSaveSettingsButton
             // 
@@ -1714,6 +1732,7 @@
             this.modEarlyQuitSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modEarlyQuitSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modEarlyQuitSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modEarlyQuitSaveSettingsButton.Click += new System.EventHandler(this.modEarlyQuitSaveSettingsButton_Click);
             // 
             // modEarlyQuitHeaderDescLabel
             // 
@@ -1822,6 +1841,8 @@
             this.modEloLimiterMaxEloTextBox.Size = new System.Drawing.Size(99, 22);
             this.modEloLimiterMaxEloTextBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modEloLimiterMaxEloTextBox, resources.GetString("modEloLimiterMaxEloTextBox.ToolTip"));
+            this.modEloLimiterMaxEloTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modEloLimiterMaxEloTextBox_Validating);
+            this.modEloLimiterMaxEloTextBox.Validated += new System.EventHandler(this.modEloLimiterMaxEloTextBox_Validated);
             // 
             // modEloLimiterMinEloTextBox
             // 
@@ -1836,6 +1857,8 @@
             this.coreToolTip.SetToolTip(this.modEloLimiterMinEloTextBox, "Enter the minimum QLRanks Elo for your server. Any accounts\r\nthat do not have thi" +
         "s minimum Elo for the current game type \r\nwill be kicked when they attempt to co" +
         "nnect to your server.");
+            this.modEloLimiterMinEloTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modEloLimiterMinEloTextBox_Validating);
+            this.modEloLimiterMinEloTextBox.Validated += new System.EventHandler(this.modEloLimiterMinEloTextBox_Validated);
             // 
             // modEloLimiterMaxEloLabel
             // 
@@ -1884,6 +1907,7 @@
             this.modEloLimiterResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modEloLimiterResetSettingsButton, "Reset this module to its default settings.");
             this.modEloLimiterResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modEloLimiterResetSettingsButton.Click += new System.EventHandler(this.modEloLimiterResetSettingsButton_Click);
             // 
             // modEloLimiterLoadSettingsButton
             // 
@@ -1898,6 +1922,7 @@
             this.modEloLimiterLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modEloLimiterLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modEloLimiterLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modEloLimiterLoadSettingsButton.Click += new System.EventHandler(this.modEloLimiterLoadSettingsButton_Click);
             // 
             // modEloLimiterSaveSettingsButton
             // 
@@ -1912,6 +1937,7 @@
             this.modEloLimiterSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modEloLimiterSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modEloLimiterSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modEloLimiterSaveSettingsButton.Click += new System.EventHandler(this.modEloLimiterSaveSettingsButton_Click);
             // 
             // modEloLimiterHeaderDescLabel
             // 
@@ -3782,22 +3808,6 @@
             this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.AlwaysBlink;
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
-            // 
-            // modAutoVoterRefreshVotesButton
-            // 
-            this.modAutoVoterRefreshVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.modAutoVoterRefreshVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.modAutoVoterRefreshVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAutoVoterRefreshVotesButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterRefreshVotesButton.Location = new System.Drawing.Point(260, 268);
-            this.modAutoVoterRefreshVotesButton.Name = "modAutoVoterRefreshVotesButton";
-            this.modAutoVoterRefreshVotesButton.Size = new System.Drawing.Size(90, 23);
-            this.modAutoVoterRefreshVotesButton.TabIndex = 16;
-            this.modAutoVoterRefreshVotesButton.Text = "Refresh";
-            this.coreToolTip.SetToolTip(this.modAutoVoterRefreshVotesButton, "Click this button to re-sync any auto vote changes that\r\nmight have occurred in-g" +
-        "ame or via IRC.");
-            this.modAutoVoterRefreshVotesButton.UseVisualStyleBackColor = false;
-            this.modAutoVoterRefreshVotesButton.Click += new System.EventHandler(this.modAutoVoterRefreshVotesButton_Click);
             // 
             // UserInterface
             // 

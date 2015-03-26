@@ -123,6 +123,11 @@ namespace SSB.Core
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
+            
+            // Do not increase player's early quit count if already banned.
+            var banDb = new DbBans();
+            if (banDb.UserAlreadyBanned(player)) return;
+            
             var eqh = new EarlyQuitHandler(_ssb);
             await eqh.EvalCountdownQuitter(player);
             await eqh.EvalInProgressQuitter(player);

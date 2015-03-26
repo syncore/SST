@@ -14,7 +14,7 @@ namespace SSB.Core.Commands.Modules
     public class Motd : IModule
     {
         public const string NameModule = "motd";
-        private const uint MinRepeatThresholdStart = 0;
+        public const int MinRepeatThresholdStart = 0;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly MotdHandler _motd;
@@ -47,7 +47,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The message repeat time.
         /// </value>
-        public uint RepeatInterval { get; set; }
+        public int RepeatInterval { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -140,8 +140,8 @@ namespace SSB.Core.Commands.Modules
                 return true;
             }
 
-            uint minsNum;
-            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out minsNum))
+            int minsNum;
+            if (!int.TryParse(Helpers.GetArgVal(c, 2), out minsNum))
             {
                 StatusMessage = "^1[ERROR]^3 Minutes must be a positive number.}";
                 await SendServerTell(c, StatusMessage);
@@ -292,7 +292,7 @@ namespace SSB.Core.Commands.Modules
         /// <remarks>
         ///     This is used when an admin issues the command in-game.
         /// </remarks>
-        private async Task SetMotd(CmdArgs c, uint interval)
+        private async Task SetMotd(CmdArgs c, int interval)
         {
             int msgStart;
             if (c.FromIrc)

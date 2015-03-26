@@ -10,6 +10,7 @@ using SSB.Config;
 using SSB.Core;
 using SSB.Database;
 using SSB.Enum;
+using SSB.Interfaces;
 using SSB.Model;
 using SSB.Ui.Validation;
 using SSB.Ui.Validation.Modules;
@@ -23,6 +24,7 @@ namespace SSB.Ui
         private readonly ConfigHandler _cfgHandler;
         private readonly CoreOptionsValidator _coreOptionsValidator;
         private readonly EarlyQuitValidator _earlyQuitValidator;
+        private readonly EloLimitValidator _eloLimitValidator;
         private readonly SynServerBot _ssb;
         private List<EarlyQuitter> _earlyQuittersFromDb;
 
@@ -36,20 +38,9 @@ namespace SSB.Ui
             _coreOptionsValidator = new CoreOptionsValidator();
             _accountDateLimitValidator = new AccountDateLimitValidator();
             _earlyQuitValidator = new EarlyQuitValidator();
+            _eloLimitValidator = new EloLimitValidator();
             SetAppWideUiControls();
             PopulateAllUiTabs();
-            CheckForAutoMonitoring();
-        }
-
-        private void CheckForAutoMonitoring()
-        {
-            _cfgHandler.ReadConfiguration();
-            if (!_cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
-            Debug.WriteLine("User has auto monitor on start specified. Attempting to start monitoring.");
-
-            // ReSharper disable once UnusedVariable
-            // Synchronous
-            var a = _ssb.AttemptAutoMonitorStart();
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -155,33 +146,36 @@ namespace SSB.Ui
             }
         }
 
-        private void HandleAccuracyModActivation(bool isActiveInUi)
+        private async Task HandleEloLimitModActivation(bool isActiveInUi)
         {
             if (isActiveInUi)
             {
-                _ssb.Mod.Accuracy.Active = true;
+                if (!_ssb.IsMonitoringServer) return;
+                _ssb.Mod.EloLimit.Active = true;
+                await _ssb.Mod.EloLimit.BatchRemoveEloPlayers();
                 Debug.WriteLine(
-                    "[UI]: Activating accuracy display module from UI. Updating old values as necessary.");
+                    "[UI]: Activating Elo limiter module from UI. Updating old values as necessary.");
             }
             else
             {
-                _ssb.Mod.Accuracy.Active = false;
-                Debug.WriteLine("[UI]: Deactivating accuracy display module from UI if active.");
+                _ssb.Mod.EloLimit.Active = false;
+                Debug.WriteLine("[UI]: Deactivating Elo limiter module from UI if active.");
             }
         }
 
-        private void HandleAutoVoterModActivation(bool isActiveInUi)
+        private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
             if (isActiveInUi)
             {
-                _ssb.Mod.AutoVoter.Active = true;
-                Debug.WriteLine(
-                    "[UI]: Activating auto voter module from UI. Updating old values as necessary.");
+                module.Active = true;
+                Debug.WriteLine(string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
+                    module.ModuleName));
             }
             else
             {
-                _ssb.Mod.AutoVoter.Active = false;
-                Debug.WriteLine("[UI]: Deactivating auto voter module from UI if active.");
+                module.Active = false;
+                Debug.WriteLine(string.Format("[UI]: Deactivating {0} module from UI if active.",
+                    module.ModuleName));
             }
         }
 
@@ -236,7 +230,7 @@ namespace SSB.Ui
                 acctDateOptions.isActive = modAccDateEnableCheckBox.Checked;
                 acctDateOptions.minimumDaysRequired = minAccountAge;
                 _cfgHandler.WriteConfiguration();
-                await HandleAccountDateModActivation(modAccDateEnableCheckBox.Checked, minAccountAge);
+                await HandleAccountDateModActivation(acctDateOptions.isActive, minAccountAge);
                 ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
             }
             else
@@ -257,7 +251,7 @@ namespace SSB.Ui
             accuracyOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
             PopulateModAccuracyUi();
-            HandleAccuracyModActivation(accuracyOptions.isActive);
+            HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
             ShowInfoMessage("Accuracy display settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -269,7 +263,7 @@ namespace SSB.Ui
                 var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
                 accuracyOptions.isActive = modAccuracyEnableCheckBox.Checked;
                 _cfgHandler.WriteConfiguration();
-                HandleAccuracyModActivation(modAccuracyEnableCheckBox.Checked);
+                HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
                 ShowInfoMessage("Accuracy display settings saved.", "Settings Saved");
             }
             else
@@ -326,7 +320,7 @@ namespace SSB.Ui
         {
             modAutoVoterCurrentVotesBindingSource.Clear();
             modAutoVoterEnableCheckBox.Checked = false;
-            HandleAutoVoterModActivation(modAutoVoterEnableCheckBox.Checked);
+            HandleStandardModuleActivation(_ssb.Mod.AutoVoter, modAutoVoterEnableCheckBox.Checked);
             modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
                 ? 0
                 : -1);
@@ -383,7 +377,7 @@ namespace SSB.Ui
             autoVoterOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
             PopulateModAutoVoterUi();
-            HandleAutoVoterModActivation(autoVoterOptions.isActive);
+            HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
             ShowInfoMessage("Auto voter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -396,7 +390,7 @@ namespace SSB.Ui
                 autoVoterOptions.isActive = modAutoVoterEnableCheckBox.Checked;
                 autoVoterOptions.autoVotes = _ssb.Mod.AutoVoter.AutoVotes;
                 _cfgHandler.WriteConfiguration();
-                HandleAutoVoterModActivation(modAutoVoterEnableCheckBox.Checked);
+                HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
                 ShowInfoMessage("Auto voter settings saved.", "Settings Saved");
             }
             else
@@ -490,6 +484,7 @@ namespace SSB.Ui
             PopulateModAccuracyUi();
             PopulateModAutoVoterUi();
             PopulateModEarlyQuitUi();
+            PopulateModEloLimiterUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -551,6 +546,18 @@ namespace SSB.Ui
             // Current early quitters listbox
             RefreshCurrentQuittersDataSource();
             Debug.WriteLine("Populated early quit banner module user interface.");
+        }
+
+        private void PopulateModEloLimiterUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+            modEloLimiterEnableCheckBox.Checked = eloLimitOptions.isActive;
+            modEloLimiterMinEloTextBox.Text = eloLimitOptions.minimumRequiredElo.ToString();
+            modEloLimiterMaxEloTextBox.Text = ((eloLimitOptions.maximumRequiredElo == 0)
+                ? string.Empty
+                : eloLimitOptions.maximumRequiredElo.ToString());
+            Debug.WriteLine("Populated Elo limiter module user interface.");
         }
 
         private void RefreshCurrentQuittersDataSource()
@@ -779,5 +786,127 @@ namespace SSB.Ui
             RefreshCurrentVotesDataSource();
             Debug.WriteLine("[UI]: Received user request to refresh current auto votes data source.");
         }
+
+        private void modEarlyQuitSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+                earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
+                earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
+                earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
+                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
+                _cfgHandler.WriteConfiguration();
+                HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+                ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modEarlyQuitLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModEarlyQuitUi();
+            ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
+        }
+
+        private void modEarlyQuitResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+            earlyQuitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModEarlyQuitUi();
+            HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+            ShowInfoMessage("Early quit banner settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void modEloLimiterMinEloTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEloLimiterMinEloTextBox, string.Empty);
+        }
+
+        private void modEloLimiterMinEloTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_eloLimitValidator.IsValidMinimumElo(modEloLimiterMinEloTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEloLimiterMinEloTextBox.Select(0, modEloLimiterMinEloTextBox.Text.Length);
+                errorProvider.SetError(modEloLimiterMinEloTextBox, errorMsg);
+            }
+        }
+
+        private void modEloLimiterMaxEloTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEloLimiterMaxEloTextBox, string.Empty);
+        }
+
+        private void modEloLimiterMaxEloTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_eloLimitValidator.IsValidMaximumElo(modEloLimiterMaxEloTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEloLimiterMaxEloTextBox.Select(0, modEloLimiterMaxEloTextBox.Text.Length);
+                errorProvider.SetError(modEloLimiterMaxEloTextBox, errorMsg);
+            }
+        }
+
+        private void modEloLimiterLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModEloLimiterUi();
+            ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
+        }
+
+        private async void modEloLimiterSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                int maxElo = 0;
+                int minElo = int.Parse(modEloLimiterMinEloTextBox.Text);
+                // if maximum elo is specified, need to do one more check
+                if (modEloLimiterMaxEloTextBox.Text.Length != 0)
+                {
+                    maxElo = int.Parse(modEloLimiterMaxEloTextBox.Text);
+                }
+                if ((maxElo != 0) && (maxElo < minElo))
+                {
+                    ShowErrorMessage("The maximum elo value cannot be less than the minimum Elo value.",
+                        "Errors Detected");
+                    modEloLimiterMaxEloTextBox.Clear();
+                    return;
+                }
+                
+                var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+                eloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
+                eloLimitOptions.minimumRequiredElo = minElo;
+                eloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
+                    ? 0 : maxElo);
+                _cfgHandler.WriteConfiguration();
+                await HandleEloLimitModActivation(eloLimitOptions.isActive);
+                ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private async void modEloLimiterResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+            eloLimitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModEloLimiterUi();
+            await HandleEloLimitModActivation(eloLimitOptions.isActive);
+            ShowInfoMessage("Elo limiter settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        
     }
 }

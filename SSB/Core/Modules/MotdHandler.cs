@@ -43,7 +43,7 @@ namespace SSB.Core.Modules
         /// <value>
         ///     The repeat time in minutes.
         /// </value>
-        public uint RepeatInterval { get; set; }
+        public int RepeatInterval { get; set; }
 
         /// <summary>
         ///     Starts the motd timer.

@@ -1380,10 +1380,17 @@
         E7u/TIkkP/j1h//e70MzB3Cn1ELbR9/+fYa7c/IXvvvDP/z/AaBW9RkcCahLAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="modEloLimiterMaxEloTextBox.ToolTip" xml:space="preserve">
+    <value>(Optional) Enter the maximum QLRanks Elo for your server. Any accounts
+that do not meet the minimum Elo OR have an Elo  that is greater than 
+this maximum value will be kicked when they attempt to connect to your server.
+
+</value>
+  </data>
   <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>15, 19</value>
   </metadata>
-  <data name="modEarlyQuitHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="modEloLimiterHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABQsSURBVHhe5Zt5cFXnecZv2k7GcafpuH90melM23+a
@@ -1932,14 +1939,7 @@ passed or rejected.</value>
         Ff45i/8Z+l7P2JdC0sHLCUkHLyck/Y/qywlJBy8fWOx/AGisE9j08ZXdAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="modEloLimiterMaxEloTextBox.ToolTip" xml:space="preserve">
-    <value>(Optional) Enter the maximum QLRanks Elo for your server. Any accounts
-that do not meet the minimum Elo OR have an Elo  that is greater than 
-this maximum value will be kicked when they attempt to connect to your server.
-
-</value>
-  </data>
-  <data name="modEloLimiterHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="modEarlyQuitHeaderPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABQsSURBVHhe5Zt5cFXnecZv2k7GcafpuH90melM23+a
@@ -3712,8 +3712,5 @@ this maximum value will be kicked when they attempt to connect to your server.
   </metadata>
   <metadata name="modEarlyQuitCurrentQuitBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>779, 21</value>
-  </metadata>
-  <metadata name="coreToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>15, 19</value>
   </metadata>
 </root>
