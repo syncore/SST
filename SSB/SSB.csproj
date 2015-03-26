@@ -142,6 +142,7 @@
     <Compile Include="Core\Modules\Irc\IrcEventHandlers.cs" />
     <Compile Include="Core\Modules\Irc\IrcHelpCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcModsCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcMonitorCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcOpMeCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcQlCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcSayCmd.cs" />

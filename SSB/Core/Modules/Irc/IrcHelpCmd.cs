@@ -16,6 +16,7 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private readonly Dictionary<string, IIrcCommand> _cmdList;
         private int _ircMinArgs = 0;
+        private bool _requiresMonitoring = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IrcHelpCmd" /> class.
@@ -41,6 +42,19 @@ namespace SSB.Core.Modules.Irc
         ///     The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _ircMinArgs; } }
+
+        /// <summary>
+        /// Gets a value indicating whether this command requires
+        /// the bot to be monitoring a server before it can be used.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command requires the bot to be monitoring
+        /// a server; otherwise, <c>false</c>.
+        /// </value>
+        public bool RequiresMonitoring
+        {
+            get { return _requiresMonitoring; }
+        }
 
         /// <summary>
         ///     Gets the user level.

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -17,13 +16,12 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcQlCmd : IIrcCommand
     {
-        private readonly SynServerBot _ssb;
         private readonly IrcManager _irc;
-        private CommandList _cmds;
         private Dictionary<string, IBotCommand> _cmdList; 
         private readonly IrcUserLevel _userLevel = IrcUserLevel.Operator;
         private bool _isAsync = true;
         private int _ircMinArgs = 2;
+        private bool _requiresMonitoring = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IrcQlCmd" /> class.
@@ -32,11 +30,10 @@ namespace SSB.Core.Modules.Irc
         /// <param name="irc">The IRC interface.</param>
         public IrcQlCmd(SynServerBot ssb, IrcManager irc)
         {
-            _ssb = ssb;
             _irc = irc;
             //_cmdList = _ssb.CommandProcessor.Commands;
-            _cmds = new CommandList(_ssb);
-            _cmdList = _cmds.Commands;
+            var cmds = new CommandList(ssb);
+            _cmdList = cmds.Commands;
         }
 
         /// <summary>
@@ -45,6 +42,19 @@ namespace SSB.Core.Modules.Irc
         public bool IsAsync
         {
             get { return _isAsync; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this command requires
+        /// the bot to be monitoring a server before it can be used.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command requires the bot to be monitoring
+        /// a server; otherwise, <c>false</c>.
+        /// </value>
+        public bool RequiresMonitoring
+        {
+            get { return _requiresMonitoring; }
         }
 
         /// <summary>
@@ -170,16 +180,6 @@ namespace SSB.Core.Modules.Irc
                 
             }
         } 
-
-        /// <summary>
-        /// Removes the QL color characters from the input string.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>A string with the QL color characters removed.</returns>
-        private string RemoveQlColorChars(string input)
-        {
-            return Regex.Replace(input, "\\^\\d+", string.Empty);
-        }
 
         /// <summary>
         /// Replaces the QL colors with IRC colors.

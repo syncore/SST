@@ -14,6 +14,7 @@ namespace SSB.Core.Modules.Irc
         private readonly SynServerBot _ssb;
         private readonly string IrcCmdHelp = "help";
         private readonly string IrcCmdMods = "mods";
+        private readonly string IrcCmdMonitor = "monitor";
         private readonly string IrcCmdOpMe = "opme";
         public const string IrcCmdQl = "ql";
         private readonly string IrcCmdSay = "say";
@@ -53,6 +54,7 @@ namespace SSB.Core.Modules.Irc
             Commands.Add(IrcCmdWho, new IrcWhoCmd(_ssb, _irc));
             Commands.Add(IrcCmdStatus, new IrcStatusCmd(_ssb, _irc));
             Commands.Add(IrcCmdMods, new IrcModsCmd(_ssb, _irc));
+            Commands.Add(IrcCmdMonitor, new IrcMonitorCmd(_ssb, _irc));
             Commands.Add(IrcCmdUsers, new IrcUsersCmd(_ssb, _irc));
             Commands.Add(IrcCmdOpMe, new IrcOpMeCmd(_irc));
             Commands.Add(IrcCmdQl, new IrcQlCmd(_ssb, _irc));

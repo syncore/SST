@@ -15,6 +15,7 @@ namespace SSB.Core.Modules.Irc
         private bool _isAsync = true;
         private int _ircMinArgs = 2;
         private IrcUserLevel _userLevel = IrcUserLevel.None;
+        private bool _requiresMonitoring = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IrcSayCmd"/> class.
@@ -33,6 +34,19 @@ namespace SSB.Core.Modules.Irc
         public bool IsAsync
         {
             get { return _isAsync; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this command requires
+        /// the bot to be monitoring a server before it can be used.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command requires the bot to be monitoring
+        /// a server; otherwise, <c>false</c>.
+        /// </value>
+        public bool RequiresMonitoring
+        {
+            get { return _requiresMonitoring; }
         }
 
         /// <summary>

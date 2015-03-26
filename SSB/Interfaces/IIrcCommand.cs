@@ -27,6 +27,16 @@ namespace SSB.Interfaces
         bool IsAsync { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this command requires
+        /// the bot to be monitoring a server before it can be used.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this command requires the bot to be monitoring
+        /// a server; otherwise, <c>false</c>.
+        /// </value>
+        bool RequiresMonitoring { get; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>

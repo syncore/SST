@@ -56,11 +56,8 @@ namespace SSB.Core.Modules.Irc
             char[] sep = {' '};
             var args = msg.Split(sep);
             var cmdName = args[0].Substring(1);
-            if (!_ssb.IsInitComplete)
+            if (!Helpers.KeyExists(cmdName, _ircCmds.Commands))
             {
-                _irc.SendIrcNotice(fromUser,
-                    "\u0002[ERROR]\u0002 Initilization has not completed yet. Command ignored.");
-
                 return;
             }
             if (!SufficientTimeElapsed(fromUser))
@@ -75,10 +72,6 @@ namespace SSB.Core.Modules.Irc
             {
                 return;
             }
-            if (!Helpers.KeyExists(cmdName, _ircCmds.Commands))
-            {
-                return;
-            }
             if (!UserHasReqLevel(fromUser, _ircCmds.Commands[cmdName].UserLevel))
             {
                 _irc.SendIrcNotice(fromUser,
@@ -86,6 +79,12 @@ namespace SSB.Core.Modules.Irc
                 return;
             }
             var c = new CmdArgs(args, cmdName, fromUser, msg, true);
+            if (_ircCmds.Commands[cmdName].RequiresMonitoring &&
+                !_ssb.IsMonitoringServer)
+            {
+                _irc.SendIrcNotice(fromUser, "\u0002[ERROR]\u0002 This command requires that a server be monitored; your server is not currently being monitored.");
+                return;
+            }
             if (args.Length < _ircCmds.Commands[cmdName].IrcMinArgs)
             {
                 _ircCmds.Commands[cmdName].DisplayArgLengthError(c);
