@@ -1252,7 +1252,7 @@
             this.modAutoVoterOptVoteDetailsGroupBox.ForeColor = System.Drawing.Color.White;
             this.modAutoVoterOptVoteDetailsGroupBox.Location = new System.Drawing.Point(6, 91);
             this.modAutoVoterOptVoteDetailsGroupBox.Name = "modAutoVoterOptVoteDetailsGroupBox";
-            this.modAutoVoterOptVoteDetailsGroupBox.Size = new System.Drawing.Size(346, 356);
+            this.modAutoVoterOptVoteDetailsGroupBox.Size = new System.Drawing.Size(354, 356);
             this.modAutoVoterOptVoteDetailsGroupBox.TabIndex = 5;
             this.modAutoVoterOptVoteDetailsGroupBox.TabStop = false;
             this.modAutoVoterOptVoteDetailsGroupBox.Text = "Vote Details";
@@ -2510,9 +2510,8 @@
             this.modMOTDRepeatMsgTextBox.Name = "modMOTDRepeatMsgTextBox";
             this.modMOTDRepeatMsgTextBox.Size = new System.Drawing.Size(375, 22);
             this.modMOTDRepeatMsgTextBox.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.modMOTDRepeatMsgTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
-        "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
-        "server.");
+            this.coreToolTip.SetToolTip(this.modMOTDRepeatMsgTextBox, "Enter the message to send. This message will repeat\r\nevery # of minutes you enter" +
+        "ed in the box above.");
             // 
             // modMOTDRepeatTimeTextBox
             // 
@@ -2524,9 +2523,7 @@
             this.modMOTDRepeatTimeTextBox.Name = "modMOTDRepeatTimeTextBox";
             this.modMOTDRepeatTimeTextBox.Size = new System.Drawing.Size(99, 22);
             this.modMOTDRepeatTimeTextBox.TabIndex = 8;
-            this.coreToolTip.SetToolTip(this.modMOTDRepeatTimeTextBox, "Enter the minimum account age, in days. Any accounts\r\nthat have not existed for t" +
-        "his minimum number of days\r\nwill be kicked when they attempt to connect to your " +
-        "server.");
+            this.coreToolTip.SetToolTip(this.modMOTDRepeatTimeTextBox, "Enter the time, in minutes, after which the message is\r\nto repeat.");
             // 
             // modMOTDEnableCheckBox
             // 
