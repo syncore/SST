@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSB.Config;
 using SSB.Core;
-using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -27,6 +26,7 @@ namespace SSB.Ui
         private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly EloLimitValidator _eloLimitValidator;
         private readonly MotdValidator _motdValidator;
+        private readonly PickupValidator _pickupValidator;
         private readonly ServerListValidator _serverListValidator;
         private readonly SynServerBot _ssb;
         private List<EarlyQuitter> _earlyQuittersFromDb;
@@ -35,7 +35,7 @@ namespace SSB.Ui
         {
             InitializeComponent();
             titleBarVersionLabel.Text = string.Format("version {0}",
-                typeof (EntryPoint).Assembly.GetName().Version);
+                typeof(EntryPoint).Assembly.GetName().Version);
             _cfgHandler = new ConfigHandler();
             _ssb = ssb;
             _coreOptionsValidator = new CoreOptionsValidator();
@@ -44,6 +44,7 @@ namespace SSB.Ui
             _eloLimitValidator = new EloLimitValidator();
             _motdValidator = new MotdValidator();
             _serverListValidator = new ServerListValidator();
+            _pickupValidator = new PickupValidator();
             SetAppWideUiControls();
             PopulateAllUiTabs();
         }
@@ -168,6 +169,39 @@ namespace SSB.Ui
             }
         }
 
+        private void HandleMotdModActivation(bool isActiveInUi)
+        {
+            if (isActiveInUi)
+            {
+                _ssb.Mod.Motd.Active = true;
+                Debug.WriteLine("[UI]: Activating motd module from UI. Updating old values as necessary.");
+                _ssb.Mod.Motd.Init();
+            }
+            else
+            {
+                _ssb.Mod.Motd.Active = false;
+                Debug.WriteLine("[UI]: Deactivating motd module from UI if active.");
+                _ssb.Mod.Motd.Deactivate();
+            }
+        }
+
+        private async Task HandlePickupModActivation(bool isActiveInUi)
+        {
+            if (isActiveInUi)
+            {
+                _ssb.Mod.Pickup.Active = true;
+                Debug.WriteLine(
+                    "[UI]: Activating pickup module from UI. Updating old values as necessary.");
+            }
+            else
+            {
+                _ssb.Mod.Pickup.Active = false;
+                _ssb.Mod.Pickup.Manager.ResetPickupStatus();
+                await _ssb.QlCommands.SendToQlAsync("unlock", false);
+                Debug.WriteLine("[UI]: Deactivating pickup module from UI if active.");
+            }
+        }
+
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
             if (isActiveInUi)
@@ -176,24 +210,12 @@ namespace SSB.Ui
                 Debug.WriteLine(
                     string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
                         module.ModuleName));
-
-                // Certain modules need to be activated/re-loaded on settings save
-                if (module == _ssb.Mod.Motd)
-                {
-                    _ssb.Mod.Motd.Init();
-                }
             }
             else
             {
                 module.Active = false;
                 Debug.WriteLine(string.Format("[UI]: Deactivating {0} module from UI if active.",
                     module.ModuleName));
-
-                // Certain modules need to be deactivated on settings save
-                if (module == _ssb.Mod.Motd)
-                {
-                    _ssb.Mod.Motd.Deactivate();
-                }
             }
         }
 
@@ -357,7 +379,7 @@ namespace SSB.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Debug.WriteLine("[UI]: Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -435,7 +457,7 @@ namespace SSB.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter) p;
+                var player = (EarlyQuitter)p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
             }
@@ -453,7 +475,7 @@ namespace SSB.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
             // Might've been removed in-game
             if (!earlyQuitDb.UserExistsInDb(player.Name))
@@ -477,7 +499,7 @@ namespace SSB.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
             // Might've been removed in-game
             if (!earlyQuitDb.UserExistsInDb(player.Name))
@@ -546,7 +568,7 @@ namespace SSB.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
                 // Go into effect now
@@ -554,7 +576,7 @@ namespace SSB.Ui
                 _ssb.Mod.EarlyQuit.BanTime = earlyQuitOptions.banTime;
                 _ssb.Mod.EarlyQuit.BanTimeScale = earlyQuitOptions.banTimeScale;
                 _ssb.Mod.EarlyQuit.BanTimeScaleIndex = earlyQuitOptions.banTimeScaleIndex;
-                
+
                 HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
             }
@@ -655,11 +677,11 @@ namespace SSB.Ui
                     ? 0
                     : maxElo);
                 _cfgHandler.WriteConfiguration();
-                
+
                 // Go into effect now
-                EloLimit.MinimumRequiredElo = eloLimitOptions.minimumRequiredElo;
-                EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
-                
+                _ssb.Mod.EloLimit.MinimumRequiredElo = eloLimitOptions.minimumRequiredElo;
+                _ssb.Mod.EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
+
                 await HandleEloLimitModActivation(eloLimitOptions.isActive);
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
             }
@@ -717,7 +739,7 @@ namespace SSB.Ui
             motdOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
             PopulateModMotdUi();
-            HandleStandardModuleActivation(_ssb.Mod.Motd, motdOptions.isActive);
+            HandleMotdModActivation(motdOptions.isActive);
             ShowInfoMessage("Account date limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -731,12 +753,159 @@ namespace SSB.Ui
                 motdOptions.repeatInterval = int.Parse(modMOTDRepeatTimeTextBox.Text);
                 motdOptions.message = modMOTDRepeatMsgTextBox.Text;
                 _cfgHandler.WriteConfiguration();
-                HandleStandardModuleActivation(_ssb.Mod.Motd, motdOptions.isActive);
+                HandleMotdModActivation(motdOptions.isActive);
                 ShowInfoMessage("MOTD settings saved.", "Settings Saved");
             }
             else
             {
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modPickupLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModPickupUi();
+            ShowInfoMessage("Pickup settings loaded.", "Settings Loaded");
+        }
+
+        private void modPickupMaxNoShowsTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modPickupMaxNoShowsTextBox, string.Empty);
+        }
+
+        private void modPickupMaxNoShowsTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_pickupValidator.IsValidMaximumNoShowNum(modPickupMaxNoShowsTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modPickupMaxNoShowsTextBox.Select(0, modPickupMaxNoShowsTextBox.Text.Length);
+                errorProvider.SetError(modPickupMaxNoShowsTextBox, errorMsg);
+            }
+        }
+
+        private void modPickupMaxSubsTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modPickupMaxSubsTextBox, string.Empty);
+        }
+
+        private void modPickupMaxSubsTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_pickupValidator.IsValidMaximumSubsNum(modPickupMaxSubsTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modPickupMaxSubsTextBox.Select(0, modPickupMaxSubsTextBox.Text.Length);
+                errorProvider.SetError(modPickupMaxSubsTextBox, errorMsg);
+            }
+        }
+
+        private void modPickupNoShowsTimeBanTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modPickupNoShowsTimeBanTextBox, string.Empty);
+        }
+
+        private void modPickupNoShowsTimeBanTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_pickupValidator.IsValidTimeBanNum(modPickupNoShowsTimeBanTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modPickupNoShowsTimeBanTextBox.Select(0, modPickupNoShowsTimeBanTextBox.Text.Length);
+                errorProvider.SetError(modPickupNoShowsTimeBanTextBox, errorMsg);
+            }
+        }
+
+        private void modPickupPlayersPerTeamTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modPickupPlayersPerTeamTextBox, string.Empty);
+        }
+
+        private void modPickupPlayersPerTeamTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_pickupValidator.IsValidPickupTeamSize(modPickupPlayersPerTeamTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modPickupPlayersPerTeamTextBox.Select(0, modPickupPlayersPerTeamTextBox.Text.Length);
+                errorProvider.SetError(modPickupPlayersPerTeamTextBox, errorMsg);
+            }
+        }
+
+        private async void modPickupResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var pickupOptions = _cfgHandler.Config.PickupOptions;
+            pickupOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModPickupUi();
+            await HandlePickupModActivation(pickupOptions.isActive);
+            ShowInfoMessage("Pickup settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private async void modPickupSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var pickupOptions = _cfgHandler.Config.PickupOptions;
+                pickupOptions.isActive = modPickupEnableCheckBox.Checked;
+                pickupOptions.maxSubsPerPlayer = int.Parse(modPickupMaxSubsTextBox.Text);
+                pickupOptions.maxNoShowsPerPlayer = int.Parse(modPickupMaxNoShowsTextBox.Text);
+                pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
+                pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
+                pickupOptions.excessiveSubUseBanTimeScale =
+                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                pickupOptions.excessiveNoShowBanTimeScale =
+                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                pickupOptions.excessiveSubUseBanTimeScaleIndex =
+                    modPickupSubsTimeBanScaleComboBox.SelectedIndex;
+                pickupOptions.excessiveNoShowBanTimeScaleIndex =
+                    modPickupNoShowsTimeBanScaleComboBox.SelectedIndex;
+                pickupOptions.teamSize = int.Parse(modPickupPlayersPerTeamTextBox.Text);
+                _cfgHandler.WriteConfiguration();
+                // Go into effect now
+                _ssb.Mod.Pickup.MaxSubsPerPlayer = pickupOptions.maxSubsPerPlayer;
+                _ssb.Mod.Pickup.MaxNoShowsPerPlayer = pickupOptions.maxNoShowsPerPlayer;
+                _ssb.Mod.Pickup.ExcessiveSubUseBanTime = pickupOptions.excessiveSubUseBanTime;
+                _ssb.Mod.Pickup.ExcessiveNoShowBanTime = pickupOptions.excessiveNoShowBanTime;
+                _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScale = pickupOptions.excessiveSubUseBanTimeScale;
+                _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScale = pickupOptions.excessiveNoShowBanTimeScale;
+                _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScaleIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
+                _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScaleIndex = pickupOptions.excessiveNoShowBanTimeScaleIndex;
+                _ssb.Mod.Pickup.Teamsize = pickupOptions.teamSize;
+
+                await HandlePickupModActivation(pickupOptions.isActive);
+                ShowInfoMessage("Pickup settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modPickupSubsTimeBanTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modPickupSubsTimeBanTextBox, string.Empty);
+        }
+
+        private void modPickupSubsTimeBanTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_pickupValidator.IsValidTimeBanNum(modPickupSubsTimeBanTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modPickupSubsTimeBanTextBox.Select(0, modPickupSubsTimeBanTextBox.Text.Length);
+                errorProvider.SetError(modPickupSubsTimeBanTextBox, errorMsg);
             }
         }
 
@@ -789,7 +958,7 @@ namespace SSB.Ui
                 _ssb.Mod.Servers.MaxServersToDisplay = serverListOptions.maxServers;
 
                 HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
-                ShowInfoMessage("Server list  settings saved.", "Settings Saved");
+                ShowInfoMessage("Server list settings saved.", "Settings Saved");
             }
             else
             {
@@ -852,6 +1021,7 @@ namespace SSB.Ui
             }
             else if (currentTabPage == pickupTab)
             {
+                PopulateModPickupUi();
             }
             else if (currentTabPage == serversTab)
             {
@@ -869,6 +1039,7 @@ namespace SSB.Ui
             PopulateModEloLimiterUi();
             PopulateModMotdUi();
             PopulateModServerListUi();
+            PopulateModPickupUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -952,6 +1123,26 @@ namespace SSB.Ui
             modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
             modMOTDRepeatMsgTextBox.Text = motdOptions.message;
             Debug.WriteLine("Populated MOTD module user interface.");
+        }
+
+        private void PopulateModPickupUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var pickupOptions = _cfgHandler.Config.PickupOptions;
+            modPickupEnableCheckBox.Checked = pickupOptions.isActive;
+            modPickupMaxSubsTextBox.Text = pickupOptions.maxSubsPerPlayer.ToString();
+            modPickupMaxNoShowsTextBox.Text = pickupOptions.maxNoShowsPerPlayer.ToString();
+            modPickupPlayersPerTeamTextBox.Text = pickupOptions.teamSize.ToString();
+            modPickupNoShowsTimeBanTextBox.Text = pickupOptions.excessiveNoShowBanTime.
+                ToString(CultureInfo.InvariantCulture);
+            modPickupSubsTimeBanTextBox.Text = pickupOptions.excessiveSubUseBanTime.
+                ToString(CultureInfo.InvariantCulture);
+            modPickupSubsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
+            modPickupNoShowsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
+            modPickupSubsTimeBanScaleComboBox.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
+            modPickupNoShowsTimeBanScaleComboBox.SelectedIndex =
+                pickupOptions.excessiveNoShowBanTimeScaleIndex;
+            Debug.WriteLine("Populated pickup module user interface.");
         }
 
         private void PopulateModServerListUi()

@@ -197,7 +197,6 @@ namespace SSB.Core.Commands.Modules
             eq.InitDb();
 
             _configHandler.ReadConfiguration();
-            // TODO: reasonable defaults
             // See if we're dealing with the default values
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (_configHandler.Config.EarlyQuitOptions.banTime == 0 ||

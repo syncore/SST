@@ -78,7 +78,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public void DisplayArgLengthError(CmdArgs c)
         {
-            _irc.SendIrcNotice(c.FromUser, string.Format("\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 <start|stop|reset>",
+            _irc.SendIrcNotice(c.FromUser,
+                string.Format("\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 <start|stop|reset>",
                 IrcCommandList.IrcCommandPrefix, c.CmdName));
         }
 
@@ -100,7 +101,8 @@ namespace SSB.Core.Modules.Irc
         public async Task ExecAsync(CmdArgs c)
         {
             if (!c.Args[1].Equals("start") &&
-                !c.Args[1].Equals("stop") && !c.Args[1].Equals("reset"))
+                !c.Args[1].Equals("stop") && !c.Args[1].Equals("reset") 
+                && !c.Args[1].Equals("status"))
             {
                 DisplayArgLengthError(c);
                 return;
@@ -108,28 +110,33 @@ namespace SSB.Core.Modules.Irc
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
-                _irc.SendIrcNotice(c.FromUser, string.Format("\u0002[ERROR]\u0002 A running instance of Quake Live could not be found."));
+                _irc.SendIrcNotice(c.FromUser,
+                    string.Format("\u0002[ERROR]\u0002 A running instance of Quake Live could not be found."));
                 return;
             }
             if (c.Args[1].Equals("start"))
             {
                 if (_ssb.IsMonitoringServer)
                 {
-                    _irc.SendIrcNotice(c.FromUser, string.Format("\u0002[ERROR]\u0002 Your QL server is already being monitored."));
+                    _irc.SendIrcNotice(c.FromUser,
+                        string.Format("\u0002[ERROR]\u0002 Your QL server is already being monitored."));
                     return;
                 }
-                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, "\u0002[SUCCESS]\u0002 Starting QL server monitoring.");
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                    "\u0002[SUCCESS]\u0002 Starting QL server monitoring.");
                 await _ssb.BeginMonitoring();
             }
             else if (c.Args[1].Equals("stop"))
             {
                 if (!_ssb.IsMonitoringServer)
                 {
-                    _irc.SendIrcNotice(c.FromUser, string.Format("\u0002[ERROR]\u0002 No QL server is currently being monitored."));
+                    _irc.SendIrcNotice(c.FromUser,
+                        string.Format("\u0002[ERROR]\u0002 No QL server is currently being monitored."));
                 }
 
                 _ssb.StopMonitoring();
-                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, "\u0002[SUCCESS]\u0002 Stopped monitoring your QL server.");
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                    "\u0002[SUCCESS]\u0002 Stopped monitoring your QL server.");
             }
             else if (c.Args[1].Equals("reset"))
             {
@@ -141,9 +148,19 @@ namespace SSB.Core.Modules.Irc
                 }
                 else
                 {
-                    _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, "\u0002[SUCCESS]\u0002 Your QL server was not being monitored; now starting monitoring.");
+                    _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                        "\u0002[SUCCESS]\u0002 Your QL server was not being monitored; now starting monitoring.");
                     await _ssb.BeginMonitoring();
                 }
+            }
+            else if (c.Args[1].Equals("status"))
+            {
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("SSB {0}",
+                    ((_ssb.IsMonitoringServer) ? string.Format(
+                    "is monitoring your QL server at \u0002http://www.quakelive.com/#!join/{0}",
+                    (string.IsNullOrEmpty(_ssb.ServerInfo.CurrentServerId)
+                        ? "..."
+                        : _ssb.ServerInfo.CurrentServerId)) : "is \u0002not\u0002 currently monitoring your QL server.")));
             }
         }
     }

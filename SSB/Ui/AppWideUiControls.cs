@@ -4,17 +4,12 @@ using System.Windows.Forms;
 namespace SSB.Ui
 {
     /// <summary>
-    ///     Class that holds references to some of the selected UI controls in UserInterface.cs, allowing us to access them from other
+    ///     Class that holds references to some of the selected UI controls in UserInterface.cs, allowing us to access them
+    ///     from other
     ///     classes.
     /// </summary>
     public class AppWideUiControls
     {
-        private delegate void SetStartMonitoringBtnStatus(bool isMonitoring);
-
-        private delegate void SetStatusBarText(string text);
-
-        private delegate void SetStopMonitoringBtnStatus(bool isMonitoring);
-
         /// <summary>
         ///     Gets or sets the SSB UI activity log text box.
         /// </summary>
@@ -24,35 +19,37 @@ namespace SSB.Ui
         public TextBox LogConsoleTextBox { get; set; }
 
         /// <summary>
-        /// Gets or sets the 'start monitoring' button.
+        ///     Gets or sets the 'start monitoring' button.
         /// </summary>
         /// <value>
-        /// The 'start monitoring' button.
+        ///     The 'start monitoring' button.
         /// </value>
         public Button StartMonitoringButton { get; set; }
 
         /// <summary>
-        /// Gets or sets the status bar label.
+        ///     Gets or sets the status bar label.
         /// </summary>
         /// <value>
-        /// The status bar label.
+        ///     The status bar label.
         /// </value>
         public ToolStripStatusLabel StatusBar { get; set; }
 
         /// <summary>
-        /// Gets or sets the 'stop monitoring' button.
+        ///     Gets or sets the 'stop monitoring' button.
         /// </summary>
         /// <value>
-        /// The 'stop monitoring' button.
+        ///     The 'stop monitoring' button.
         /// </value>
         public Button StopMonitoringButton { get; set; }
 
         /// <summary>
-        /// Updates the application wide UI controls.
+        ///     Updates the application wide UI controls.
         /// </summary>
-        /// <param name="isMonitoring">if set to <c>true</c> then server
-        /// monitoring is active. if set to <c>false</c> then
-        /// server monitoring is inactive.</param>
+        /// <param name="isMonitoring">
+        ///     if set to <c>true</c> then server
+        ///     monitoring is active. if set to <c>false</c> then
+        ///     server monitoring is inactive.
+        /// </param>
         /// <param name="serverId">The server identifier.</param>
         public void UpdateAppWideControls(bool isMonitoring, string serverId)
         {
@@ -73,11 +70,13 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Enables or disables the 'start monitoring button'.
+        ///     Enables or disables the 'start monitoring button'.
         /// </summary>
-        /// <param name="isMonitoring">if set to <c>true</c> then server
-        /// monitoring is active. if set to <c>false</c> then
-        /// server monitoring is inactive.</param>
+        /// <param name="isMonitoring">
+        ///     if set to <c>true</c> then server
+        ///     monitoring is active. if set to <c>false</c> then
+        ///     server monitoring is inactive.
+        /// </param>
         private void SetStartMonitoringButtonStatus(bool isMonitoring)
         {
             if (StartMonitoringButton.InvokeRequired)
@@ -89,7 +88,7 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Sets the status bar label text.
+        ///     Sets the status bar label text.
         /// </summary>
         /// <param name="text">The text.</param>
         private void SetStatusBarLabelText(string text)
@@ -98,11 +97,13 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Enables or disables the 'stop monitoring button'.
+        ///     Enables or disables the 'stop monitoring button'.
         /// </summary>
-        /// <param name="isMonitoring">if set to <c>true</c> then server
-        /// monitoring is active. if set to <c>false</c> then
-        /// server monitoring is inactive.</param>
+        /// <param name="isMonitoring">
+        ///     if set to <c>true</c> then server
+        ///     monitoring is active. if set to <c>false</c> then
+        ///     server monitoring is inactive.
+        /// </param>
         private void SetStopMonitoringButtonStatus(bool isMonitoring)
         {
             if (StopMonitoringButton.InvokeRequired)
@@ -113,5 +114,11 @@ namespace SSB.Ui
 
             StopMonitoringButton.Enabled = isMonitoring;
         }
+
+        private delegate void SetStartMonitoringBtnStatus(bool isMonitoring);
+
+        private delegate void SetStatusBarText(string text);
+
+        private delegate void SetStopMonitoringBtnStatus(bool isMonitoring);
     }
 }

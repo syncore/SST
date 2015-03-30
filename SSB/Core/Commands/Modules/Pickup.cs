@@ -14,8 +14,8 @@ namespace SSB.Core.Commands.Modules
     public class Pickup : IModule
     {
         public const string NameModule = "pickup";
-        private const int TeamMaxSize = 8;
-        private const int TeamMinSize = 2;
+        public const int TeamMaxSize = 8;
+        public const int TeamMinSize = 2;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly PickupManager _pickupManager;
@@ -55,6 +55,14 @@ namespace SSB.Core.Commands.Modules
         public string ExcessiveNoShowBanTimeScale { get; set; }
 
         /// <summary>
+        /// Gets or sets the index of the excessive no show ban time scale.
+        /// </summary>
+        /// <value>
+        /// The index of the excessive no show ban time scale.
+        /// </value>
+        public int ExcessiveNoShowBanTimeScaleIndex { get; set; }
+        
+        /// <summary>
         ///     Gets or sets a numeric value representing the time to ban early quitters.
         /// </summary>
         /// <value>
@@ -75,6 +83,14 @@ namespace SSB.Core.Commands.Modules
         public string ExcessiveSubUseBanTimeScale { get; set; }
 
         /// <summary>
+        /// Gets or sets the index of the excessive sub use ban time scale.
+        /// </summary>
+        /// <value>
+        /// The index of the excessive sub use ban time scale.
+        /// </value>
+        public int ExcessiveSubUseBanTimeScaleIndex { get; set; }
+
+        /// <summary>
         ///     Gets the pickup manager.
         /// </summary>
         /// <value>
@@ -93,7 +109,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The maximum sub requests that a player can make before being banned.
         /// </value>
-        public uint MaxNoShowsPerPlayer { get; set; }
+        public int MaxNoShowsPerPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the maximum sub requests that a player can make before being banned for
@@ -106,7 +122,7 @@ namespace SSB.Core.Commands.Modules
         ///     Note: this refers to the sub requests that are successfully fulfilled, not the use of the sub
         ///     command itself.
         /// </remarks>
-        public uint MaxSubsPerPlayer { get; set; }
+        public int MaxSubsPerPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the teamsize.
@@ -114,7 +130,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The teamsize.
         /// </value>
-        public uint Teamsize { get; set; }
+        public int Teamsize { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -210,16 +226,8 @@ namespace SSB.Core.Commands.Modules
             {
                 return await EvalSetBanSettings(c);
             }
-            uint teamsize;
-            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out teamsize))
-            {
-                StatusMessage =
-                    string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
-                        TeamMinSize, TeamMaxSize);
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
-            if (teamsize < TeamMinSize || teamsize > TeamMaxSize)
+            int teamsize;
+            if (!int.TryParse(Helpers.GetArgVal(c, 2), out teamsize) || teamsize < TeamMinSize || teamsize > TeamMaxSize)
             {
                 StatusMessage =
                     string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
@@ -287,24 +295,16 @@ namespace SSB.Core.Commands.Modules
                 _configHandler.Config.PickupOptions.SetDefaults();
                 return;
             }
-            //TODO: FIX: Module load on start causes timing issues that make IsATeamGame always return false
-            // Disable this check for now; it will be evaluated any time a !pickup command is issued
-            // Current game must be team game, despite Active setting
-            /*
-            if (!_ssb.ServerInfo.IsATeamGame())
-            {
-                Active = false;
-                return;
-            }
-            */
-
+            
             Active = _configHandler.Config.PickupOptions.isActive;
             MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
             MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
             ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
             ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
+            ExcessiveNoShowBanTimeScaleIndex = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
             ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
             ExcessiveSubUseBanTimeScale = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
+            ExcessiveSubUseBanTimeScaleIndex = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
             Teamsize = _configHandler.Config.PickupOptions.teamSize;
         }
 
@@ -348,8 +348,10 @@ namespace SSB.Core.Commands.Modules
                 _configHandler.Config.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
                 _configHandler.Config.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
                 _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
+                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex = ExcessiveNoShowBanTimeScaleIndex;
                 _configHandler.Config.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
                 _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
+                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex = ExcessiveSubUseBanTimeScaleIndex;
             }
             else
             {
@@ -377,7 +379,7 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="teamsize">The teamsize.</param>
-        private async Task EnablePickup(CmdArgs c, uint teamsize)
+        private async Task EnablePickup(CmdArgs c, int teamsize)
         {
             // Note: notice the missing ban settings here.
             // The configuration has some pretty sane defaults, so unless the admin specifically
@@ -428,8 +430,8 @@ namespace SSB.Core.Commands.Modules
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            uint maxNum;
-            if (!uint.TryParse(Helpers.GetArgVal(c, 3), out maxNum))
+            int maxNum;
+            if (!int.TryParse(Helpers.GetArgVal(c, 3), out maxNum) || maxNum <= 0)
             {
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Max # of {0} to allow must be a number greater than zero.",
@@ -438,13 +440,7 @@ namespace SSB.Core.Commands.Modules
                 return false;
             }
             double timeNum;
-            if (!double.TryParse(Helpers.GetArgVal(c, 4), out timeNum))
-            {
-                StatusMessage = "^1[ERROR]^3 The time to ban must be a number greater than zero.";
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
-            if (timeNum <= 0)
+            if (!double.TryParse(Helpers.GetArgVal(c, 4), out timeNum) || timeNum <= 0)
             {
                 StatusMessage = "^1[ERROR]^3 The time to ban must be a number greater than zero.";
                 await SendServerTell(c, StatusMessage);
@@ -470,7 +466,7 @@ namespace SSB.Core.Commands.Modules
         /// <param name="timeToBan">The time to ban.</param>
         /// <param name="scaleToBan">The scale to ban.</param>
         /// <returns></returns>
-        private async Task SetBanSettings(CmdArgs c, string bType, uint maxNum, double timeToBan,
+        private async Task SetBanSettings(CmdArgs c, string bType, int maxNum, double timeToBan,
             string scaleToBan)
         {
             if (bType.Equals("noshows"))
@@ -478,6 +474,7 @@ namespace SSB.Core.Commands.Modules
                 MaxNoShowsPerPlayer = maxNum;
                 ExcessiveNoShowBanTime = timeToBan;
                 ExcessiveNoShowBanTimeScale = scaleToBan;
+                ExcessiveNoShowBanTimeScaleIndex = Helpers.GetTimeScaleIndex(scaleToBan);
                 StatusMessage = string.Format(
                     "^2[SUCCESS]^7 Players leaving without a sub more than^3 {0} ^7times will be banned for^1 {1} {2}.",
                     maxNum, timeToBan, scaleToBan);
@@ -488,6 +485,7 @@ namespace SSB.Core.Commands.Modules
                 MaxSubsPerPlayer = maxNum;
                 ExcessiveSubUseBanTime = timeToBan;
                 ExcessiveSubUseBanTimeScale = scaleToBan;
+                ExcessiveSubUseBanTimeScaleIndex = Helpers.GetTimeScaleIndex(scaleToBan);
                 StatusMessage = string.Format(
                     "^2[SUCCESS]^7 Players who've requested subs more than^3 {0} ^7times will be banned for^1 {1} {2}.",
                     maxNum, timeToBan, scaleToBan);
@@ -506,9 +504,13 @@ namespace SSB.Core.Commands.Modules
             MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
             ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
             ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
+            ExcessiveNoShowBanTimeScaleIndex =
+                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
             ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
             ExcessiveSubUseBanTimeScale =
                 _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
+            ExcessiveSubUseBanTimeScaleIndex =
+                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
         }
     }
 }

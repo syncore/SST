@@ -41,7 +41,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The maximum required Elo.
         /// </value>
-        public static int MaximumRequiredElo { get; set; }
+        public int MaximumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets or sets the minimum required Elo.
@@ -49,7 +49,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The minimum required Elo.
         /// </value>
-        public static int MinimumRequiredElo { get; set; }
+        public int MinimumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.

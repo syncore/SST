@@ -220,8 +220,8 @@ namespace SSB.Core.Commands.None
             await SendServerSay(c, StatusMessage);
 
             StatusMessage = string.Format(
-                "^5Privileged cmds: ^3{0}{1} start^7 lockdown server & start, ^3{0}{1} reset^7 reset game," +
-                " ^3{0}{1} stop^7 cancel and unlock server, ^3{0}{1} unban^7 unban no-shows",
+                "^5Privileged: ^3{0}{1} start^7 lock server & start, ^3{0}{1} reset^7 reset game," +
+                " ^3{0}{1} stop^7 cancel and unlock, ^3{0}{1} unban^7 to unban no-shows",
                 CommandList.GameCommandPrefix,
                 ((c.FromIrc) ? (string.Format("{0} {1}",
                 IrcCommandList.IrcCmdQl, CommandList.CmdPickup)) : CommandList.CmdPickup));

@@ -2705,6 +2705,8 @@
             this.modPickupPlayersPerTeamTextBox.Size = new System.Drawing.Size(42, 22);
             this.modPickupPlayersPerTeamTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modPickupPlayersPerTeamTextBox, "Enter the number of players that each team will have in pickup mode.");
+            this.modPickupPlayersPerTeamTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modPickupPlayersPerTeamTextBox_Validating);
+            this.modPickupPlayersPerTeamTextBox.Validated += new System.EventHandler(this.modPickupPlayersPerTeamTextBox_Validated);
             // 
             // modPickupOptNoShowsGroupBox
             // 
@@ -2734,6 +2736,8 @@
             this.modPickupNoShowsTimeBanTextBox.TabIndex = 19;
             this.coreToolTip.SetToolTip(this.modPickupNoShowsTimeBanTextBox, "Specify the time to ban the player for after the maximum no-shows\r\nare exceeded. " +
         "This must be a number.");
+            this.modPickupNoShowsTimeBanTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modPickupNoShowsTimeBanTextBox_Validating);
+            this.modPickupNoShowsTimeBanTextBox.Validated += new System.EventHandler(this.modPickupNoShowsTimeBanTextBox_Validated);
             // 
             // modPickupNoShowsTimeBanLabel
             // 
@@ -2778,6 +2782,8 @@
             this.modPickupMaxNoShowsTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modPickupMaxNoShowsTextBox, "Enter the maximum number of times that a player can leave the pickup game\r\nonce i" +
         "t has started before the player is banned.\r\n\r\n");
+            this.modPickupMaxNoShowsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modPickupMaxNoShowsTextBox_Validating);
+            this.modPickupMaxNoShowsTextBox.Validated += new System.EventHandler(this.modPickupMaxNoShowsTextBox_Validated);
             // 
             // modPickupSettingsGroupBox
             // 
@@ -2806,6 +2812,7 @@
             this.modPickupResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modPickupResetSettingsButton, "Reset this module to its default settings.");
             this.modPickupResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modPickupResetSettingsButton.Click += new System.EventHandler(this.modPickupResetSettingsButton_Click);
             // 
             // modPickupLoadSettingsButton
             // 
@@ -2820,6 +2827,7 @@
             this.modPickupLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modPickupLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modPickupLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modPickupLoadSettingsButton.Click += new System.EventHandler(this.modPickupLoadSettingsButton_Click);
             // 
             // modPickupSaveSettingsButton
             // 
@@ -2834,6 +2842,7 @@
             this.modPickupSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modPickupSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modPickupSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modPickupSaveSettingsButton.Click += new System.EventHandler(this.modPickupSaveSettingsButton_Click);
             // 
             // modPickupOptSubsGroupBox
             // 
@@ -2863,6 +2872,8 @@
             this.modPickupSubsTimeBanTextBox.TabIndex = 19;
             this.coreToolTip.SetToolTip(this.modPickupSubsTimeBanTextBox, "Specify the time to ban the player for after the maximum subs\r\nare exceeded. This" +
         " must be a number.");
+            this.modPickupSubsTimeBanTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modPickupSubsTimeBanTextBox_Validating);
+            this.modPickupSubsTimeBanTextBox.Validated += new System.EventHandler(this.modPickupSubsTimeBanTextBox_Validated);
             // 
             // modPickupSubsTimeBanLabel
             // 
@@ -2907,6 +2918,8 @@
             this.modPickupMaxSubsTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modPickupMaxSubsTextBox, "Enter the maximum number of subs that a player may use before\r\nthe player is bann" +
         "ed.");
+            this.modPickupMaxSubsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modPickupMaxSubsTextBox_Validating);
+            this.modPickupMaxSubsTextBox.Validated += new System.EventHandler(this.modPickupMaxSubsTextBox_Validated);
             // 
             // modPickupEnableCheckBox
             // 
