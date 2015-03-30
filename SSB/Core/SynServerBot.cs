@@ -48,7 +48,7 @@ namespace SSB.Core
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
 
-            // Should we begin monitoring a server immediately?
+            // Check if we should begin monitoring a server immediately
             CheckForAutoMonitoring();
         }
 
@@ -93,10 +93,10 @@ namespace SSB.Core
         public GuiOptions GuiOptions { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether a server disconnection scan is pending.
+        ///     Gets or sets a value indicating whether a server disconnection scan is pending.
         /// </summary>
         /// <value>
-        /// <c>true</c> a server disconnection scan is pending; otherwise, <c>false</c>.
+        ///     <c>true</c> a server disconnection scan is pending; otherwise, <c>false</c>.
         /// </value>
         public bool IsDisconnectionScanPending { get; set; }
 
@@ -195,16 +195,18 @@ namespace SSB.Core
         public VoteManager VoteManager { get; private set; }
 
         /// <summary>
-        /// Attempts to automatically start server monitoring on application launch,
-        /// if the user has this option specified in the SSB configuration file.
+        ///     Attempts to automatically start server monitoring on application launch,
+        ///     if the user has this option specified in the SSB configuration file.
         /// </summary>
         public async Task AttemptAutoMonitorStart()
         {
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
-                Debug.WriteLine("Auto server monitoring on start is enabled, but QL window not found. Won't allow.");
-                MessageBox.Show(@"Could not auto-start server monitoring because a running instance of Quake Live was not found!",
+                Debug.WriteLine(
+                    "Auto server monitoring on start is enabled, but QL window not found. Won't allow.");
+                MessageBox.Show(
+                    @"Could not auto-start server monitoring because a running instance of Quake Live was not found!",
                     @"Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -323,7 +325,7 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Stops the monitoring of a server.
+        ///     Stops the monitoring of a server.
         /// </summary>
         public void StopMonitoring()
         {
@@ -335,9 +337,9 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Checks the user's configuration to see if automatic server monitoring
-        /// should occur on application launch, and attempts to automatically monitor
-        /// the server if possible.
+        ///     Checks the user's configuration to see if automatic server monitoring
+        ///     should occur on application launch, and attempts to automatically monitor
+        ///     the server if possible.
         /// </summary>
         private void CheckForAutoMonitoring()
         {
@@ -385,8 +387,9 @@ namespace SSB.Core
 
             Debug.WriteLine("Requesting configstrings in delayed initilization step.");
 
-            // TODO: Init() modules such as MOTD and others that can't be started until after we're live
-            
+            // Initiate modules such as MOTD and others that can't be started until after we're live
+            Mod.Motd.Init();
+
             // Wait 2 sec then clear the internal console
             await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();

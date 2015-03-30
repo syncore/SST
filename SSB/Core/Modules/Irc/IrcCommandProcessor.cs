@@ -80,7 +80,7 @@ namespace SSB.Core.Modules.Irc
             }
             var c = new CmdArgs(args, cmdName, fromUser, msg, true);
             if (_ircCmds.Commands[cmdName].RequiresMonitoring &&
-                !_ssb.IsMonitoringServer)
+                (((!_ssb.IsMonitoringServer && !_ssb.IsInitComplete))))
             {
                 _irc.SendIrcNotice(fromUser, "\u0002[ERROR]\u0002 This command requires that a server be monitored; your server is not currently being monitored.");
                 return;

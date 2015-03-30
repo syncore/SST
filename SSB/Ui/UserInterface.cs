@@ -25,6 +25,7 @@ namespace SSB.Ui
         private readonly CoreOptionsValidator _coreOptionsValidator;
         private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly EloLimitValidator _eloLimitValidator;
+        private readonly MotdValidator _motdValidator;
         private readonly SynServerBot _ssb;
         private List<EarlyQuitter> _earlyQuittersFromDb;
 
@@ -39,6 +40,7 @@ namespace SSB.Ui
             _accountDateLimitValidator = new AccountDateLimitValidator();
             _earlyQuitValidator = new EarlyQuitValidator();
             _eloLimitValidator = new EloLimitValidator();
+            _motdValidator = new MotdValidator();
             SetAppWideUiControls();
             PopulateAllUiTabs();
         }
@@ -168,14 +170,27 @@ namespace SSB.Ui
             if (isActiveInUi)
             {
                 module.Active = true;
-                Debug.WriteLine(string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
-                    module.ModuleName));
+                Debug.WriteLine(
+                    string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
+                        module.ModuleName));
+
+                // Certain modules need to be activated/re-loaded on settings save
+                if (module == _ssb.Mod.Motd)
+                {
+                    _ssb.Mod.Motd.Init();
+                }
             }
             else
             {
                 module.Active = false;
                 Debug.WriteLine(string.Format("[UI]: Deactivating {0} module from UI if active.",
                     module.ModuleName));
+
+                // Certain modules need to be deactivated on settings save
+                if (module == _ssb.Mod.Motd)
+                {
+                    _ssb.Mod.Motd.Deactivate();
+                }
             }
         }
 
@@ -278,10 +293,9 @@ namespace SSB.Ui
             var fullVoteText = string.Format("{0} {1}",
                 modAutoVoterVoteTypeComboxBox.SelectedValue,
                 (containsParam) ? modAutoVoterContainingTextBox.Text : string.Empty).ToLowerInvariant().Trim();
-            
+
             if (_ssb.Mod.AutoVoter.AutoVotes.Any(v => v.VoteText.Equals(fullVoteText,
                 StringComparison.InvariantCultureIgnoreCase)))
-            
             {
                 ShowErrorMessage("There is already an existing vote that matches that type!",
                     "Vote already exists");
@@ -324,8 +338,7 @@ namespace SSB.Ui
             modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
                 ? 0
                 : -1);
-            
-            
+
             RefreshCurrentVotesDataSource();
 
             // Disable auto voter since there are now no votes
@@ -366,6 +379,12 @@ namespace SSB.Ui
             SetAutoVoteOptionalText();
         }
 
+        private void modAutoVoterRefreshVotesButton_Click(object sender, EventArgs e)
+        {
+            RefreshCurrentVotesDataSource();
+            Debug.WriteLine("[UI]: Received user request to refresh current auto votes data source.");
+        }
+
         private void modAutoVoterRejectRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             SetAutoVoteOptionalText();
@@ -404,6 +423,85 @@ namespace SSB.Ui
             SetAutoVoteOptionalText();
         }
 
+        private async void modEarlyQuitClearQuitsButton_Click(object sender, EventArgs e)
+        {
+            var earlyQuitDb = new DbQuits();
+
+            // Initial read of database
+            RefreshCurrentQuittersDataSource();
+
+            foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
+            {
+                var player = (EarlyQuitter) p;
+                earlyQuitDb.DeleteUserFromDb(player.Name);
+                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+            }
+
+            // ...
+            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
+                ? 0
+                : -1);
+
+            // Update
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("[UI]: Cleared early quit database.");
+        }
+
+        private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
+        {
+            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var earlyQuitDb = new DbQuits();
+            // Might've been removed in-game
+            if (!earlyQuitDb.UserExistsInDb(player.Name))
+            {
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+            earlyQuitDb.DeleteUserFromDb(player.Name);
+            await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+            Debug.WriteLine(string.Format("[UI]: Removed {0} from early quit database",
+                player.Name));
+
+            // ...
+            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
+                ? 0
+                : -1);
+
+            RefreshCurrentQuittersDataSource();
+        }
+
+        private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
+        {
+            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var earlyQuitDb = new DbQuits();
+            // Might've been removed in-game
+            if (!earlyQuitDb.UserExistsInDb(player.Name))
+            {
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+            if (player.QuitCount == 1)
+            {
+                earlyQuitDb.DeleteUserFromDb(player.Name);
+                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
+                RefreshCurrentQuittersDataSource();
+                return;
+            }
+
+            earlyQuitDb.DecrementUserQuitCount(player.Name, 1);
+            Debug.WriteLine(string.Format("[UI]: Forgave 1 early quit for {0}",
+                player.Name));
+            RefreshCurrentQuittersDataSource();
+        }
+
+        private void modEarlyQuitLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModEarlyQuitUi();
+            ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
+        }
+
         private void modEarlyQuitMaxQuitsTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modEarlyQuitMaxQuitsTextBox, string.Empty);
@@ -417,6 +515,43 @@ namespace SSB.Ui
                 e.Cancel = true;
                 modEarlyQuitMaxQuitsTextBox.Select(0, modEarlyQuitMaxQuitsTextBox.Text.Length);
                 errorProvider.SetError(modEarlyQuitMaxQuitsTextBox, errorMsg);
+            }
+        }
+
+        private void modEarlyQuitRefreshQuitsButton_Click(object sender, EventArgs e)
+        {
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("[UI]: Received user request to refresh current quitters data source.");
+        }
+
+        private void modEarlyQuitResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+            earlyQuitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModEarlyQuitUi();
+            HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+            ShowInfoMessage("Early quit banner settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void modEarlyQuitSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+                earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
+                earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
+                earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
+                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
+                _cfgHandler.WriteConfiguration();
+                HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+                ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
 
@@ -436,13 +571,168 @@ namespace SSB.Ui
             }
         }
 
+        private void modEloLimiterLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModEloLimiterUi();
+            ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
+        }
+
+        private void modEloLimiterMaxEloTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEloLimiterMaxEloTextBox, string.Empty);
+        }
+
+        private void modEloLimiterMaxEloTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_eloLimitValidator.IsValidMaximumElo(modEloLimiterMaxEloTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEloLimiterMaxEloTextBox.Select(0, modEloLimiterMaxEloTextBox.Text.Length);
+                errorProvider.SetError(modEloLimiterMaxEloTextBox, errorMsg);
+            }
+        }
+
+        private void modEloLimiterMinEloTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modEloLimiterMinEloTextBox, string.Empty);
+        }
+
+        private void modEloLimiterMinEloTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_eloLimitValidator.IsValidMinimumElo(modEloLimiterMinEloTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modEloLimiterMinEloTextBox.Select(0, modEloLimiterMinEloTextBox.Text.Length);
+                errorProvider.SetError(modEloLimiterMinEloTextBox, errorMsg);
+            }
+        }
+
+        private async void modEloLimiterResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+            eloLimitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModEloLimiterUi();
+            await HandleEloLimitModActivation(eloLimitOptions.isActive);
+            ShowInfoMessage("Elo limiter settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private async void modEloLimiterSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var maxElo = 0;
+                var minElo = int.Parse(modEloLimiterMinEloTextBox.Text);
+                // if maximum elo is specified, need to do one more check
+                if (modEloLimiterMaxEloTextBox.Text.Length != 0)
+                {
+                    maxElo = int.Parse(modEloLimiterMaxEloTextBox.Text);
+                }
+                if ((maxElo != 0) && (maxElo < minElo))
+                {
+                    ShowErrorMessage("The maximum elo value cannot be less than the minimum Elo value.",
+                        "Errors Detected");
+                    modEloLimiterMaxEloTextBox.Clear();
+                    return;
+                }
+
+                var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+                eloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
+                eloLimitOptions.minimumRequiredElo = minElo;
+                eloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
+                    ? 0
+                    : maxElo);
+                _cfgHandler.WriteConfiguration();
+                await HandleEloLimitModActivation(eloLimitOptions.isActive);
+                ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modMOTDLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModMotdUi();
+            ShowInfoMessage("MOTD settings loaded.", "Settings Loaded");
+        }
+
+        private void modMOTDRepeatMsgTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modMOTDRepeatMsgTextBox, string.Empty);
+        }
+
+        private void modMOTDRepeatMsgTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_motdValidator.IsValidRepeatMessage(modMOTDRepeatMsgTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modMOTDRepeatMsgTextBox.Select(0, modMOTDRepeatMsgTextBox.Text.Length);
+                errorProvider.SetError(modMOTDRepeatMsgTextBox, errorMsg);
+            }
+        }
+
+        private void modMOTDRepeatTimeTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modMOTDRepeatTimeTextBox, string.Empty);
+        }
+
+        private void modMOTDRepeatTimeTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_motdValidator.IsValidRepeatTime(modMOTDRepeatTimeTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modMOTDRepeatTimeTextBox.Select(0, modMOTDRepeatTimeTextBox.Text.Length);
+                errorProvider.SetError(modMOTDRepeatTimeTextBox, errorMsg);
+            }
+        }
+
+        private void modMOTDResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var motdOptions = _cfgHandler.Config.MotdOptions;
+            motdOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModMotdUi();
+            HandleStandardModuleActivation(_ssb.Mod.Motd, motdOptions.isActive);
+            ShowInfoMessage("Account date limiter settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void modMOTDSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var motdOptions = _cfgHandler.Config.MotdOptions;
+                motdOptions.isActive = modMOTDEnableCheckBox.Checked;
+                motdOptions.repeatInterval = int.Parse(modMOTDRepeatTimeTextBox.Text);
+                motdOptions.message = modMOTDRepeatMsgTextBox.Text;
+                _cfgHandler.WriteConfiguration();
+                HandleStandardModuleActivation(_ssb.Mod.Motd, motdOptions.isActive);
+                ShowInfoMessage("MOTD settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
         private void moduleTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tabControl = sender as TabControl;
             if (tabControl == null) return;
             var currentTabPage = tabControl.SelectedTab;
 
-            // The moduels tabs' data are populated on initial load, but might've changed due to
+            // The modules tabs' data are populated on initial load, but might've changed due to
             // in-game or IRC commands; so re-populate on tab switch.
             if (currentTabPage == accountDateTab)
             {
@@ -462,12 +752,14 @@ namespace SSB.Ui
             }
             else if (currentTabPage == eloLimitTab)
             {
+                PopulateModEloLimiterUi();
             }
             else if (currentTabPage == ircTab)
             {
             }
             else if (currentTabPage == motdTab)
             {
+                PopulateModMotdUi();
             }
             else if (currentTabPage == pickupTab)
             {
@@ -485,6 +777,7 @@ namespace SSB.Ui
             PopulateModAutoVoterUi();
             PopulateModEarlyQuitUi();
             PopulateModEloLimiterUi();
+            PopulateModMotdUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -521,7 +814,7 @@ namespace SSB.Ui
         {
             _cfgHandler.ReadConfiguration();
             modAutoVoterEnableCheckBox.Checked = _cfgHandler.Config.AutoVoterOptions.isActive;
-            
+
             // Radio buttons
             modAutoVoterPassRadioButton.Checked = true;
             // Vote types combo box
@@ -560,6 +853,16 @@ namespace SSB.Ui
             Debug.WriteLine("Populated Elo limiter module user interface.");
         }
 
+        private void PopulateModMotdUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var motdOptions = _cfgHandler.Config.MotdOptions;
+            modMOTDEnableCheckBox.Checked = motdOptions.isActive;
+            modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
+            modMOTDRepeatMsgTextBox.Text = motdOptions.message;
+            Debug.WriteLine("Populated MOTD module user interface.");
+        }
+
         private void RefreshCurrentQuittersDataSource()
         {
             modEarlyQuitCurQuitsListBox.DataSource = null;
@@ -583,7 +886,6 @@ namespace SSB.Ui
             modAutoVoterCurrentVotesBindingSource.DataSource =
                 new BindingList<AutoVote>(_ssb.Mod.AutoVoter.AutoVotes);
             if (modAutoVoterCurrentVotesBindingSource.Count != 0)
-            //if (_ssb.Mod.AutoVoter.AutoVotes.Count != 0)
             {
                 // Only set the listbox's datasource if there are elements
                 // otherwise, ArgumentOutOfRange is unfortunately possible
@@ -632,7 +934,9 @@ namespace SSB.Ui
         private void ssbLogo_MouseMove(object sender, MouseEventArgs e)
         {
             if ((e.Button & MouseButtons.Left) == 0)
+            {
                 return;
+            }
             Win32Api.ReleaseCapture();
             Win32Api.SendMessage(Handle, Win32Api.WM_NCLBUTTONDOWN, Win32Api.HT_CAPTION, 0);
         }
@@ -701,212 +1005,5 @@ namespace SSB.Ui
             _ssb.StopMonitoring();
             Debug.WriteLine("Got user request to stop monitoring server. Stopping monitoring.");
         }
-
-        private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
-        {
-            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
-            var earlyQuitDb = new DbQuits();
-            // Might've been removed in-game
-            if (!earlyQuitDb.UserExistsInDb(player.Name))
-            {
-                RefreshCurrentQuittersDataSource();
-                return;
-            }
-            if (player.QuitCount == 1)
-            {
-                earlyQuitDb.DeleteUserFromDb(player.Name);
-                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
-                RefreshCurrentQuittersDataSource();
-                return;
-            }
-            
-            earlyQuitDb.DecrementUserQuitCount(player.Name, 1);
-            Debug.WriteLine(string.Format("[UI]: Forgave 1 early quit for {0}",
-                player.Name));
-            RefreshCurrentQuittersDataSource();
-        }
-
-        private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
-        {
-            if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
-            var earlyQuitDb = new DbQuits();
-            // Might've been removed in-game
-            if (!earlyQuitDb.UserExistsInDb(player.Name))
-            {
-                RefreshCurrentQuittersDataSource();
-                return;
-            }
-            earlyQuitDb.DeleteUserFromDb(player.Name);
-            await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
-            Debug.WriteLine(string.Format("[UI]: Removed {0} from early quit database",
-                player.Name));
-
-            // ...
-            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
-                ? 0
-                : -1);
-            
-            RefreshCurrentQuittersDataSource();
-        }
-
-        private async void modEarlyQuitClearQuitsButton_Click(object sender, EventArgs e)
-        {
-            var earlyQuitDb = new DbQuits();
-            
-            // Initial read of database
-            RefreshCurrentQuittersDataSource();
-            
-            foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
-            {
-                var player = (EarlyQuitter) p;
-                earlyQuitDb.DeleteUserFromDb(player.Name);
-                await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
-            }
-
-            // ... 
-            modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
-                ? 0
-                : -1);
-            
-            // Update
-            RefreshCurrentQuittersDataSource();
-            Debug.WriteLine("[UI]: Cleared early quit database.");
-        }
-
-        private void modEarlyQuitRefreshQuitsButton_Click(object sender, EventArgs e)
-        {
-            RefreshCurrentQuittersDataSource();
-            Debug.WriteLine("[UI]: Received user request to refresh current quitters data source.");
-        }
-
-        private void modAutoVoterRefreshVotesButton_Click(object sender, EventArgs e)
-        {
-            RefreshCurrentVotesDataSource();
-            Debug.WriteLine("[UI]: Received user request to refresh current auto votes data source.");
-        }
-
-        private void modEarlyQuitSaveSettingsButton_Click(object sender, EventArgs e)
-        {
-            if (ValidateChildren())
-            {
-                var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-                earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
-                earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
-                earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
-                earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
-                _cfgHandler.WriteConfiguration();
-                HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
-                ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
-            }
-            else
-            {
-                ShowErrorMessage("Please correct all errors.", "Errors Detected");
-            }
-        }
-
-        private void modEarlyQuitLoadSettingsButton_Click(object sender, EventArgs e)
-        {
-            PopulateModEarlyQuitUi();
-            ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
-        }
-
-        private void modEarlyQuitResetSettingsButton_Click(object sender, EventArgs e)
-        {
-            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-            earlyQuitOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            PopulateModEarlyQuitUi();
-            HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
-            ShowInfoMessage("Early quit banner settings were reset to their default values.",
-                "Defaults Loaded");
-        }
-
-        private void modEloLimiterMinEloTextBox_Validated(object sender, EventArgs e)
-        {
-            errorProvider.SetError(modEloLimiterMinEloTextBox, string.Empty);
-        }
-
-        private void modEloLimiterMinEloTextBox_Validating(object sender, CancelEventArgs e)
-        {
-            string errorMsg;
-            if (!_eloLimitValidator.IsValidMinimumElo(modEloLimiterMinEloTextBox.Text, out errorMsg))
-            {
-                e.Cancel = true;
-                modEloLimiterMinEloTextBox.Select(0, modEloLimiterMinEloTextBox.Text.Length);
-                errorProvider.SetError(modEloLimiterMinEloTextBox, errorMsg);
-            }
-        }
-
-        private void modEloLimiterMaxEloTextBox_Validated(object sender, EventArgs e)
-        {
-            errorProvider.SetError(modEloLimiterMaxEloTextBox, string.Empty);
-        }
-
-        private void modEloLimiterMaxEloTextBox_Validating(object sender, CancelEventArgs e)
-        {
-            string errorMsg;
-            if (!_eloLimitValidator.IsValidMaximumElo(modEloLimiterMaxEloTextBox.Text, out errorMsg))
-            {
-                e.Cancel = true;
-                modEloLimiterMaxEloTextBox.Select(0, modEloLimiterMaxEloTextBox.Text.Length);
-                errorProvider.SetError(modEloLimiterMaxEloTextBox, errorMsg);
-            }
-        }
-
-        private void modEloLimiterLoadSettingsButton_Click(object sender, EventArgs e)
-        {
-            PopulateModEloLimiterUi();
-            ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
-        }
-
-        private async void modEloLimiterSaveSettingsButton_Click(object sender, EventArgs e)
-        {
-            if (ValidateChildren())
-            {
-                int maxElo = 0;
-                int minElo = int.Parse(modEloLimiterMinEloTextBox.Text);
-                // if maximum elo is specified, need to do one more check
-                if (modEloLimiterMaxEloTextBox.Text.Length != 0)
-                {
-                    maxElo = int.Parse(modEloLimiterMaxEloTextBox.Text);
-                }
-                if ((maxElo != 0) && (maxElo < minElo))
-                {
-                    ShowErrorMessage("The maximum elo value cannot be less than the minimum Elo value.",
-                        "Errors Detected");
-                    modEloLimiterMaxEloTextBox.Clear();
-                    return;
-                }
-                
-                var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-                eloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
-                eloLimitOptions.minimumRequiredElo = minElo;
-                eloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
-                    ? 0 : maxElo);
-                _cfgHandler.WriteConfiguration();
-                await HandleEloLimitModActivation(eloLimitOptions.isActive);
-                ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
-            }
-            else
-            {
-                ShowErrorMessage("Please correct all errors.", "Errors Detected");
-            }
-        }
-
-        private async void modEloLimiterResetSettingsButton_Click(object sender, EventArgs e)
-        {
-            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-            eloLimitOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            PopulateModEloLimiterUi();
-            await HandleEloLimitModActivation(eloLimitOptions.isActive);
-            ShowInfoMessage("Elo limiter settings were reset to their default values.",
-                "Defaults Loaded");
-        }
-
-        
     }
 }

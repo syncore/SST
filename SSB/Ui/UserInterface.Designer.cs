@@ -2512,6 +2512,8 @@
             this.modMOTDRepeatMsgTextBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modMOTDRepeatMsgTextBox, "Enter the message to send. This message will repeat\r\nevery # of minutes you enter" +
         "ed in the box above.");
+            this.modMOTDRepeatMsgTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modMOTDRepeatMsgTextBox_Validating);
+            this.modMOTDRepeatMsgTextBox.Validated += new System.EventHandler(this.modMOTDRepeatMsgTextBox_Validated);
             // 
             // modMOTDRepeatTimeTextBox
             // 
@@ -2524,6 +2526,8 @@
             this.modMOTDRepeatTimeTextBox.Size = new System.Drawing.Size(99, 22);
             this.modMOTDRepeatTimeTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modMOTDRepeatTimeTextBox, "Enter the time, in minutes, after which the message is\r\nto repeat.");
+            this.modMOTDRepeatTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modMOTDRepeatTimeTextBox_Validating);
+            this.modMOTDRepeatTimeTextBox.Validated += new System.EventHandler(this.modMOTDRepeatTimeTextBox_Validated);
             // 
             // modMOTDEnableCheckBox
             // 
@@ -2563,6 +2567,7 @@
             this.modMOTDResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modMOTDResetSettingsButton, "Reset this module to its default settings.");
             this.modMOTDResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modMOTDResetSettingsButton.Click += new System.EventHandler(this.modMOTDResetSettingsButton_Click);
             // 
             // modMOTDLoadSettingsButton
             // 
@@ -2577,6 +2582,7 @@
             this.modMOTDLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modMOTDLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modMOTDLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modMOTDLoadSettingsButton.Click += new System.EventHandler(this.modMOTDLoadSettingsButton_Click);
             // 
             // modMOTDSaveSettingsButton
             // 
@@ -2591,6 +2597,7 @@
             this.modMOTDSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modMOTDSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modMOTDSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modMOTDSaveSettingsButton.Click += new System.EventHandler(this.modMOTDSaveSettingsButton_Click);
             // 
             // modMOTDHeaderDescLabel
             // 

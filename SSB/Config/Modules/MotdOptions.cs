@@ -39,7 +39,7 @@
         {
             isActive = false;
             message = string.Empty;
-            repeatInterval = 0;
+            repeatInterval = 2;
         }
     }
 }

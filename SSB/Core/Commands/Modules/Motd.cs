@@ -13,8 +13,8 @@ namespace SSB.Core.Commands.Modules
     /// </summary>
     public class Motd : IModule
     {
-        public const string NameModule = "motd";
         public const int MinRepeatThresholdStart = 0;
+        public const string NameModule = "motd";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly MotdHandler _motd;
@@ -212,10 +212,6 @@ namespace SSB.Core.Commands.Modules
             }
             Message = _configHandler.Config.MotdOptions.message;
             RepeatInterval = _configHandler.Config.MotdOptions.repeatInterval;
-            if (Active)
-            {
-                Init();
-            }
         }
 
         /// <summary>
@@ -260,6 +256,34 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Deactivates the module.
+        /// </summary>
+        /// <remarks>This is called from the UI context.</remarks>
+        public void Deactivate()
+        {
+            _motd.StopMotdTimer();
+        }
+
+        /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to set the motd on load.</remarks>
+        /// <remarks>This is called from the UI context.</remarks>
+        public void Init()
+        {
+            // Loaded from UI context
+            _configHandler.ReadConfiguration();
+            var interval = _configHandler.Config.MotdOptions.repeatInterval;
+            var message = _configHandler.Config.MotdOptions.message;
+            var active = _configHandler.Config.MotdOptions.isActive;
+            if ((!active) || (string.IsNullOrEmpty(message)) || (interval <= MinRepeatThresholdStart)) return;
+            _motd.Message = message;
+            _motd.RepeatInterval = interval;
+            _motd.RestartMotdTimer();
+            Debug.WriteLine("Active flag detected in saved configuration; auto-initializing motd module.");
+        }
+
+        /// <summary>
         ///     Disables the motd.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -269,19 +293,6 @@ namespace SSB.Core.Commands.Modules
             UpdateConfig(false);
             StatusMessage = string.Format("^2[SUCCESS]^7 Message of the day has been disabled.");
             await SendServerSay(c, StatusMessage);
-        }
-
-        /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to set the motd on load.</remarks>
-        private void Init()
-        {
-            if ((string.IsNullOrEmpty(Message)) || (RepeatInterval == 0)) return;
-            _motd.Message = Message;
-            _motd.RepeatInterval = RepeatInterval;
-            _motd.StartMotdTimer();
-            Debug.WriteLine("Active flag detected in saved configuration; auto-initializing motd module.");
         }
 
         /// <summary>
@@ -300,14 +311,15 @@ namespace SSB.Core.Commands.Modules
                 //!ql mod motd 60 this is a test message
                 // c.Args[0]: !ql + space + c.Args[1]: mod + space + c.Args[2]: motd + space, c.Args[3]: 60 +
                 // space = start of message
-                msgStart = ((c.Args[0].Length+1) + (c.Args[1].Length+1) + (c.Args[2].Length+1) + (c.Args[3].Length+1));
+                msgStart = ((c.Args[0].Length + 1) + (c.Args[1].Length + 1) + (c.Args[2].Length + 1) +
+                            (c.Args[3].Length + 1));
             }
             else
             {
                 //!mod motd 60 this is a test message
                 // c.Args[0]: !mod + space + c.Args[1]: motd + space + c.Args[3]: 60 +
                 // space = start of message
-                msgStart = ((c.Args[0].Length+1) + (c.Args[1].Length+1) + (c.Args[2].Length+1));
+                msgStart = ((c.Args[0].Length + 1) + (c.Args[1].Length + 1) + (c.Args[2].Length + 1));
             }
 
             Message = c.Text.Substring(msgStart);
