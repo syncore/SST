@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSB.Config;
 using SSB.Core;
+using SSB.Core.Commands.Modules;
 using SSB.Database;
 using SSB.Enum;
 using SSB.Interfaces;
@@ -26,6 +27,7 @@ namespace SSB.Ui
         private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly EloLimitValidator _eloLimitValidator;
         private readonly MotdValidator _motdValidator;
+        private readonly ServerListValidator _serverListValidator;
         private readonly SynServerBot _ssb;
         private List<EarlyQuitter> _earlyQuittersFromDb;
 
@@ -41,6 +43,7 @@ namespace SSB.Ui
             _earlyQuitValidator = new EarlyQuitValidator();
             _eloLimitValidator = new EloLimitValidator();
             _motdValidator = new MotdValidator();
+            _serverListValidator = new ServerListValidator();
             SetAppWideUiControls();
             PopulateAllUiTabs();
         }
@@ -546,6 +549,12 @@ namespace SSB.Ui
                 earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
+                // Go into effect now
+                _ssb.Mod.EarlyQuit.MaxQuitsAllowed = earlyQuitOptions.maxQuitsAllowed;
+                _ssb.Mod.EarlyQuit.BanTime = earlyQuitOptions.banTime;
+                _ssb.Mod.EarlyQuit.BanTimeScale = earlyQuitOptions.banTimeScale;
+                _ssb.Mod.EarlyQuit.BanTimeScaleIndex = earlyQuitOptions.banTimeScaleIndex;
+                
                 HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
             }
@@ -646,6 +655,11 @@ namespace SSB.Ui
                     ? 0
                     : maxElo);
                 _cfgHandler.WriteConfiguration();
+                
+                // Go into effect now
+                EloLimit.MinimumRequiredElo = eloLimitOptions.minimumRequiredElo;
+                EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
+                
                 await HandleEloLimitModActivation(eloLimitOptions.isActive);
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
             }
@@ -726,6 +740,81 @@ namespace SSB.Ui
             }
         }
 
+        private void modServerListLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModServerListUi();
+            ShowInfoMessage("Server list settings loaded.", "Settings Loaded");
+        }
+
+        private void modServerListMaxServersTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modServerListMaxServersTextBox, string.Empty);
+        }
+
+        private void modServerListMaxServersTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_serverListValidator.IsValidMaximumServersNum(modServerListMaxServersTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modServerListMaxServersTextBox.Select(0, modServerListMaxServersTextBox.Text.Length);
+                errorProvider.SetError(modServerListMaxServersTextBox, errorMsg);
+            }
+        }
+
+        private void modServerListResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var serverListOptions = _cfgHandler.Config.ServersOptions;
+            serverListOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModServerListUi();
+            HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
+            ShowInfoMessage("Server list settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void modServerListSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                var serverListOptions = _cfgHandler.Config.ServersOptions;
+                serverListOptions.isActive = modServerListEnableCheckBox.Checked;
+                serverListOptions.maxServers = int.Parse(modServerListMaxServersTextBox.Text);
+                serverListOptions.timeBetweenQueries = double.Parse(modServerListTimeBetweenTextBox.Text);
+                _cfgHandler.WriteConfiguration();
+                // Go into effect now
+                _ssb.Mod.Servers.TimeBetweenQueries = serverListOptions.timeBetweenQueries;
+                _ssb.Mod.Servers.MaxServersToDisplay = serverListOptions.maxServers;
+
+                HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
+                ShowInfoMessage("Server list  settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modServerListTimeBetweenTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modServerListTimeBetweenTextBox, string.Empty);
+        }
+
+        private void modServerListTimeBetweenTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (
+                !_serverListValidator.IsValidTimeBetweenQueries(modServerListTimeBetweenTextBox.Text,
+                    out errorMsg))
+            {
+                e.Cancel = true;
+                modServerListTimeBetweenTextBox.Select(0, modServerListTimeBetweenTextBox.Text.Length);
+                errorProvider.SetError(modServerListTimeBetweenTextBox, errorMsg);
+            }
+        }
+
         private void moduleTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tabControl = sender as TabControl;
@@ -766,6 +855,7 @@ namespace SSB.Ui
             }
             else if (currentTabPage == serversTab)
             {
+                PopulateModServerListUi();
             }
         }
 
@@ -778,6 +868,7 @@ namespace SSB.Ui
             PopulateModEarlyQuitUi();
             PopulateModEloLimiterUi();
             PopulateModMotdUi();
+            PopulateModServerListUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -861,6 +952,17 @@ namespace SSB.Ui
             modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
             modMOTDRepeatMsgTextBox.Text = motdOptions.message;
             Debug.WriteLine("Populated MOTD module user interface.");
+        }
+
+        private void PopulateModServerListUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var serverListOptions = _cfgHandler.Config.ServersOptions;
+            modServerListEnableCheckBox.Checked = serverListOptions.isActive;
+            modServerListMaxServersTextBox.Text = serverListOptions.maxServers.ToString();
+            modServerListTimeBetweenTextBox.Text = serverListOptions.timeBetweenQueries.ToString(
+                CultureInfo.InvariantCulture);
+            Debug.WriteLine("Populated server list module user interface.");
         }
 
         private void RefreshCurrentQuittersDataSource()

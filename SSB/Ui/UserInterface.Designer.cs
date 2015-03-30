@@ -3026,6 +3026,8 @@
             this.modServerListTimeBetweenTextBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modServerListTimeBetweenTextBox, "Enter the number of seconds that must pass before a player can request\r\nthe activ" +
         "e server list again.");
+            this.modServerListTimeBetweenTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modServerListTimeBetweenTextBox_Validating);
+            this.modServerListTimeBetweenTextBox.Validated += new System.EventHandler(this.modServerListTimeBetweenTextBox_Validated);
             // 
             // modServerListMaxServersTextBox
             // 
@@ -3039,6 +3041,8 @@
             this.modServerListMaxServersTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modServerListMaxServersTextBox, "Enter the maximum number of active servers to return. Each server is sent to QL c" +
         "hat one per line, so \r\nthis number should not be large.");
+            this.modServerListMaxServersTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modServerListMaxServersTextBox_Validating);
+            this.modServerListMaxServersTextBox.Validated += new System.EventHandler(this.modServerListMaxServersTextBox_Validated);
             // 
             // modServerListTimeBetweenLabel
             // 
@@ -3087,6 +3091,7 @@
             this.modServerListResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modServerListResetSettingsButton, "Reset this module to its default settings.");
             this.modServerListResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modServerListResetSettingsButton.Click += new System.EventHandler(this.modServerListResetSettingsButton_Click);
             // 
             // modServerListLoadSettingsButton
             // 
@@ -3101,6 +3106,7 @@
             this.modServerListLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modServerListLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modServerListLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modServerListLoadSettingsButton.Click += new System.EventHandler(this.modServerListLoadSettingsButton_Click);
             // 
             // modServerListSaveSettingsButton
             // 
@@ -3115,6 +3121,7 @@
             this.modServerListSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modServerListSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modServerListSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modServerListSaveSettingsButton.Click += new System.EventHandler(this.modServerListSaveSettingsButton_Click);
             // 
             // modServerListHeaderDescLabel
             // 

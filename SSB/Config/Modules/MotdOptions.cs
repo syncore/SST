@@ -38,7 +38,7 @@
         public void SetDefaults()
         {
             isActive = false;
-            message = string.Empty;
+            message = "Welcome to the server. This is the message of the day.";
             repeatInterval = 2;
         }
     }

@@ -211,6 +211,7 @@
     <Compile Include="Ui\Validation\Modules\AccountDateLimitValidator.cs" />
     <Compile Include="Ui\Validation\Modules\EloLimitValidator.cs" />
     <Compile Include="Ui\Validation\Modules\MotdValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\ServerListValidator.cs" />
     <Compile Include="Util\ExpirationDateGenerator.cs" />
     <Compile Include="Util\Filepaths.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />

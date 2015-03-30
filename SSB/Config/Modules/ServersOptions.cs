@@ -1,4 +1,6 @@
-﻿namespace SSB.Config.Modules
+﻿// ReSharper disable InconsistentNaming
+
+namespace SSB.Config.Modules
 {
     /// <summary>
     ///     Model class that represents the active servers module options for the configuration file.
@@ -11,7 +13,6 @@
         /// <value>
         ///     <c>true</c> if this module is active; otherwise, <c>false</c>.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public bool isActive { get; set; }
 
         /// <summary>
@@ -20,8 +21,7 @@
         /// <value>
         ///     The maximum active servers to display.
         /// </value>
-        // ReSharper disable once InconsistentNaming
-        public uint maxServers { get; set; }
+        public int maxServers { get; set; }
 
         /// <summary>
         ///     Gets or sets the time between queries for the purpose of rate-limiting.
@@ -29,7 +29,6 @@
         /// <value>
         ///     The time between queries for the purpose of rate-limiting.
         /// </value>
-        // ReSharper disable once InconsistentNaming
         public double timeBetweenQueries { get; set; }
 
         /// <summary>

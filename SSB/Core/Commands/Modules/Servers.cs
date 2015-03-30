@@ -39,7 +39,7 @@ namespace SSB.Core.Commands.Modules
         /// <value>
         ///     The maximum servers to display.
         /// </value>
-        public uint MaxServersToDisplay { get; set; }
+        public int MaxServersToDisplay { get; set; }
 
         /// <summary>
         ///     Gets or sets the time between queries.
@@ -144,8 +144,8 @@ namespace SSB.Core.Commands.Modules
                 await DisplayArgLengthError(c);
                 return false;
             }
-            uint maxNum;
-            if (!uint.TryParse(Helpers.GetArgVal(c, 2), out maxNum))
+            int maxNum;
+            if (!int.TryParse(Helpers.GetArgVal(c, 2), out maxNum) || maxNum <= 0)
             {
                 StatusMessage =
                     "^1[ERROR]^3 The maximum servers to display must be a number greater than zero!";
@@ -153,22 +153,15 @@ namespace SSB.Core.Commands.Modules
                 return false;
             }
             double timebtNum;
-            if (!double.TryParse(Helpers.GetArgVal(c, 3), out timebtNum))
+            if (!double.TryParse(Helpers.GetArgVal(c, 3), out timebtNum) || timebtNum < 0)
             {
                 StatusMessage = string.Format(
-                    "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number.",
+                    "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number >=0.",
                     CommandList.CmdServers);
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            if (timebtNum < 0)
-            {
-                StatusMessage = string.Format(
-                    "^1[ERROR]^3 The time limit to impose between the {0} cmd must be a number greater than zero.",
-                    CommandList.CmdServers);
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
+            
 
             await EnableServers(c, maxNum, timebtNum);
             return true;
@@ -280,7 +273,7 @@ namespace SSB.Core.Commands.Modules
         ///     The time in seconds that must elapse between users issuing the
         ///     query command.
         /// </param>
-        public async Task EnableServers(CmdArgs c, uint maxServers, double timeBetween)
+        public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
         {
             MaxServersToDisplay = maxServers;
             TimeBetweenQueries = timeBetween;
