@@ -18,7 +18,7 @@ namespace SSB.Core.Modules.Irc
         public const int MaxReconnectionTries = 5;
 
         // MaxNickLength: 15 for QuakeNet; Freenode is 16; some others might be up to 32
-        private const int MaxNickLength = 15;
+        public const int MaxNickLength = 15;
 
         private readonly ConfigHandler _configHandler;
         private readonly IrcEvents _ircEvent;
@@ -79,6 +79,18 @@ namespace SSB.Core.Modules.Irc
                     Password = IrcSettings.ircServerPassword,
                 };
             }
+        }
+
+        /// <summary>
+        /// Gets the valid IRC nickname regex.
+        /// </summary>
+        /// <value>
+        /// The valid IRC nickname regex.
+        /// </value>
+        public Regex ValidIrcNickRegex
+        {
+            get { return _validIrcNick; } 
+            
         }
 
         /// <summary>
@@ -269,7 +281,7 @@ namespace SSB.Core.Modules.Irc
             // Username (ident) validity; re-use nickname check
             if (!IsValidIrcNickname(cfg.ircUserName)) return false;
             // IRC host validity
-            if (string.IsNullOrEmpty(cfg.ircServerAddress)) return false;
+            if (string.IsNullOrEmpty(cfg.ircServerAddress) || cfg.ircServerAddress.Contains(" ")) return false;
             // IRC port validity
             if (cfg.ircServerPort > 65535) return false;
             return true;

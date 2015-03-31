@@ -15,21 +15,14 @@
         /// </returns>
         public bool IsValidMaximumNumQuits(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the maximum number of quits, as a positive number.";
-                return false;
-            }
+            errorMsg = "The maximum number of quits must be a positive number!";
+            if (userInput.Length == 0) return false;
 
             uint val;
-            if (uint.TryParse(userInput, out val))
-            {
-                errorMsg = string.Empty;
-                return true;
-            }
+            if (!uint.TryParse(userInput, out val)) return false;
 
-            errorMsg = "The maximum number of quits must be a positive number!";
-            return false;
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -42,24 +35,14 @@
         /// </returns>
         public bool IsValidTimeBanNum(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the time to ban as a number greater than zero!";
-                return false;
-            }
+            errorMsg = "The time to ban number must be greater than zero!";
+            if (userInput.Length == 0) return false;
 
             double val;
-            if (double.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
-            errorMsg = "The time to ban number must be greater than zero!";
-            return false;
+            if (!double.TryParse(userInput, out val) || (val <= 0)) return false;
+            
+            errorMsg = string.Empty;
+            return true;
         }
     }
 }

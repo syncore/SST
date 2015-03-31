@@ -172,16 +172,16 @@ namespace SSB.Config.Modules
             isActive = false;
             autoAuthWithNickService = false;
             autoConnectOnStart = true;
-            hideHostnameOnQuakeNet = true;
-            ircAdminNickname = string.Empty;
-            ircChannel = string.Empty;
+            hideHostnameOnQuakeNet = false;
+            ircAdminNickname = "yourIRCname";
+            ircChannel = "#yourchannel";
             ircChannelKey = string.Empty;
             ircNickName = string.Format("SSB|QLive-{0}", GenerateRandomIdentifier());
             ircNickServiceBot = "Q@CServe.quakenet.org";
             ircNickServiceUsername = string.Empty;
             ircNickServicePassword = string.Empty;
-            ircRealName = "SSB Internet Relay Chat Interface";
-            ircServerAddress = string.Empty;
+            ircRealName = "SSBQL Internet Relay Chat Interface";
+            ircServerAddress = "irc.yourserver.com";
             ircServerPassword = string.Empty;
             ircServerPort = 6667;
             ircUserName = string.Format("ssbQL{0}", GenerateRandomIdentifier());
@@ -191,7 +191,7 @@ namespace SSB.Config.Modules
         ///     Generates a random identifier.
         /// </summary>
         /// <returns>A random identifier in the range of 0 to 32768.</returns>
-        private string GenerateRandomIdentifier()
+        public string GenerateRandomIdentifier()
         {
             var r = new Random();
             return r.Next(0, 32769).ToString();

@@ -15,25 +15,14 @@
         /// </returns>
         public bool IsValidMaximumServersNum(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg =
-                    "You must specify the maximum number of servers to display, as a number greater than zero!";
-                return false;
-            }
+            errorMsg = "The maximum number of servers to display must be a number greater than zero!";
+            if (userInput.Length == 0) return false;
 
             int val;
-            if (int.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
+            if (!int.TryParse(userInput, out val) || val <= 0) return false;
 
-            errorMsg = "The maximum number of servers to display must be a number greater than zero!";
-            return false;
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -47,25 +36,14 @@
         /// </returns>
         public bool IsValidTimeBetweenQueries(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg =
-                    "You must specify the time between queries, in seconds, as a number zero or greater!";
-                return false;
-            }
+            errorMsg = "The time between queries, in seconds, must be a number zero or greater!";
+            if (userInput.Length == 0) return false;
 
             double val;
-            if (double.TryParse(userInput, out val))
-            {
-                if (val >= 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
+            if (!double.TryParse(userInput, out val) || val < 0) return false;
 
-            errorMsg = "The time between queries, in seconds, must be a number zero or greater!";
-            return false;
+            errorMsg = string.Empty;
+            return true;
         }
     }
 }

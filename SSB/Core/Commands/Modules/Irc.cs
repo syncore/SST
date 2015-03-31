@@ -292,10 +292,23 @@ namespace SSB.Core.Commands.Modules
         ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
         ///     server on load, if applicable.
         /// </remarks>
-        private void Init()
+        public void Init()
         {
-            Debug.WriteLine("Active flag detected in saved configuration; auto-initializing IRC module.");
+            if (IsConnectedToIrc)
+            {
+                Deactivate();
+            }
+            
+            Debug.WriteLine("Active flag detected in saved configuration; initializing IRC module.");
             _irc.StartIrcThread();
+        }
+
+        /// <summary>
+        /// Deactivates this module.
+        /// </summary>
+        public void Deactivate()
+        {
+            _irc.Disconnect();
         }
 
         /// <summary>

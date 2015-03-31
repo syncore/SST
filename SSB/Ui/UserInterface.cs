@@ -25,6 +25,7 @@ namespace SSB.Ui
         private readonly CoreOptionsValidator _coreOptionsValidator;
         private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly EloLimitValidator _eloLimitValidator;
+        private readonly IrcValidator _ircValidator;
         private readonly MotdValidator _motdValidator;
         private readonly PickupValidator _pickupValidator;
         private readonly ServerListValidator _serverListValidator;
@@ -45,6 +46,7 @@ namespace SSB.Ui
             _motdValidator = new MotdValidator();
             _serverListValidator = new ServerListValidator();
             _pickupValidator = new PickupValidator();
+            _ircValidator = new IrcValidator(_ssb.Mod.Irc.IrcManager.ValidIrcNickRegex);
             SetAppWideUiControls();
             PopulateAllUiTabs();
         }
@@ -166,6 +168,22 @@ namespace SSB.Ui
             {
                 _ssb.Mod.EloLimit.Active = false;
                 Debug.WriteLine("[UI]: Deactivating Elo limiter module from UI if active.");
+            }
+        }
+
+        private void HandleIrcModActivation(bool isActiveInUi)
+        {
+            if (isActiveInUi)
+            {
+                _ssb.Mod.Irc.Active = true;
+                Debug.WriteLine("[UI]: Activating irc module from UI. Updating old values as necessary.");
+                _ssb.Mod.Irc.Init();
+            }
+            else
+            {
+                _ssb.Mod.Irc.Active = false;
+                Debug.WriteLine("[UI]: Deactivating irc module from UI if active.");
+                _ssb.Mod.Irc.Deactivate();
             }
         }
 
@@ -691,6 +709,251 @@ namespace SSB.Ui
             }
         }
 
+        private void modIRCAdminNameTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCAdminNameTextBox, string.Empty);
+        }
+
+        private void modIRCAdminNameTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcNickname(modIRCAdminNameTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCAdminNameTextBox.Select(0, modIRCAdminNameTextBox.Text.Length);
+                errorProvider.SetError(modIRCAdminNameTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCBotNickNameTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCBotNickNameTextBox, string.Empty);
+        }
+
+        private void modIRCBotNickNameTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcNickname(modIRCBotNickNameTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCBotNickNameTextBox.Select(0, modIRCBotNickNameTextBox.Text.Length);
+                errorProvider.SetError(modIRCBotNickNameTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCBotUserNameTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCBotUserNameTextBox, string.Empty);
+        }
+
+        private void modIRCBotUserNameTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcNickname(modIRCBotUserNameTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCBotUserNameTextBox.Select(0, modIRCBotUserNameTextBox.Text.Length);
+                errorProvider.SetError(modIRCBotUserNameTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCChannelKeyTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCChannelKeyTextBox, string.Empty);
+        }
+
+        private void modIRCChannelKeyTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcChannelKey(modIRCChannelKeyTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCChannelKeyTextBox.Select(0, modIRCChannelKeyTextBox.Text.Length);
+                errorProvider.SetError(modIRCChannelKeyTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCChannelTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCChannelTextBox, string.Empty);
+        }
+
+        private void modIRCChannelTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcChannel(modIRCChannelTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCChannelTextBox.Select(0, modIRCChannelTextBox.Text.Length);
+                errorProvider.SetError(modIRCChannelTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCGenerateRandomNamesButton_Click(object sender, EventArgs e)
+        {
+            modIRCBotNickNameTextBox.Text = string.Format("SSB|QLive-{0}",
+                _cfgHandler.Config.IrcOptions.GenerateRandomIdentifier());
+            modIRCBotUserNameTextBox.Text = string.Format("ssbQL{0}",
+                _cfgHandler.Config.IrcOptions.GenerateRandomIdentifier());
+        }
+
+        private void modIRCLoadSettingsButton_Click(object sender, EventArgs e)
+        {
+            PopulateModIrcUi();
+            ShowInfoMessage("IRC settings loaded.", "Settings Loaded");
+        }
+
+        private void modIRCQNetPassTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCQNetPassTextBox, string.Empty);
+        }
+
+        private void modIRCQNetPassTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidQuakeNetPassword(modIRCQNetPassTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCQNetPassTextBox.Select(0, modIRCQNetPassTextBox.Text.Length);
+                errorProvider.SetError(modIRCQNetPassTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCQNetUserNameTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCQNetUserNameTextBox, string.Empty);
+        }
+
+        private void modIRCQNetUserNameTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidQuakeNetUsername(modIRCQNetUserNameTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCQNetUserNameTextBox.Select(0, modIRCQNetUserNameTextBox.Text.Length);
+                errorProvider.SetError(modIRCQNetUserNameTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var ircOptions = _cfgHandler.Config.IrcOptions;
+            ircOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateModIrcUi();
+            HandleIrcModActivation(ircOptions.isActive);
+            ShowInfoMessage("IRC settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void modIRCSaveSettingsButton_Click(object sender, EventArgs e)
+        {
+            if (ValidateChildren())
+            {
+                // Cannot auto-auth with Q or auto-hide host if Q user/pass not provided.
+                if (modIRCQNetAutoAuthCheckBox.Checked ||
+                    modIRCQNetHideHostCheckBox.Checked)
+                {
+                    if (modIRCQNetUserNameTextBox.Text.Length == 0 ||
+                        modIRCQNetPassTextBox.Text.Length == 0)
+                    {
+                        ShowErrorMessage("You must specify a QuakeNet Q username & password to auto-auth with Q.",
+                            "Error");
+                        modIRCQNetUserNameTextBox.Clear();
+                        modIRCQNetPassTextBox.Clear();
+                        return;
+                    }
+                }
+
+                var ircOptions = _cfgHandler.Config.IrcOptions;
+                ircOptions.isActive = modIRCEnableCheckBox.Checked;
+                ircOptions.ircAdminNickname = modIRCAdminNameTextBox.Text;
+                ircOptions.ircNickName = modIRCBotNickNameTextBox.Text;
+                ircOptions.ircUserName = modIRCBotUserNameTextBox.Text;
+                ircOptions.ircServerAddress = modIRCServerAddressTextBox.Text;
+                ircOptions.ircServerPort = uint.Parse(modIRCServerPortTextBox.Text);
+                ircOptions.ircServerPassword = modIRCServerPassTextBox.Text;
+                ircOptions.ircChannel = modIRCChannelTextBox.Text;
+                ircOptions.ircChannelKey = modIRCChannelKeyTextBox.Text;
+                ircOptions.autoConnectOnStart = modIRCAutoConnectCheckBox.Checked;
+                ircOptions.ircNickServiceUsername = modIRCQNetUserNameTextBox.Text;
+                ircOptions.ircNickServicePassword = modIRCQNetPassTextBox.Text;
+                ircOptions.autoAuthWithNickService = modIRCQNetAutoAuthCheckBox.Checked;
+                ircOptions.hideHostnameOnQuakeNet = modIRCQNetHideHostCheckBox.Checked;
+                _cfgHandler.WriteConfiguration();
+                // Go into effect now
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircAdminNickname = ircOptions.ircAdminNickname;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircNickName = ircOptions.ircNickName;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircUserName = ircOptions.ircUserName;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircServerAddress = ircOptions.ircServerAddress;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircServerPort = ircOptions.ircServerPort;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircServerPassword = ircOptions.ircServerPassword;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel = ircOptions.ircChannel;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircChannelKey = ircOptions.ircChannelKey;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.autoConnectOnStart = ircOptions.autoConnectOnStart;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircNickServiceUsername = ircOptions.ircNickServiceUsername;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.ircNickServicePassword = ircOptions.ircNickServicePassword;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.autoAuthWithNickService =
+                    ircOptions.autoAuthWithNickService;
+                _ssb.Mod.Irc.IrcManager.IrcSettings.hideHostnameOnQuakeNet = ircOptions.hideHostnameOnQuakeNet;
+
+                HandleIrcModActivation(ircOptions.isActive);
+                ShowInfoMessage("IRC settings saved.", "Settings Saved");
+            }
+            else
+            {
+                ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        private void modIRCServerAddressTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCServerAddressTextBox, string.Empty);
+        }
+
+        private void modIRCServerAddressTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcServerAddress(modIRCServerAddressTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCServerAddressTextBox.Select(0, modIRCServerAddressTextBox.Text.Length);
+                errorProvider.SetError(modIRCServerAddressTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCServerPassTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCServerPassTextBox, string.Empty);
+        }
+
+        private void modIRCServerPassTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcServerPassword(modIRCServerPassTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCServerPassTextBox.Select(0, modIRCServerPassTextBox.Text.Length);
+                errorProvider.SetError(modIRCServerPassTextBox, errorMsg);
+            }
+        }
+
+        private void modIRCServerPortTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(modIRCServerPortTextBox, string.Empty);
+        }
+
+        private void modIRCServerPortTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_ircValidator.IsValidIrcServerPort(modIRCServerPortTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                modIRCServerPortTextBox.Select(0, modIRCServerPortTextBox.Text.Length);
+                errorProvider.SetError(modIRCServerPortTextBox, errorMsg);
+            }
+        }
+
         private void modMOTDLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModMotdUi();
@@ -878,8 +1141,10 @@ namespace SSB.Ui
                 _ssb.Mod.Pickup.ExcessiveNoShowBanTime = pickupOptions.excessiveNoShowBanTime;
                 _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScale = pickupOptions.excessiveSubUseBanTimeScale;
                 _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScale = pickupOptions.excessiveNoShowBanTimeScale;
-                _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScaleIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
-                _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScaleIndex = pickupOptions.excessiveNoShowBanTimeScaleIndex;
+                _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScaleIndex =
+                    pickupOptions.excessiveSubUseBanTimeScaleIndex;
+                _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScaleIndex =
+                    pickupOptions.excessiveNoShowBanTimeScaleIndex;
                 _ssb.Mod.Pickup.Teamsize = pickupOptions.teamSize;
 
                 await HandlePickupModActivation(pickupOptions.isActive);
@@ -993,40 +1258,23 @@ namespace SSB.Ui
             // The modules tabs' data are populated on initial load, but might've changed due to
             // in-game or IRC commands; so re-populate on tab switch.
             if (currentTabPage == accountDateTab)
-            {
                 PopulateModAccountDateUi();
-            }
             else if (currentTabPage == accuracyTab)
-            {
                 PopulateModAccuracyUi();
-            }
             else if (currentTabPage == autoVoterTab)
-            {
                 PopulateModAutoVoterUi();
-            }
             else if (currentTabPage == earlyQuitTab)
-            {
                 PopulateModEarlyQuitUi();
-            }
             else if (currentTabPage == eloLimitTab)
-            {
                 PopulateModEloLimiterUi();
-            }
             else if (currentTabPage == ircTab)
-            {
-            }
+                PopulateModIrcUi();
             else if (currentTabPage == motdTab)
-            {
                 PopulateModMotdUi();
-            }
             else if (currentTabPage == pickupTab)
-            {
                 PopulateModPickupUi();
-            }
             else if (currentTabPage == serversTab)
-            {
                 PopulateModServerListUi();
-            }
         }
 
         private void PopulateAllUiTabs()
@@ -1037,9 +1285,10 @@ namespace SSB.Ui
             PopulateModAutoVoterUi();
             PopulateModEarlyQuitUi();
             PopulateModEloLimiterUi();
+            PopulateModIrcUi();
             PopulateModMotdUi();
-            PopulateModServerListUi();
             PopulateModPickupUi();
+            PopulateModServerListUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -1113,6 +1362,26 @@ namespace SSB.Ui
                 ? string.Empty
                 : eloLimitOptions.maximumRequiredElo.ToString());
             Debug.WriteLine("Populated Elo limiter module user interface.");
+        }
+
+        private void PopulateModIrcUi()
+        {
+            var ircOptions = _cfgHandler.Config.IrcOptions;
+            modIRCEnableCheckBox.Checked = ircOptions.isActive;
+            modIRCAdminNameTextBox.Text = ircOptions.ircAdminNickname;
+            modIRCBotNickNameTextBox.Text = ircOptions.ircNickName;
+            modIRCBotUserNameTextBox.Text = ircOptions.ircUserName;
+            modIRCQNetUserNameTextBox.Text = ircOptions.ircNickServiceUsername;
+            modIRCQNetPassTextBox.Text = ircOptions.ircNickServicePassword;
+            modIRCQNetAutoAuthCheckBox.Checked = ircOptions.autoAuthWithNickService;
+            modIRCQNetHideHostCheckBox.Checked = ircOptions.hideHostnameOnQuakeNet;
+            modIRCServerAddressTextBox.Text = ircOptions.ircServerAddress;
+            modIRCServerPortTextBox.Text = ircOptions.ircServerPort.ToString();
+            modIRCServerPassTextBox.Text = ircOptions.ircServerPassword;
+            modIRCChannelTextBox.Text = ircOptions.ircChannel;
+            modIRCChannelKeyTextBox.Text = ircOptions.ircChannelKey;
+            modIRCAutoConnectCheckBox.Checked = ircOptions.autoConnectOnStart;
+            Debug.WriteLine("Populated IRC module user interface.");
         }
 
         private void PopulateModMotdUi()

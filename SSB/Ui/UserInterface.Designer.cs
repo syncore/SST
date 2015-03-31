@@ -166,6 +166,7 @@
             this.modIRCServerPassLabel = new System.Windows.Forms.Label();
             this.modIRCServerPassTextBox = new System.Windows.Forms.TextBox();
             this.modIRCOptNamingGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCGenerateRandomNamesButton = new System.Windows.Forms.Button();
             this.modIRCAdminNameLabel = new System.Windows.Forms.Label();
             this.modIRCAdminNameTextBox = new System.Windows.Forms.TextBox();
             this.modIRCBotNickNameLabel = new System.Windows.Forms.Label();
@@ -2017,6 +2018,7 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
             this.label32.Location = new System.Drawing.Point(388, 22);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(312, 14);
@@ -2065,6 +2067,8 @@
             this.modIRCChannelKeyTextBox.Size = new System.Drawing.Size(137, 22);
             this.modIRCChannelKeyTextBox.TabIndex = 23;
             this.coreToolTip.SetToolTip(this.modIRCChannelKeyTextBox, "(Optional) Enter the channel\'s password or key, if it has one.\r\n");
+            this.modIRCChannelKeyTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCChannelKeyTextBox_Validating);
+            this.modIRCChannelKeyTextBox.Validated += new System.EventHandler(this.modIRCChannelKeyTextBox_Validated);
             // 
             // modIRCAutoConnectCheckBox
             // 
@@ -2098,6 +2102,8 @@
             this.modIRCChannelTextBox.Size = new System.Drawing.Size(152, 22);
             this.modIRCChannelTextBox.TabIndex = 21;
             this.coreToolTip.SetToolTip(this.modIRCChannelTextBox, "Enter the IRC channel that SSB will join on IRC.");
+            this.modIRCChannelTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCChannelTextBox_Validating);
+            this.modIRCChannelTextBox.Validated += new System.EventHandler(this.modIRCChannelTextBox_Validated);
             // 
             // modIRCServerAddressLabel
             // 
@@ -2119,6 +2125,8 @@
             this.modIRCServerAddressTextBox.Size = new System.Drawing.Size(152, 22);
             this.modIRCServerAddressTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modIRCServerAddressTextBox, "Enter the IRC server address that SSB will connect to.");
+            this.modIRCServerAddressTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCServerAddressTextBox_Validating);
+            this.modIRCServerAddressTextBox.Validated += new System.EventHandler(this.modIRCServerAddressTextBox_Validated);
             // 
             // modIRCServerPortLabel
             // 
@@ -2140,6 +2148,8 @@
             this.modIRCServerPortTextBox.Size = new System.Drawing.Size(152, 22);
             this.modIRCServerPortTextBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modIRCServerPortTextBox, "Enter the IRC server\'s port. This is usually 6667.");
+            this.modIRCServerPortTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCServerPortTextBox_Validating);
+            this.modIRCServerPortTextBox.Validated += new System.EventHandler(this.modIRCServerPortTextBox_Validated);
             // 
             // modIRCServerPassLabel
             // 
@@ -2162,9 +2172,12 @@
             this.modIRCServerPassTextBox.TabIndex = 19;
             this.coreToolTip.SetToolTip(this.modIRCServerPassTextBox, "(Optional) Enter the IRC server\'s password if it has one. Note:\r\nif using an IRC " +
         "bouncer, this is where you would enter your bouncer password.\r\n");
+            this.modIRCServerPassTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCServerPassTextBox_Validating);
+            this.modIRCServerPassTextBox.Validated += new System.EventHandler(this.modIRCServerPassTextBox_Validated);
             // 
             // modIRCOptNamingGroupBox
             // 
+            this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCGenerateRandomNamesButton);
             this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCAdminNameLabel);
             this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCAdminNameTextBox);
             this.modIRCOptNamingGroupBox.Controls.Add(this.modIRCBotNickNameLabel);
@@ -2175,10 +2188,27 @@
             this.modIRCOptNamingGroupBox.ForeColor = System.Drawing.Color.White;
             this.modIRCOptNamingGroupBox.Location = new System.Drawing.Point(9, 45);
             this.modIRCOptNamingGroupBox.Name = "modIRCOptNamingGroupBox";
-            this.modIRCOptNamingGroupBox.Size = new System.Drawing.Size(340, 167);
+            this.modIRCOptNamingGroupBox.Size = new System.Drawing.Size(351, 180);
             this.modIRCOptNamingGroupBox.TabIndex = 27;
             this.modIRCOptNamingGroupBox.TabStop = false;
             this.modIRCOptNamingGroupBox.Text = "IRC Naming";
+            // 
+            // modIRCGenerateRandomNamesButton
+            // 
+            this.modIRCGenerateRandomNamesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.modIRCGenerateRandomNamesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.modIRCGenerateRandomNamesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCGenerateRandomNamesButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modIRCGenerateRandomNamesButton.ForeColor = System.Drawing.Color.White;
+            this.modIRCGenerateRandomNamesButton.Location = new System.Drawing.Point(177, 116);
+            this.modIRCGenerateRandomNamesButton.Name = "modIRCGenerateRandomNamesButton";
+            this.modIRCGenerateRandomNamesButton.Size = new System.Drawing.Size(162, 28);
+            this.modIRCGenerateRandomNamesButton.TabIndex = 20;
+            this.modIRCGenerateRandomNamesButton.Text = "Generate Random Names";
+            this.coreToolTip.SetToolTip(this.modIRCGenerateRandomNamesButton, "Click this button to generate random names for the IRC\r\nbot nickname and username" +
+        "s.");
+            this.modIRCGenerateRandomNamesButton.UseVisualStyleBackColor = false;
+            this.modIRCGenerateRandomNamesButton.Click += new System.EventHandler(this.modIRCGenerateRandomNamesButton_Click);
             // 
             // modIRCAdminNameLabel
             // 
@@ -2200,6 +2230,8 @@
             this.modIRCAdminNameTextBox.Size = new System.Drawing.Size(154, 22);
             this.modIRCAdminNameTextBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.modIRCAdminNameTextBox, "Enter the IRC nickname of the bot\'s owner.");
+            this.modIRCAdminNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCAdminNameTextBox_Validating);
+            this.modIRCAdminNameTextBox.Validated += new System.EventHandler(this.modIRCAdminNameTextBox_Validated);
             // 
             // modIRCBotNickNameLabel
             // 
@@ -2221,6 +2253,8 @@
             this.modIRCBotNickNameTextBox.Size = new System.Drawing.Size(152, 22);
             this.modIRCBotNickNameTextBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.modIRCBotNickNameTextBox, "Enter the nickname that SSB will use on the IRC server.");
+            this.modIRCBotNickNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCBotNickNameTextBox_Validating);
+            this.modIRCBotNickNameTextBox.Validated += new System.EventHandler(this.modIRCBotNickNameTextBox_Validated);
             // 
             // modIRCBotUserNameLabel
             // 
@@ -2236,13 +2270,15 @@
             this.modIRCBotUserNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.modIRCBotUserNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.modIRCBotUserNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.modIRCBotUserNameTextBox.Location = new System.Drawing.Point(9, 116);
+            this.modIRCBotUserNameTextBox.Location = new System.Drawing.Point(9, 122);
             this.modIRCBotUserNameTextBox.MaxLength = 15;
             this.modIRCBotUserNameTextBox.Name = "modIRCBotUserNameTextBox";
             this.modIRCBotUserNameTextBox.Size = new System.Drawing.Size(154, 22);
             this.modIRCBotUserNameTextBox.TabIndex = 19;
             this.coreToolTip.SetToolTip(this.modIRCBotUserNameTextBox, "(Optional) Enter the IRC username or ident that SSB will use on IRC.\r\nThis may be" +
         " required if you\'re trying to connect to IRC through a bouncer.\r\n\r\n");
+            this.modIRCBotUserNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCBotUserNameTextBox_Validating);
+            this.modIRCBotUserNameTextBox.Validated += new System.EventHandler(this.modIRCBotUserNameTextBox_Validated);
             // 
             // modIRCOptQuakeNetGroupBox
             // 
@@ -2256,7 +2292,7 @@
             this.modIRCOptQuakeNetGroupBox.ForeColor = System.Drawing.Color.White;
             this.modIRCOptQuakeNetGroupBox.Location = new System.Drawing.Point(9, 225);
             this.modIRCOptQuakeNetGroupBox.Name = "modIRCOptQuakeNetGroupBox";
-            this.modIRCOptQuakeNetGroupBox.Size = new System.Drawing.Size(340, 128);
+            this.modIRCOptQuakeNetGroupBox.Size = new System.Drawing.Size(351, 128);
             this.modIRCOptQuakeNetGroupBox.TabIndex = 4;
             this.modIRCOptQuakeNetGroupBox.TabStop = false;
             this.modIRCOptQuakeNetGroupBox.Text = "QuakeNet (Q) Options";
@@ -2297,6 +2333,8 @@
             this.modIRCQNetPassTextBox.TabIndex = 12;
             this.coreToolTip.SetToolTip(this.modIRCQNetPassTextBox, "Enter your QuakeNet Q password. For more info, see:\r\nhttps://www.quakenet.org/hel" +
         "p/q/how-to-register-an-account-with-q\r\n");
+            this.modIRCQNetPassTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCQNetPassTextBox_Validating);
+            this.modIRCQNetPassTextBox.Validated += new System.EventHandler(this.modIRCQNetPassTextBox_Validated);
             // 
             // modIRCQNetPassLabel
             // 
@@ -2319,6 +2357,8 @@
             this.modIRCQNetUserNameTextBox.TabIndex = 10;
             this.coreToolTip.SetToolTip(this.modIRCQNetUserNameTextBox, "Enter your QuakeNet Q username. For more info,\r\nsee: https://www.quakenet.org/hel" +
         "p/q/how-to-register-an-account-with-q");
+            this.modIRCQNetUserNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.modIRCQNetUserNameTextBox_Validating);
+            this.modIRCQNetUserNameTextBox.Validated += new System.EventHandler(this.modIRCQNetUserNameTextBox_Validated);
             // 
             // modIRCQNetUserNameLabel
             // 
@@ -2356,6 +2396,7 @@
             this.modIRCResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modIRCResetSettingsButton, "Reset this module to its default settings.");
             this.modIRCResetSettingsButton.UseVisualStyleBackColor = false;
+            this.modIRCResetSettingsButton.Click += new System.EventHandler(this.modIRCResetSettingsButton_Click);
             // 
             // modIRCLoadSettingsButton
             // 
@@ -2370,6 +2411,7 @@
             this.modIRCLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modIRCLoadSettingsButton, "Load the current settings from the configuration file.");
             this.modIRCLoadSettingsButton.UseVisualStyleBackColor = false;
+            this.modIRCLoadSettingsButton.Click += new System.EventHandler(this.modIRCLoadSettingsButton_Click);
             // 
             // modIRCSaveSettingsButton
             // 
@@ -2384,6 +2426,7 @@
             this.modIRCSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modIRCSaveSettingsButton, "Save the current settings to the configuration file.");
             this.modIRCSaveSettingsButton.UseVisualStyleBackColor = false;
+            this.modIRCSaveSettingsButton.Click += new System.EventHandler(this.modIRCSaveSettingsButton_Click);
             // 
             // modIRCEnableCheckBox
             // 
@@ -4264,5 +4307,6 @@
         private System.Windows.Forms.BindingSource modEarlyQuitCurrentQuitBindingSource;
         private System.Windows.Forms.Button modEarlyQuitRefreshQuitsButton;
         private System.Windows.Forms.Button modAutoVoterRefreshVotesButton;
+        private System.Windows.Forms.Button modIRCGenerateRandomNamesButton;
     }
 }

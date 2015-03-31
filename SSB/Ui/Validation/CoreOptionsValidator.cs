@@ -3,7 +3,7 @@
 namespace SSB.Ui.Validation
 {
     /// <summary>
-    /// UI Validation class for the Core Options tab.
+    ///     UI Validation class for the Core Options tab.
     /// </summary>
     public class CoreOptionsValidator
     {
@@ -17,20 +17,14 @@ namespace SSB.Ui.Validation
         /// </returns>
         public bool IsValidEloCacheExpiration(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the Elo cache expiration value.";
-                return false;
-            }
-            uint val;
-            if (uint.TryParse(userInput, out val))
-            {
-                errorMsg = string.Empty;
-                return true;
-            }
-
             errorMsg = "Elo cache expiration value must be a positive number.";
-            return false;
+            if (userInput.Length == 0) return false;
+
+            uint val;
+            if (!uint.TryParse(userInput, out val)) return false;
+
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>

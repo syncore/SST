@@ -17,11 +17,8 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidRepeatMessage(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the message to repeat!";
-                return false;
-            }
+            errorMsg = "You must specify the message to repeat!";
+            if (userInput.Length == 0) return false;
 
             errorMsg = string.Empty;
             return true;
@@ -37,26 +34,16 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidRepeatTime(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = string.Format("You must specify the repeat time in minutes, as a number greater than {0}",
+            errorMsg =
+                string.Format("You must specify the repeat time in minutes, as a number greater than {0}",
                     Motd.MinRepeatThresholdStart);
-                return false;
-            }
+            if (userInput.Length == 0) return false;
 
-            uint val;
-            if (uint.TryParse(userInput, out val))
-            {
-                if (val > Motd.MinRepeatThresholdStart)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
+            int val;
+            if (!int.TryParse(userInput, out val) || val <= Motd.MinRepeatThresholdStart) return false;
 
-            errorMsg = string.Format("The repeat time (in minutes) must be a number greater than {0}",
-                Motd.MinRepeatThresholdStart);
-            return false;
+            errorMsg = string.Empty;
+            return true;
         }
     }
 }

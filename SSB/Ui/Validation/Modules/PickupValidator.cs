@@ -17,25 +17,13 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidMaximumNoShowNum(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg =
-                    "You must specify the maximum number of no-shows before ban, as a number greater than zero!";
-                return false;
-            }
+            errorMsg = "The maximum number of no-shows before ban must be a number greater than zero!";
+            if (userInput.Length == 0) return false;
 
             int val;
-            if (int.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
-            errorMsg = "The maximum number of no-shows before ban must be a number greater than zero!";
-            return false;
+            if (!int.TryParse(userInput, out val) || val <= 0) return false;
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -48,25 +36,13 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidMaximumSubsNum(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg =
-                    "You must specify the maximum number of subs before ban, as a number greater than zero!";
-                return false;
-            }
+            errorMsg = "The maximum number of subs before ban must be a number greater than zero!";
+            if (userInput.Length == 0) return false;
 
             int val;
-            if (int.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
-            errorMsg = "The maximum number of subs before ban must be a number greater than zero!";
-            return false;
+            if (!int.TryParse(userInput, out val) || val <= 0) return false;
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -79,26 +55,15 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidPickupTeamSize(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = string.Format("You must specify the team size as a number >= {0} but <= {1}",
-                    Pickup.TeamMinSize, Pickup.TeamMaxSize);
-                return false;
-            }
-
-            int val;
-            if (int.TryParse(userInput, out val))
-            {
-                if (val >= Pickup.TeamMinSize && val <= Pickup.TeamMaxSize)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
             errorMsg = string.Format("The team size must be a number >= {0} but <= {1}",
                 Pickup.TeamMinSize, Pickup.TeamMaxSize);
-            return false;
+            if (userInput.Length == 0) return false;
+
+            int val;
+            if (!int.TryParse(userInput, out val)) return false;
+            if (val < Pickup.TeamMinSize || val > Pickup.TeamMaxSize) return false;
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -111,24 +76,14 @@ namespace SSB.Ui.Validation.Modules
         /// </returns>
         public bool IsValidTimeBanNum(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the time to ban as a number greater than zero!";
-                return false;
-            }
+            errorMsg = "The time to ban number must be greater than zero!";
+            if (userInput.Length == 0) return false;
 
             double val;
-            if (double.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
-            errorMsg = "The time to ban number must be greater than zero!";
-            return false;
+            if (!double.TryParse(userInput, out val) || (val <= 0)) return false;
+            
+            errorMsg = string.Empty;
+            return true;
         }
     }
 }

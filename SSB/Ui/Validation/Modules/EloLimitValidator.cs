@@ -15,21 +15,14 @@
         /// </returns>
         public bool IsValidMinimumElo(string userInput, out string errorMsg)
         {
-            if (userInput.Length == 0)
-            {
-                errorMsg = "You must specify the minimum Elo as a positive number!";
-                return false;
-            }
-
-            uint val;
-            if (uint.TryParse(userInput, out val))
-            {
-                errorMsg = string.Empty;
-                return true;
-            }
-
             errorMsg = "The minimum Elo must be a positive number!";
-            return false;
+            if (userInput.Length == 0) return false;
+            
+            uint val;
+            if (!uint.TryParse(userInput, out val)) return false;
+            
+            errorMsg = string.Empty;
+            return true;
         }
 
         /// <summary>
@@ -42,6 +35,7 @@
         /// </returns>
         public bool IsValidMaximumElo(string userInput, out string errorMsg)
         {
+            errorMsg = "The maximum Elo must be a positive number!";
             // Maximum elo can be empty, meaning that it is unset (Elo range isn't to be used).
             if (userInput.Length == 0)
             {
@@ -50,17 +44,10 @@
             }
 
             int val;
-            if (int.TryParse(userInput, out val))
-            {
-                if (val > 0)
-                {
-                    errorMsg = string.Empty;
-                    return true;
-                }
-            }
-
-            errorMsg = "The maximum Elo must be a positive number!";
-            return false;
+            if (!int.TryParse(userInput, out val) || val <= 0) return false;
+            
+            errorMsg = string.Empty;
+            return true;
         }
     }
 }
