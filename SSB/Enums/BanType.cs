@@ -1,4 +1,4 @@
-﻿namespace SSB.Enum
+﻿namespace SSB.Enums
 {
     /// <summary>
     /// Enum that represents the types of bans.

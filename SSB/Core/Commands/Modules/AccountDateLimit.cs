@@ -173,13 +173,6 @@ namespace SSB.Core.Commands.Modules
                      _configHandler.Config.AccountDateOptions.isActive;
             MinimumDaysRequired =
                 _configHandler.Config.AccountDateOptions.minimumDaysRequired;
-
-            if (Active)
-            {
-                // ReSharper disable once UnusedVariable
-                // Synchronous; initialization
-                var i = Init();
-            }
         }
 
         /// <summary>
@@ -188,13 +181,11 @@ namespace SSB.Core.Commands.Modules
         /// <param name="players">The players.</param>
         public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
         {
-            // ToList() call on foreach to copy contents to separate list
-            // because .NET modifies collection during enumeration under the hood and otherwise causes
-            // "Collection was modified; enumeration operation may not execute" error, see:
-            // http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
+            var qlDateChecker = new QlAccountDateChecker();
             foreach (var player in players.ToList())
             {
-                await RunUserDateCheck(player.Key);
+                var date = await qlDateChecker.GetUserRegistrationDate(player.Key);
+                await VerifyUserDate(player.Key, date);
             }
         }
 
@@ -236,19 +227,15 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-
-            if (active)
-            {
-                _configHandler.Config.AccountDateOptions.isActive = true;
-                _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
-            }
-            else
-            {
-                _configHandler.Config.AccountDateOptions.SetDefaults();
-            }
-
+            
+            _configHandler.Config.AccountDateOptions.isActive = active;
+            _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModAccountDateUi();
         }
 
         /// <summary>
@@ -290,19 +277,6 @@ namespace SSB.Core.Commands.Modules
             MinimumDaysRequired = days;
             UpdateConfig(true);
             await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
-        }
-
-        /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        private async Task Init()
-        {
-            if (MinimumDaysRequired != 0)
-            {
-                await EnableAccountDateLimiter(MinimumDaysRequired);
-                Debug.WriteLine(
-                    "Active flag detected in saved configuration; auto-initializing auto date limit module.");
-            }
         }
 
         /// <summary>

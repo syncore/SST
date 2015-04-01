@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using SSB.Enum;
+using System.Windows.Forms;
+using SSB.Enums;
 using SSB.Model;
 
 namespace SSB.Util
@@ -69,6 +70,25 @@ namespace SSB.Util
                 }
             }
             return index;
+        }
+
+        /// <summary>
+        /// Invokes a method when making calls, if necessary, to a control because the caller is on a different
+        ///  thread than the one on which the control was created.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="c">The control.</param>
+        /// <param name="action">The action.</param>
+        public static void InvokeIfRequired<T>(this T c, Action<T> action) where T : Control
+        {
+            if (c.InvokeRequired)
+            {
+                c.Invoke(new Action(() => action(c)));
+            }
+            else
+            {
+                action(c);
+            }
         }
 
         /// <summary>

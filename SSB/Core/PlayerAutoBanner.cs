@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 
 namespace SSB.Core

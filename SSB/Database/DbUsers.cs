@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using SSB.Config;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -118,7 +118,7 @@ namespace SSB.Database
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
-                            int total = cmd.ExecuteNonQuery();
+                            var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
                                 Debug.WriteLine(string.Format(
@@ -142,7 +142,51 @@ namespace SSB.Database
         }
 
         /// <summary>
-        /// Gets the current admins on the server.
+        ///     Gets all of the users in the users database.
+        /// </summary>
+        /// <returns>The users as a list of <see cref="User" /> objects.</returns>
+        public List<User> GetAllUsers()
+        {
+            var allUsers = new List<User>();
+            if (VerifyDb())
+            {
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText = "SELECT * FROM users";
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    Debug.WriteLine("GetAllUsers: No users found in database");
+                                    return allUsers;
+                                }
+                                while (reader.Read())
+                                {
+                                    var user = (string)reader["user"];
+                                    var level = GetUserLevel(user);
+                                    allUsers.Add(new User { Name = user, AccessLevel = level });
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Problem verifying database when trying to get all users: " +
+                                    ex.Message);
+                }
+            }
+            return allUsers;
+        }
+
+        /// <summary>
+        ///     Gets the current admins on the server.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <returns>The current admins on the server as a comma-separated string, if any.</returns>
@@ -160,7 +204,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        /// Gets the users on the server who are of SuperUser access level or higher.
+        ///     Gets the users on the server who are of SuperUser access level or higher.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <returns>The current users on the server of SuperUser access level or higher, if any.</returns>
@@ -184,7 +228,7 @@ namespace SSB.Database
         /// <returns>The user's level.</returns>
         public UserLevel GetUserLevel(string user)
         {
-            UserLevel level = UserLevel.None;
+            var level = UserLevel.None;
             if (VerifyDb())
             {
                 try
@@ -198,17 +242,20 @@ namespace SSB.Database
                             cmd.CommandText = "SELECT * FROM users WHERE user = @user";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
                                     Debug.WriteLine(string.Format(
-                                        "UserDb.GetUserLevel: User: {0} does not exist in the user database.", user));
+                                        "UserDb.GetUserLevel: User: {0} does not exist in the user database.",
+                                        user));
                                     return UserLevel.None;
                                 }
                                 while (reader.Read())
                                 {
-                                    Debug.WriteLine("UserDb.GetUserLevel: Got user level for: {0}, level: {1}", user, (UserLevel)reader["accesslevel"]);
+                                    Debug.WriteLine(
+                                        "UserDb.GetUserLevel: Got user level for: {0}, level: {1}", user,
+                                        (UserLevel)reader["accesslevel"]);
                                     level = (UserLevel)reader["accesslevel"];
                                     return level;
                                 }
@@ -259,6 +306,18 @@ namespace SSB.Database
         }
 
         /// <summary>
+        /// Public method for accessing protected <see cref="DoesUserExistInDb"/> method
+        /// to check whether a user exists in the user database or not.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns><c>true</c> if the user exists in the user database, otherwise
+        /// <c>false</c>.</returns>
+        public bool UserExists(string user)
+        {
+            return DoesUserExistInDb(user);
+        }
+
+        /// <summary>
         ///     Creates the user database.
         /// </summary>
         protected override void CreateDb()
@@ -273,7 +332,7 @@ namespace SSB.Database
                 {
                     sqlcon.Open();
 
-                    string s =
+                    var s =
                         "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, accesslevel INTEGER, addedby TEXT NOT NULL, dateadded DATETIME)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
@@ -333,7 +392,7 @@ namespace SSB.Database
                         cmd.CommandText = "SELECT * FROM users WHERE user = @user";
                         cmd.Prepare();
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             return reader.HasRows;
                         }
@@ -367,7 +426,7 @@ namespace SSB.Database
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'users'";
 
-                    using (SQLiteDataReader sdr = cmd.ExecuteReader())
+                    using (var sdr = cmd.ExecuteReader())
                     {
                         if (sdr.Read())
                         {
@@ -386,7 +445,7 @@ namespace SSB.Database
         /// </summary>
         private void AddOwnerToDb()
         {
-            string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             AddUserToDb(_owner, UserLevel.Owner, "AUTO", date);
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;

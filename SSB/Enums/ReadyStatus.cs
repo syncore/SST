@@ -1,4 +1,4 @@
-﻿namespace SSB.Enum
+﻿namespace SSB.Enums
 {
     /// <summary>
     /// Enum containing the player's ready status.

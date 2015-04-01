@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using SSB.Core;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
 
@@ -63,6 +63,7 @@ namespace SSB.Database
                                 string.Format("AddEarlyQuitDb: {0} successfully added to early quitter DB",
                                     user));
                             result = UserDbResult.Success;
+                            //TODO: _ssb.UserInterface.RefreshCurrentQuittersDataSource();
                         }
                     }
                 }

@@ -187,6 +187,14 @@ namespace SSB.Core
         public ServerInfo ServerInfo { get; private set; }
 
         /// <summary>
+        /// Gets or sets the user interface.
+        /// </summary>
+        /// <value>
+        /// The user interface.
+        /// </value>
+        public UserInterface UserInterface { get; set; }
+        
+        /// <summary>
         ///     Gets the vote manager.
         /// </summary>
         /// <value>

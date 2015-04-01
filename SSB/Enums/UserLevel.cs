@@ -1,4 +1,4 @@
-﻿namespace SSB.Enum
+﻿namespace SSB.Enums
 {
     /// <summary>
     ///     An enumeration that represents the different types of user levels.

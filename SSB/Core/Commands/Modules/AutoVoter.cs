@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Config;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -249,19 +249,16 @@ namespace SSB.Core.Commands.Modules
         /// </param>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
 
-            if (active)
-            {
-                _configHandler.Config.AutoVoterOptions.isActive = true;
-                _configHandler.Config.AutoVoterOptions.autoVotes = AutoVotes;
-            }
-            else
-            {
-                _configHandler.Config.AutoVoterOptions.SetDefaults();
-            }
+            _configHandler.Config.AutoVoterOptions.isActive = active;
+            _configHandler.Config.AutoVoterOptions.autoVotes = AutoVotes;
 
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModAutoVoterUi();
         }
 
         /// <summary>

@@ -249,6 +249,7 @@
             this.usersTab = new System.Windows.Forms.TabPage();
             this.usrMContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.usrMCurUsersGroupBox = new System.Windows.Forms.GroupBox();
+            this.usrMRefreshUsersButton = new System.Windows.Forms.Button();
             this.usrMDelUserButton = new System.Windows.Forms.Button();
             this.usrMCurUsersListBox = new System.Windows.Forms.ListBox();
             this.usrMAddUserGroupBox = new System.Windows.Forms.GroupBox();
@@ -298,12 +299,15 @@
             this.ssbResetButton = new System.Windows.Forms.Button();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.fakeAlignStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.modStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
             this.closeButton = new System.Windows.Forms.PictureBox();
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.usrMCurrentUserBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -396,6 +400,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -424,6 +429,7 @@
             this.UiTabCtl.SelectedIndex = 0;
             this.UiTabCtl.Size = new System.Drawing.Size(750, 515);
             this.UiTabCtl.TabIndex = 1;
+            this.UiTabCtl.SelectedIndexChanged += new System.EventHandler(this.UiTabCtl_SelectedIndexChanged);
             // 
             // logTab
             // 
@@ -3240,6 +3246,7 @@
             // usrMCurUsersGroupBox
             // 
             this.usrMCurUsersGroupBox.BackColor = System.Drawing.Color.Black;
+            this.usrMCurUsersGroupBox.Controls.Add(this.usrMRefreshUsersButton);
             this.usrMCurUsersGroupBox.Controls.Add(this.usrMDelUserButton);
             this.usrMCurUsersGroupBox.Controls.Add(this.usrMCurUsersListBox);
             this.usrMCurUsersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -3251,19 +3258,36 @@
             this.usrMCurUsersGroupBox.TabStop = false;
             this.usrMCurUsersGroupBox.Text = "Current SSB Users";
             // 
+            // usrMRefreshUsersButton
+            // 
+            this.usrMRefreshUsersButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.usrMRefreshUsersButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.usrMRefreshUsersButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMRefreshUsersButton.ForeColor = System.Drawing.Color.White;
+            this.usrMRefreshUsersButton.Location = new System.Drawing.Point(210, 353);
+            this.usrMRefreshUsersButton.Name = "usrMRefreshUsersButton";
+            this.usrMRefreshUsersButton.Size = new System.Drawing.Size(77, 23);
+            this.usrMRefreshUsersButton.TabIndex = 15;
+            this.usrMRefreshUsersButton.Text = "Refresh";
+            this.coreToolTip.SetToolTip(this.usrMRefreshUsersButton, "Click this button to re-sync the internal user database to ensure that any user c" +
+        "hanges\r\nthat occurred in-game or via IRC are reflected here.\r\n");
+            this.usrMRefreshUsersButton.UseVisualStyleBackColor = false;
+            this.usrMRefreshUsersButton.Click += new System.EventHandler(this.usrMRefreshUsersButton_Click);
+            // 
             // usrMDelUserButton
             // 
             this.usrMDelUserButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
             this.usrMDelUserButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.usrMDelUserButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMDelUserButton.ForeColor = System.Drawing.Color.White;
-            this.usrMDelUserButton.Location = new System.Drawing.Point(121, 353);
+            this.usrMDelUserButton.Location = new System.Drawing.Point(6, 353);
             this.usrMDelUserButton.Name = "usrMDelUserButton";
-            this.usrMDelUserButton.Size = new System.Drawing.Size(166, 23);
+            this.usrMDelUserButton.Size = new System.Drawing.Size(109, 23);
             this.usrMDelUserButton.TabIndex = 14;
-            this.usrMDelUserButton.Text = "Remove User from SSB";
+            this.usrMDelUserButton.Text = "Remove User";
             this.coreToolTip.SetToolTip(this.usrMDelUserButton, "Click this button to remove the selected user.");
             this.usrMDelUserButton.UseVisualStyleBackColor = false;
+            this.usrMDelUserButton.Click += new System.EventHandler(this.usrMDelUserButton_Click);
             // 
             // usrMCurUsersListBox
             // 
@@ -3331,6 +3355,7 @@
             this.usrMAddUserButton.Text = "Add User to SSB";
             this.coreToolTip.SetToolTip(this.usrMAddUserButton, "Click this button to add the user.");
             this.usrMAddUserButton.UseVisualStyleBackColor = false;
+            this.usrMAddUserButton.Click += new System.EventHandler(this.usrMAddUserButton_Click);
             // 
             // usrMUserAccessLabel
             // 
@@ -3344,6 +3369,7 @@
             // usrMUserAccessComboBox
             // 
             this.usrMUserAccessComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.usrMUserAccessComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.usrMUserAccessComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMUserAccessComboBox.ForeColor = System.Drawing.Color.White;
             this.usrMUserAccessComboBox.FormattingEnabled = true;
@@ -3818,7 +3844,9 @@
             this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.statusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel});
+            this.statusLabel,
+            this.fakeAlignStatusLabel,
+            this.modStatusLabel});
             this.statusBar.Location = new System.Drawing.Point(0, 683);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(752, 22);
@@ -3836,6 +3864,23 @@
             this.statusLabel.Size = new System.Drawing.Size(183, 17);
             this.statusLabel.Text = "Status: Not monitoring a server.";
             this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            // 
+            // fakeAlignStatusLabel
+            // 
+            this.fakeAlignStatusLabel.ForeColor = System.Drawing.Color.White;
+            this.fakeAlignStatusLabel.Name = "fakeAlignStatusLabel";
+            this.fakeAlignStatusLabel.Size = new System.Drawing.Size(429, 17);
+            this.fakeAlignStatusLabel.Spring = true;
+            // 
+            // modStatusLabel
+            // 
+            this.modStatusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.modStatusLabel.ForeColor = System.Drawing.Color.White;
+            this.modStatusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.modStatusLabel.Name = "modStatusLabel";
+            this.modStatusLabel.Size = new System.Drawing.Size(94, 17);
+            this.modStatusLabel.Text = "Active modules:";
+            this.modStatusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             // 
             // minimizeButton
             // 
@@ -4027,6 +4072,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4308,5 +4354,9 @@
         private System.Windows.Forms.Button modEarlyQuitRefreshQuitsButton;
         private System.Windows.Forms.Button modAutoVoterRefreshVotesButton;
         private System.Windows.Forms.Button modIRCGenerateRandomNamesButton;
+        private System.Windows.Forms.BindingSource usrMCurrentUserBindingSource;
+        private System.Windows.Forms.Button usrMRefreshUsersButton;
+        private System.Windows.Forms.ToolStripStatusLabel fakeAlignStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel modStatusLabel;
     }
 }

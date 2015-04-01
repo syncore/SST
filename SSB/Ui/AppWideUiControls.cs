@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using SSB.Util;
 
 namespace SSB.Ui
 {
     /// <summary>
-    ///     Class that holds references to some of the selected UI controls in UserInterface.cs, allowing us to access them
-    ///     from other
-    ///     classes.
+    ///     Class that holds references to some of the selected UI controls in
+    ///  UserInterface.cs, allowing access from other classes.
     /// </summary>
     public class AppWideUiControls
     {
@@ -17,6 +16,14 @@ namespace SSB.Ui
         ///     The SSB UI activity log text box.
         /// </value>
         public TextBox LogConsoleTextBox { get; set; }
+
+        /// <summary>
+        /// Gets or sets the module status bar.
+        /// </summary>
+        /// <value>
+        /// The module status bar.
+        /// </value>
+        public ToolStripStatusLabel ModStatusBar { get; set; }
 
         /// <summary>
         ///     Gets or sets the 'start monitoring' button.
@@ -53,72 +60,15 @@ namespace SSB.Ui
         /// <param name="serverId">The server identifier.</param>
         public void UpdateAppWideControls(bool isMonitoring, string serverId)
         {
-            SetStartMonitoringButtonStatus(isMonitoring);
-            SetStopMonitoringButtonStatus(isMonitoring);
-            if (isMonitoring)
-            {
-                SetStatusBarLabelText(string.Format(
+            StartMonitoringButton.InvokeIfRequired(c => { c.Enabled = !isMonitoring; });
+            StopMonitoringButton.InvokeIfRequired(c => { c.Enabled = isMonitoring; });
+
+            // Invoke not required for ToolStripStatusLabel
+            StatusBar.Text = string.Format("{0}", (isMonitoring) ? string.Format(
                     "Monitoring server at http://www.quakelive.com/#!join/{0}",
                     (string.IsNullOrEmpty(serverId)
                         ? "..."
-                        : serverId)));
-            }
-            else
-            {
-                SetStatusBarLabelText("Not monitoring a server.");
-            }
+                        : serverId)) : "Not monitoring a server");
         }
-
-        /// <summary>
-        ///     Enables or disables the 'start monitoring button'.
-        /// </summary>
-        /// <param name="isMonitoring">
-        ///     if set to <c>true</c> then server
-        ///     monitoring is active. if set to <c>false</c> then
-        ///     server monitoring is inactive.
-        /// </param>
-        private void SetStartMonitoringButtonStatus(bool isMonitoring)
-        {
-            if (StartMonitoringButton.InvokeRequired)
-            {
-                StartMonitoringButton.Invoke(new Action<bool>(SetStartMonitoringButtonStatus), isMonitoring);
-                return;
-            }
-            StartMonitoringButton.Enabled = !isMonitoring;
-        }
-
-        /// <summary>
-        ///     Sets the status bar label text.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        private void SetStatusBarLabelText(string text)
-        {
-            StatusBar.Text = text;
-        }
-
-        /// <summary>
-        ///     Enables or disables the 'stop monitoring button'.
-        /// </summary>
-        /// <param name="isMonitoring">
-        ///     if set to <c>true</c> then server
-        ///     monitoring is active. if set to <c>false</c> then
-        ///     server monitoring is inactive.
-        /// </param>
-        private void SetStopMonitoringButtonStatus(bool isMonitoring)
-        {
-            if (StopMonitoringButton.InvokeRequired)
-            {
-                StopMonitoringButton.Invoke(new Action<bool>(SetStopMonitoringButtonStatus), isMonitoring);
-                return;
-            }
-
-            StopMonitoringButton.Enabled = isMonitoring;
-        }
-
-        private delegate void SetStartMonitoringBtnStatus(bool isMonitoring);
-
-        private delegate void SetStatusBarText(string text);
-
-        private delegate void SetStopMonitoringBtnStatus(bool isMonitoring);
     }
 }

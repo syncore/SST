@@ -1,4 +1,4 @@
-﻿using SSB.Enum;
+﻿using SSB.Enums;
 using SSB.Model.QlRanks;
 
 namespace SSB.Model

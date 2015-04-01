@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 
 namespace SSB.Core

@@ -1,4 +1,4 @@
-﻿namespace SSB.Enum
+﻿namespace SSB.Enums
 {
     /// <summary>
     /// An enum representing various QL command types.

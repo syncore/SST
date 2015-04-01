@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Core.Modules;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
 

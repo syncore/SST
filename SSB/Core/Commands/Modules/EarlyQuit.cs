@@ -250,21 +250,19 @@ namespace SSB.Core.Commands.Modules
         /// </param>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.EarlyQuitOptions.isActive = true;
-                _configHandler.Config.EarlyQuitOptions.banTime = BanTime;
-                _configHandler.Config.EarlyQuitOptions.banTimeScale = BanTimeScale;
-                _configHandler.Config.EarlyQuitOptions.banTimeScaleIndex = BanTimeScaleIndex;
-                _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
-            }
-            else
-            {
-                _configHandler.Config.EarlyQuitOptions.SetDefaults();
-            }
+
+            _configHandler.Config.EarlyQuitOptions.isActive = active;
+            _configHandler.Config.EarlyQuitOptions.banTime = BanTime;
+            _configHandler.Config.EarlyQuitOptions.banTimeScale = BanTimeScale;
+            _configHandler.Config.EarlyQuitOptions.banTimeScaleIndex = BanTimeScaleIndex;
+            _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
 
             _configHandler.WriteConfiguration();
+            
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModEarlyQuitUi();
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace SSB.Enum
+﻿namespace SSB.Enums
 {
     /// <summary>
     ///     An enumeration that specifies the different types of User database results.

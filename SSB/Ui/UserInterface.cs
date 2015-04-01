@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using SSB.Config;
 using SSB.Core;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Ui.Validation;
@@ -31,6 +31,7 @@ namespace SSB.Ui
         private readonly ServerListValidator _serverListValidator;
         private readonly SynServerBot _ssb;
         private List<EarlyQuitter> _earlyQuittersFromDb;
+        private List<User> _usersFromDb;
 
         public UserInterface(SynServerBot ssb)
         {
@@ -49,6 +50,225 @@ namespace SSB.Ui
             _ircValidator = new IrcValidator(_ssb.Mod.Irc.IrcManager.ValidIrcNickRegex);
             SetAppWideUiControls();
             PopulateAllUiTabs();
+            _ssb.UserInterface = this;
+        }
+
+        public void PopulateBanManagementUi()
+        {
+            Debug.WriteLine("Populated ban management user interface.");
+        }
+
+        public void PopulateModAccountDateUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var acctDateOptions = _cfgHandler.Config.AccountDateOptions;
+            modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = acctDateOptions.isActive; });
+            modAccDateAccAgeTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = acctDateOptions.minimumDaysRequired.ToString();
+            });
+            Debug.WriteLine("Populated account date limiter module user interface.");
+        }
+
+        public void PopulateModAccuracyUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            modAccuracyEnableCheckBox.InvokeIfRequired(c =>
+            { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
+            Debug.WriteLine("Populated accuracy display module user interface.");
+        }
+
+        public void PopulateModAutoVoterUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            modAutoVoterEnableCheckBox.InvokeIfRequired(c =>
+            {
+                c.Checked = _cfgHandler.Config.AutoVoterOptions.isActive;
+            });
+
+            // Radio buttons
+            modAutoVoterPassRadioButton.InvokeIfRequired(c => {c.Checked = true;});
+            // Vote types combo box
+            modAutoVoterVoteTypeComboxBox.InvokeIfRequired(c =>
+            {
+                c.DisplayMember = "Name";
+                c.ValueMember = "Name";
+                c.DataSource = _ssb.Mod.AutoVoter.ValidCallVotes;
+                c.SelectedIndex = 0;
+            });
+            // Current votes listbox
+            RefreshCurrentVotesDataSource();
+            Debug.WriteLine("Populated auto voter module user interface.");
+        }
+
+        public void PopulateModEarlyQuitUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
+            modEarlyQuitEnableCheckBox.InvokeIfRequired(c =>
+            {
+                c.Checked = earlyQuitOptions.isActive;
+            });
+            modEarlyQuitMaxQuitsTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = earlyQuitOptions.maxQuitsAllowed.ToString();
+            });
+            modEarlyQuitTimeTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = earlyQuitOptions.banTime.ToString(CultureInfo.InvariantCulture);
+            });
+            modEarlyQuitTimeScaleComboxBox.InvokeIfRequired(c =>
+            {
+                c.DataSource = Helpers.ValidTimeScales;
+                c.SelectedIndex = earlyQuitOptions.banTimeScaleIndex;
+            });
+            
+            // Current early quitters listbox
+            RefreshCurrentQuittersDataSource();
+            Debug.WriteLine("Populated early quit banner module user interface.");
+        }
+
+        public void PopulateModEloLimiterUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
+            modEloLimiterEnableCheckBox.Checked = eloLimitOptions.isActive;
+            modEloLimiterMinEloTextBox.Text = eloLimitOptions.minimumRequiredElo.ToString();
+            modEloLimiterMaxEloTextBox.Text = ((eloLimitOptions.maximumRequiredElo == 0)
+                ? string.Empty
+                : eloLimitOptions.maximumRequiredElo.ToString());
+            Debug.WriteLine("Populated Elo limiter module user interface.");
+        }
+
+        public void PopulateModIrcUi()
+        {
+            var ircOptions = _cfgHandler.Config.IrcOptions;
+            modIRCEnableCheckBox.Checked = ircOptions.isActive;
+            modIRCAdminNameTextBox.Text = ircOptions.ircAdminNickname;
+            modIRCBotNickNameTextBox.Text = ircOptions.ircNickName;
+            modIRCBotUserNameTextBox.Text = ircOptions.ircUserName;
+            modIRCQNetUserNameTextBox.Text = ircOptions.ircNickServiceUsername;
+            modIRCQNetPassTextBox.Text = ircOptions.ircNickServicePassword;
+            modIRCQNetAutoAuthCheckBox.Checked = ircOptions.autoAuthWithNickService;
+            modIRCQNetHideHostCheckBox.Checked = ircOptions.hideHostnameOnQuakeNet;
+            modIRCServerAddressTextBox.Text = ircOptions.ircServerAddress;
+            modIRCServerPortTextBox.Text = ircOptions.ircServerPort.ToString();
+            modIRCServerPassTextBox.Text = ircOptions.ircServerPassword;
+            modIRCChannelTextBox.Text = ircOptions.ircChannel;
+            modIRCChannelKeyTextBox.Text = ircOptions.ircChannelKey;
+            modIRCAutoConnectCheckBox.Checked = ircOptions.autoConnectOnStart;
+            Debug.WriteLine("Populated IRC module user interface.");
+        }
+
+        public void PopulateModMotdUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var motdOptions = _cfgHandler.Config.MotdOptions;
+            modMOTDEnableCheckBox.Checked = motdOptions.isActive;
+            modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
+            modMOTDRepeatMsgTextBox.Text = motdOptions.message;
+            Debug.WriteLine("Populated MOTD module user interface.");
+        }
+
+        public void PopulateModPickupUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var pickupOptions = _cfgHandler.Config.PickupOptions;
+            modPickupEnableCheckBox.Checked = pickupOptions.isActive;
+            modPickupMaxSubsTextBox.Text = pickupOptions.maxSubsPerPlayer.ToString();
+            modPickupMaxNoShowsTextBox.Text = pickupOptions.maxNoShowsPerPlayer.ToString();
+            modPickupPlayersPerTeamTextBox.Text = pickupOptions.teamSize.ToString();
+            modPickupNoShowsTimeBanTextBox.Text = pickupOptions.excessiveNoShowBanTime.
+                ToString(CultureInfo.InvariantCulture);
+            modPickupSubsTimeBanTextBox.Text = pickupOptions.excessiveSubUseBanTime.
+                ToString(CultureInfo.InvariantCulture);
+            modPickupSubsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
+            modPickupNoShowsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
+            modPickupSubsTimeBanScaleComboBox.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
+            modPickupNoShowsTimeBanScaleComboBox.SelectedIndex =
+                pickupOptions.excessiveNoShowBanTimeScaleIndex;
+            Debug.WriteLine("Populated pickup module user interface.");
+        }
+
+        public void PopulateModServerListUi()
+        {
+            _cfgHandler.ReadConfiguration();
+            var serverListOptions = _cfgHandler.Config.ServersOptions;
+            modServerListEnableCheckBox.Checked = serverListOptions.isActive;
+            modServerListMaxServersTextBox.Text = serverListOptions.maxServers.ToString();
+            modServerListTimeBetweenTextBox.Text = serverListOptions.timeBetweenQueries.ToString(
+                CultureInfo.InvariantCulture);
+            Debug.WriteLine("Populated server list module user interface.");
+        }
+
+        public void PopulateUserManagementUi()
+        {
+            // Specfically leave out user levels of None and Owner type.
+            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
+            _cfgHandler.ReadConfiguration();
+            usrMUserAccessComboBox.DataSource = levels;
+            usrMUserAccessComboBox.SelectedIndex = 0;
+            // Current SSB users listbox
+            RefreshCurrentSsbUsersDataSource();
+            Debug.WriteLine("Populated user management user interface.");
+        }
+
+        public void RefreshCurrentQuittersDataSource()
+        {
+            modEarlyQuitCurQuitsListBox.InvokeIfRequired(c =>
+            {
+                c.DataSource = null;
+                c.DisplayMember = "EarlyQuitFormatDisplay";
+                c.ValueMember = "Name";    
+            });
+            
+            var earlyQuitDb = new DbQuits();
+            _earlyQuittersFromDb = earlyQuitDb.GetAllQuitters();
+            modEarlyQuitCurrentQuitBindingSource.DataSource =
+                new BindingList<EarlyQuitter>(_earlyQuittersFromDb);
+            if (modEarlyQuitCurrentQuitBindingSource.Count != 0)
+            {
+                modEarlyQuitCurQuitsListBox.InvokeIfRequired(c =>
+                {
+                    c.DataSource = modEarlyQuitCurrentQuitBindingSource.DataSource;
+                });
+            }
+        }
+
+        public void RefreshCurrentSsbUsersDataSource()
+        {
+            usrMCurUsersListBox.DataSource = null;
+            usrMCurUsersListBox.DisplayMember = "UserFormatDisplay";
+            usrMCurUsersListBox.ValueMember = "Name";
+            var userDb = new DbUsers();
+            _usersFromDb = userDb.GetAllUsers();
+            usrMCurrentUserBindingSource.DataSource =
+                new BindingList<User>(_usersFromDb);
+            if (usrMCurrentUserBindingSource.Count != 0)
+            {
+                usrMCurUsersListBox.DataSource = usrMCurrentUserBindingSource.DataSource;
+            }
+        }
+
+        public void RefreshCurrentVotesDataSource()
+        {
+            modAutoVoterCurVotesListBox.InvokeIfRequired(c =>
+            {
+                c.DataSource = null;
+                c.DisplayMember = "VoteFormatDisplay";
+                c.ValueMember = "VoteText";
+            });
+            
+            modAutoVoterCurrentVotesBindingSource.DataSource =
+                new BindingList<AutoVote>(_ssb.Mod.AutoVoter.AutoVotes);
+            if (modAutoVoterCurrentVotesBindingSource.Count != 0)
+            {
+                // Only set the listbox's datasource if there are elements
+                // otherwise, ArgumentOutOfRange is unfortunately possible
+                // see: http://stackoverflow.com/a/26762624
+                modAutoVoterCurVotesListBox.InvokeIfRequired(c =>
+                { c.DataSource = modAutoVoterCurrentVotesBindingSource.DataSource; });
+            }
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -141,100 +361,83 @@ namespace SSB.Ui
 
         private async Task HandleAccountDateModActivation(bool isActiveInUi, uint minAccountAge)
         {
-            if (isActiveInUi)
-            {
-                await _ssb.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
-                Debug.WriteLine(
-                    "[UI]: Activating account date limiter module from UI. Updating old values as necessary.");
-            }
-            else
-            {
-                _ssb.Mod.AccountDateLimit.Active = false;
-                Debug.WriteLine("[UI]: Deactivating account date limiter module from UI if active.");
-            }
+            _ssb.Mod.AccountDateLimit.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                "[UI]: Activating account date limiter module from UI. Updating old values as necessary." :
+                "[UI]: Deactivating account date limiter module from UI if active."));
+
+            if (!_ssb.IsMonitoringServer) return;
+            await _ssb.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
         }
 
         private async Task HandleEloLimitModActivation(bool isActiveInUi)
         {
-            if (isActiveInUi)
-            {
-                if (!_ssb.IsMonitoringServer) return;
-                _ssb.Mod.EloLimit.Active = true;
-                await _ssb.Mod.EloLimit.BatchRemoveEloPlayers();
-                Debug.WriteLine(
-                    "[UI]: Activating Elo limiter module from UI. Updating old values as necessary.");
-            }
-            else
-            {
-                _ssb.Mod.EloLimit.Active = false;
-                Debug.WriteLine("[UI]: Deactivating Elo limiter module from UI if active.");
-            }
+            _ssb.Mod.EloLimit.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                "[UI]: Activating Elo limiter module from UI. Updating old values as necessary." :
+                "[UI]: Deactivating Elo limiter module from UI if active."));
+            
+            if (!_ssb.IsMonitoringServer) return;
+            await _ssb.Mod.EloLimit.BatchRemoveEloPlayers();
         }
 
         private void HandleIrcModActivation(bool isActiveInUi)
         {
+            _ssb.Mod.Irc.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                "[UI]: Activating IRC module from UI. Updating old values as necessary." :
+                "[UI]: Deactivating IRC module from UI if active."));
+
             if (isActiveInUi)
             {
-                _ssb.Mod.Irc.Active = true;
-                Debug.WriteLine("[UI]: Activating irc module from UI. Updating old values as necessary.");
                 _ssb.Mod.Irc.Init();
             }
             else
             {
-                _ssb.Mod.Irc.Active = false;
-                Debug.WriteLine("[UI]: Deactivating irc module from UI if active.");
                 _ssb.Mod.Irc.Deactivate();
             }
         }
 
         private void HandleMotdModActivation(bool isActiveInUi)
         {
+            _ssb.Mod.Motd.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                "[UI]: Activating MOTD module from UI. Updating old values as necessary." :
+                "[UI]: Deactivating MOTD module from UI if active."));
+            
             if (isActiveInUi)
             {
-                _ssb.Mod.Motd.Active = true;
-                Debug.WriteLine("[UI]: Activating motd module from UI. Updating old values as necessary.");
                 _ssb.Mod.Motd.Init();
             }
             else
             {
-                _ssb.Mod.Motd.Active = false;
-                Debug.WriteLine("[UI]: Deactivating motd module from UI if active.");
                 _ssb.Mod.Motd.Deactivate();
             }
         }
 
         private async Task HandlePickupModActivation(bool isActiveInUi)
         {
-            if (isActiveInUi)
-            {
-                _ssb.Mod.Pickup.Active = true;
-                Debug.WriteLine(
-                    "[UI]: Activating pickup module from UI. Updating old values as necessary.");
-            }
-            else
+            _ssb.Mod.Pickup.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                "[UI]: Activating pickup module from UI. Updating old values as necessary." :
+                "[UI]: Deactivating pickup module from UI if active."));
+
+            if (!isActiveInUi)
             {
                 _ssb.Mod.Pickup.Active = false;
                 _ssb.Mod.Pickup.Manager.ResetPickupStatus();
                 await _ssb.QlCommands.SendToQlAsync("unlock", false);
-                Debug.WriteLine("[UI]: Deactivating pickup module from UI if active.");
             }
         }
 
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
-            if (isActiveInUi)
-            {
-                module.Active = true;
-                Debug.WriteLine(
-                    string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
-                        module.ModuleName));
-            }
-            else
-            {
-                module.Active = false;
-                Debug.WriteLine(string.Format("[UI]: Deactivating {0} module from UI if active.",
-                    module.ModuleName));
-            }
+            module.Active = isActiveInUi;
+            Debug.WriteLine(string.Format("{0}", (isActiveInUi) ?
+                string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
+                module.ModuleName) :
+                string.Format("[UI]: Deactivating {0} module from UI if active.",
+                module.ModuleName)));
         }
 
         private void minimizeButton_Click(object sender, EventArgs e)
@@ -1289,6 +1492,8 @@ namespace SSB.Ui
             PopulateModMotdUi();
             PopulateModPickupUi();
             PopulateModServerListUi();
+            PopulateUserManagementUi();
+            PopulateBanManagementUi();
         }
 
         private void PopulateCoreOptionsUi()
@@ -1305,157 +1510,6 @@ namespace SSB.Ui
             Debug.WriteLine("Populated core options user interface.");
         }
 
-        private void PopulateModAccountDateUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var acctDateOptions = _cfgHandler.Config.AccountDateOptions;
-            modAccDateEnableCheckBox.Checked = acctDateOptions.isActive;
-            modAccDateAccAgeTextBox.Text = acctDateOptions.minimumDaysRequired.ToString();
-            Debug.WriteLine("Populated account date limiter module user interface.");
-        }
-
-        private void PopulateModAccuracyUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            modAccuracyEnableCheckBox.Checked = _cfgHandler.Config.AccuracyOptions.isActive;
-            Debug.WriteLine("Populated accuracy display module user interface.");
-        }
-
-        private void PopulateModAutoVoterUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            modAutoVoterEnableCheckBox.Checked = _cfgHandler.Config.AutoVoterOptions.isActive;
-
-            // Radio buttons
-            modAutoVoterPassRadioButton.Checked = true;
-            // Vote types combo box
-            modAutoVoterVoteTypeComboxBox.DisplayMember = "Name";
-            modAutoVoterVoteTypeComboxBox.ValueMember = "Name";
-            modAutoVoterVoteTypeComboxBox.DataSource = _ssb.Mod.AutoVoter.ValidCallVotes;
-            modAutoVoterVoteTypeComboxBox.SelectedIndex = 0;
-            // Current votes listbox
-            RefreshCurrentVotesDataSource();
-            Debug.WriteLine("Populated auto voter module user interface.");
-        }
-
-        private void PopulateModEarlyQuitUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-            modEarlyQuitEnableCheckBox.Checked = earlyQuitOptions.isActive;
-            modEarlyQuitMaxQuitsTextBox.Text = earlyQuitOptions.maxQuitsAllowed.ToString();
-            modEarlyQuitTimeTextBox.Text = earlyQuitOptions.banTime.ToString(CultureInfo.InvariantCulture);
-            modEarlyQuitTimeScaleComboxBox.DataSource = Helpers.ValidTimeScales;
-            modEarlyQuitTimeScaleComboxBox.SelectedIndex = earlyQuitOptions.banTimeScaleIndex;
-            // Current early quitters listbox
-            RefreshCurrentQuittersDataSource();
-            Debug.WriteLine("Populated early quit banner module user interface.");
-        }
-
-        private void PopulateModEloLimiterUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-            modEloLimiterEnableCheckBox.Checked = eloLimitOptions.isActive;
-            modEloLimiterMinEloTextBox.Text = eloLimitOptions.minimumRequiredElo.ToString();
-            modEloLimiterMaxEloTextBox.Text = ((eloLimitOptions.maximumRequiredElo == 0)
-                ? string.Empty
-                : eloLimitOptions.maximumRequiredElo.ToString());
-            Debug.WriteLine("Populated Elo limiter module user interface.");
-        }
-
-        private void PopulateModIrcUi()
-        {
-            var ircOptions = _cfgHandler.Config.IrcOptions;
-            modIRCEnableCheckBox.Checked = ircOptions.isActive;
-            modIRCAdminNameTextBox.Text = ircOptions.ircAdminNickname;
-            modIRCBotNickNameTextBox.Text = ircOptions.ircNickName;
-            modIRCBotUserNameTextBox.Text = ircOptions.ircUserName;
-            modIRCQNetUserNameTextBox.Text = ircOptions.ircNickServiceUsername;
-            modIRCQNetPassTextBox.Text = ircOptions.ircNickServicePassword;
-            modIRCQNetAutoAuthCheckBox.Checked = ircOptions.autoAuthWithNickService;
-            modIRCQNetHideHostCheckBox.Checked = ircOptions.hideHostnameOnQuakeNet;
-            modIRCServerAddressTextBox.Text = ircOptions.ircServerAddress;
-            modIRCServerPortTextBox.Text = ircOptions.ircServerPort.ToString();
-            modIRCServerPassTextBox.Text = ircOptions.ircServerPassword;
-            modIRCChannelTextBox.Text = ircOptions.ircChannel;
-            modIRCChannelKeyTextBox.Text = ircOptions.ircChannelKey;
-            modIRCAutoConnectCheckBox.Checked = ircOptions.autoConnectOnStart;
-            Debug.WriteLine("Populated IRC module user interface.");
-        }
-
-        private void PopulateModMotdUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var motdOptions = _cfgHandler.Config.MotdOptions;
-            modMOTDEnableCheckBox.Checked = motdOptions.isActive;
-            modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
-            modMOTDRepeatMsgTextBox.Text = motdOptions.message;
-            Debug.WriteLine("Populated MOTD module user interface.");
-        }
-
-        private void PopulateModPickupUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var pickupOptions = _cfgHandler.Config.PickupOptions;
-            modPickupEnableCheckBox.Checked = pickupOptions.isActive;
-            modPickupMaxSubsTextBox.Text = pickupOptions.maxSubsPerPlayer.ToString();
-            modPickupMaxNoShowsTextBox.Text = pickupOptions.maxNoShowsPerPlayer.ToString();
-            modPickupPlayersPerTeamTextBox.Text = pickupOptions.teamSize.ToString();
-            modPickupNoShowsTimeBanTextBox.Text = pickupOptions.excessiveNoShowBanTime.
-                ToString(CultureInfo.InvariantCulture);
-            modPickupSubsTimeBanTextBox.Text = pickupOptions.excessiveSubUseBanTime.
-                ToString(CultureInfo.InvariantCulture);
-            modPickupSubsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
-            modPickupNoShowsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
-            modPickupSubsTimeBanScaleComboBox.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
-            modPickupNoShowsTimeBanScaleComboBox.SelectedIndex =
-                pickupOptions.excessiveNoShowBanTimeScaleIndex;
-            Debug.WriteLine("Populated pickup module user interface.");
-        }
-
-        private void PopulateModServerListUi()
-        {
-            _cfgHandler.ReadConfiguration();
-            var serverListOptions = _cfgHandler.Config.ServersOptions;
-            modServerListEnableCheckBox.Checked = serverListOptions.isActive;
-            modServerListMaxServersTextBox.Text = serverListOptions.maxServers.ToString();
-            modServerListTimeBetweenTextBox.Text = serverListOptions.timeBetweenQueries.ToString(
-                CultureInfo.InvariantCulture);
-            Debug.WriteLine("Populated server list module user interface.");
-        }
-
-        private void RefreshCurrentQuittersDataSource()
-        {
-            modEarlyQuitCurQuitsListBox.DataSource = null;
-            modEarlyQuitCurQuitsListBox.DisplayMember = "EarlyQuitFormatDisplay";
-            modEarlyQuitCurQuitsListBox.ValueMember = "Name";
-            var earlyQuitDb = new DbQuits();
-            _earlyQuittersFromDb = earlyQuitDb.GetAllQuitters();
-            modEarlyQuitCurrentQuitBindingSource.DataSource =
-                new BindingList<EarlyQuitter>(_earlyQuittersFromDb);
-            if (modEarlyQuitCurrentQuitBindingSource.Count != 0)
-            {
-                modEarlyQuitCurQuitsListBox.DataSource = modEarlyQuitCurrentQuitBindingSource.DataSource;
-            }
-        }
-
-        private void RefreshCurrentVotesDataSource()
-        {
-            modAutoVoterCurVotesListBox.DataSource = null;
-            modAutoVoterCurVotesListBox.DisplayMember = "VoteFormatDisplay";
-            modAutoVoterCurVotesListBox.ValueMember = "VoteText";
-            modAutoVoterCurrentVotesBindingSource.DataSource =
-                new BindingList<AutoVote>(_ssb.Mod.AutoVoter.AutoVotes);
-            if (modAutoVoterCurrentVotesBindingSource.Count != 0)
-            {
-                // Only set the listbox's datasource if there are elements
-                // otherwise, ArgumentOutOfRange is unfortunately possible
-                // see: http://stackoverflow.com/a/26762624
-                modAutoVoterCurVotesListBox.DataSource = modAutoVoterCurrentVotesBindingSource.DataSource;
-            }
-        }
-
         /// <summary>
         ///     Sets references to various UI controls that need to be accessed
         ///     from other classes.
@@ -1464,6 +1518,7 @@ namespace SSB.Ui
         {
             _ssb.AppWideUiControls.LogConsoleTextBox = logConsoleTextBox;
             _ssb.AppWideUiControls.StatusBar = statusLabel;
+            _ssb.AppWideUiControls.ModStatusBar = modStatusLabel;
             _ssb.AppWideUiControls.StartMonitoringButton = ssbStartButton;
             _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
         }
@@ -1566,6 +1621,89 @@ namespace SSB.Ui
 
             _ssb.StopMonitoring();
             Debug.WriteLine("Got user request to stop monitoring server. Stopping monitoring.");
+        }
+
+        private void UiTabCtl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var tabControl = sender as TabControl;
+            if (tabControl == null) return;
+            var currentTabPage = tabControl.SelectedTab;
+
+            // For certain tabs, re-populate the tab on switch
+            // modules have their own event handler, see: moduleTabControl_SelectedIndexChanged
+            if (currentTabPage == coreOptionsTab)
+                PopulateCoreOptionsUi();
+            else if (currentTabPage == usersTab)
+                PopulateUserManagementUi();
+            else if (currentTabPage == banTab)
+                PopulateBanManagementUi();
+        }
+
+        private void usrMAddUserButton_Click(object sender, EventArgs e)
+        {
+            if (usrMUserQlNameTextBox.Text.Length == 0 ||
+                !Helpers.IsValidQlUsernameFormat(usrMUserQlNameTextBox.Text, false))
+            {
+                ShowErrorMessage("You must specify a valid Quake Live name.",
+                    "Invalid QL name");
+                return;
+            }
+
+            // See if the user exists
+            var userDb = new DbUsers();
+            var user = usrMUserQlNameTextBox.Text;
+            if (userDb.UserExists(user))
+            {
+                ShowErrorMessage(
+                    string.Format(
+                        "User {0} already exists in the user database. Remove the user then re-add.",
+                        user), "User exists");
+                return;
+            }
+            _cfgHandler.ReadConfiguration();
+            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
+            userDb.AddUserToDb(user, accessLevel, owner,
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            RefreshCurrentSsbUsersDataSource();
+            usrMCurUsersListBox.SelectedIndex = ((usrMCurrentUserBindingSource.Count > 0)
+                ? 0
+                : -1);
+            usrMUserAccessComboBox.SelectedIndex = 0;
+            usrMUserQlNameTextBox.Clear();
+
+            Debug.WriteLine("[UI]: Owner {0} added user {1} with access level {2} to user database.",
+                owner, user, accessLevel);
+        }
+
+        private void usrMDelUserButton_Click(object sender, EventArgs e)
+        {
+            if (usrMCurrentUserBindingSource.Count == 0 ||
+                usrMCurUsersListBox.SelectedIndex == -1) return;
+
+            _cfgHandler.ReadConfiguration();
+
+            var userDb = new DbUsers();
+            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
+
+            usrMCurrentUserBindingSource.Remove(selectedUser);
+            userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
+
+            Debug.WriteLine("[UI]: Owner {0} removed user {1} with access level {2} from user database.",
+                owner, selectedUser.Name, selectedUser.AccessLevel);
+
+            usrMCurUsersListBox.SelectedIndex = ((usrMCurrentUserBindingSource.Count > 0)
+                ? 0
+                : -1);
+            RefreshCurrentSsbUsersDataSource();
+        }
+
+        private void usrMRefreshUsersButton_Click(object sender, EventArgs e)
+        {
+            RefreshCurrentSsbUsersDataSource();
+            Debug.WriteLine("[UI]: Received user request to refresh current SSB users data source.");
         }
     }
 }

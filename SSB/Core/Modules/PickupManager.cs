@@ -9,7 +9,7 @@ using System.Timers;
 using SSB.Config;
 using SSB.Core.Commands.None;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
 

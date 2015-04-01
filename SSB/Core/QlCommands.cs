@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Util;
 
 namespace SSB.Core

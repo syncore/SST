@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
 

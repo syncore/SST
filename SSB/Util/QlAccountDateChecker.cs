@@ -34,13 +34,10 @@ namespace SSB.Util
         /// <returns>The user's registration date as a DateTime object.</returns>
         public async Task<DateTime> GetUserRegistrationDate(string user)
         {
-            DateTime registeredDate;
             // See if the user already exists in internal database
-            if (_regDateDb.GetRegistrationDate(user) != default(DateTime))
-            {
-                registeredDate = _regDateDb.GetRegistrationDate(user);
-                return registeredDate;
-            }
+            var registeredDate = _regDateDb.GetRegistrationDate(user);
+            if (registeredDate != default(DateTime)) return registeredDate;
+            
             // User doesn't exist in our db, retrieve from QL.
             registeredDate = await GetUserRegistrationDateFromQl(user);
             if (registeredDate != default(DateTime))

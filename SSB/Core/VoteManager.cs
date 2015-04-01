@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
-using SSB.Enum;
+using SSB.Enums;
 using Timer = System.Timers.Timer;
 
 namespace SSB.Core

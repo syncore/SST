@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 
@@ -13,6 +13,7 @@ namespace SSB.Core.Commands.Admin
         private readonly bool _isIrcAccessAllowed = true;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
+        private int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PauseCmd" /> class.
@@ -20,7 +21,6 @@ namespace SSB.Core.Commands.Admin
         /// <param name="ssb">The main class.</param>
         public PauseCmd(SynServerBot ssb)
         {
-            QlMinArgs = 0;
             _ssb = ssb;
         }
 
@@ -52,7 +52,11 @@ namespace SSB.Core.Commands.Admin
         /// <value>
         ///     The minimum arguments for the QL command.
         /// </value>
-        public int QlMinArgs { get; private set; }
+        public int QlMinArgs
+        {
+            get { return _qlMinArgs;}
+    
+        }
 
         /// <summary>
         ///     Gets the command's status message.

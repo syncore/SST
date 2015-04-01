@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -16,7 +16,6 @@ namespace SSB.Core.Modules.Irc
         private readonly bool _isAsync = true;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.Operator;
-        private bool _requiresMonitoring = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcSayCmd" /> class.
@@ -25,6 +24,7 @@ namespace SSB.Core.Modules.Irc
         /// <param name="irc">The IRC interface.</param>
         public IrcMonitorCmd(SynServerBot ssb, IrcManager irc)
         {
+            RequiresMonitoring = false;
             _ssb = ssb;
             _irc = irc;
         }
@@ -56,10 +56,7 @@ namespace SSB.Core.Modules.Irc
         ///     <c>true</c> if this command requires the bot to be monitoring
         ///     a server; otherwise, <c>false</c>.
         /// </value>
-        public bool RequiresMonitoring 
-        {
-            get { return _requiresMonitoring; }
-        }
+        public bool RequiresMonitoring { get; private set; }
 
         /// <summary>
         ///     Gets the user level.
@@ -126,6 +123,9 @@ namespace SSB.Core.Modules.Irc
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     "\u0002[SUCCESS]\u0002 Attempting to start QL server monitoring.");
                 await _ssb.BeginMonitoring();
+                // Give it time to complete initilization, then show status.
+                await Task.Delay(11000);
+                ShowMonitorStatus();
             }
             else if (c.Args[1].Equals("stop"))
             {
@@ -156,15 +156,24 @@ namespace SSB.Core.Modules.Irc
             }
             else if (c.Args[1].Equals("status"))
             {
-                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("SSB {0}",
-                    ((_ssb.IsMonitoringServer)
-                        ? string.Format(
-                            "is monitoring your QL server at \u0002http://www.quakelive.com/#!join/{0}",
-                            (string.IsNullOrEmpty(_ssb.ServerInfo.CurrentServerId)
-                                ? "..."
-                                : _ssb.ServerInfo.CurrentServerId))
-                        : "is \u0002not\u0002 currently monitoring your QL server.")));
+                // Give it time to complete monitoring
+                ShowMonitorStatus();
             }
+        }
+
+        /// <summary>
+        ///     Shows the monitoring status.
+        /// </summary>
+        private void ShowMonitorStatus()
+        {
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("SSB {0}",
+                ((_ssb.IsMonitoringServer)
+                    ? string.Format(
+                        "is monitoring your QL server at \u0002http://www.quakelive.com/#!join/{0}",
+                        (string.IsNullOrEmpty(_ssb.ServerInfo.CurrentServerId)
+                            ? "..."
+                            : _ssb.ServerInfo.CurrentServerId))
+                    : "is \u0002not\u0002 currently monitoring your QL server.")));
         }
     }
 }

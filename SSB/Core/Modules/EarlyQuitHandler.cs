@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Util;
 
 namespace SSB.Core.Modules

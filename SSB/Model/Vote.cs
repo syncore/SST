@@ -1,4 +1,4 @@
-﻿using SSB.Enum;
+﻿using SSB.Enums;
 
 namespace SSB.Model
 {

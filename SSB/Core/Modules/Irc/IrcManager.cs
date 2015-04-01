@@ -6,7 +6,7 @@ using System.Threading;
 using IrcDotNet;
 using SSB.Config;
 using SSB.Config.Modules;
-using SSB.Enum;
+using SSB.Enums;
 
 namespace SSB.Core.Modules.Irc
 {

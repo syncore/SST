@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Model;
 using SSB.Model.QlRanks;
 using SSB.Util;

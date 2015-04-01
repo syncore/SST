@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
-using SSB.Enum;
+using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
@@ -15,7 +15,7 @@ namespace SSB.Core.Commands.Admin
     public class AddUserCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _qlMinArgs = 2;
+        private readonly int _qlMinArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private readonly DbUsers _users;
