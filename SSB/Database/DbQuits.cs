@@ -63,7 +63,6 @@ namespace SSB.Database
                                 string.Format("AddEarlyQuitDb: {0} successfully added to early quitter DB",
                                     user));
                             result = UserDbResult.Success;
-                            //TODO: _ssb.UserInterface.RefreshCurrentQuittersDataSource();
                         }
                     }
                 }
@@ -163,7 +162,7 @@ namespace SSB.Database
         /// <summary>
         ///     Gets all of the users who have quit early.
         /// </summary>
-        /// <returns>The early quitters as a list of <see cref="EarlyQuitter"/> objects.</returns>
+        /// <returns>The early quitters as a list of <see cref="EarlyQuitter" /> objects.</returns>
         public List<EarlyQuitter> GetAllQuitters()
         {
             var allQuitters = new List<EarlyQuitter>();
@@ -328,6 +327,7 @@ namespace SSB.Database
                 if (bi.BanType == BanType.AddedByEarlyQuit)
                 {
                     banDb.DeleteUserFromDb(user);
+
                     if (ssb.IsMonitoringServer)
                     {
                         await

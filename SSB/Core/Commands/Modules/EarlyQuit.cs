@@ -273,13 +273,21 @@ namespace SSB.Core.Commands.Modules
         private async Task ClearEarlyQuits(CmdArgs c, DbQuits qdb)
         {
             qdb.DeleteUserFromDb(Helpers.GetArgVal(c, 3));
+            
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
+            
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}",
                 Helpers.GetArgVal(c, 3));
             await SendServerSay(c, StatusMessage);
             Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.",
                 Helpers.GetArgVal(c, 3)));
+            
             // See if there is an early quit-related ban and remove it as well
             await qdb.RemoveQuitRelatedBan(_ssb, Helpers.GetArgVal(c, 3));
+
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentBansDataSource();
         }
 
         /// <summary>
@@ -486,6 +494,10 @@ namespace SSB.Core.Commands.Modules
         private async Task ForgiveEarlyQuits(CmdArgs c, int num, string player, DbQuits qdb)
         {
             qdb.DecrementUserQuitCount(player, num);
+            
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
+            
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Forgave^3 {0} ^7of ^3{1}^7's early quits.",
                 num, player);
             await SendServerSay(c, StatusMessage);

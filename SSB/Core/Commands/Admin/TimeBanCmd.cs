@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using SSB.Database;
 using SSB.Enums;
@@ -35,12 +36,15 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -103,7 +107,8 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            if ((!Helpers.GetArgVal(c, 1).Equals("add")) && (!Helpers.GetArgVal(c, 1).Equals("del")) && (!Helpers.GetArgVal(c, 1).Equals("check")) &&
+            if ((!Helpers.GetArgVal(c, 1).Equals("add")) && (!Helpers.GetArgVal(c, 1).Equals("del")) &&
+                (!Helpers.GetArgVal(c, 1).Equals("check")) &&
                 (!Helpers.GetArgVal(c, 1).Equals("list")))
             {
                 await DisplayArgLengthError(c);
@@ -178,20 +183,27 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         private async Task<bool> AddBan(CmdArgs c)
         {
-            // !timeban add user # scale
-
-            // Kickban user immediately
+            // Kickban user immediately using internal QL command
             await _ssb.QlCommands.CustCmdKickban(Helpers.GetArgVal(c, 2));
 
             if (_banDb.UserAlreadyBanned(Helpers.GetArgVal(c, 2)))
             {
-                // Ban has previously expired; delete it
-                await RemoveAnyExpiredBans(Helpers.GetArgVal(c, 2));
+                var deleted = await DeleteIfExpired(Helpers.GetArgVal(c, 2));
+                if (deleted)
+                {
+                    StatusMessage =
+                        string.Format("^5[TIMEBAN]^7 A previous ban for^3 {0}^7 has expired. Now removing." +
+                                      " Re-add if you wish to re-ban.",
+                            Helpers.GetArgVal(c, 2));
+                    await SendServerTell(c, StatusMessage);
+                    return false;
+                }
 
                 var banInfo = _banDb.GetBanInfo(Helpers.GetArgVal(c, 2));
                 if (banInfo == null)
                 {
-                    StatusMessage = "^1[ERROR]^3 Unable to retrieve ban information.";
+                    StatusMessage =
+                        "^1[ERROR]^3 Unable to retrieve ban information while attempting to add ban.";
                     await SendServerTell(c, StatusMessage);
                     return false;
                 }
@@ -202,8 +214,11 @@ namespace SSB.Core.Commands.Admin
                     banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                     banInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                     CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                c.CmdName, c.Args[1])) : c.CmdName));
+                    ((c.FromIrc)
+                        ? (string.Format("{0} {1}",
+                            c.CmdName, c.Args[1]))
+                        : c.CmdName));
+
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -214,9 +229,13 @@ namespace SSB.Core.Commands.Admin
             var expirationDate = ExpirationDateGenerator.GenerateExpirationDate(length, scale);
 
             if (
-                _banDb.AddUserToDb(Helpers.GetArgVal(c, 2), c.FromUser, DateTime.Now, expirationDate, BanType.AddedByAdmin) ==
+                _banDb.AddUserToDb(Helpers.GetArgVal(c, 2), c.FromUser, DateTime.Now, expirationDate,
+                    BanType.AddedByAdmin) ==
                 UserDbResult.Success)
             {
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                 StatusMessage = string.Format(
                     "^2[SUCCESS]^7 Added time-ban for player: {0}. Ban will expire in {1} {2} on {3}",
                     Helpers.GetArgVal(c, 2), Math.Truncate(length), scale,
@@ -238,7 +257,15 @@ namespace SSB.Core.Commands.Admin
         /// <param name="c">The command argument information.</param>
         private async Task CheckBan(CmdArgs c)
         {
-            await RemoveAnyExpiredBans(Helpers.GetArgVal(c, 2));
+            var deleted = await DeleteIfExpired(Helpers.GetArgVal(c, 2));
+            if (deleted)
+            {
+                StatusMessage =
+                    string.Format("^5[TIMEBAN]^7 A previous ban for^3 {0}^7 has expired. Now removing.",
+                        Helpers.GetArgVal(c, 2));
+                await SendServerSay(c, StatusMessage);
+                return;
+            }
 
             var banInfo = _banDb.GetBanInfo(Helpers.GetArgVal(c, 2));
             StatusMessage = string.Format("^5[TIMEBAN]^7 {0}",
@@ -263,40 +290,52 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         private async Task<bool> DelBan(CmdArgs c)
         {
-            // Variable for success since await can't be used in catch/finally
-            bool success;
             try
             {
                 _banDb.DeleteUserFromDb(Helpers.GetArgVal(c, 2));
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                 // Unban immediately from QL's internal ban system
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", Helpers.GetArgVal(c, 2)), false);
+                await
+                    _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", Helpers.GetArgVal(c, 2)), false);
                 StatusMessage = string.Format("^2[SUCCESS]^7 Removed time-ban for player^2 {0}",
                     Helpers.GetArgVal(c, 2));
-                success = true;
+                await SendServerSay(c, StatusMessage);
+                return true;
             }
             catch (Exception e)
             {
                 Debug.WriteLine(
-                    "Exception encountered while trying to delete user {0} from ban database: {1}", Helpers.GetArgVal(c, 2),
+                    "Exception encountered while trying to delete user {0} from ban database: {1}",
+                    Helpers.GetArgVal(c, 2),
                     e.Message);
-                StatusMessage = string.Format(
-                    "^1[ERROR]^3 Error occurred while attempting to delete ban for user ^1{0}",
-                    Helpers.GetArgVal(c, 2));
-                success = false;
             }
+
             StatusMessage = string.Format(
                 "^1[ERROR]^3 An error occurred while attempting to remove time ban for player: ^1{0}",
                 Helpers.GetArgVal(c, 2));
 
-            if (success)
-            {
-                await SendServerSay(c, StatusMessage);
-            }
-            else
-            {
-                await SendServerTell(c, StatusMessage);
-            }
-            return success;
+            await SendServerTell(c, StatusMessage);
+            return false;
+        }
+
+        /// <summary>
+        ///     Removes any expired bans.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>
+        ///     <c>true</c> if the expired ban was deleted,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        private async Task<bool> DeleteIfExpired(string user)
+        {
+            BanInfo bInfo;
+            if (_banDb.IsExistingBanStillValid(user, out bInfo)) return false;
+            var bManager = new BanManager(_ssb);
+            var result = await bManager.RemoveBan(bInfo);
+            return result;
         }
 
         /// <summary>
@@ -317,18 +356,12 @@ namespace SSB.Core.Commands.Admin
                         "^1[ERROR]^3 Usage: {0}{1} <add> <name> <time> <scale> - name is without clan, time is a number," +
                         " scale: secs, mins, hours, days, months, or years.",
                         CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
+                        ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
             double time;
-            if (!double.TryParse(Helpers.GetArgVal(c, 3), out time))
-            {
-                StatusMessage = "^1[ERROR]^3 Time must be a positive number!";
-                await SendServerTell(c, StatusMessage);
-                return false;
-            }
-            if (time <= 0)
+            if (!double.TryParse(Helpers.GetArgVal(c, 3), out time) || time <= 0)
             {
                 StatusMessage = "^1[ERROR]^3 Time must be a positive number!";
                 await SendServerTell(c, StatusMessage);
@@ -374,7 +407,7 @@ namespace SSB.Core.Commands.Admin
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} <check> <name> - name is without the clan tag",
                     CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
+                    ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -398,7 +431,7 @@ namespace SSB.Core.Commands.Admin
                 StatusMessage = string.Format(
                     "^1[ERROR]^3 Usage: {0}{1} <del> <name> - name is without the clan tag",
                     CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
+                    ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
@@ -421,39 +454,30 @@ namespace SSB.Core.Commands.Admin
         {
             // First remove expired bans
             var bans = _banDb.GetAllBans();
-            if (bans.Length > 0)
+            var sb = new StringBuilder();
+            if (bans.Count > 0)
             {
-                if (bans.IndexOf(',') > -1)
+                foreach (var user in bans.ToList())
                 {
-                    var bannedUsers = bans.Split(',');
-                    foreach (var user in bannedUsers)
+                    var deleted = await DeleteIfExpired(user.PlayerName);
+                    if (deleted)
                     {
-                        await RemoveAnyExpiredBans(user.Trim());
+                        bans.Remove(user);
+                    }
+                    else
+                    {
+                        sb.Append(string.Format("{0}, ", user.PlayerName));
                     }
                 }
             }
 
             StatusMessage = string.Format("^5[TIMEBAN]^7 {0}",
-                ((!string.IsNullOrEmpty(bans))
+                ((bans.Count > 0)
                     ? (string.Format("Banned players: ^1{0}^7 - To see ban info: ^3{1}{2} check <player>",
-                        bans, CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)))
+                        sb.ToString().TrimEnd(',', ' '), CommandList.GameCommandPrefix,
+                        ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)))
                     : "No players are time-banned."));
             await SendServerSay(c, StatusMessage);
-        }
-
-        /// <summary>
-        ///     Removes any expired bans.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        private async Task RemoveAnyExpiredBans(string user)
-        {
-            if (!_banDb.IsExistingBanStillValid(user))
-            {
-                var bInfo = _banDb.GetBanInfo(user);
-                var pAutoBanner = new PlayerAutoBanner(_ssb);
-                await pAutoBanner.RemoveBan(user, bInfo);
-            }
         }
     }
 }

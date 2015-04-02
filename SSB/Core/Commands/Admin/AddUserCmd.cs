@@ -116,10 +116,14 @@ namespace SSB.Core.Commands.Admin
                 }
             }
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            var result = _users.AddUserToDb(Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)), c.FromUser,
+            var result = _users.AddUserToDb(Helpers.GetArgVal(c, 1),
+                (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)), c.FromUser,
                 date);
             if (result == UserDbResult.Success)
             {
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
+                
                 StatusMessage = string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the ^2[{1}] ^7group.",
                     Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)));
                 await SendServerSay(c, StatusMessage);

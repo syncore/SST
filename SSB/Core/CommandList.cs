@@ -57,6 +57,7 @@ namespace SSB.Core
         public const string CmdUnlock = "unlock";
         public const string CmdUnmute = "unmute";
         public const string CmdUnpause = "unpause";
+        public const string CmdVersion = "version";
         public const string CmdVoteNo = "no";
         public const string CmdVoteYes = "yes";
         private readonly SynServerBot _ssb;
@@ -128,6 +129,7 @@ namespace SSB.Core
             Commands.Add(CmdShutdown, new ShutdownCmd(_ssb));
             Commands.Add(CmdStopServer, new StopServerCmd(_ssb));
             Commands.Add(CmdVoteYes, new VoteYesCmd(_ssb));
+            Commands.Add(CmdVersion, new VersionCmd(_ssb));
             Commands.Add(CmdAcceptTeamSuggestion, new AcceptTeamSuggestCmd(_ssb));
             Commands.Add(CmdRejectTeamSuggestion, new RejectTeamSuggestCmd(_ssb));
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using SSB.Enums;
 
 namespace SSB.Model
@@ -23,6 +24,22 @@ namespace SSB.Model
         /// The ban expiration date and time.
         /// </value>
         public DateTime BanExpirationDate { get; set; }
+
+        /// <summary>
+        /// Gets the ban format display.
+        /// </summary>
+        /// <value>
+        /// The ban format display.
+        /// </value>
+        public string BanFormatDisplay
+        {
+            get
+            {
+                return string.Format("{0} by {1} expires: {2}",
+                    PlayerName, BannedBy, BanExpirationDate.
+                    ToString("G", DateTimeFormatInfo.InvariantInfo));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name of the admin who set the ban.

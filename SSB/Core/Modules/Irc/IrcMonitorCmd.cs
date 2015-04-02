@@ -18,7 +18,7 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcUserLevel _userLevel = IrcUserLevel.Operator;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrcSayCmd" /> class.
+        ///     Initializes a new instance of the <see cref="IrcMonitorCmd" /> class.
         /// </summary>
         /// <param name="ssb">The main bot class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -156,7 +156,6 @@ namespace SSB.Core.Modules.Irc
             }
             else if (c.Args[1].Equals("status"))
             {
-                // Give it time to complete monitoring
                 ShowMonitorStatus();
             }
         }

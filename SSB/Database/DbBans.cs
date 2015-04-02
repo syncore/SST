@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
+using System.Linq;
 using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
@@ -28,7 +29,7 @@ namespace SSB.Database
         }
 
         /// <summary>
-        /// Adds the user to the database.
+        ///     Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="bannedBy">The admin who added the ban.</param>
@@ -36,7 +37,8 @@ namespace SSB.Database
         /// <param name="banExpirationDate">The date and time that the user's ban will expire.</param>
         /// <param name="banType">The type of ban.</param>
         /// <returns></returns>
-        public UserDbResult AddUserToDb(string user, string bannedBy, DateTime banAddDate, DateTime banExpirationDate, BanType banType)
+        public UserDbResult AddUserToDb(string user, string bannedBy, DateTime banAddDate,
+            DateTime banExpirationDate, BanType banType)
         {
             var result = UserDbResult.Unspecified;
             if (VerifyDb())
@@ -54,14 +56,16 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "INSERT INTO bannedusers(user, bannedBy, banAddDate, banExpirationDate, banType) VALUES(@user, @bannedBy, @banAddDate, @banExpirationDate, @banType)";
+                                "INSERT INTO bannedusers(user, bannedBy, banAddDate, banExpirationDate, banType)" +
+                                " VALUES(@user, @bannedBy, @banAddDate, @banExpirationDate, @banType)";
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@bannedBy", bannedBy);
                             cmd.Parameters.AddWithValue("@banAddDate", banAddDate);
                             cmd.Parameters.AddWithValue("@banExpirationDate", banExpirationDate);
                             cmd.Parameters.AddWithValue("@banType", (long)banType);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine("AddUserToBanDb: {0} successfully added to ban DB by: {1} on: {2}. Time-ban expires on: {3}.",
+                            Debug.WriteLine(
+                                "AddUserToBanDb: {0} successfully added to ban DB by: {1} on: {2}. Time-ban expires on: {3}.",
                                 user, bannedBy, banAddDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                                 banExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
                             result = UserDbResult.Success;
@@ -74,6 +78,7 @@ namespace SSB.Database
                     result = UserDbResult.InternalError;
                 }
             }
+
             return result;
         }
 
@@ -85,10 +90,7 @@ namespace SSB.Database
         {
             if (VerifyDb())
             {
-                if (!DoesUserExistInDb(user.ToLowerInvariant()))
-                {
-                    return;
-                }
+                if (!DoesUserExistInDb(user.ToLowerInvariant())) return;
                 try
                 {
                     using (var sqlcon = new SQLiteConnection(_sqlConString))
@@ -99,7 +101,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText = "DELETE FROM bannedusers WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            int total = cmd.ExecuteNonQuery();
+                            var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
                                 Debug.WriteLine(string.Format(
@@ -116,7 +118,54 @@ namespace SSB.Database
         }
 
         /// <summary>
-        /// Gets the ban information.
+        ///     Gets all of the bans in the ban database.
+        /// </summary>
+        /// <returns>The users as a list of <see cref="BanInfo" /> objects.</returns>
+        public List<BanInfo> GetAllBans()
+        {
+            var allBans = new List<BanInfo>();
+            if (VerifyDb())
+            {
+                try
+                {
+                    using (var sqlcon = new SQLiteConnection(_sqlConString))
+                    {
+                        sqlcon.Open();
+
+                        using (var cmd = new SQLiteCommand(sqlcon))
+                        {
+                            cmd.CommandText = "SELECT * FROM bannedusers";
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    //Debug.WriteLine("GetAllBans: No bans found in database");
+                                    return allBans;
+                                }
+                                while (reader.Read())
+                                {
+                                    var user = (string)reader["user"];
+                                    var baninfo = GetBanInfo(user);
+                                    if (baninfo != null)
+                                    {
+                                        allBans.Add(baninfo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Problem verifying database when trying to get all bans: " +
+                                    ex.Message);
+                }
+            }
+            return allBans;
+        }
+
+        /// <summary>
+        ///     Gets the ban information.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The ban information as a QL color-formatted string.</returns>
@@ -139,7 +188,7 @@ namespace SSB.Database
                         {
                             cmd.CommandText = "SELECT * FROM bannedusers WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
@@ -152,11 +201,12 @@ namespace SSB.Database
                                     bInfo.BannedBy = (string)reader["bannedBy"];
                                     bInfo.BanAddedDate = (DateTime)reader["banAddDate"];
                                     bInfo.BanExpirationDate = (DateTime)reader["banExpirationDate"];
-                                    switch ((long) reader["banType"])
+                                    switch ((long)reader["banType"])
                                     {
                                         case (long)BanType.AddedByAdmin:
                                             bInfo.BanType = BanType.AddedByAdmin;
                                             break;
+
                                         case (long)BanType.AddedByEarlyQuit:
                                             bInfo.BanType = BanType.AddedByEarlyQuit;
                                             break;
@@ -169,63 +219,80 @@ namespace SSB.Database
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Problem getting ban info from ban database: " + ex.Message);
+                    bInfo = null;
                 }
             }
+
             return bInfo;
         }
 
         /// <summary>
-        /// Determines whether the existing ban is still valid, if it exists, for the specified user.
+        ///     Determines whether the existing ban is still valid, if it exists, for the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns><c>true</c> if the existing ban's expiration date has not passed,
-        /// <c>false</c> is ban has expired or does not exist. </returns>
-        public bool IsExistingBanStillValid(string user)
+        /// <param name="banInfo">The ban information.</param>
+        /// <returns>
+        ///     <c>true</c> if the existing ban's expiration date has not passed,
+        ///     <c>false</c> is ban has expired or does not exist.
+        /// </returns>
+        public bool IsExistingBanStillValid(string user, out BanInfo banInfo)
         {
-            var banInfo = GetBanInfo(user);
+            banInfo = GetBanInfo(user);
             if (banInfo == null) return false;
             return DateTime.Now <= banInfo.BanExpirationDate;
         }
 
         /// <summary>
-        /// Gets all of the banned users.
+        ///     Removes any expired bans, and if ban was set by a module with ability
+        ///     to set bans, reset any module-specific properties.
         /// </summary>
-        /// <returns>The banned users as a comma-separated string.</returns>
-        public string GetAllBans()
+        /// <remarks>
+        /// If access to the user interface or the underlying main bot class are needed
+        /// (i.e. to send an unban command directly to the game), see the RemoveBan method
+        /// in the BanManager class since SSB database classes are given
+        /// no access to the main class nor the user interface.
+        /// </remarks>
+        public void RemoveExpiredBans()
         {
-            var bans = new StringBuilder();
-            if (VerifyDb())
-            {
-                try
-                {
-                    using (var sqlcon = new SQLiteConnection(_sqlConString))
-                    {
-                        sqlcon.Open();
+            var allExpiredBans = GetAllBans().Where
+                (b => (b.BanExpirationDate != default(DateTime) &&
+                       DateTime.Now > b.BanExpirationDate)).ToList();
 
-                        using (var cmd = new SQLiteCommand(sqlcon))
-                        {
-                            cmd.CommandText = "SELECT * FROM bannedusers";
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
-                            {
-                                if (!reader.HasRows)
-                                {
-                                    Debug.WriteLine("GetAllBans: No banned users found in database");
-                                    return string.Empty;
-                                }
-                                while (reader.Read())
-                                {
-                                    bans.Append(string.Format("{0}, ", reader["user"]));
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
+            if (allExpiredBans.Count == 0) return;
+
+            Debug.WriteLine("Will attempt to remove {0} expired bans.",
+                allExpiredBans.Count);
+
+            foreach (var ban in allExpiredBans)
+            {
+                if (ban.BanType == BanType.AddedByEarlyQuit)
                 {
-                    Debug.WriteLine("Problem checking if user exists in seen database: " + ex.Message);
+                    var eQuitDb = new DbQuits();
+                    eQuitDb.DeleteUserFromDb(ban.PlayerName);
                 }
+                if (ban.BanType == BanType.AddedByPickupSubs)
+                {
+                    var pickupDb = new DbPickups();
+                    pickupDb.ResetSubsUsedCount(ban.PlayerName);
+                }
+                if (ban.BanType == BanType.AddedByPickupNoShows)
+                {
+                    var pickupDb = new DbPickups();
+                    pickupDb.ResetNoShowCount(ban.PlayerName);
+                }
+
+                DeleteUserFromDb(ban.PlayerName);
             }
-            return bans.ToString().TrimEnd(',', ' ');
+        }
+
+        /// <summary>
+        ///     Checks whether the user is already banned.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns><c>true</c> if the user is already banned, otherwise <c>false</c>.</returns>
+        public bool UserAlreadyBanned(string user)
+        {
+            return DoesUserExistInDb(user);
         }
 
         /// <summary>
@@ -242,8 +309,9 @@ namespace SSB.Database
                 using (var sqlcon = new SQLiteConnection(_sqlConString))
                 {
                     sqlcon.Open();
-                    string s =
-                        "CREATE TABLE bannedusers (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, bannedBy TEXT NOT NULL, banAddDate DATETIME, banExpirationDate DATETIME, banType INTEGER)";
+                    var s =
+                        "CREATE TABLE bannedusers (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL," +
+                        " bannedBy TEXT NOT NULL, banAddDate DATETIME, banExpirationDate DATETIME, banType INTEGER)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
@@ -301,7 +369,7 @@ namespace SSB.Database
                     {
                         cmd.CommandText = "SELECT * FROM bannedusers WHERE user = @user";
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             return reader.HasRows;
                         }
@@ -313,16 +381,6 @@ namespace SSB.Database
                 Debug.WriteLine("Problem checking if user exists in bans database: " + ex.Message);
             }
             return false;
-        }
-
-        /// <summary>
-        /// Checks whether the user is already banned.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns><c>true</c> if the user is already banned, otherwise <c>false</c>.</returns>
-        public bool UserAlreadyBanned(string user)
-        {
-            return DoesUserExistInDb(user);
         }
 
         /// <summary>
@@ -343,9 +401,10 @@ namespace SSB.Database
                 using (var cmd = new SQLiteCommand(sqlcon))
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'bannedusers'";
+                    cmd.CommandText =
+                        "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'bannedusers'";
 
-                    using (SQLiteDataReader sdr = cmd.ExecuteReader())
+                    using (var sdr = cmd.ExecuteReader())
                     {
                         if (sdr.Read())
                         {

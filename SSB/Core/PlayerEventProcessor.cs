@@ -74,8 +74,8 @@ namespace SSB.Core
             }
 
             // Check for time-bans
-            var autoBanner = new PlayerAutoBanner(_ssb);
-            await autoBanner.CheckForBans(player);
+            var bManager = new BanManager(_ssb);
+            await bManager.CheckForBans(player);
 
             Debug.WriteLine("Detected incoming connection for " + player);
         }

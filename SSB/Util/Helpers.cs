@@ -73,6 +73,15 @@ namespace SSB.Util
         }
 
         /// <summary>
+        /// Gets the version of SSB currently running.
+        /// </summary>
+        /// <returns>The version number as a string.</returns>
+        public static string GetVersion()
+        {
+            return typeof(EntryPoint).Assembly.GetName().Version.ToString();
+        }
+
+        /// <summary>
         /// Invokes a method when making calls, if necessary, to a control because the caller is on a different
         ///  thread than the one on which the control was created.
         /// </summary>

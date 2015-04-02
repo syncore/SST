@@ -33,6 +33,51 @@ namespace SSB.Database
         }
 
         /// <summary>
+        ///     Checks whether the configuration already exists.
+        /// </summary>
+        /// <returns>
+        ///     <c>true</c> if configuration exists, otherwise <c>false</c>
+        /// </returns>
+        public bool CfgExists()
+        {
+            return (File.Exists(Filepaths.ConfigurationFilePath));
+        }
+
+        /// <summary>
+        ///     Loads the configuration.
+        /// </summary>
+        public void LoadCfg()
+        {
+            if (!CfgExists())
+            {
+                LoadDefaultCfg();
+            }
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            _owner = cfgHandler.Config.CoreOptions.owner;
+        }
+
+        /// <summary>
+        ///     Loads the default configuration.
+        /// </summary>
+        public void LoadDefaultCfg()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.RestoreDefaultConfiguration();
+        }
+
+        /// <summary>
+        ///     Saves the configuration.
+        /// </summary>
+        public void SaveCfg()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            cfgHandler.Config.CoreOptions.owner = _owner;
+            cfgHandler.WriteConfiguration();
+        }
+
+        /// <summary>
         ///     Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -60,7 +105,7 @@ namespace SSB.Database
                                 "INSERT INTO users(user, accesslevel, addedby, dateadded) VALUES(@user, @accesslevel, @addedby, @dateadded)";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            cmd.Parameters.AddWithValue("@accesslevel", (long)accessLevel);
+                            cmd.Parameters.AddWithValue("@accesslevel", (long) accessLevel);
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
                             cmd.Parameters.AddWithValue("@dateadded", dateAdded);
                             cmd.ExecuteNonQuery();
@@ -75,17 +120,6 @@ namespace SSB.Database
                 }
             }
             return UserDbResult.Unspecified;
-        }
-
-        /// <summary>
-        ///     Checks whether the configuration already exists.
-        /// </summary>
-        /// <returns>
-        ///     <c>true</c> if configuration exists, otherwise <c>false</c>
-        /// </returns>
-        public bool CfgExists()
-        {
-            return (File.Exists(Filepaths.ConfigurationFilePath));
         }
 
         /// <summary>
@@ -168,9 +202,9 @@ namespace SSB.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    var user = (string)reader["user"];
+                                    var user = (string) reader["user"];
                                     var level = GetUserLevel(user);
-                                    allUsers.Add(new User { Name = user, AccessLevel = level });
+                                    allUsers.Add(new User {Name = user, AccessLevel = level});
                                 }
                             }
                         }
@@ -255,8 +289,8 @@ namespace SSB.Database
                                 {
                                     Debug.WriteLine(
                                         "UserDb.GetUserLevel: Got user level for: {0}, level: {1}", user,
-                                        (UserLevel)reader["accesslevel"]);
-                                    level = (UserLevel)reader["accesslevel"];
+                                        (UserLevel) reader["accesslevel"]);
+                                    level = (UserLevel) reader["accesslevel"];
                                     return level;
                                 }
                             }
@@ -272,46 +306,14 @@ namespace SSB.Database
         }
 
         /// <summary>
-        ///     Loads the configuration.
-        /// </summary>
-        public void LoadCfg()
-        {
-            if (!CfgExists())
-            {
-                LoadDefaultCfg();
-            }
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            _owner = cfgHandler.Config.CoreOptions.owner;
-        }
-
-        /// <summary>
-        ///     Loads the default configuration.
-        /// </summary>
-        public void LoadDefaultCfg()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.RestoreDefaultConfiguration();
-        }
-
-        /// <summary>
-        ///     Saves the configuration.
-        /// </summary>
-        public void SaveCfg()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            cfgHandler.Config.CoreOptions.owner = _owner;
-            cfgHandler.WriteConfiguration();
-        }
-
-        /// <summary>
-        /// Public method for accessing protected <see cref="DoesUserExistInDb"/> method
-        /// to check whether a user exists in the user database or not.
+        ///     Public method for accessing protected <see cref="DoesUserExistInDb" /> method
+        ///     to check whether a user exists in the user database or not.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns><c>true</c> if the user exists in the user database, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the user exists in the user database, otherwise
+        ///     <c>false</c>.
+        /// </returns>
         public bool UserExists(string user)
         {
             return DoesUserExistInDb(user);

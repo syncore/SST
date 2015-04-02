@@ -10,18 +10,19 @@ using SSB.Model;
 namespace SSB.Core
 {
     /// <summary>
-    ///     Class responsible for automatically banning players if necessary and for removing bans.
+    ///     Class responsible for automatically banning players if necessary and
+    ///     handling removal of module-specific bans.
     /// </summary>
-    public class PlayerAutoBanner
+    public class BanManager
     {
         private readonly DbBans _banDb;
         private readonly SynServerBot _ssb;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PlayerAutoBanner" /> class.
+        ///     Initializes a new instance of the <see cref="BanManager" /> class.
         /// </summary>
         /// <param name="ssb">The main class.</param>
-        public PlayerAutoBanner(SynServerBot ssb)
+        public BanManager(SynServerBot ssb)
         {
             _ssb = ssb;
             _banDb = new DbBans();
@@ -37,9 +38,10 @@ namespace SSB.Core
             player = player.ToLowerInvariant();
             if (!_banDb.UserAlreadyBanned(player)) return;
             var banInfo = _banDb.GetBanInfo(player);
-            if (banInfo == null) return;
 
+            if (banInfo == null) return;
             if (banInfo.BanExpirationDate == default(DateTime)) return;
+
             if (DateTime.Now <= banInfo.BanExpirationDate)
             {
                 string reason;
@@ -69,7 +71,7 @@ namespace SSB.Core
             }
             else
             {
-                await RemoveBan(player, banInfo);
+                await RemoveBan(banInfo);
             }
         }
 
@@ -87,40 +89,74 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Removes a user's ban and removes/resets any other extraneous ban-related database properties for the user.
+        ///     Removes a user's ban and removes/resets any other extraneous ban-related
+        ///     database properties for the user.
         /// </summary>
-        /// <param name="player">The player.</param>
         /// <param name="banInfo">The ban information.</param>
-        /// s
-        public async Task RemoveBan(string player, BanInfo banInfo)
+        /// <param name="updateUi">
+        ///     if set to <c>true</c> then update
+        ///     relevant datasources in the user interface.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if the ban was deleted,
+        ///     otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        ///     This method is typically used when access to the user interface is
+        ///     needed and when the unban command needs to be directly sent to the game.
+        ///     The underlying SSB database classes are not given access to the main
+        ///     SSB class.
+        /// </remarks>
+        public async Task<bool> RemoveBan(BanInfo banInfo, bool updateUi = true)
         {
-            if (banInfo == null) return;
+            if (banInfo == null) return false;
             // If the user was banned for quitting early, then also remove the user from the early quit database
             // when we clear the expired ban
             if (banInfo.BanType == BanType.AddedByEarlyQuit)
             {
                 var eQuitDb = new DbQuits();
-                eQuitDb.DeleteUserFromDb(player);
+                eQuitDb.DeleteUserFromDb(banInfo.PlayerName);
+
+                // UI: reflect changes
+                if (updateUi)
+                {
+                    _ssb.UserInterface.RefreshCurrentQuittersDataSource();
+                }
             }
             // If the user was banned for using too many substitutes in pickup games, reset the sub-used count
             if (banInfo.BanType == BanType.AddedByPickupSubs)
             {
                 var pickupDb = new DbPickups();
-                pickupDb.ResetSubsUsedCount(player);
+                pickupDb.ResetSubsUsedCount(banInfo.PlayerName);
             }
             // If the user was banned for too many no-shows in pickup games, reset the user's no-show count
             if (banInfo.BanType == BanType.AddedByPickupNoShows)
             {
                 var pickupDb = new DbPickups();
-                pickupDb.ResetNoShowCount(player);
+                pickupDb.ResetNoShowCount(banInfo.PlayerName);
             }
             // Remove the ban from the database. This "on-demand" method of removing the ban is
             // preferred instead of using some mechanism such as a timer that would check every X time period;
-            // In other words, leave user banned until he tries to reconnect then silently remove the ban. Note:
-            // expired bans are also removed when admins try to add, list, or check bans with the timeban command.
-            _banDb.DeleteUserFromDb(player);
+            // In other words, leave the user banned until he tries to reconnect then silently remove the ban.
+            // Note: expired bans are also removed at various points during the bot's existence, for example,
+            // they are also removed when admins try to add, list, or check bans with the timeban command or
+            // can be removed using the UI.
+            _banDb.DeleteUserFromDb(banInfo.PlayerName);
+
+            // UI: reflect changes
+            if (updateUi)
+            {
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
+            }
+
             // remove from QL's external temp kickban system as well
-            await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", player), false);
+            if (_ssb.IsMonitoringServer)
+            {
+                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}",
+                    banInfo.PlayerName), false);
+            }
+
+            return true;
         }
     }
 }

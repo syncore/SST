@@ -111,6 +111,7 @@
     <Compile Include="Core\Commands\None\AccCmd.cs" />
     <Compile Include="Core\Commands\None\ServersCmd.cs" />
     <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
+    <Compile Include="Core\Commands\None\VersionCmd.cs" />
     <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
     <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
     <Compile Include="Core\Commands\Owner\DeOpCmd.cs" />
@@ -152,12 +153,13 @@
     <Compile Include="Core\Modules\Irc\IrcSayTeamCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcStatusCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcUsersCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcVersionCmd.cs" />
     <Compile Include="Core\Modules\Irc\IrcWhoCmd.cs" />
     <Compile Include="Core\Modules\MotdHandler.cs" />
     <Compile Include="Core\Modules\PickupCaptains.cs" />
     <Compile Include="Core\Modules\PickupManager.cs" />
     <Compile Include="Core\Modules\PickupPlayers.cs" />
-    <Compile Include="Core\PlayerAutoBanner.cs" />
+    <Compile Include="Core\BanManager.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
     <Compile Include="Core\VoteHandler.cs" />

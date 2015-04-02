@@ -21,6 +21,7 @@ namespace SSB.Core.Modules.Irc
         private readonly string IrcCmdSayTeam = "sayteam";
         private readonly string IrcCmdStatus = "status";
         private readonly string IrcCmdUsers = "users";
+        private readonly string IrcCmdVersion = "version";
         private readonly string IrcCmdWho = "who";
 
         /// <summary>
@@ -58,6 +59,7 @@ namespace SSB.Core.Modules.Irc
             Commands.Add(IrcCmdUsers, new IrcUsersCmd(_ssb, _irc));
             Commands.Add(IrcCmdOpMe, new IrcOpMeCmd(_irc));
             Commands.Add(IrcCmdQl, new IrcQlCmd(_ssb, _irc));
+            Commands.Add(IrcCmdVersion, new IrcVersionCmd(_irc));
             Commands.Add(IrcCmdHelp, new IrcHelpCmd(_irc, Commands));
         }
     }

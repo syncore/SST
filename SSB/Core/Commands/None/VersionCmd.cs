@@ -1,31 +1,28 @@
 ﻿using System.Threading.Tasks;
-using SSB.Database;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
 using SSB.Util;
 
-namespace SSB.Core.Commands.Admin
+namespace SSB.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Removes a user from the bot's internal user database.
+    ///     Command: Display the SSB version and website address.
     /// </summary>
-    public class DelUserCmd : IBotCommand
+    public class VersionCmd : IBotCommand
     {
-        private readonly bool _isIrcAccessAllowed = true;
-        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
-        private readonly UserLevel _userLevel = UserLevel.Admin;
-        private readonly DbUsers _users;
+        private bool _isIrcAccessAllowed = true;
+        private int _qlMinArgs = 0;
+        private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DelUserCmd" /> class.
+        /// Initializes a new instance of the <see cref="VersionCmd"/> class.
         /// </summary>
-        /// <param name="ssb">The main class.</param>
-        public DelUserCmd(SynServerBot ssb)
+        /// <param name="ssb">The main bot class.</param>
+        public VersionCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _users = new DbUsers();
         }
 
         /// <summary>
@@ -88,33 +85,21 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     <c>true</c> if the command was successfully executed, otherwise
-        ///     <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise
+        /// <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var todelUserLevel = _users.GetUserLevel(Helpers.GetArgVal(c, 1));
-            var result = _users.DeleteUserFromDb(Helpers.GetArgVal(c, 1), c.FromUser, _users.GetUserLevel(c.FromUser));
-            if (result == UserDbResult.Success)
-            {
-                // UI: reflect changes
-                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
-                
-                StatusMessage = string.Format("^2[SUCCESS]^7 Removed user^2 {0}^7 from the^2 [{1}] ^7group.",
-                    Helpers.GetArgVal(c, 1), todelUserLevel);
-                await SendServerSay(c, StatusMessage);
-                return true;
-            }
-
-            StatusMessage = string.Format(
-                "^1[ERROR]^3 Unable to remove user^1 {0}^3 from the ^1[{1}]^3 group. Code:^1 {2}",
-                Helpers.GetArgVal(c, 1), todelUserLevel, result);
-            await SendServerTell(c, StatusMessage);
-            return false;
+            StatusMessage =
+                string.Format("^7This server is running ^3SSB (^5web: ssb.syncore.org^3)^7" +
+                              " version^3 {0}^7 by ^5syncore",
+                Helpers.GetVersion());
+            await SendServerSay(c, StatusMessage);
+            return true;
         }
 
         /// <summary>
@@ -127,21 +112,7 @@ namespace SSB.Core.Commands.Admin
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
-            return (string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} user - user is without clantag",
-                CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) :  c.CmdName)));
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
+            return string.Empty;
         }
 
         /// <summary>
@@ -153,6 +124,17 @@ namespace SSB.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

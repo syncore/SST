@@ -52,7 +52,7 @@ namespace SSB.Core.Modules.Irc
         /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
         /// </value>
         public bool IsConnectedToIrc { get; set; }
-        
+
         /// <summary>
         /// Gets the IRC configuration settings.
         /// </summary>
@@ -89,8 +89,8 @@ namespace SSB.Core.Modules.Irc
         /// </value>
         public Regex ValidIrcNickRegex
         {
-            get { return _validIrcNick; } 
-            
+            get { return _validIrcNick; }
+
         }
 
         /// <summary>
@@ -223,6 +223,7 @@ namespace SSB.Core.Modules.Irc
             }
             finally
             {
+                _reconnectTries = MaxReconnectionTries;
                 StopIrcThread();
                 IsConnectedToIrc = false;
             }
@@ -450,8 +451,9 @@ namespace SSB.Core.Modules.Irc
             {
                 Thread.Sleep(10);
             }
-            StopIrcThread();
-            client.Quit(_quitMessage);
+            //StopIrcThread();
+            //client.Quit(_quitMessage);
+            Disconnect();
         }
     }
 }

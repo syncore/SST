@@ -81,10 +81,16 @@ namespace SSB.Core.Modules
             if (_quitsDb.UserExistsInDb(player))
             {
                 _quitsDb.IncrementUserQuitCount(player, doublePenalty);
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentQuittersDataSource();
             }
             else
             {
                 _quitsDb.AddUserToDb(player, doublePenalty);
+                
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentQuittersDataSource();
             }
 
             long qCount = await EvaluateUserQuitCount(player);
@@ -121,7 +127,11 @@ namespace SSB.Core.Modules
             }
             // Do the ban
             DateTime expirationDate = ExpirationDateGenerator.GenerateExpirationDate(_banTime, _banTimeScale);
-            _bansDb.AddUserToDb(player, "botInternal", DateTime.Now, expirationDate, BanType.AddedByEarlyQuit);
+            _bansDb.AddUserToDb(player, "earlyQuitMod", DateTime.Now, expirationDate, BanType.AddedByEarlyQuit);
+
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentBansDataSource();
+            
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(

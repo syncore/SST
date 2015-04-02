@@ -412,8 +412,8 @@ namespace SSB.Core
             // Account date kick, if active
             await CheckAccountDateAgainstLimit(_ssb.ServerInfo.CurrentPlayers);
             // Check for time-bans
-            var autoBanner = new PlayerAutoBanner(_ssb);
-            await autoBanner.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
+            var bManager = new BanManager(_ssb);
+            await bManager.CheckForBans(_ssb.ServerInfo.CurrentPlayers);
         }
 
         /// <summary>

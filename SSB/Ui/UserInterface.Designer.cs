@@ -89,7 +89,6 @@
             this.autoVoterTab = new System.Windows.Forms.TabPage();
             this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modAutoVoterOptCurVotesGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAutoVoterRefreshVotesButton = new System.Windows.Forms.Button();
             this.modAutoVoterClearVotesButton = new System.Windows.Forms.Button();
             this.modAutoVoterDelVoteButton = new System.Windows.Forms.Button();
             this.modAutoVoterCurVotesListBox = new System.Windows.Forms.ListBox();
@@ -114,7 +113,6 @@
             this.earlyQuitTab = new System.Windows.Forms.TabPage();
             this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modEarlyQuitOptCurQuitsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modEarlyQuitRefreshQuitsButton = new System.Windows.Forms.Button();
             this.modEarlyQuitForgiveQuitButton = new System.Windows.Forms.Button();
             this.modEarlyQuitClearQuitsButton = new System.Windows.Forms.Button();
             this.modEarlyQuitDelQuitButton = new System.Windows.Forms.Button();
@@ -249,7 +247,7 @@
             this.usersTab = new System.Windows.Forms.TabPage();
             this.usrMContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.usrMCurUsersGroupBox = new System.Windows.Forms.GroupBox();
-            this.usrMRefreshUsersButton = new System.Windows.Forms.Button();
+            this.usrMDelAllUsersButton = new System.Windows.Forms.Button();
             this.usrMDelUserButton = new System.Windows.Forms.Button();
             this.usrMCurUsersListBox = new System.Windows.Forms.ListBox();
             this.usrMAddUserGroupBox = new System.Windows.Forms.GroupBox();
@@ -264,6 +262,8 @@
             this.banTab = new System.Windows.Forms.TabPage();
             this.banMContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.banMCurBansGroupBox = new System.Windows.Forms.GroupBox();
+            this.banMDelExpiredBansButton = new System.Windows.Forms.Button();
+            this.banMDelAllBansButton = new System.Windows.Forms.Button();
             this.banMDelBanButton = new System.Windows.Forms.Button();
             this.banMCurBansListBox = new System.Windows.Forms.ListBox();
             this.banMAddBanGroupBox = new System.Windows.Forms.GroupBox();
@@ -308,6 +308,8 @@
             this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.usrMCurrentUserBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.banMCurrentBanBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.banMBanNoticeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -401,6 +403,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -1168,7 +1171,6 @@
             // modAutoVoterOptCurVotesGroupBox
             // 
             this.modAutoVoterOptCurVotesGroupBox.BackColor = System.Drawing.Color.Black;
-            this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterRefreshVotesButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterClearVotesButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterDelVoteButton);
             this.modAutoVoterOptCurVotesGroupBox.Controls.Add(this.modAutoVoterCurVotesListBox);
@@ -1181,29 +1183,13 @@
             this.modAutoVoterOptCurVotesGroupBox.TabStop = false;
             this.modAutoVoterOptCurVotesGroupBox.Text = "Current Automatic Votes";
             // 
-            // modAutoVoterRefreshVotesButton
-            // 
-            this.modAutoVoterRefreshVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.modAutoVoterRefreshVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.modAutoVoterRefreshVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAutoVoterRefreshVotesButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterRefreshVotesButton.Location = new System.Drawing.Point(260, 268);
-            this.modAutoVoterRefreshVotesButton.Name = "modAutoVoterRefreshVotesButton";
-            this.modAutoVoterRefreshVotesButton.Size = new System.Drawing.Size(90, 23);
-            this.modAutoVoterRefreshVotesButton.TabIndex = 16;
-            this.modAutoVoterRefreshVotesButton.Text = "Refresh";
-            this.coreToolTip.SetToolTip(this.modAutoVoterRefreshVotesButton, "Click this button to re-sync any auto vote changes that\r\nmight have occurred in-g" +
-        "ame or via IRC.");
-            this.modAutoVoterRefreshVotesButton.UseVisualStyleBackColor = false;
-            this.modAutoVoterRefreshVotesButton.Click += new System.EventHandler(this.modAutoVoterRefreshVotesButton_Click);
-            // 
             // modAutoVoterClearVotesButton
             // 
             this.modAutoVoterClearVotesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
             this.modAutoVoterClearVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterClearVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterClearVotesButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(134, 268);
+            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(131, 271);
             this.modAutoVoterClearVotesButton.Name = "modAutoVoterClearVotesButton";
             this.modAutoVoterClearVotesButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterClearVotesButton.TabIndex = 15;
@@ -1219,7 +1205,7 @@
             this.modAutoVoterDelVoteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterDelVoteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterDelVoteButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(6, 268);
+            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(18, 271);
             this.modAutoVoterDelVoteButton.Name = "modAutoVoterDelVoteButton";
             this.modAutoVoterDelVoteButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterDelVoteButton.TabIndex = 14;
@@ -1400,7 +1386,7 @@
             this.modAutoVoterResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(260, 20);
+            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(247, 20);
             this.modAutoVoterResetSettingsButton.Name = "modAutoVoterResetSettingsButton";
             this.modAutoVoterResetSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterResetSettingsButton.TabIndex = 9;
@@ -1415,7 +1401,7 @@
             this.modAutoVoterLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(134, 20);
+            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(131, 20);
             this.modAutoVoterLoadSettingsButton.Name = "modAutoVoterLoadSettingsButton";
             this.modAutoVoterLoadSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterLoadSettingsButton.TabIndex = 1;
@@ -1430,7 +1416,7 @@
             this.modAutoVoterSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(6, 20);
+            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(18, 20);
             this.modAutoVoterSaveSettingsButton.Name = "modAutoVoterSaveSettingsButton";
             this.modAutoVoterSaveSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterSaveSettingsButton.TabIndex = 8;
@@ -1501,7 +1487,6 @@
             // modEarlyQuitOptCurQuitsGroupBox
             // 
             this.modEarlyQuitOptCurQuitsGroupBox.BackColor = System.Drawing.Color.Black;
-            this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitRefreshQuitsButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitForgiveQuitButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitClearQuitsButton);
             this.modEarlyQuitOptCurQuitsGroupBox.Controls.Add(this.modEarlyQuitDelQuitButton);
@@ -1515,31 +1500,15 @@
             this.modEarlyQuitOptCurQuitsGroupBox.TabStop = false;
             this.modEarlyQuitOptCurQuitsGroupBox.Text = "Current Early Quits";
             // 
-            // modEarlyQuitRefreshQuitsButton
-            // 
-            this.modEarlyQuitRefreshQuitsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.modEarlyQuitRefreshQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.modEarlyQuitRefreshQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modEarlyQuitRefreshQuitsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitRefreshQuitsButton.Location = new System.Drawing.Point(323, 266);
-            this.modEarlyQuitRefreshQuitsButton.Name = "modEarlyQuitRefreshQuitsButton";
-            this.modEarlyQuitRefreshQuitsButton.Size = new System.Drawing.Size(74, 23);
-            this.modEarlyQuitRefreshQuitsButton.TabIndex = 17;
-            this.modEarlyQuitRefreshQuitsButton.Text = "Refresh";
-            this.coreToolTip.SetToolTip(this.modEarlyQuitRefreshQuitsButton, "Click this button to re-sync the internal early quit database to ensure that any " +
-        "early \r\nquit changes that occurred in-game or via IRC are reflected here.");
-            this.modEarlyQuitRefreshQuitsButton.UseVisualStyleBackColor = false;
-            this.modEarlyQuitRefreshQuitsButton.Click += new System.EventHandler(this.modEarlyQuitRefreshQuitsButton_Click);
-            // 
             // modEarlyQuitForgiveQuitButton
             // 
             this.modEarlyQuitForgiveQuitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
             this.modEarlyQuitForgiveQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitForgiveQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitForgiveQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(6, 266);
+            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(17, 264);
             this.modEarlyQuitForgiveQuitButton.Name = "modEarlyQuitForgiveQuitButton";
-            this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(74, 23);
+            this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitForgiveQuitButton.TabIndex = 16;
             this.modEarlyQuitForgiveQuitButton.Text = "Forgive";
             this.coreToolTip.SetToolTip(this.modEarlyQuitForgiveQuitButton, "Click this button to forgive one of the player\'s early quits.");
@@ -1552,7 +1521,7 @@
             this.modEarlyQuitClearQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitClearQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitClearQuitsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(206, 266);
+            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(294, 264);
             this.modEarlyQuitClearQuitsButton.Name = "modEarlyQuitClearQuitsButton";
             this.modEarlyQuitClearQuitsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitClearQuitsButton.TabIndex = 15;
@@ -1567,9 +1536,9 @@
             this.modEarlyQuitDelQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitDelQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitDelQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(110, 266);
+            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(152, 264);
             this.modEarlyQuitDelQuitButton.Name = "modEarlyQuitDelQuitButton";
-            this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(74, 23);
+            this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitDelQuitButton.TabIndex = 14;
             this.modEarlyQuitDelQuitButton.Text = "Remove";
             this.coreToolTip.SetToolTip(this.modEarlyQuitDelQuitButton, "Click this button to remove all of the selected player\'s\r\nearly quits.");
@@ -1702,9 +1671,9 @@
             this.modEarlyQuitResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(290, 19);
+            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(294, 19);
             this.modEarlyQuitResetSettingsButton.Name = "modEarlyQuitResetSettingsButton";
-            this.modEarlyQuitResetSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitResetSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitResetSettingsButton.TabIndex = 9;
             this.modEarlyQuitResetSettingsButton.Text = "Reset";
             this.coreToolTip.SetToolTip(this.modEarlyQuitResetSettingsButton, "Reset this module to its default settings.");
@@ -1717,9 +1686,9 @@
             this.modEarlyQuitLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(163, 19);
+            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(152, 19);
             this.modEarlyQuitLoadSettingsButton.Name = "modEarlyQuitLoadSettingsButton";
-            this.modEarlyQuitLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitLoadSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitLoadSettingsButton.TabIndex = 1;
             this.modEarlyQuitLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.modEarlyQuitLoadSettingsButton, "Load the current settings from the configuration file.");
@@ -1732,9 +1701,9 @@
             this.modEarlyQuitSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(36, 19);
+            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(17, 19);
             this.modEarlyQuitSaveSettingsButton.Name = "modEarlyQuitSaveSettingsButton";
-            this.modEarlyQuitSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.modEarlyQuitSaveSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitSaveSettingsButton.TabIndex = 8;
             this.modEarlyQuitSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.modEarlyQuitSaveSettingsButton, "Save the current settings to the configuration file.");
@@ -3246,33 +3215,32 @@
             // usrMCurUsersGroupBox
             // 
             this.usrMCurUsersGroupBox.BackColor = System.Drawing.Color.Black;
-            this.usrMCurUsersGroupBox.Controls.Add(this.usrMRefreshUsersButton);
+            this.usrMCurUsersGroupBox.Controls.Add(this.usrMDelAllUsersButton);
             this.usrMCurUsersGroupBox.Controls.Add(this.usrMDelUserButton);
             this.usrMCurUsersGroupBox.Controls.Add(this.usrMCurUsersListBox);
             this.usrMCurUsersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMCurUsersGroupBox.ForeColor = System.Drawing.Color.White;
-            this.usrMCurUsersGroupBox.Location = new System.Drawing.Point(430, 91);
+            this.usrMCurUsersGroupBox.Location = new System.Drawing.Point(372, 91);
             this.usrMCurUsersGroupBox.Name = "usrMCurUsersGroupBox";
-            this.usrMCurUsersGroupBox.Size = new System.Drawing.Size(293, 382);
+            this.usrMCurUsersGroupBox.Size = new System.Drawing.Size(351, 382);
             this.usrMCurUsersGroupBox.TabIndex = 12;
             this.usrMCurUsersGroupBox.TabStop = false;
             this.usrMCurUsersGroupBox.Text = "Current SSB Users";
             // 
-            // usrMRefreshUsersButton
+            // usrMDelAllUsersButton
             // 
-            this.usrMRefreshUsersButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.usrMRefreshUsersButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.usrMRefreshUsersButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.usrMRefreshUsersButton.ForeColor = System.Drawing.Color.White;
-            this.usrMRefreshUsersButton.Location = new System.Drawing.Point(210, 353);
-            this.usrMRefreshUsersButton.Name = "usrMRefreshUsersButton";
-            this.usrMRefreshUsersButton.Size = new System.Drawing.Size(77, 23);
-            this.usrMRefreshUsersButton.TabIndex = 15;
-            this.usrMRefreshUsersButton.Text = "Refresh";
-            this.coreToolTip.SetToolTip(this.usrMRefreshUsersButton, "Click this button to re-sync the internal user database to ensure that any user c" +
-        "hanges\r\nthat occurred in-game or via IRC are reflected here.\r\n");
-            this.usrMRefreshUsersButton.UseVisualStyleBackColor = false;
-            this.usrMRefreshUsersButton.Click += new System.EventHandler(this.usrMRefreshUsersButton_Click);
+            this.usrMDelAllUsersButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.usrMDelAllUsersButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.usrMDelAllUsersButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMDelAllUsersButton.ForeColor = System.Drawing.Color.White;
+            this.usrMDelAllUsersButton.Location = new System.Drawing.Point(144, 344);
+            this.usrMDelAllUsersButton.Name = "usrMDelAllUsersButton";
+            this.usrMDelAllUsersButton.Size = new System.Drawing.Size(137, 23);
+            this.usrMDelAllUsersButton.TabIndex = 15;
+            this.usrMDelAllUsersButton.Text = "Remove All Users";
+            this.coreToolTip.SetToolTip(this.usrMDelAllUsersButton, "Click this button to remove all users.");
+            this.usrMDelAllUsersButton.UseVisualStyleBackColor = false;
+            this.usrMDelAllUsersButton.Click += new System.EventHandler(this.usrMDelAllUsersButton_Click);
             // 
             // usrMDelUserButton
             // 
@@ -3280,7 +3248,7 @@
             this.usrMDelUserButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.usrMDelUserButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMDelUserButton.ForeColor = System.Drawing.Color.White;
-            this.usrMDelUserButton.Location = new System.Drawing.Point(6, 353);
+            this.usrMDelUserButton.Location = new System.Drawing.Point(6, 344);
             this.usrMDelUserButton.Name = "usrMDelUserButton";
             this.usrMDelUserButton.Size = new System.Drawing.Size(109, 23);
             this.usrMDelUserButton.TabIndex = 14;
@@ -3298,7 +3266,7 @@
             this.usrMCurUsersListBox.ItemHeight = 14;
             this.usrMCurUsersListBox.Location = new System.Drawing.Point(6, 18);
             this.usrMCurUsersListBox.Name = "usrMCurUsersListBox";
-            this.usrMCurUsersListBox.Size = new System.Drawing.Size(281, 310);
+            this.usrMCurUsersListBox.Size = new System.Drawing.Size(339, 310);
             this.usrMCurUsersListBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.usrMCurUsersListBox, "This box displays users who are currently added to SSB\'s\r\nuser database as well a" +
         "s their access levels.");
@@ -3315,7 +3283,7 @@
             this.usrMAddUserGroupBox.ForeColor = System.Drawing.Color.White;
             this.usrMAddUserGroupBox.Location = new System.Drawing.Point(6, 91);
             this.usrMAddUserGroupBox.Name = "usrMAddUserGroupBox";
-            this.usrMAddUserGroupBox.Size = new System.Drawing.Size(416, 382);
+            this.usrMAddUserGroupBox.Size = new System.Drawing.Size(360, 382);
             this.usrMAddUserGroupBox.TabIndex = 5;
             this.usrMAddUserGroupBox.TabStop = false;
             this.usrMAddUserGroupBox.Text = "Add SSB User";
@@ -3334,7 +3302,7 @@
             this.usrMUserQlNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.usrMUserQlNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.usrMUserQlNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.usrMUserQlNameTextBox.Location = new System.Drawing.Point(9, 82);
+            this.usrMUserQlNameTextBox.Location = new System.Drawing.Point(6, 79);
             this.usrMUserQlNameTextBox.MaxLength = 15;
             this.usrMUserQlNameTextBox.Name = "usrMUserQlNameTextBox";
             this.usrMUserQlNameTextBox.Size = new System.Drawing.Size(215, 22);
@@ -3348,7 +3316,7 @@
             this.usrMAddUserButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.usrMAddUserButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMAddUserButton.ForeColor = System.Drawing.Color.White;
-            this.usrMAddUserButton.Location = new System.Drawing.Point(9, 335);
+            this.usrMAddUserButton.Location = new System.Drawing.Point(6, 344);
             this.usrMAddUserButton.Name = "usrMAddUserButton";
             this.usrMAddUserButton.Size = new System.Drawing.Size(134, 23);
             this.usrMAddUserButton.TabIndex = 13;
@@ -3373,7 +3341,7 @@
             this.usrMUserAccessComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usrMUserAccessComboBox.ForeColor = System.Drawing.Color.White;
             this.usrMUserAccessComboBox.FormattingEnabled = true;
-            this.usrMUserAccessComboBox.Location = new System.Drawing.Point(3, 217);
+            this.usrMUserAccessComboBox.Location = new System.Drawing.Point(6, 221);
             this.usrMUserAccessComboBox.Name = "usrMUserAccessComboBox";
             this.usrMUserAccessComboBox.Size = new System.Drawing.Size(183, 22);
             this.usrMUserAccessComboBox.TabIndex = 8;
@@ -3440,16 +3408,48 @@
             // banMCurBansGroupBox
             // 
             this.banMCurBansGroupBox.BackColor = System.Drawing.Color.Black;
+            this.banMCurBansGroupBox.Controls.Add(this.banMDelExpiredBansButton);
+            this.banMCurBansGroupBox.Controls.Add(this.banMDelAllBansButton);
             this.banMCurBansGroupBox.Controls.Add(this.banMDelBanButton);
             this.banMCurBansGroupBox.Controls.Add(this.banMCurBansListBox);
             this.banMCurBansGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.banMCurBansGroupBox.ForeColor = System.Drawing.Color.White;
-            this.banMCurBansGroupBox.Location = new System.Drawing.Point(430, 91);
+            this.banMCurBansGroupBox.Location = new System.Drawing.Point(372, 91);
             this.banMCurBansGroupBox.Name = "banMCurBansGroupBox";
-            this.banMCurBansGroupBox.Size = new System.Drawing.Size(293, 382);
+            this.banMCurBansGroupBox.Size = new System.Drawing.Size(351, 382);
             this.banMCurBansGroupBox.TabIndex = 12;
             this.banMCurBansGroupBox.TabStop = false;
             this.banMCurBansGroupBox.Text = "Current Bans";
+            // 
+            // banMDelExpiredBansButton
+            // 
+            this.banMDelExpiredBansButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.banMDelExpiredBansButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.banMDelExpiredBansButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMDelExpiredBansButton.ForeColor = System.Drawing.Color.White;
+            this.banMDelExpiredBansButton.Location = new System.Drawing.Point(232, 344);
+            this.banMDelExpiredBansButton.Name = "banMDelExpiredBansButton";
+            this.banMDelExpiredBansButton.Size = new System.Drawing.Size(113, 23);
+            this.banMDelExpiredBansButton.TabIndex = 16;
+            this.banMDelExpiredBansButton.Text = "Remove Expired";
+            this.coreToolTip.SetToolTip(this.banMDelExpiredBansButton, resources.GetString("banMDelExpiredBansButton.ToolTip"));
+            this.banMDelExpiredBansButton.UseVisualStyleBackColor = false;
+            this.banMDelExpiredBansButton.Click += new System.EventHandler(this.banMDelExpiredBansButton_Click);
+            // 
+            // banMDelAllBansButton
+            // 
+            this.banMDelAllBansButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.banMDelAllBansButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.banMDelAllBansButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMDelAllBansButton.ForeColor = System.Drawing.Color.White;
+            this.banMDelAllBansButton.Location = new System.Drawing.Point(120, 344);
+            this.banMDelAllBansButton.Name = "banMDelAllBansButton";
+            this.banMDelAllBansButton.Size = new System.Drawing.Size(93, 23);
+            this.banMDelAllBansButton.TabIndex = 15;
+            this.banMDelAllBansButton.Text = "Remove All";
+            this.coreToolTip.SetToolTip(this.banMDelAllBansButton, "Click this button to remove all bans in SSB\'s\r\nban database.");
+            this.banMDelAllBansButton.UseVisualStyleBackColor = false;
+            this.banMDelAllBansButton.Click += new System.EventHandler(this.banMDelAllBansButton_Click);
             // 
             // banMDelBanButton
             // 
@@ -3457,13 +3457,14 @@
             this.banMDelBanButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.banMDelBanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.banMDelBanButton.ForeColor = System.Drawing.Color.White;
-            this.banMDelBanButton.Location = new System.Drawing.Point(121, 353);
+            this.banMDelBanButton.Location = new System.Drawing.Point(6, 344);
             this.banMDelBanButton.Name = "banMDelBanButton";
-            this.banMDelBanButton.Size = new System.Drawing.Size(166, 23);
+            this.banMDelBanButton.Size = new System.Drawing.Size(93, 23);
             this.banMDelBanButton.TabIndex = 14;
-            this.banMDelBanButton.Text = "Remove Ban from SSB";
+            this.banMDelBanButton.Text = "Remove";
             this.coreToolTip.SetToolTip(this.banMDelBanButton, "Click this button to remove the ban.");
             this.banMDelBanButton.UseVisualStyleBackColor = false;
+            this.banMDelBanButton.Click += new System.EventHandler(this.banMDelBanButton_Click);
             // 
             // banMCurBansListBox
             // 
@@ -3474,13 +3475,14 @@
             this.banMCurBansListBox.ItemHeight = 14;
             this.banMCurBansListBox.Location = new System.Drawing.Point(6, 18);
             this.banMCurBansListBox.Name = "banMCurBansListBox";
-            this.banMCurBansListBox.Size = new System.Drawing.Size(281, 310);
+            this.banMCurBansListBox.Size = new System.Drawing.Size(339, 310);
             this.banMCurBansListBox.TabIndex = 13;
             this.coreToolTip.SetToolTip(this.banMCurBansListBox, "This box displays the users who are currently banned\r\nby SSB.");
             // 
             // banMAddBanGroupBox
             // 
             this.banMAddBanGroupBox.BackColor = System.Drawing.Color.Black;
+            this.banMAddBanGroupBox.Controls.Add(this.banMBanNoticeLabel);
             this.banMAddBanGroupBox.Controls.Add(this.banMBanDurationTextBox);
             this.banMAddBanGroupBox.Controls.Add(this.banMBanDurationScaleComboBox);
             this.banMAddBanGroupBox.Controls.Add(this.banMUserQlNameLabel);
@@ -3491,7 +3493,7 @@
             this.banMAddBanGroupBox.ForeColor = System.Drawing.Color.White;
             this.banMAddBanGroupBox.Location = new System.Drawing.Point(6, 91);
             this.banMAddBanGroupBox.Name = "banMAddBanGroupBox";
-            this.banMAddBanGroupBox.Size = new System.Drawing.Size(416, 382);
+            this.banMAddBanGroupBox.Size = new System.Drawing.Size(360, 382);
             this.banMAddBanGroupBox.TabIndex = 5;
             this.banMAddBanGroupBox.TabStop = false;
             this.banMAddBanGroupBox.Text = "Add Ban";
@@ -3501,7 +3503,7 @@
             this.banMBanDurationTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.banMBanDurationTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.banMBanDurationTextBox.ForeColor = System.Drawing.Color.White;
-            this.banMBanDurationTextBox.Location = new System.Drawing.Point(9, 218);
+            this.banMBanDurationTextBox.Location = new System.Drawing.Point(6, 221);
             this.banMBanDurationTextBox.MaxLength = 10;
             this.banMBanDurationTextBox.Name = "banMBanDurationTextBox";
             this.banMBanDurationTextBox.Size = new System.Drawing.Size(99, 22);
@@ -3511,10 +3513,11 @@
             // banMBanDurationScaleComboBox
             // 
             this.banMBanDurationScaleComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.banMBanDurationScaleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.banMBanDurationScaleComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.banMBanDurationScaleComboBox.ForeColor = System.Drawing.Color.White;
             this.banMBanDurationScaleComboBox.FormattingEnabled = true;
-            this.banMBanDurationScaleComboBox.Location = new System.Drawing.Point(125, 217);
+            this.banMBanDurationScaleComboBox.Location = new System.Drawing.Point(125, 221);
             this.banMBanDurationScaleComboBox.Name = "banMBanDurationScaleComboBox";
             this.banMBanDurationScaleComboBox.Size = new System.Drawing.Size(124, 22);
             this.banMBanDurationScaleComboBox.TabIndex = 17;
@@ -3535,7 +3538,7 @@
             this.banMUserQlNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.banMUserQlNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.banMUserQlNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.banMUserQlNameTextBox.Location = new System.Drawing.Point(9, 82);
+            this.banMUserQlNameTextBox.Location = new System.Drawing.Point(6, 79);
             this.banMUserQlNameTextBox.MaxLength = 15;
             this.banMUserQlNameTextBox.Name = "banMUserQlNameTextBox";
             this.banMUserQlNameTextBox.Size = new System.Drawing.Size(215, 22);
@@ -3549,18 +3552,19 @@
             this.banMAddBanButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.banMAddBanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.banMAddBanButton.ForeColor = System.Drawing.Color.White;
-            this.banMAddBanButton.Location = new System.Drawing.Point(9, 335);
+            this.banMAddBanButton.Location = new System.Drawing.Point(6, 344);
             this.banMAddBanButton.Name = "banMAddBanButton";
             this.banMAddBanButton.Size = new System.Drawing.Size(134, 23);
             this.banMAddBanButton.TabIndex = 13;
             this.banMAddBanButton.Text = "Add Ban To SSB";
             this.coreToolTip.SetToolTip(this.banMAddBanButton, "Click this button to add the ban.");
             this.banMAddBanButton.UseVisualStyleBackColor = false;
+            this.banMAddBanButton.Click += new System.EventHandler(this.banMAddBanButton_Click);
             // 
             // banMBanDurationLabel
             // 
             this.banMBanDurationLabel.AutoSize = true;
-            this.banMBanDurationLabel.Location = new System.Drawing.Point(6, 186);
+            this.banMBanDurationLabel.Location = new System.Drawing.Point(3, 186);
             this.banMBanDurationLabel.Name = "banMBanDurationLabel";
             this.banMBanDurationLabel.Size = new System.Drawing.Size(77, 14);
             this.banMBanDurationLabel.TabIndex = 9;
@@ -3853,6 +3857,7 @@
             this.statusBar.SizingGrip = false;
             this.statusBar.TabIndex = 3;
             this.statusBar.Text = "statusStrip1";
+            this.statusBar.Paint += new System.Windows.Forms.PaintEventHandler(this.statusBar_Paint);
             // 
             // statusLabel
             // 
@@ -3869,7 +3874,7 @@
             // 
             this.fakeAlignStatusLabel.ForeColor = System.Drawing.Color.White;
             this.fakeAlignStatusLabel.Name = "fakeAlignStatusLabel";
-            this.fakeAlignStatusLabel.Size = new System.Drawing.Size(429, 17);
+            this.fakeAlignStatusLabel.Size = new System.Drawing.Size(460, 17);
             this.fakeAlignStatusLabel.Spring = true;
             // 
             // modStatusLabel
@@ -3920,6 +3925,18 @@
             this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.AlwaysBlink;
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
+            // 
+            // banMBanNoticeLabel
+            // 
+            this.banMBanNoticeLabel.AutoSize = true;
+            this.banMBanNoticeLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.banMBanNoticeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
+            this.banMBanNoticeLabel.Location = new System.Drawing.Point(6, 286);
+            this.banMBanNoticeLabel.Name = "banMBanNoticeLabel";
+            this.banMBanNoticeLabel.Size = new System.Drawing.Size(329, 42);
+            this.banMBanNoticeLabel.TabIndex = 19;
+            this.banMBanNoticeLabel.Text = "If server monitoring is active and the player you are adding\r\nis on the server, t" +
+    "hen the player will be kick banned\r\nimmediately without any notice or warning.";
             // 
             // UserInterface
             // 
@@ -4073,6 +4090,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterCurrentVotesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4351,12 +4369,14 @@
         private System.Windows.Forms.BindingSource modAutoVoterCurrentVotesBindingSource;
         private System.Windows.Forms.CheckBox coreAutoMonitorStartCheckBox;
         private System.Windows.Forms.BindingSource modEarlyQuitCurrentQuitBindingSource;
-        private System.Windows.Forms.Button modEarlyQuitRefreshQuitsButton;
-        private System.Windows.Forms.Button modAutoVoterRefreshVotesButton;
         private System.Windows.Forms.Button modIRCGenerateRandomNamesButton;
         private System.Windows.Forms.BindingSource usrMCurrentUserBindingSource;
-        private System.Windows.Forms.Button usrMRefreshUsersButton;
         private System.Windows.Forms.ToolStripStatusLabel fakeAlignStatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel modStatusLabel;
+        private System.Windows.Forms.BindingSource banMCurrentBanBindingSource;
+        private System.Windows.Forms.Button banMDelAllBansButton;
+        private System.Windows.Forms.Button banMDelExpiredBansButton;
+        private System.Windows.Forms.Button usrMDelAllUsersButton;
+        private System.Windows.Forms.Label banMBanNoticeLabel;
     }
 }

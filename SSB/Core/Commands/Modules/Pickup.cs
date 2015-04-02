@@ -15,7 +15,7 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "pickup";
         public const int TeamMaxSize = 8;
-        public const int TeamMinSize = 2;
+        public const int TeamMinSize = 3;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly PickupManager _pickupManager;

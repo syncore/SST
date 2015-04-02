@@ -22,6 +22,7 @@ namespace SSB.Core.Modules
     {
         private const double CaptainSelectionTimeLimit = 20000;
         private const double PickupResetOnEndGameLimit = 65000;
+        private readonly DbBans _banDb;
         private readonly PickupCaptains _captains;
         private readonly Timer _captainSelectionTimer;
         private readonly Timer _endGameResetTimer;
@@ -39,6 +40,7 @@ namespace SSB.Core.Modules
             _captains = new PickupCaptains(_ssb, this);
             _players = new PickupPlayers(_ssb, this);
             _userDb = new DbUsers();
+            _banDb = new DbBans();
             AvailablePlayers = new List<string>();
             ActivePickupPlayers = new List<string>();
             SubCandidates = new List<string>();
@@ -319,7 +321,7 @@ namespace SSB.Core.Modules
             await UpdateNoShowAndSubDatabase(player);
             var redSize = _ssb.ServerInfo.GetTeam(Team.Red).Count;
             var blueSize = _ssb.ServerInfo.GetTeam(Team.Blue).Count;
-            // Captain selection started and the captain left before the captain selection process was completed... Reset
+            // Reset because captain selection started and the captain left before completion of selection
             if (HasCaptainSelectionStarted &&
                 (Captains.RedCaptain.Equals(player) || Captains.BlueCaptain.Equals(player)))
             {
@@ -344,7 +346,7 @@ namespace SSB.Core.Modules
             // Team selection started and an eligible player leaves, notify of cancelation possibility
             if (HasTeamSelectionStarted && AvailablePlayers.Contains(player))
             {
-                if ((_ssb.Mod.Pickup.Teamsize*2) - (redSize + blueSize) < AvailablePlayers.Count)
+                if ((_ssb.Mod.Pickup.Teamsize * 2) - (redSize + blueSize) < AvailablePlayers.Count)
                 {
                     await
                         _ssb.QlCommands.QlCmdSay(string.Format(
@@ -373,7 +375,6 @@ namespace SSB.Core.Modules
                 {
                     await UnlockTeamDueToNoShow(player, Team.Red);
                 }
-                //TODO: should we re-lock the teams? Added complications probably exceed benefit
             }
         }
 
@@ -465,8 +466,7 @@ namespace SSB.Core.Modules
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            var banDb = new DbBans();
-            var bInfo = banDb.GetBanInfo(Helpers.GetArgVal(c, 1));
+            var bInfo = _banDb.GetBanInfo(Helpers.GetArgVal(c, 1));
             if (bInfo == null)
             {
                 StatusMessage = string.Format("^5[PICKUP]^7 Ban information not found for {0}",
@@ -499,9 +499,9 @@ namespace SSB.Core.Modules
                 }
             }
             // Remove the ban and reset the count, depending on type of ban.
-            var pAutoBanner = new PlayerAutoBanner(_ssb);
-            await pAutoBanner.RemoveBan(Helpers.GetArgVal(c, 1), bInfo);
-            StatusMessage = string.Format("^5[PICKUP]^7 Removing pickup ban for ^3{0}",
+            var bManager = new BanManager(_ssb);
+            await bManager.RemoveBan(bInfo);
+            StatusMessage = string.Format("^5[PICKUP]^7 Removing pickup-related ban for ^3{0}",
                 Helpers.GetArgVal(c, 1));
             await SendServerSay(c, StatusMessage);
             return true;
@@ -594,7 +594,7 @@ namespace SSB.Core.Modules
             // ReSharper disable once UnusedVariable
             var i1 = _ssb.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 Pickup is OVER. A new pickup should start ^3{0}^7 seconds after map restart or map change!",
-                (PickupResetOnEndGameLimit/1000)));
+                (PickupResetOnEndGameLimit / 1000)));
         }
 
         /// <summary>
@@ -873,7 +873,7 @@ namespace SSB.Core.Modules
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[PICKUP]^7 You have ^5{0}^7 seconds to type^2 {1}{2}^7 to become a captain!",
-                        (CaptainSelectionTimeLimit/1000), CommandList.GameCommandPrefix,
+                        (CaptainSelectionTimeLimit / 1000), CommandList.GameCommandPrefix,
                         CommandList.CmdPickupCap));
         }
 
@@ -885,12 +885,11 @@ namespace SSB.Core.Modules
         private async void CaptainSelectionExpired(object sender, ElapsedEventArgs e)
         {
             // Too many people might have removed, leaving an inadequate number of players from which to pick caps. Reset.
-            // TODO: uncomment this on release, when pickup min teamsize will be 3
-            //if (AvailablePlayers.Count < 2)
-            //{
-            //    await ResetDueToInadequatePlayerCount();
-            //    return;
-            //}
+            if (AvailablePlayers.Count < 2)
+            {
+                await ResetDueToInadequatePlayerCount();
+                return;
+            }
 
             // We have zero captains -- no one bothered to !cap or it's a rare situation where both
             // captains disconnected before team selection.
@@ -953,8 +952,6 @@ namespace SSB.Core.Modules
         /// </summary>
         private async Task ClearTeams()
         {
-            //ToList() because .NET can modify collection during enumeration, sometimes causing error
-            // see: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
             foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList().Where(player =>
                 !player.Value.ShortName.Equals(_ssb.AccountName,
                     StringComparison.InvariantCultureIgnoreCase)))
@@ -1080,17 +1077,6 @@ namespace SSB.Core.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        private async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -1099,6 +1085,17 @@ namespace SSB.Core.Modules
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        private async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -1141,7 +1138,7 @@ namespace SSB.Core.Modules
         {
             Debug.WriteLine(
                 "*** Starting end-game pickup reset timer. Will try to start a new pickup in {0} seconds***",
-                (PickupResetOnEndGameLimit/1000));
+                (PickupResetOnEndGameLimit / 1000));
             _endGameResetTimer.AutoReset = false;
             _endGameResetTimer.Interval = PickupResetOnEndGameLimit;
             _endGameResetTimer.Elapsed += EndGameResetExpired;
@@ -1164,7 +1161,7 @@ namespace SSB.Core.Modules
 
             await _ssb.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
-                (_ssb.Mod.Pickup.Teamsize*2)));
+                (_ssb.Mod.Pickup.Teamsize * 2)));
 
             IsPickupPreGame = true;
         }
@@ -1177,7 +1174,7 @@ namespace SSB.Core.Modules
             // We should have both captains (+2) selected at this point.
             // However, players might have disconnected before the captain selection timer expired, so
             // make sure we have enough players one last time, and reset if we don't.
-            if ((AvailablePlayers.Count + 2) < (_ssb.Mod.Pickup.Teamsize*2))
+            if ((AvailablePlayers.Count + 2) < (_ssb.Mod.Pickup.Teamsize * 2))
             {
                 await ResetDueToInadequatePlayerCount();
                 return;
@@ -1256,13 +1253,16 @@ namespace SSB.Core.Modules
                 if (subsUsed > _ssb.Mod.Pickup.MaxSubsPerPlayer)
                 {
                     // Add a timeban if so
-                    var banDb = new DbBans();
                     var expirationDate =
                         ExpirationDateGenerator.GenerateExpirationDate(
                             _ssb.Mod.Pickup.ExcessiveSubUseBanTime,
                             _ssb.Mod.Pickup.ExcessiveSubUseBanTimeScale);
-                    banDb.AddUserToDb(player, "bot-Internal", DateTime.Now, expirationDate,
+                    _banDb.AddUserToDb(player, "pickupMod", DateTime.Now, expirationDate,
                         BanType.AddedByPickupSubs);
+
+                    // UI: reflect changes
+                    _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
@@ -1281,13 +1281,16 @@ namespace SSB.Core.Modules
                 var noShows = pickupDb.GetUserNoShowCount(player);
                 if (noShows > _ssb.Mod.Pickup.MaxNoShowsPerPlayer)
                 {
-                    var banDb = new DbBans();
                     var expirationDate =
                         ExpirationDateGenerator.GenerateExpirationDate(
                             _ssb.Mod.Pickup.ExcessiveNoShowBanTime,
                             _ssb.Mod.Pickup.ExcessiveNoShowBanTimeScale);
-                    banDb.AddUserToDb(player, "bot-Internal", DateTime.Now, expirationDate,
+                    _banDb.AddUserToDb(player, "pickupMod", DateTime.Now, expirationDate,
                         BanType.AddedByPickupNoShows);
+
+                    // UI: reflect changes
+                    _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
