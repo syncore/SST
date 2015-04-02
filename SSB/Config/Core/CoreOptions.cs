@@ -26,13 +26,13 @@ namespace SSB.Config.Core
         public bool appendToActivityLog { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether SSB should attempt to automatically
-        /// monitor a server on program start, as opposed to requiring the user to manully
-        /// start server monitoring via the UI.
+        ///     Gets or sets a value indicating whether SSB should attempt to automatically
+        ///     monitor a server on program start, as opposed to requiring the user to manully
+        ///     start server monitoring via the UI.
         /// </summary>
         /// <value>
-        /// <c>true</c> if automatic server monitoring should occur on start;
-        ///  otherwise, <c>false</c>.
+        ///     <c>true</c> if automatic server monitoring should occur on start;
+        ///     otherwise, <c>false</c>.
         /// </value>
         public bool autoMonitorServerOnStart { get; set; }
 
@@ -69,6 +69,16 @@ namespace SSB.Config.Core
         public bool logSsbEventsToDisk { get; set; }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether SSB should display in
+        ///     the system notification area when minimize or not.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if SSB should display in the system notification area
+        ///     when minimized, otherwise, <c>false</c>.
+        /// </value>
+        public bool minimizeToTray { get; set; }
+
+        /// <summary>
         ///     Gets or sets the SBB owner.
         /// </summary>
         /// <value>
@@ -89,6 +99,7 @@ namespace SSB.Config.Core
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;
             logSsbEventsToDisk = true;
+            minimizeToTray = true;
         }
     }
 }

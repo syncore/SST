@@ -42,20 +42,24 @@
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
             this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
-            this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
-            this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreAccountGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreAccountNameLabel = new System.Windows.Forms.Label();
+            this.coreAccountNameTextBox = new System.Windows.Forms.TextBox();
             this.coreOwnerNameTextBox = new System.Windows.Forms.TextBox();
+            this.coreEloCacheTextBox = new System.Windows.Forms.TextBox();
+            this.coreOwnerNameLabel = new System.Windows.Forms.Label();
+            this.coreEloCacheLabel = new System.Windows.Forms.Label();
+            this.coreInterfaceGroupBox = new System.Windows.Forms.GroupBox();
             this.coreHideQlConsoleCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreMinimizeToTrayCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreLogEventsDiskCheckBox = new System.Windows.Forms.CheckBox();
             this.coreSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.coreResetDefaultsCheckBox = new System.Windows.Forms.Button();
+            this.coreResetAllButton = new System.Windows.Forms.Button();
+            this.coreResetSettingsButton = new System.Windows.Forms.Button();
             this.coreLoadSettingsButton = new System.Windows.Forms.Button();
             this.coreSaveSettingsButton = new System.Windows.Forms.Button();
-            this.coreLogEventsDiskCheckBox = new System.Windows.Forms.CheckBox();
-            this.coreEloCacheTextBox = new System.Windows.Forms.TextBox();
-            this.coreEloCacheLabel = new System.Windows.Forms.Label();
-            this.coreOwnerNameLabel = new System.Windows.Forms.Label();
-            this.coreAccountNameTextBox = new System.Windows.Forms.TextBox();
-            this.coreAccountNameLabel = new System.Windows.Forms.Label();
             this.coreHeaderDescLabel = new System.Windows.Forms.Label();
             this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.coreHeaderLabel = new System.Windows.Forms.Label();
@@ -267,6 +271,7 @@
             this.banMDelBanButton = new System.Windows.Forms.Button();
             this.banMCurBansListBox = new System.Windows.Forms.ListBox();
             this.banMAddBanGroupBox = new System.Windows.Forms.GroupBox();
+            this.banMBanNoticeLabel = new System.Windows.Forms.Label();
             this.banMBanDurationTextBox = new System.Windows.Forms.TextBox();
             this.banMBanDurationScaleComboBox = new System.Windows.Forms.ComboBox();
             this.banMUserQlNameLabel = new System.Windows.Forms.Label();
@@ -309,7 +314,9 @@
             this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.usrMCurrentUserBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.banMCurrentBanBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.banMBanNoticeLabel = new System.Windows.Forms.Label();
+            this.sysTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.sysTrayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.sysTrayExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -319,6 +326,8 @@
             this.coreOptionsTab.SuspendLayout();
             this.coreContainerGroupBox.SuspendLayout();
             this.coreCfgGroupBox.SuspendLayout();
+            this.coreAccountGroupBox.SuspendLayout();
+            this.coreInterfaceGroupBox.SuspendLayout();
             this.coreSettingsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).BeginInit();
             this.modulesTab.SuspendLayout();
@@ -404,6 +413,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).BeginInit();
+            this.sysTrayContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -550,17 +560,9 @@
             // coreCfgGroupBox
             // 
             this.coreCfgGroupBox.BackColor = System.Drawing.Color.Black;
-            this.coreCfgGroupBox.Controls.Add(this.coreAutoMonitorStartCheckBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreAppendEventsCheckBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameTextBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreAccountGroupBox);
+            this.coreCfgGroupBox.Controls.Add(this.coreInterfaceGroupBox);
             this.coreCfgGroupBox.Controls.Add(this.coreSettingsGroupBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreLogEventsDiskCheckBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreEloCacheTextBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreEloCacheLabel);
-            this.coreCfgGroupBox.Controls.Add(this.coreOwnerNameLabel);
-            this.coreCfgGroupBox.Controls.Add(this.coreAccountNameTextBox);
-            this.coreCfgGroupBox.Controls.Add(this.coreAccountNameLabel);
             this.coreCfgGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.coreCfgGroupBox.ForeColor = System.Drawing.Color.White;
             this.coreCfgGroupBox.Location = new System.Drawing.Point(3, 103);
@@ -570,37 +572,53 @@
             this.coreCfgGroupBox.TabStop = false;
             this.coreCfgGroupBox.Text = "Configuration";
             // 
-            // coreAutoMonitorStartCheckBox
+            // coreAccountGroupBox
             // 
-            this.coreAutoMonitorStartCheckBox.AutoSize = true;
-            this.coreAutoMonitorStartCheckBox.Location = new System.Drawing.Point(14, 302);
-            this.coreAutoMonitorStartCheckBox.Name = "coreAutoMonitorStartCheckBox";
-            this.coreAutoMonitorStartCheckBox.Size = new System.Drawing.Size(206, 32);
-            this.coreAutoMonitorStartCheckBox.TabIndex = 13;
-            this.coreAutoMonitorStartCheckBox.Text = "Try to Automatically Start Server\r\nMonitoring on Program Start";
-            this.coreToolTip.SetToolTip(this.coreAutoMonitorStartCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
-        "ainly for debugging purposes).");
-            this.coreAutoMonitorStartCheckBox.UseVisualStyleBackColor = true;
+            this.coreAccountGroupBox.Controls.Add(this.coreAccountNameLabel);
+            this.coreAccountGroupBox.Controls.Add(this.coreAccountNameTextBox);
+            this.coreAccountGroupBox.Controls.Add(this.coreOwnerNameTextBox);
+            this.coreAccountGroupBox.Controls.Add(this.coreEloCacheTextBox);
+            this.coreAccountGroupBox.Controls.Add(this.coreOwnerNameLabel);
+            this.coreAccountGroupBox.Controls.Add(this.coreEloCacheLabel);
+            this.coreAccountGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreAccountGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreAccountGroupBox.Location = new System.Drawing.Point(6, 14);
+            this.coreAccountGroupBox.Name = "coreAccountGroupBox";
+            this.coreAccountGroupBox.Size = new System.Drawing.Size(716, 175);
+            this.coreAccountGroupBox.TabIndex = 31;
+            this.coreAccountGroupBox.TabStop = false;
+            this.coreAccountGroupBox.Text = "Accounts";
             // 
-            // coreAppendEventsCheckBox
+            // coreAccountNameLabel
             // 
-            this.coreAppendEventsCheckBox.AutoSize = true;
-            this.coreAppendEventsCheckBox.ForeColor = System.Drawing.Color.White;
-            this.coreAppendEventsCheckBox.Location = new System.Drawing.Point(343, 236);
-            this.coreAppendEventsCheckBox.Name = "coreAppendEventsCheckBox";
-            this.coreAppendEventsCheckBox.Size = new System.Drawing.Size(219, 18);
-            this.coreAppendEventsCheckBox.TabIndex = 12;
-            this.coreAppendEventsCheckBox.Text = "Append SSB Events to Activity Log";
-            this.coreToolTip.SetToolTip(this.coreAppendEventsCheckBox, "Select whether SSB events should be displayed in activity log\r\nunder the \"Log\" ta" +
-        "b.");
-            this.coreAppendEventsCheckBox.UseVisualStyleBackColor = true;
+            this.coreAccountNameLabel.AutoSize = true;
+            this.coreAccountNameLabel.Location = new System.Drawing.Point(6, 27);
+            this.coreAccountNameLabel.Name = "coreAccountNameLabel";
+            this.coreAccountNameLabel.Size = new System.Drawing.Size(132, 14);
+            this.coreAccountNameLabel.TabIndex = 0;
+            this.coreAccountNameLabel.Text = "SSB QL Account Name";
+            // 
+            // coreAccountNameTextBox
+            // 
+            this.coreAccountNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreAccountNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreAccountNameTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreAccountNameTextBox.Location = new System.Drawing.Point(9, 54);
+            this.coreAccountNameTextBox.MaxLength = 15;
+            this.coreAccountNameTextBox.Name = "coreAccountNameTextBox";
+            this.coreAccountNameTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreAccountNameTextBox.TabIndex = 1;
+            this.coreToolTip.SetToolTip(this.coreAccountNameTextBox, "Enter the name of the QL account that\r\nwill be running the bot. Do not include th" +
+        "e clan tag.\r\n");
+            this.coreAccountNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreAccountNameTextBox_Validating);
+            this.coreAccountNameTextBox.Validated += new System.EventHandler(this.coreAccountNameTextBox_Validated);
             // 
             // coreOwnerNameTextBox
             // 
             this.coreOwnerNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.coreOwnerNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.coreOwnerNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.coreOwnerNameTextBox.Location = new System.Drawing.Point(343, 71);
+            this.coreOwnerNameTextBox.Location = new System.Drawing.Point(338, 54);
             this.coreOwnerNameTextBox.MaxLength = 15;
             this.coreOwnerNameTextBox.Name = "coreOwnerNameTextBox";
             this.coreOwnerNameTextBox.Size = new System.Drawing.Size(205, 22);
@@ -610,10 +628,61 @@
             this.coreOwnerNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreOwnerNameTextBox_Validating);
             this.coreOwnerNameTextBox.Validated += new System.EventHandler(this.coreOwnerNameTextBox_Validated);
             // 
+            // coreEloCacheTextBox
+            // 
+            this.coreEloCacheTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreEloCacheTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreEloCacheTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreEloCacheTextBox.Location = new System.Drawing.Point(9, 139);
+            this.coreEloCacheTextBox.MaxLength = 10;
+            this.coreEloCacheTextBox.Name = "coreEloCacheTextBox";
+            this.coreEloCacheTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreEloCacheTextBox.TabIndex = 5;
+            this.coreToolTip.SetToolTip(this.coreEloCacheTextBox, resources.GetString("coreEloCacheTextBox.ToolTip"));
+            this.coreEloCacheTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreEloCacheTextBox_Validating);
+            this.coreEloCacheTextBox.Validated += new System.EventHandler(this.coreEloCacheTextBox_Validated);
+            // 
+            // coreOwnerNameLabel
+            // 
+            this.coreOwnerNameLabel.AutoSize = true;
+            this.coreOwnerNameLabel.Location = new System.Drawing.Point(335, 27);
+            this.coreOwnerNameLabel.Name = "coreOwnerNameLabel";
+            this.coreOwnerNameLabel.Size = new System.Drawing.Size(181, 14);
+            this.coreOwnerNameLabel.TabIndex = 3;
+            this.coreOwnerNameLabel.Text = "SSB Owner\'s QL Account Name";
+            this.coreToolTip.SetToolTip(this.coreOwnerNameLabel, resources.GetString("coreOwnerNameLabel.ToolTip"));
+            // 
+            // coreEloCacheLabel
+            // 
+            this.coreEloCacheLabel.AutoSize = true;
+            this.coreEloCacheLabel.Location = new System.Drawing.Point(6, 107);
+            this.coreEloCacheLabel.Name = "coreEloCacheLabel";
+            this.coreEloCacheLabel.Size = new System.Drawing.Size(187, 14);
+            this.coreEloCacheLabel.TabIndex = 4;
+            this.coreEloCacheLabel.Text = "Elo Cache Expiration [in minutes]";
+            this.coreToolTip.SetToolTip(this.coreEloCacheLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
+        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
+            // 
+            // coreInterfaceGroupBox
+            // 
+            this.coreInterfaceGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
+            this.coreInterfaceGroupBox.Controls.Add(this.coreMinimizeToTrayCheckBox);
+            this.coreInterfaceGroupBox.Controls.Add(this.coreAppendEventsCheckBox);
+            this.coreInterfaceGroupBox.Controls.Add(this.coreAutoMonitorStartCheckBox);
+            this.coreInterfaceGroupBox.Controls.Add(this.coreLogEventsDiskCheckBox);
+            this.coreInterfaceGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreInterfaceGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreInterfaceGroupBox.Location = new System.Drawing.Point(6, 195);
+            this.coreInterfaceGroupBox.Name = "coreInterfaceGroupBox";
+            this.coreInterfaceGroupBox.Size = new System.Drawing.Size(510, 172);
+            this.coreInterfaceGroupBox.TabIndex = 30;
+            this.coreInterfaceGroupBox.TabStop = false;
+            this.coreInterfaceGroupBox.Text = "Interface and Debugging";
+            // 
             // coreHideQlConsoleCheckBox
             // 
             this.coreHideQlConsoleCheckBox.AutoSize = true;
-            this.coreHideQlConsoleCheckBox.Location = new System.Drawing.Point(343, 166);
+            this.coreHideQlConsoleCheckBox.Location = new System.Drawing.Point(6, 21);
             this.coreHideQlConsoleCheckBox.Name = "coreHideQlConsoleCheckBox";
             this.coreHideQlConsoleCheckBox.Size = new System.Drawing.Size(161, 18);
             this.coreHideQlConsoleCheckBox.TabIndex = 10;
@@ -621,34 +690,98 @@
             this.coreToolTip.SetToolTip(this.coreHideQlConsoleCheckBox, resources.GetString("coreHideQlConsoleCheckBox.ToolTip"));
             this.coreHideQlConsoleCheckBox.UseVisualStyleBackColor = true;
             // 
+            // coreMinimizeToTrayCheckBox
+            // 
+            this.coreMinimizeToTrayCheckBox.AutoSize = true;
+            this.coreMinimizeToTrayCheckBox.Location = new System.Drawing.Point(256, 69);
+            this.coreMinimizeToTrayCheckBox.Name = "coreMinimizeToTrayCheckBox";
+            this.coreMinimizeToTrayCheckBox.Size = new System.Drawing.Size(114, 18);
+            this.coreMinimizeToTrayCheckBox.TabIndex = 14;
+            this.coreMinimizeToTrayCheckBox.Text = "Minimize to Tray";
+            this.coreToolTip.SetToolTip(this.coreMinimizeToTrayCheckBox, "Select whether you want SSB to minimize to the system tray area.");
+            this.coreMinimizeToTrayCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // coreAppendEventsCheckBox
+            // 
+            this.coreAppendEventsCheckBox.AutoSize = true;
+            this.coreAppendEventsCheckBox.ForeColor = System.Drawing.Color.White;
+            this.coreAppendEventsCheckBox.Location = new System.Drawing.Point(6, 69);
+            this.coreAppendEventsCheckBox.Name = "coreAppendEventsCheckBox";
+            this.coreAppendEventsCheckBox.Size = new System.Drawing.Size(219, 18);
+            this.coreAppendEventsCheckBox.TabIndex = 12;
+            this.coreAppendEventsCheckBox.Text = "Append SSB Events to Activity Log";
+            this.coreToolTip.SetToolTip(this.coreAppendEventsCheckBox, "Select whether SSB events should be displayed in activity log\r\nunder the \"Log\" ta" +
+        "b.");
+            this.coreAppendEventsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // coreAutoMonitorStartCheckBox
+            // 
+            this.coreAutoMonitorStartCheckBox.AutoSize = true;
+            this.coreAutoMonitorStartCheckBox.Location = new System.Drawing.Point(6, 114);
+            this.coreAutoMonitorStartCheckBox.Name = "coreAutoMonitorStartCheckBox";
+            this.coreAutoMonitorStartCheckBox.Size = new System.Drawing.Size(206, 32);
+            this.coreAutoMonitorStartCheckBox.TabIndex = 13;
+            this.coreAutoMonitorStartCheckBox.Text = "Try to Automatically Start Server\r\nMonitoring on Program Start";
+            this.coreToolTip.SetToolTip(this.coreAutoMonitorStartCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
+        "ainly for debugging purposes).");
+            this.coreAutoMonitorStartCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // coreLogEventsDiskCheckBox
+            // 
+            this.coreLogEventsDiskCheckBox.AutoSize = true;
+            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(256, 21);
+            this.coreLogEventsDiskCheckBox.Name = "coreLogEventsDiskCheckBox";
+            this.coreLogEventsDiskCheckBox.Size = new System.Drawing.Size(153, 18);
+            this.coreLogEventsDiskCheckBox.TabIndex = 7;
+            this.coreLogEventsDiskCheckBox.Text = "Log SSB Events to Disk";
+            this.coreToolTip.SetToolTip(this.coreLogEventsDiskCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
+        "ainly for debugging purposes).");
+            this.coreLogEventsDiskCheckBox.UseVisualStyleBackColor = true;
+            // 
             // coreSettingsGroupBox
             // 
-            this.coreSettingsGroupBox.Controls.Add(this.coreResetDefaultsCheckBox);
+            this.coreSettingsGroupBox.Controls.Add(this.coreResetAllButton);
+            this.coreSettingsGroupBox.Controls.Add(this.coreResetSettingsButton);
             this.coreSettingsGroupBox.Controls.Add(this.coreLoadSettingsButton);
             this.coreSettingsGroupBox.Controls.Add(this.coreSaveSettingsButton);
             this.coreSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.coreSettingsGroupBox.Location = new System.Drawing.Point(524, 283);
+            this.coreSettingsGroupBox.Location = new System.Drawing.Point(522, 195);
             this.coreSettingsGroupBox.Name = "coreSettingsGroupBox";
-            this.coreSettingsGroupBox.Size = new System.Drawing.Size(200, 84);
+            this.coreSettingsGroupBox.Size = new System.Drawing.Size(200, 172);
             this.coreSettingsGroupBox.TabIndex = 9;
             this.coreSettingsGroupBox.TabStop = false;
             this.coreSettingsGroupBox.Text = "Settings";
             // 
-            // coreResetDefaultsCheckBox
+            // coreResetAllButton
             // 
-            this.coreResetDefaultsCheckBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.coreResetDefaultsCheckBox.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.coreResetDefaultsCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.coreResetDefaultsCheckBox.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.coreResetDefaultsCheckBox.ForeColor = System.Drawing.Color.White;
-            this.coreResetDefaultsCheckBox.Location = new System.Drawing.Point(14, 49);
-            this.coreResetDefaultsCheckBox.Name = "coreResetDefaultsCheckBox";
-            this.coreResetDefaultsCheckBox.Size = new System.Drawing.Size(176, 28);
-            this.coreResetDefaultsCheckBox.TabIndex = 4;
-            this.coreResetDefaultsCheckBox.Text = "Reset ALL to defaults";
-            this.coreToolTip.SetToolTip(this.coreResetDefaultsCheckBox, "Reset all options to their defaults, \r\nincluding module options as well.");
-            this.coreResetDefaultsCheckBox.UseVisualStyleBackColor = false;
-            this.coreResetDefaultsCheckBox.Click += new System.EventHandler(this.coreResetDefaultsCheckBox_Click);
+            this.coreResetAllButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreResetAllButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreResetAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreResetAllButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreResetAllButton.ForeColor = System.Drawing.Color.White;
+            this.coreResetAllButton.Location = new System.Drawing.Point(11, 139);
+            this.coreResetAllButton.Name = "coreResetAllButton";
+            this.coreResetAllButton.Size = new System.Drawing.Size(176, 28);
+            this.coreResetAllButton.TabIndex = 4;
+            this.coreResetAllButton.Text = "Reset ALL SSB settings";
+            this.coreToolTip.SetToolTip(this.coreResetAllButton, "Reset all options to their defaults, \r\nincluding module options as well.");
+            this.coreResetAllButton.UseVisualStyleBackColor = false;
+            this.coreResetAllButton.Click += new System.EventHandler(this.coreResetAllButton_Click);
+            // 
+            // coreResetSettingsButton
+            // 
+            this.coreResetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreResetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.coreResetSettingsButton.Location = new System.Drawing.Point(11, 96);
+            this.coreResetSettingsButton.Name = "coreResetSettingsButton";
+            this.coreResetSettingsButton.Size = new System.Drawing.Size(176, 28);
+            this.coreResetSettingsButton.TabIndex = 9;
+            this.coreResetSettingsButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.coreResetSettingsButton, "Click this button to reset the SSB core options.");
+            this.coreResetSettingsButton.UseVisualStyleBackColor = false;
+            this.coreResetSettingsButton.Click += new System.EventHandler(this.coreResetSettingsButton_Click);
             // 
             // coreLoadSettingsButton
             // 
@@ -656,9 +789,9 @@
             this.coreLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.coreLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.coreLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.coreLoadSettingsButton.Location = new System.Drawing.Point(109, 16);
+            this.coreLoadSettingsButton.Location = new System.Drawing.Point(11, 59);
             this.coreLoadSettingsButton.Name = "coreLoadSettingsButton";
-            this.coreLoadSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.coreLoadSettingsButton.Size = new System.Drawing.Size(176, 28);
             this.coreLoadSettingsButton.TabIndex = 1;
             this.coreLoadSettingsButton.Text = "Load";
             this.coreToolTip.SetToolTip(this.coreLoadSettingsButton, "Load the current settings from the configuration file.");
@@ -671,85 +804,14 @@
             this.coreSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.coreSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.coreSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.coreSaveSettingsButton.Location = new System.Drawing.Point(15, 16);
+            this.coreSaveSettingsButton.Location = new System.Drawing.Point(11, 21);
             this.coreSaveSettingsButton.Name = "coreSaveSettingsButton";
-            this.coreSaveSettingsButton.Size = new System.Drawing.Size(79, 23);
+            this.coreSaveSettingsButton.Size = new System.Drawing.Size(176, 28);
             this.coreSaveSettingsButton.TabIndex = 8;
             this.coreSaveSettingsButton.Text = "Save";
             this.coreToolTip.SetToolTip(this.coreSaveSettingsButton, "Save the current settings to the configuration file.");
             this.coreSaveSettingsButton.UseVisualStyleBackColor = false;
             this.coreSaveSettingsButton.Click += new System.EventHandler(this.coreSaveSettingsButton_Click);
-            // 
-            // coreLogEventsDiskCheckBox
-            // 
-            this.coreLogEventsDiskCheckBox.AutoSize = true;
-            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(14, 236);
-            this.coreLogEventsDiskCheckBox.Name = "coreLogEventsDiskCheckBox";
-            this.coreLogEventsDiskCheckBox.Size = new System.Drawing.Size(153, 18);
-            this.coreLogEventsDiskCheckBox.TabIndex = 7;
-            this.coreLogEventsDiskCheckBox.Text = "Log SSB Events to Disk";
-            this.coreToolTip.SetToolTip(this.coreLogEventsDiskCheckBox, "Select whether you want key SSB events to be logged to\r\na log file on the disk (m" +
-        "ainly for debugging purposes).");
-            this.coreLogEventsDiskCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // coreEloCacheTextBox
-            // 
-            this.coreEloCacheTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.coreEloCacheTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.coreEloCacheTextBox.ForeColor = System.Drawing.Color.White;
-            this.coreEloCacheTextBox.Location = new System.Drawing.Point(14, 162);
-            this.coreEloCacheTextBox.MaxLength = 10;
-            this.coreEloCacheTextBox.Name = "coreEloCacheTextBox";
-            this.coreEloCacheTextBox.Size = new System.Drawing.Size(205, 22);
-            this.coreEloCacheTextBox.TabIndex = 5;
-            this.coreToolTip.SetToolTip(this.coreEloCacheTextBox, resources.GetString("coreEloCacheTextBox.ToolTip"));
-            this.coreEloCacheTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreEloCacheTextBox_Validating);
-            this.coreEloCacheTextBox.Validated += new System.EventHandler(this.coreEloCacheTextBox_Validated);
-            // 
-            // coreEloCacheLabel
-            // 
-            this.coreEloCacheLabel.AutoSize = true;
-            this.coreEloCacheLabel.Location = new System.Drawing.Point(11, 130);
-            this.coreEloCacheLabel.Name = "coreEloCacheLabel";
-            this.coreEloCacheLabel.Size = new System.Drawing.Size(187, 14);
-            this.coreEloCacheLabel.TabIndex = 4;
-            this.coreEloCacheLabel.Text = "Elo Cache Expiration [in minutes]";
-            this.coreToolTip.SetToolTip(this.coreEloCacheLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
-        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
-            // 
-            // coreOwnerNameLabel
-            // 
-            this.coreOwnerNameLabel.AutoSize = true;
-            this.coreOwnerNameLabel.Location = new System.Drawing.Point(340, 44);
-            this.coreOwnerNameLabel.Name = "coreOwnerNameLabel";
-            this.coreOwnerNameLabel.Size = new System.Drawing.Size(181, 14);
-            this.coreOwnerNameLabel.TabIndex = 3;
-            this.coreOwnerNameLabel.Text = "SSB Owner\'s QL Account Name";
-            this.coreToolTip.SetToolTip(this.coreOwnerNameLabel, resources.GetString("coreOwnerNameLabel.ToolTip"));
-            // 
-            // coreAccountNameTextBox
-            // 
-            this.coreAccountNameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.coreAccountNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.coreAccountNameTextBox.ForeColor = System.Drawing.Color.White;
-            this.coreAccountNameTextBox.Location = new System.Drawing.Point(14, 71);
-            this.coreAccountNameTextBox.MaxLength = 15;
-            this.coreAccountNameTextBox.Name = "coreAccountNameTextBox";
-            this.coreAccountNameTextBox.Size = new System.Drawing.Size(205, 22);
-            this.coreAccountNameTextBox.TabIndex = 1;
-            this.coreToolTip.SetToolTip(this.coreAccountNameTextBox, "Enter the name of the QL account that\r\nwill be running the bot. Do not include th" +
-        "e clan tag.\r\n");
-            this.coreAccountNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreAccountNameTextBox_Validating);
-            this.coreAccountNameTextBox.Validated += new System.EventHandler(this.coreAccountNameTextBox_Validated);
-            // 
-            // coreAccountNameLabel
-            // 
-            this.coreAccountNameLabel.AutoSize = true;
-            this.coreAccountNameLabel.Location = new System.Drawing.Point(11, 44);
-            this.coreAccountNameLabel.Name = "coreAccountNameLabel";
-            this.coreAccountNameLabel.Size = new System.Drawing.Size(132, 14);
-            this.coreAccountNameLabel.TabIndex = 0;
-            this.coreAccountNameLabel.Text = "SSB QL Account Name";
             // 
             // coreHeaderDescLabel
             // 
@@ -3498,6 +3560,18 @@
             this.banMAddBanGroupBox.TabStop = false;
             this.banMAddBanGroupBox.Text = "Add Ban";
             // 
+            // banMBanNoticeLabel
+            // 
+            this.banMBanNoticeLabel.AutoSize = true;
+            this.banMBanNoticeLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.banMBanNoticeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
+            this.banMBanNoticeLabel.Location = new System.Drawing.Point(6, 286);
+            this.banMBanNoticeLabel.Name = "banMBanNoticeLabel";
+            this.banMBanNoticeLabel.Size = new System.Drawing.Size(329, 42);
+            this.banMBanNoticeLabel.TabIndex = 19;
+            this.banMBanNoticeLabel.Text = "If server monitoring is active and the player you are adding\r\nis on the server, t" +
+    "hen the player will be kick banned\r\nimmediately without any notice or warning.";
+            // 
             // banMBanDurationTextBox
             // 
             this.banMBanDurationTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
@@ -3926,17 +4000,29 @@
             this.errorProvider.ContainerControl = this;
             this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
             // 
-            // banMBanNoticeLabel
+            // sysTrayIcon
             // 
-            this.banMBanNoticeLabel.AutoSize = true;
-            this.banMBanNoticeLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.banMBanNoticeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
-            this.banMBanNoticeLabel.Location = new System.Drawing.Point(6, 286);
-            this.banMBanNoticeLabel.Name = "banMBanNoticeLabel";
-            this.banMBanNoticeLabel.Size = new System.Drawing.Size(329, 42);
-            this.banMBanNoticeLabel.TabIndex = 19;
-            this.banMBanNoticeLabel.Text = "If server monitoring is active and the player you are adding\r\nis on the server, t" +
-    "hen the player will be kick banned\r\nimmediately without any notice or warning.";
+            this.sysTrayIcon.ContextMenuStrip = this.sysTrayContextMenuStrip;
+            this.sysTrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("sysTrayIcon.Icon")));
+            this.sysTrayIcon.Text = "SSB";
+            this.sysTrayIcon.Visible = true;
+            this.sysTrayIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sysTrayIcon_MouseClick);
+            // 
+            // sysTrayContextMenuStrip
+            // 
+            this.sysTrayContextMenuStrip.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sysTrayContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sysTrayExitMenuItem});
+            this.sysTrayContextMenuStrip.Name = "sysTrayContextMenuStrip";
+            this.sysTrayContextMenuStrip.ShowImageMargin = false;
+            this.sysTrayContextMenuStrip.Size = new System.Drawing.Size(128, 48);
+            // 
+            // sysTrayExitMenuItem
+            // 
+            this.sysTrayExitMenuItem.Name = "sysTrayExitMenuItem";
+            this.sysTrayExitMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.sysTrayExitMenuItem.Text = "Exit SSB";
+            this.sysTrayExitMenuItem.Click += new System.EventHandler(this.sysTrayExitMenuItem_Click);
             // 
             // UserInterface
             // 
@@ -3970,7 +4056,10 @@
             this.coreContainerGroupBox.ResumeLayout(false);
             this.coreContainerGroupBox.PerformLayout();
             this.coreCfgGroupBox.ResumeLayout(false);
-            this.coreCfgGroupBox.PerformLayout();
+            this.coreAccountGroupBox.ResumeLayout(false);
+            this.coreAccountGroupBox.PerformLayout();
+            this.coreInterfaceGroupBox.ResumeLayout(false);
+            this.coreInterfaceGroupBox.PerformLayout();
             this.coreSettingsGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).EndInit();
             this.modulesTab.ResumeLayout(false);
@@ -4091,6 +4180,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitCurrentQuitBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).EndInit();
+            this.sysTrayContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4148,7 +4238,7 @@
         private System.Windows.Forms.Button modAccDateSaveSettingsButton;
         private System.Windows.Forms.TextBox modAccDateAccAgeTextBox;
         private System.Windows.Forms.CheckBox modAccDateEnableCheckBox;
-        private System.Windows.Forms.Button coreResetDefaultsCheckBox;
+        private System.Windows.Forms.Button coreResetAllButton;
         private System.Windows.Forms.Button modAccDateResetSettingsButton;
         private System.Windows.Forms.GroupBox modAutoVoterContainerGroupBox;
         private System.Windows.Forms.CheckBox modAutoVoterEnableCheckBox;
@@ -4378,5 +4468,12 @@
         private System.Windows.Forms.Button banMDelExpiredBansButton;
         private System.Windows.Forms.Button usrMDelAllUsersButton;
         private System.Windows.Forms.Label banMBanNoticeLabel;
+        private System.Windows.Forms.NotifyIcon sysTrayIcon;
+        private System.Windows.Forms.GroupBox coreAccountGroupBox;
+        private System.Windows.Forms.GroupBox coreInterfaceGroupBox;
+        private System.Windows.Forms.CheckBox coreMinimizeToTrayCheckBox;
+        private System.Windows.Forms.Button coreResetSettingsButton;
+        private System.Windows.Forms.ContextMenuStrip sysTrayContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem sysTrayExitMenuItem;
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSB.Config;
+using SSB.Config.Core;
 using SSB.Core;
 using SSB.Database;
 using SSB.Enums;
@@ -40,7 +41,9 @@ namespace SSB.Ui
             InitializeComponent();
             titleBarVersionLabel.Text = string.Format("version {0}",
                 Helpers.GetVersion());
-
+            sysTrayIcon.Text = string.Format("SSB v{0}",
+                Helpers.GetVersion());
+            sysTrayIcon.Visible = false;
             _cfgHandler = new ConfigHandler();
             _ssb = ssb;
             _coreOptionsValidator = new CoreOptionsValidator();
@@ -516,11 +519,22 @@ namespace SSB.Ui
             }
         }
 
-        private void coreResetDefaultsCheckBox_Click(object sender, EventArgs e)
+        private void coreResetAllButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.RestoreDefaultConfiguration();
-            PopulateCoreOptionsUi();
+            PopulateAllUiTabs();
             ShowInfoMessage("All SSB settings were reset to their default values.",
+                "Defaults Loaded");
+        }
+
+        private void coreResetSettingsButton_Click(object sender, EventArgs e)
+        {
+            var coreOptions = _cfgHandler.Config.CoreOptions;
+            coreOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration();
+            PopulateCoreOptionsUi();
+            HandleCoreSettingsUpdate(coreOptions);
+            ShowInfoMessage("Core settings were reset to their default values.",
                 "Defaults Loaded");
         }
 
@@ -535,9 +549,11 @@ namespace SSB.Ui
                 coreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
                 coreOptions.hideAllQlConsoleText = coreHideQlConsoleCheckBox.Checked;
                 coreOptions.logSsbEventsToDisk = coreLogEventsDiskCheckBox.Checked;
+                coreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
                 coreOptions.owner = coreOwnerNameTextBox.Text;
                 _cfgHandler.WriteConfiguration();
-                ShowInfoMessage("Core options settings saved.", "Settings Saved");
+                HandleCoreSettingsUpdate(coreOptions);
+                ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
             else
             {
@@ -554,6 +570,16 @@ namespace SSB.Ui
 
             if (!_ssb.IsMonitoringServer) return;
             await _ssb.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
+        }
+
+        private void HandleCoreSettingsUpdate(CoreOptions coreOptions)
+        {
+            //TODO: only the accountname might be needed here instead of coreOptions reference
+            // Go into effect now
+            _ssb.AccountName = coreOptions.accountName;
+            // ReSharper disable once UnusedVariable
+            // Add the owner (via constructor)
+            var userDb = new DbUsers();
         }
 
         private async Task HandleEloLimitModActivation(bool isActiveInUi)
@@ -611,8 +637,11 @@ namespace SSB.Ui
             if (!isActiveInUi)
             {
                 _ssb.Mod.Pickup.Active = false;
-                _ssb.Mod.Pickup.Manager.ResetPickupStatus();
-                await _ssb.QlCommands.SendToQlAsync("unlock", false);
+                if (_ssb.IsMonitoringServer)
+                {
+                    _ssb.Mod.Pickup.Manager.ResetPickupStatus();
+                    await _ssb.QlCommands.SendToQlAsync("unlock", false);
+                }
             }
         }
 
@@ -629,6 +658,12 @@ namespace SSB.Ui
         private void minimizeButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
+            _cfgHandler.ReadConfiguration();
+            if (_cfgHandler.Config.CoreOptions.minimizeToTray)
+            {
+                Hide();
+                sysTrayIcon.Visible = true;
+            }
         }
 
         private void modAccDateAccAgeTextBox_Validated(object sender, EventArgs e)
@@ -1686,6 +1721,7 @@ namespace SSB.Ui
             coreEloCacheTextBox.Text = coreOptions.eloCacheExpiration.ToString();
             coreHideQlConsoleCheckBox.Checked = coreOptions.hideAllQlConsoleText;
             coreLogEventsDiskCheckBox.Checked = coreOptions.logSsbEventsToDisk;
+            coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
             Debug.WriteLine("[UI]: Populated core options user interface.");
         }
@@ -1812,6 +1848,25 @@ namespace SSB.Ui
                 Color.FromArgb(62, 234, 246, 255), 1, ButtonBorderStyle.Solid,
                 Color.Black, 0, ButtonBorderStyle.Solid,
                 Color.Black, 0, ButtonBorderStyle.Solid);
+        }
+
+        private void sysTrayExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void sysTrayIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Show();
+                sysTrayIcon.Visible = false;
+                WindowState = FormWindowState.Normal;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                sysTrayContextMenuStrip.Show();
+            }
         }
 
         private void UiTabCtl_SelectedIndexChanged(object sender, EventArgs e)

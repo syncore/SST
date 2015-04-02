@@ -17,7 +17,6 @@ namespace SSB.Util
     public class QlRanksHelper
     {
         private readonly DbElo _eloDb;
-        private readonly uint _eloExpirationMins;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QlRanksHelper"/> class.
@@ -25,7 +24,6 @@ namespace SSB.Util
         public QlRanksHelper()
         {
             _eloDb = new DbElo();
-            _eloExpirationMins = GetExpirationFromConfig();
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace SSB.Util
         {
             if (!DoesCachedEloExist(user)) return true;
             var edata = _eloDb.GetEloData(user);
-            return DateTime.Now > edata.LastUpdatedDate.AddMinutes(_eloExpirationMins);
+            return DateTime.Now > edata.LastUpdatedDate.AddMinutes(GetExpirationFromConfig());
         }
 
         /// <summary>
