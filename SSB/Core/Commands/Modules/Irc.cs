@@ -234,17 +234,14 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.IrcOptions.isActive = true;
-            }
-            else
-            {
-                //_configHandler.Config.IrcOptions.SetDefaults();
-                _configHandler.Config.IrcOptions.isActive = false;
-            }
+
+            _configHandler.Config.IrcOptions.isActive = active;
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModIrcUi();
         }
 
         /// <summary>

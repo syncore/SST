@@ -339,25 +339,24 @@ namespace SSB.Core.Commands.Modules
         /// </param>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.PickupOptions.isActive = true;
-                _configHandler.Config.PickupOptions.teamSize = Teamsize;
-                _configHandler.Config.PickupOptions.maxNoShowsPerPlayer = MaxNoShowsPerPlayer;
-                _configHandler.Config.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
-                _configHandler.Config.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
-                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
-                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex = ExcessiveNoShowBanTimeScaleIndex;
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex = ExcessiveSubUseBanTimeScaleIndex;
-            }
-            else
-            {
-                _configHandler.Config.PickupOptions.SetDefaults();
-            }
+
+            _configHandler.Config.PickupOptions.isActive = active;
+            _configHandler.Config.PickupOptions.teamSize = Teamsize;
+            _configHandler.Config.PickupOptions.maxNoShowsPerPlayer = MaxNoShowsPerPlayer;
+            _configHandler.Config.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
+            _configHandler.Config.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
+            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
+            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex = ExcessiveNoShowBanTimeScaleIndex;
+            _configHandler.Config.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
+            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
+            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex = ExcessiveSubUseBanTimeScaleIndex;
+            
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModPickupUi();
         }
 
         /// <summary>

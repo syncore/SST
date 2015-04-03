@@ -241,18 +241,17 @@ namespace SSB.Core.Commands.Modules
         /// </summary>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.MotdOptions.isActive = true;
-                _configHandler.Config.MotdOptions.message = Message;
-                _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
-            }
-            else
-            {
-                _configHandler.Config.MotdOptions.SetDefaults();
-            }
+
+            _configHandler.Config.MotdOptions.isActive = active;
+            _configHandler.Config.MotdOptions.message = Message;
+            _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
+            
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModMotdUi();
         }
 
         /// <summary>

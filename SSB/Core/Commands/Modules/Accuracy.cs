@@ -202,15 +202,12 @@ namespace SSB.Core.Commands.Modules
         public void UpdateConfig(bool active)
         {
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.AccuracyOptions.isActive = true;
-            }
-            else
-            {
-                _configHandler.Config.AccuracyOptions.SetDefaults();
-            }
+
+            _configHandler.Config.AccuracyOptions.isActive = active;
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModAccuracyUi();
         }
 
         /// <summary>

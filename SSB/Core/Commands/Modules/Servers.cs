@@ -232,25 +232,21 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         ///     Updates the configuration.
         /// </summary>
-        /// if set to
-        /// <c>true</c>
-        /// then the module is to remain active; otherwise it is to be disabled when
-        /// updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active;
+        ///  otherwise it is to be disabled when updating the configuration.
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.ServersOptions.isActive = true;
-                _configHandler.Config.ServersOptions.maxServers = MaxServersToDisplay;
-                _configHandler.Config.ServersOptions.timeBetweenQueries = TimeBetweenQueries;
-            }
-            else
-            {
-                _configHandler.Config.ServersOptions.SetDefaults();
-            }
+
+            _configHandler.Config.ServersOptions.isActive = active;
+            _configHandler.Config.ServersOptions.maxServers = MaxServersToDisplay;
+            _configHandler.Config.ServersOptions.timeBetweenQueries = TimeBetweenQueries;
 
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModServerListUi();
         }
 
         /// <summary>

@@ -134,31 +134,37 @@ namespace SSB.Ui
         {
             _cfgHandler.ReadConfiguration();
             var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-            modEloLimiterEnableCheckBox.Checked = eloLimitOptions.isActive;
-            modEloLimiterMinEloTextBox.Text = eloLimitOptions.minimumRequiredElo.ToString();
-            modEloLimiterMaxEloTextBox.Text = ((eloLimitOptions.maximumRequiredElo == 0)
-                ? string.Empty
-                : eloLimitOptions.maximumRequiredElo.ToString());
+            modEloLimiterEnableCheckBox.InvokeIfRequired(c => { c.Checked = eloLimitOptions.isActive; });
+            modEloLimiterMinEloTextBox.InvokeIfRequired(
+                c => { c.Text = eloLimitOptions.minimumRequiredElo.ToString(); });
+            modEloLimiterMaxEloTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = ((eloLimitOptions.maximumRequiredElo == 0)
+                    ? string.Empty
+                    : eloLimitOptions.maximumRequiredElo.ToString());
+            });
             Debug.WriteLine("[UI]: Populated Elo limiter module user interface.");
         }
 
         public void PopulateModIrcUi()
         {
             var ircOptions = _cfgHandler.Config.IrcOptions;
-            modIRCEnableCheckBox.Checked = ircOptions.isActive;
-            modIRCAdminNameTextBox.Text = ircOptions.ircAdminNickname;
-            modIRCBotNickNameTextBox.Text = ircOptions.ircNickName;
-            modIRCBotUserNameTextBox.Text = ircOptions.ircUserName;
-            modIRCQNetUserNameTextBox.Text = ircOptions.ircNickServiceUsername;
-            modIRCQNetPassTextBox.Text = ircOptions.ircNickServicePassword;
-            modIRCQNetAutoAuthCheckBox.Checked = ircOptions.autoAuthWithNickService;
-            modIRCQNetHideHostCheckBox.Checked = ircOptions.hideHostnameOnQuakeNet;
-            modIRCServerAddressTextBox.Text = ircOptions.ircServerAddress;
-            modIRCServerPortTextBox.Text = ircOptions.ircServerPort.ToString();
-            modIRCServerPassTextBox.Text = ircOptions.ircServerPassword;
-            modIRCChannelTextBox.Text = ircOptions.ircChannel;
-            modIRCChannelKeyTextBox.Text = ircOptions.ircChannelKey;
-            modIRCAutoConnectCheckBox.Checked = ircOptions.autoConnectOnStart;
+            modIRCEnableCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.isActive; });
+            modIRCAdminNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircAdminNickname; });
+            modIRCBotNickNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickName; });
+            modIRCBotUserNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircUserName; });
+            modIRCQNetUserNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickServiceUsername; });
+            modIRCQNetPassTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickServicePassword; });
+            modIRCQNetAutoAuthCheckBox.InvokeIfRequired(
+                c => { c.Checked = ircOptions.autoAuthWithNickService; });
+            modIRCQNetHideHostCheckBox.InvokeIfRequired(
+                c => { c.Checked = ircOptions.hideHostnameOnQuakeNet; });
+            modIRCServerAddressTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerAddress; });
+            modIRCServerPortTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerPort.ToString(); });
+            modIRCServerPassTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerPassword; });
+            modIRCChannelTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannel; });
+            modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
+            modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
             Debug.WriteLine("[UI]: Populated IRC module user interface.");
         }
 
@@ -166,9 +172,9 @@ namespace SSB.Ui
         {
             _cfgHandler.ReadConfiguration();
             var motdOptions = _cfgHandler.Config.MotdOptions;
-            modMOTDEnableCheckBox.Checked = motdOptions.isActive;
-            modMOTDRepeatTimeTextBox.Text = motdOptions.repeatInterval.ToString();
-            modMOTDRepeatMsgTextBox.Text = motdOptions.message;
+            modMOTDEnableCheckBox.InvokeIfRequired(c => { c.Checked = motdOptions.isActive; });
+            modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
+            modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
             Debug.WriteLine("[UI]: Populated MOTD module user interface.");
         }
 
@@ -176,19 +182,34 @@ namespace SSB.Ui
         {
             _cfgHandler.ReadConfiguration();
             var pickupOptions = _cfgHandler.Config.PickupOptions;
-            modPickupEnableCheckBox.Checked = pickupOptions.isActive;
-            modPickupMaxSubsTextBox.Text = pickupOptions.maxSubsPerPlayer.ToString();
-            modPickupMaxNoShowsTextBox.Text = pickupOptions.maxNoShowsPerPlayer.ToString();
-            modPickupPlayersPerTeamTextBox.Text = pickupOptions.teamSize.ToString();
-            modPickupNoShowsTimeBanTextBox.Text = pickupOptions.excessiveNoShowBanTime.
-                ToString(CultureInfo.InvariantCulture);
-            modPickupSubsTimeBanTextBox.Text = pickupOptions.excessiveSubUseBanTime.
-                ToString(CultureInfo.InvariantCulture);
-            modPickupSubsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
-            modPickupNoShowsTimeBanScaleComboBox.DataSource = Helpers.ValidTimeScales;
-            modPickupSubsTimeBanScaleComboBox.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex;
-            modPickupNoShowsTimeBanScaleComboBox.SelectedIndex =
-                pickupOptions.excessiveNoShowBanTimeScaleIndex;
+            modPickupEnableCheckBox.InvokeIfRequired(c => { c.Checked = pickupOptions.isActive; });
+            modPickupMaxSubsTextBox.InvokeIfRequired(
+                c => { c.Text = pickupOptions.maxSubsPerPlayer.ToString(); });
+            modPickupMaxNoShowsTextBox.InvokeIfRequired(
+                c => { c.Text = pickupOptions.maxNoShowsPerPlayer.ToString(); });
+            modPickupPlayersPerTeamTextBox.InvokeIfRequired(
+                c => { c.Text = pickupOptions.teamSize.ToString(); });
+            modPickupNoShowsTimeBanTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = pickupOptions.excessiveNoShowBanTime.
+                    ToString(CultureInfo.InvariantCulture);
+            });
+            modPickupSubsTimeBanTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = pickupOptions.excessiveSubUseBanTime.
+                    ToString(CultureInfo.InvariantCulture);
+            });
+            modPickupSubsTimeBanScaleComboBox.InvokeIfRequired(
+                c => { c.DataSource = Helpers.ValidTimeScales; });
+            modPickupNoShowsTimeBanScaleComboBox.InvokeIfRequired(
+                c => { c.DataSource = Helpers.ValidTimeScales; });
+            modPickupSubsTimeBanScaleComboBox.InvokeIfRequired(
+                c => { c.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex; });
+            modPickupNoShowsTimeBanScaleComboBox.InvokeIfRequired(c =>
+            {
+                c.SelectedIndex =
+                    pickupOptions.excessiveNoShowBanTimeScaleIndex;
+            });
             Debug.WriteLine("[UI]: Populated pickup module user interface.");
         }
 
@@ -196,10 +217,14 @@ namespace SSB.Ui
         {
             _cfgHandler.ReadConfiguration();
             var serverListOptions = _cfgHandler.Config.ServersOptions;
-            modServerListEnableCheckBox.Checked = serverListOptions.isActive;
-            modServerListMaxServersTextBox.Text = serverListOptions.maxServers.ToString();
-            modServerListTimeBetweenTextBox.Text = serverListOptions.timeBetweenQueries.ToString(
-                CultureInfo.InvariantCulture);
+            modServerListEnableCheckBox.InvokeIfRequired(c => { c.Checked = serverListOptions.isActive; });
+            modServerListMaxServersTextBox.InvokeIfRequired(
+                c => { c.Text = serverListOptions.maxServers.ToString(); });
+            modServerListTimeBetweenTextBox.InvokeIfRequired(c =>
+            {
+                c.Text = serverListOptions.timeBetweenQueries.ToString(
+                    CultureInfo.InvariantCulture);
+            });
             Debug.WriteLine("[UI]: Populated server list module user interface.");
         }
 
@@ -207,8 +232,8 @@ namespace SSB.Ui
         {
             // Specfically leave out user levels of None and Owner type.
             UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
-            usrMUserAccessComboBox.DataSource = levels;
-            usrMUserAccessComboBox.SelectedIndex = 0;
+            usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
+            usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SSB users listbox
             RefreshCurrentSsbUsersDataSource();
             Debug.WriteLine("[UI]: Populated user management user interface.");
@@ -574,7 +599,6 @@ namespace SSB.Ui
 
         private void HandleCoreSettingsUpdate(CoreOptions coreOptions)
         {
-            //TODO: only the accountname might be needed here instead of coreOptions reference
             // Go into effect now
             _ssb.AccountName = coreOptions.accountName;
             // ReSharper disable once UnusedVariable

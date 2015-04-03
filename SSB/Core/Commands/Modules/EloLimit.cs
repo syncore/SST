@@ -314,19 +314,17 @@ namespace SSB.Core.Commands.Modules
         /// </param>
         public void UpdateConfig(bool active)
         {
+            // Go into effect now
             Active = active;
-            if (active)
-            {
-                _configHandler.Config.EloLimitOptions.isActive = true;
-                _configHandler.Config.EloLimitOptions.maximumRequiredElo = MaximumRequiredElo;
-                _configHandler.Config.EloLimitOptions.minimumRequiredElo = MinimumRequiredElo;
-            }
-            else
-            {
-                _configHandler.Config.EloLimitOptions.SetDefaults();
-            }
+
+            _configHandler.Config.EloLimitOptions.isActive = active;
+            _configHandler.Config.EloLimitOptions.maximumRequiredElo = MaximumRequiredElo;
+            _configHandler.Config.EloLimitOptions.minimumRequiredElo = MinimumRequiredElo;
 
             _configHandler.WriteConfiguration();
+
+            // Reflect changes in UI
+            _ssb.UserInterface.PopulateModEloLimiterUi();
         }
 
         /// <summary>
