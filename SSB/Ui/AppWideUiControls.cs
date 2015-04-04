@@ -5,7 +5,7 @@ namespace SSB.Ui
 {
     /// <summary>
     ///     Class that holds references to some of the selected UI controls in
-    ///  UserInterface.cs, allowing access from other classes.
+    ///     UserInterface.cs, allowing access from other classes.
     /// </summary>
     public class AppWideUiControls
     {
@@ -23,7 +23,7 @@ namespace SSB.Ui
         /// <value>
         ///     The monitoring status bar label.
         /// </value>
-        public ToolStripStatusLabel MonitoringStatusBar { get; set; }
+        public Label MonitoringLabel { get; set; }
 
         /// <summary>
         ///     Gets or sets the 'start monitoring' button.
@@ -55,12 +55,16 @@ namespace SSB.Ui
             StartMonitoringButton.InvokeIfRequired(c => { c.Enabled = !isMonitoring; });
             StopMonitoringButton.InvokeIfRequired(c => { c.Enabled = isMonitoring; });
 
-            // Invoke not required for ToolStripStatusLabel
-            MonitoringStatusBar.Text = string.Format("{0}", (isMonitoring) ? string.Format(
-                    "Monitoring server at http://www.quakelive.com/#!join/{0}",
-                    (string.IsNullOrEmpty(serverId)
-                        ? "..."
-                        : serverId)) : "Not monitoring a server");
+            MonitoringLabel.InvokeIfRequired(c =>
+            {
+                c.Text = string.Format("{0}", (isMonitoring)
+                    ? string.Format(
+                        "Monitoring server at http://www.quakelive.com/#!join/{0}",
+                        (string.IsNullOrEmpty(serverId)
+                            ? "..."
+                            : serverId))
+                    : "Not monitoring a server");
+            });
         }
     }
 }

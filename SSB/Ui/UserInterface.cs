@@ -50,6 +50,7 @@ namespace SSB.Ui
                 Helpers.GetVersion());
             sysTrayIcon.Text = string.Format("SSB v{0}",
                 Helpers.GetVersion());
+            abtVersLabel.Text = Helpers.GetVersion();
             sysTrayIcon.Visible = false;
             _cfgHandler = new ConfigHandler();
             _ssb = ssb;
@@ -91,7 +92,7 @@ namespace SSB.Ui
             modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = acctDateOptions.isActive; });
             modAccDateAccAgeTextBox.InvokeIfRequired(
                 c => { c.Text = acctDateOptions.minimumDaysRequired.ToString(); });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated account date limiter module user interface.");
         }
 
@@ -103,7 +104,7 @@ namespace SSB.Ui
             _cfgHandler.ReadConfiguration();
             modAccuracyEnableCheckBox.InvokeIfRequired(
                 c => { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated accuracy display module user interface.");
         }
 
@@ -128,7 +129,7 @@ namespace SSB.Ui
             });
             // Current votes listbox
             RefreshCurrentVotesDataSource();
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated auto voter module user interface.");
         }
 
@@ -152,7 +153,7 @@ namespace SSB.Ui
 
             // Current early quitters listbox
             RefreshCurrentQuittersDataSource();
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated early quit banner module user interface.");
         }
 
@@ -172,7 +173,7 @@ namespace SSB.Ui
                     ? string.Empty
                     : eloLimitOptions.maximumRequiredElo.ToString());
             });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated Elo limiter module user interface.");
         }
 
@@ -198,7 +199,7 @@ namespace SSB.Ui
             modIRCChannelTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannel; });
             modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
             modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated IRC module user interface.");
         }
 
@@ -212,7 +213,7 @@ namespace SSB.Ui
             modMOTDEnableCheckBox.InvokeIfRequired(c => { c.Checked = motdOptions.isActive; });
             modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
             modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated MOTD module user interface.");
         }
 
@@ -251,7 +252,7 @@ namespace SSB.Ui
                 c.SelectedIndex =
                     pickupOptions.excessiveNoShowBanTimeScaleIndex;
             });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated pickup module user interface.");
         }
 
@@ -270,7 +271,7 @@ namespace SSB.Ui
                 c.Text = serverListOptions.timeBetweenQueries.ToString(
                     CultureInfo.InvariantCulture);
             });
-            UpdateActiveModulesStatusBarText();
+            UpdateActiveModulesStatusText();
             Debug.WriteLine("[UI]: Populated server list module user interface.");
         }
 
@@ -280,7 +281,7 @@ namespace SSB.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
+            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SSB users listbox
@@ -419,7 +420,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
+            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
             banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
@@ -500,7 +501,7 @@ namespace SSB.Ui
 
             var banDb = new DbBans();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -629,11 +630,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the coreLoadSettingsButton control.
+        ///     Handles the Click event of the coreLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreLoadSettingsButton_Click(object sender, EventArgs e)
+        private void coreLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateCoreOptionsUi();
             ShowInfoMessage("Core options settings loaded.", "Settings Loaded");
@@ -699,11 +700,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the coreResetSettingsButton control.
+        ///     Handles the Click event of the coreResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreResetSettingsButton_Click(object sender, EventArgs e)
+        private void coreResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var coreOptions = _cfgHandler.Config.CoreOptions;
             coreOptions.SetDefaults();
@@ -715,11 +716,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the coreSaveSettingsButton control.
+        ///     Handles the Click event of the coreSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreSaveSettingsButton_Click(object sender, EventArgs e)
+        private void coreSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -734,7 +735,6 @@ namespace SSB.Ui
                 coreOptions.owner = coreOwnerNameTextBox.Text;
                 _cfgHandler.WriteConfiguration();
                 HandleCoreSettingsUpdate(coreOptions);
-                UpdateAccountInfoStatusBarText();
                 ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
             else
@@ -878,10 +878,10 @@ namespace SSB.Ui
         ///     is enabled in the UI.
         /// </param>
         /// <remarks>
-        /// This is the module activation method used for modules that do not
-        /// require any special actions (i.e. initilization methods)
-        /// to occur when being enabled or and do not require async.
-        /// Currently these are: acc, autovoter, earlyquit, servers.
+        ///     This is the module activation method used for modules that do not
+        ///     require any special actions (i.e. initilization methods)
+        ///     to occur when being enabled or and do not require async.
+        ///     Currently these are: acc, autovoter, earlyquit, servers.
         /// </remarks>
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
@@ -938,22 +938,22 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccDateLoadSettingsButton control.
+        ///     Handles the Click event of the modAccDateLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAccDateLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modAccDateLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAccountDateUi();
             ShowInfoMessage("Account date limiter settings loaded.", "Settings Loaded");
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccDateResetSettingsButton control.
+        ///     Handles the Click event of the modAccDateResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modAccDateResetSettingsButton_Click(object sender, EventArgs e)
+        private async void modAccDateResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var accountDateOptions = _cfgHandler.Config.AccountDateOptions;
             accountDateOptions.SetDefaults();
@@ -967,11 +967,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccDateSaveSettingsButton control.
+        ///     Handles the Click event of the modAccDateSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modAccDateSaveSettingsButton_Click(object sender, EventArgs e)
+        private async void modAccDateSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -981,7 +981,7 @@ namespace SSB.Ui
                 acctDateOptions.minimumDaysRequired = minAccountAge;
                 _cfgHandler.WriteConfiguration();
                 await HandleAccountDateModActivation(acctDateOptions.isActive, minAccountAge);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
             }
             else
@@ -991,22 +991,22 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccuracyLoadSettingsButton control.
+        ///     Handles the Click event of the modAccuracyLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAccuracyLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modAccuracyLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAccuracyUi();
             ShowInfoMessage("Accuracy display settings loaded.", "Settings Loaded");
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccuracyResetSettingsButton control.
+        ///     Handles the Click event of the modAccuracyResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAccuracyResetSettingsButton_Click(object sender, EventArgs e)
+        private void modAccuracyResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
             accuracyOptions.SetDefaults();
@@ -1018,11 +1018,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAccuracySaveSettingsButton control.
+        ///     Handles the Click event of the modAccuracySaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAccuracySaveSettingsButton_Click(object sender, EventArgs e)
+        private void modAccuracySaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -1030,7 +1030,7 @@ namespace SSB.Ui
                 accuracyOptions.isActive = modAccuracyEnableCheckBox.Checked;
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Accuracy display settings saved.", "Settings Saved");
             }
             else
@@ -1121,7 +1121,7 @@ namespace SSB.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Debug.WriteLine("[UI]: Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -1136,11 +1136,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAutoVoterLoadSettingsButton control.
+        ///     Handles the Click event of the modAutoVoterLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAutoVoterLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modAutoVoterLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAutoVoterUi();
             ShowInfoMessage("Auto voter display settings loaded.", "Settings Loaded");
@@ -1167,11 +1167,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAutoVoterResetSettingsButton control.
+        ///     Handles the Click event of the modAutoVoterResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAutoVoterResetSettingsButton_Click(object sender, EventArgs e)
+        private void modAutoVoterResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
             autoVoterOptions.SetDefaults();
@@ -1183,11 +1183,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modAutoVoterSaveSettingsButton control.
+        ///     Handles the Click event of the modAutoVoterSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modAutoVoterSaveSettingsButton_Click(object sender, EventArgs e)
+        private void modAutoVoterSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -1196,7 +1196,7 @@ namespace SSB.Ui
                 autoVoterOptions.autoVotes = _ssb.Mod.AutoVoter.AutoVotes;
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Auto voter settings saved.", "Settings Saved");
             }
             else
@@ -1229,7 +1229,7 @@ namespace SSB.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter)p;
+                var player = (EarlyQuitter) p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
             }
@@ -1251,7 +1251,7 @@ namespace SSB.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1280,7 +1280,7 @@ namespace SSB.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1304,11 +1304,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEarlyQuitLoadSettingsButton control.
+        ///     Handles the Click event of the modEarlyQuitLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modEarlyQuitLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modEarlyQuitLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModEarlyQuitUi();
             ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
@@ -1341,11 +1341,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEarlyQuitResetSettingsButton control.
+        ///     Handles the Click event of the modEarlyQuitResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modEarlyQuitResetSettingsButton_Click(object sender, EventArgs e)
+        private void modEarlyQuitResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
             earlyQuitOptions.SetDefaults();
@@ -1357,11 +1357,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEarlyQuitSaveSettingsButton control.
+        ///     Handles the Click event of the modEarlyQuitSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modEarlyQuitSaveSettingsButton_Click(object sender, EventArgs e)
+        private void modEarlyQuitSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -1369,7 +1369,7 @@ namespace SSB.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
 
@@ -1380,7 +1380,7 @@ namespace SSB.Ui
                 _ssb.Mod.EarlyQuit.BanTimeScaleIndex = earlyQuitOptions.banTimeScaleIndex;
 
                 HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
             }
             else
@@ -1416,11 +1416,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEloLimiterLoadSettingsButton control.
+        ///     Handles the Click event of the modEloLimiterLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modEloLimiterLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modEloLimiterLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModEloLimiterUi();
             ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
@@ -1479,11 +1479,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEloLimiterResetSettingsButton control.
+        ///     Handles the Click event of the modEloLimiterResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modEloLimiterResetSettingsButton_Click(object sender, EventArgs e)
+        private async void modEloLimiterResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
             eloLimitOptions.SetDefaults();
@@ -1495,11 +1495,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modEloLimiterSaveSettingsButton control.
+        ///     Handles the Click event of the modEloLimiterSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modEloLimiterSaveSettingsButton_Click(object sender, EventArgs e)
+        private async void modEloLimiterSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -1532,7 +1532,7 @@ namespace SSB.Ui
                 _ssb.Mod.EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
 
                 await HandleEloLimitModActivation(eloLimitOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
             }
             else
@@ -1685,11 +1685,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modIRCLoadSettingsButton control.
+        ///     Handles the Click event of the modIRCLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modIRCLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modIRCLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModIrcUi();
             ShowInfoMessage("IRC settings loaded.", "Settings Loaded");
@@ -1748,11 +1748,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modIRCResetSettingsButton control.
+        ///     Handles the Click event of the modIRCResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modIRCResetSettingsButton_Click(object sender, EventArgs e)
+        private void modIRCResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var ircOptions = _cfgHandler.Config.IrcOptions;
             ircOptions.SetDefaults();
@@ -1764,11 +1764,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modIRCSaveSettingsButton control.
+        ///     Handles the Click event of the modIRCSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modIRCSaveSettingsButton_Click(object sender, EventArgs e)
+        private void modIRCSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -1822,7 +1822,7 @@ namespace SSB.Ui
                 _ssb.Mod.Irc.IrcManager.IrcSettings.hideHostnameOnQuakeNet = ircOptions.hideHostnameOnQuakeNet;
 
                 HandleIrcModActivation(ircOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("IRC settings saved.", "Settings Saved");
             }
             else
@@ -1910,11 +1910,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modMOTDLoadSettingsButton control.
+        ///     Handles the Click event of the modMOTDLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modMOTDLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modMOTDLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModMotdUi();
             ShowInfoMessage("MOTD settings loaded.", "Settings Loaded");
@@ -1977,11 +1977,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modMOTDResetSettingsButton control.
+        ///     Handles the Click event of the modMOTDResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modMOTDResetSettingsButton_Click(object sender, EventArgs e)
+        private void modMOTDResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var motdOptions = _cfgHandler.Config.MotdOptions;
             motdOptions.SetDefaults();
@@ -1993,11 +1993,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modMOTDSaveSettingsButton control.
+        ///     Handles the Click event of the modMOTDSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modMOTDSaveSettingsButton_Click(object sender, EventArgs e)
+        private void modMOTDSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -2007,7 +2007,7 @@ namespace SSB.Ui
                 motdOptions.message = modMOTDRepeatMsgTextBox.Text;
                 _cfgHandler.WriteConfiguration();
                 HandleMotdModActivation(motdOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("MOTD settings saved.", "Settings Saved");
             }
             else
@@ -2017,11 +2017,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modPickupLoadSettingsButton control.
+        ///     Handles the Click event of the modPickupLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modPickupLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modPickupLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModPickupUi();
             ShowInfoMessage("Pickup settings loaded.", "Settings Loaded");
@@ -2140,11 +2140,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modPickupResetSettingsButton control.
+        ///     Handles the Click event of the modPickupResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modPickupResetSettingsButton_Click(object sender, EventArgs e)
+        private async void modPickupResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var pickupOptions = _cfgHandler.Config.PickupOptions;
             pickupOptions.SetDefaults();
@@ -2156,11 +2156,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modPickupSaveSettingsButton control.
+        ///     Handles the Click event of the modPickupSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private async void modPickupSaveSettingsButton_Click(object sender, EventArgs e)
+        private async void modPickupSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -2171,9 +2171,9 @@ namespace SSB.Ui
                 pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
                 pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
                 pickupOptions.excessiveSubUseBanTimeScale =
-                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveNoShowBanTimeScale =
-                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
                 pickupOptions.excessiveNoShowBanTimeScaleIndex =
@@ -2195,7 +2195,7 @@ namespace SSB.Ui
                 _ssb.Mod.Pickup.Teamsize = pickupOptions.teamSize;
 
                 await HandlePickupModActivation(pickupOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Pickup settings saved.", "Settings Saved");
             }
             else
@@ -2233,11 +2233,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modServerListLoadSettingsButton control.
+        ///     Handles the Click event of the modServerListLoadSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modServerListLoadSettingsButton_Click(object sender, EventArgs e)
+        private void modServerListLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModServerListUi();
             ShowInfoMessage("Server list settings loaded.", "Settings Loaded");
@@ -2272,11 +2272,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modServerListResetSettingsButton control.
+        ///     Handles the Click event of the modServerListResetSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modServerListResetSettingsButton_Click(object sender, EventArgs e)
+        private void modServerListResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var serverListOptions = _cfgHandler.Config.ServersOptions;
             serverListOptions.SetDefaults();
@@ -2288,11 +2288,11 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Click event of the modServerListSaveSettingsButton control.
+        ///     Handles the Click event of the modServerListSaveSettingsPictureBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void modServerListSaveSettingsButton_Click(object sender, EventArgs e)
+        private void modServerListSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
@@ -2307,7 +2307,7 @@ namespace SSB.Ui
                 _ssb.Mod.Servers.MaxServersToDisplay = serverListOptions.maxServers;
 
                 HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
-                UpdateActiveModulesStatusBarText();
+                UpdateActiveModulesStatusText();
                 ShowInfoMessage("Server list settings saved.", "Settings Saved");
             }
             else
@@ -2411,7 +2411,6 @@ namespace SSB.Ui
             coreLogEventsDiskCheckBox.Checked = coreOptions.logSsbEventsToDisk;
             coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
-            UpdateAccountInfoStatusBarText();
             Debug.WriteLine("[UI]: Populated core options user interface.");
         }
 
@@ -2422,7 +2421,7 @@ namespace SSB.Ui
         private void SetAppWideUiControls()
         {
             _ssb.AppWideUiControls.LogConsoleTextBox = logConsoleTextBox;
-            _ssb.AppWideUiControls.MonitoringStatusBar = monitoringStatusLabel;
+            _ssb.AppWideUiControls.MonitoringLabel = monitorStatusLabel;
             _ssb.AppWideUiControls.StartMonitoringButton = ssbStartButton;
             _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
         }
@@ -2458,16 +2457,6 @@ namespace SSB.Ui
         {
             MessageBox.Show(text, title,
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        /// <summary>
-        ///     Handles the Click event of the ssbExitButton control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void ssbExitButton_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         /// <summary>
@@ -2566,19 +2555,18 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Handles the Paint event of the statusBar control.
+        ///     Handles the Paint event of the statusPanel control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="PaintEventArgs" /> instance containing the event data.</param>
-        private void statusBar_Paint(object sender, PaintEventArgs e)
+        private void statusPanel_Paint(object sender, PaintEventArgs e)
         {
             // left, top, right, bottom
-            // draw a light border at the top of the status bar
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
-                Color.Black, 0, ButtonBorderStyle.Solid,
+                Color.FromArgb(0, 0, 0), 0, ButtonBorderStyle.Solid,
                 Color.FromArgb(62, 234, 246, 255), 1, ButtonBorderStyle.Solid,
-                Color.Black, 0, ButtonBorderStyle.Solid,
-                Color.Black, 0, ButtonBorderStyle.Solid);
+                Color.FromArgb(0, 0, 0), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(0, 0, 0), 1, ButtonBorderStyle.Solid);
         }
 
         /// <summary>
@@ -2632,23 +2620,29 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Updates the account information status bar text.
-        /// </summary>
-        private void UpdateAccountInfoStatusBarText()
-        {
-            _cfgHandler.ReadConfiguration();
-            activeAccountsLabel.Text = string.Format("SSB Account: {0} \t Owner Account: {1}",
-                _cfgHandler.Config.CoreOptions.owner, _cfgHandler.Config.CoreOptions.accountName);
-        }
-
-        /// <summary>
         ///     Updates the active modules status bar text.
         /// </summary>
-        private void UpdateActiveModulesStatusBarText()
+        private void UpdateActiveModulesStatusText()
         {
             activeModulesLabel.Text = _ssb.Mod.ActiveModuleCount == 0
                 ? @"No active modules"
                 : string.Format("Active modules: {0}", _ssb.Mod.GetActiveModules());
+        }
+
+        /// <summary>
+        ///     Handles the Paint event of the UserInterface control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="PaintEventArgs" /> instance containing the event data.</param>
+        private void UserInterface_Paint(object sender, PaintEventArgs e)
+        {
+            // left, top, right, bottom
+            // draw a light border at the top of the status bar
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
+                Color.FromArgb(104, 234, 246, 255), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(104, 234, 246, 255), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(104, 234, 246, 255), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(104, 234, 246, 255), 1, ButtonBorderStyle.Solid);
         }
 
         /// <summary>
@@ -2679,7 +2673,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
+            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -2745,7 +2739,7 @@ namespace SSB.Ui
 
             var userDb = new DbUsers();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
