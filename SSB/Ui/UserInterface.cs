@@ -20,6 +20,9 @@ using SSB.Util;
 
 namespace SSB.Ui
 {
+    /// <summary>
+    ///     The user interface class.
+    /// </summary>
     public partial class UserInterface : Form
     {
         private readonly AccountDateLimitValidator _accountDateLimitValidator;
@@ -36,6 +39,10 @@ namespace SSB.Ui
         private List<EarlyQuitter> _earlyQuittersFromDb;
         private List<User> _usersFromDb;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="UserInterface" /> class.
+        /// </summary>
+        /// <param name="ssb">The main bot class.</param>
         public UserInterface(SynServerBot ssb)
         {
             InitializeComponent();
@@ -59,6 +66,9 @@ namespace SSB.Ui
             _ssb.UserInterface = this;
         }
 
+        /// <summary>
+        ///     Populates the ban management UI tab.
+        /// </summary>
         public void PopulateBanManagementUi()
         {
             banMBanDurationScaleComboBox.InvokeIfRequired(c =>
@@ -71,6 +81,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated ban management user interface.");
         }
 
+        /// <summary>
+        ///     Populates the account date module UI tab.
+        /// </summary>
         public void PopulateModAccountDateUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -81,6 +94,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated account date limiter module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the accuracy module UI tab.
+        /// </summary>
         public void PopulateModAccuracyUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -89,6 +105,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated accuracy display module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the automatic voter module UI tab.
+        /// </summary>
         public void PopulateModAutoVoterUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -110,6 +129,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated auto voter module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the early quit module UI tab.
+        /// </summary>
         public void PopulateModEarlyQuitUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -130,6 +152,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated early quit banner module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the Elo limiter module UI tab.
+        /// </summary>
         public void PopulateModEloLimiterUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -146,6 +171,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated Elo limiter module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the IRC module UI tab.
+        /// </summary>
         public void PopulateModIrcUi()
         {
             var ircOptions = _cfgHandler.Config.IrcOptions;
@@ -168,6 +196,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated IRC module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the MOTD module UI tab.
+        /// </summary>
         public void PopulateModMotdUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -178,6 +209,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated MOTD module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the pickup module UI tab.
+        /// </summary>
         public void PopulateModPickupUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -213,6 +247,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated pickup module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the server list module UI tab.
+        /// </summary>
         public void PopulateModServerListUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -228,6 +265,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated server list module user interface.");
         }
 
+        /// <summary>
+        ///     Populates the user management UI tab.
+        /// </summary>
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
@@ -239,6 +279,9 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Populated user management user interface.");
         }
 
+        /// <summary>
+        ///     Refreshes the current bans data source.
+        /// </summary>
         public void RefreshCurrentBansDataSource()
         {
             banMCurBansListBox.InvokeIfRequired(c =>
@@ -259,6 +302,9 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Refreshes the current quitters data source.
+        /// </summary>
         public void RefreshCurrentQuittersDataSource()
         {
             modEarlyQuitCurQuitsListBox.InvokeIfRequired(c =>
@@ -279,6 +325,9 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Refreshes the current SSB users data source.
+        /// </summary>
         public void RefreshCurrentSsbUsersDataSource()
         {
             usrMCurUsersListBox.InvokeIfRequired(c =>
@@ -298,6 +347,9 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Refreshes the current votes data source.
+        /// </summary>
         public void RefreshCurrentVotesDataSource()
         {
             modAutoVoterCurVotesListBox.InvokeIfRequired(c =>
@@ -319,6 +371,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the banMAddBanButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void banMAddBanButton_Click(object sender, EventArgs e)
         {
             // Validate here
@@ -376,6 +433,11 @@ namespace SSB.Ui
                 owner, duration, scale, user, expiration.ToString("G", DateTimeFormatInfo.InvariantInfo));
         }
 
+        /// <summary>
+        ///     Handles the Click event of the banMDelAllBansButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void banMDelAllBansButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.ReadConfiguration();
@@ -415,6 +477,11 @@ namespace SSB.Ui
                 owner));
         }
 
+        /// <summary>
+        ///     Handles the Click event of the banMDelBanButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void banMDelBanButton_Click(object sender, EventArgs e)
         {
             if (banMCurrentBanBindingSource.Count == 0 ||
@@ -449,6 +516,11 @@ namespace SSB.Ui
                 selectedUser.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
         }
 
+        /// <summary>
+        ///     Handles the Click event of the banMDelExpiredBansButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void banMDelExpiredBansButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.ReadConfiguration();
@@ -485,16 +557,31 @@ namespace SSB.Ui
                 expiredBans.Count);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the closeButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void closeButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the coreAccountNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreAccountNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(coreAccountNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the coreAccountNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void coreAccountNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -506,11 +593,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the coreEloCacheTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreEloCacheTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(coreEloCacheTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the coreEloCacheTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void coreEloCacheTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -522,17 +619,32 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the coreLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateCoreOptionsUi();
             ShowInfoMessage("Core options settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the coreOwnerNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreOwnerNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(coreOwnerNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the coreOwnerNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void coreOwnerNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -544,6 +656,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the coreResetAllButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreResetAllButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.RestoreDefaultConfiguration();
@@ -552,6 +669,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the coreResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreResetSettingsButton_Click(object sender, EventArgs e)
         {
             var coreOptions = _cfgHandler.Config.CoreOptions;
@@ -563,6 +685,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the coreSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -586,6 +713,14 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the account date module activation.
+        /// </summary>
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
+        /// <param name="minAccountAge">The minimum account age.</param>
         private async Task HandleAccountDateModActivation(bool isActiveInUi, uint minAccountAge)
         {
             _ssb.Mod.AccountDateLimit.Active = isActiveInUi;
@@ -597,6 +732,10 @@ namespace SSB.Ui
             await _ssb.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
         }
 
+        /// <summary>
+        ///     Handles the core settings update.
+        /// </summary>
+        /// <param name="coreOptions">The core options.</param>
         private void HandleCoreSettingsUpdate(CoreOptions coreOptions)
         {
             // Go into effect now
@@ -606,6 +745,13 @@ namespace SSB.Ui
             var userDb = new DbUsers();
         }
 
+        /// <summary>
+        ///     Handles the Elo limiter module activation.
+        /// </summary>
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
         private async Task HandleEloLimitModActivation(bool isActiveInUi)
         {
             _ssb.Mod.EloLimit.Active = isActiveInUi;
@@ -617,6 +763,13 @@ namespace SSB.Ui
             await _ssb.Mod.EloLimit.BatchRemoveEloPlayers();
         }
 
+        /// <summary>
+        ///     Handles the IRC module activation.
+        /// </summary>
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
         private void HandleIrcModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Irc.Active = isActiveInUi;
@@ -634,6 +787,14 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the MOTD module activation.
+        /// </summary>
+        /// ///
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
         private void HandleMotdModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Motd.Active = isActiveInUi;
@@ -651,6 +812,14 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the pickup module activation.
+        /// </summary>
+        /// ///
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
         private async Task HandlePickupModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Pickup.Active = isActiveInUi;
@@ -669,6 +838,15 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the standard module activation.
+        /// </summary>
+        /// <param name="module">The module.</param>
+        /// ///
+        /// <param name="isActiveInUi">
+        ///     if set to <c>true</c> then the module
+        ///     is enabled in the UI.
+        /// </param>
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
             module.Active = isActiveInUi;
@@ -679,6 +857,11 @@ namespace SSB.Ui
                     module.ModuleName)));
         }
 
+        /// <summary>
+        ///     Handles the Click event of the minimizeButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void minimizeButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
@@ -690,11 +873,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modAccDateAccAgeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccDateAccAgeTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modAccDateAccAgeTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modAccDateAccAgeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modAccDateAccAgeTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -708,12 +901,22 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccDateLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccDateLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModAccountDateUi();
             ShowInfoMessage("Account date limiter settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccDateResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modAccDateResetSettingsButton_Click(object sender, EventArgs e)
         {
             var accountDateOptions = _cfgHandler.Config.AccountDateOptions;
@@ -727,6 +930,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccDateSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modAccDateSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -745,12 +953,22 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccuracyLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccuracyLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModAccuracyUi();
             ShowInfoMessage("Accuracy display settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccuracyResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccuracyResetSettingsButton_Click(object sender, EventArgs e)
         {
             var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
@@ -762,6 +980,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAccuracySaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccuracySaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -778,6 +1001,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterAddVoteButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterAddVoteButton_Click(object sender, EventArgs e)
         {
             var containsParam = (!string.IsNullOrEmpty(modAutoVoterContainingTextBox.Text));
@@ -821,6 +1049,11 @@ namespace SSB.Ui
                 fullVoteText);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterClearVotesButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterClearVotesButton_Click(object sender, EventArgs e)
         {
             modAutoVoterCurrentVotesBindingSource.Clear();
@@ -840,6 +1073,11 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: All automatic votes were cleared by owner.");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterDelVoteButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterDelVoteButton_Click(object sender, EventArgs e)
         {
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
@@ -859,22 +1097,42 @@ namespace SSB.Ui
             RefreshCurrentVotesDataSource();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModAutoVoterUi();
             ShowInfoMessage("Auto voter display settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the CheckedChanged event of the modAutoVoterPassRadioButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterPassRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             SetAutoVoteOptionalText();
         }
 
+        /// <summary>
+        ///     Handles the CheckedChanged event of the modAutoVoterRejectRadioButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterRejectRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             SetAutoVoteOptionalText();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterResetSettingsButton_Click(object sender, EventArgs e)
         {
             var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
@@ -886,6 +1144,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modAutoVoterSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -903,11 +1166,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the SelectedIndexChanged event of the modAutoVoterVoteTypeComboxBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterVoteTypeComboxBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetAutoVoteOptionalText();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitClearQuitsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEarlyQuitClearQuitsButton_Click(object sender, EventArgs e)
         {
             var earlyQuitDb = new DbQuits();
@@ -931,6 +1204,11 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Cleared early quit database.");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitDelQuitButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
@@ -955,6 +1233,11 @@ namespace SSB.Ui
             RefreshCurrentQuittersDataSource();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitForgiveQuitButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
@@ -981,17 +1264,32 @@ namespace SSB.Ui
             RefreshCurrentQuittersDataSource();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModEarlyQuitUi();
             ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modEarlyQuitMaxQuitsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitMaxQuitsTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modEarlyQuitMaxQuitsTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modEarlyQuitMaxQuitsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitMaxQuitsTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1003,6 +1301,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitResetSettingsButton_Click(object sender, EventArgs e)
         {
             var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
@@ -1014,6 +1317,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEarlyQuitSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1041,11 +1349,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modEarlyQuitTimeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitTimeTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modEarlyQuitTimeTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modEarlyQuitTimeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitTimeTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1057,17 +1375,32 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEloLimiterLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEloLimiterLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModEloLimiterUi();
             ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modEloLimiterMaxEloTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEloLimiterMaxEloTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modEloLimiterMaxEloTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modEloLimiterMaxEloTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modEloLimiterMaxEloTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1079,11 +1412,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modEloLimiterMinEloTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEloLimiterMinEloTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modEloLimiterMinEloTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modEloLimiterMinEloTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modEloLimiterMinEloTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1095,6 +1438,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEloLimiterResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEloLimiterResetSettingsButton_Click(object sender, EventArgs e)
         {
             var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
@@ -1106,6 +1454,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modEloLimiterSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEloLimiterSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1147,11 +1500,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCAdminNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCAdminNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCAdminNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCAdminNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCAdminNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1163,11 +1526,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCBotNickNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCBotNickNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCBotNickNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCBotNickNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCBotNickNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1179,11 +1552,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCBotUserNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCBotUserNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCBotUserNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCBotUserNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCBotUserNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1195,11 +1578,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCChannelKeyTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCChannelKeyTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCChannelKeyTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCChannelKeyTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCChannelKeyTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1211,11 +1604,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCChannelTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCChannelTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCChannelTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCChannelTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCChannelTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1227,6 +1630,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modIRCGenerateRandomNamesButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCGenerateRandomNamesButton_Click(object sender, EventArgs e)
         {
             modIRCBotNickNameTextBox.Text = string.Format("SSB|QLive-{0}",
@@ -1235,17 +1643,32 @@ namespace SSB.Ui
                 _cfgHandler.Config.IrcOptions.GenerateRandomIdentifier());
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modIRCLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModIrcUi();
             ShowInfoMessage("IRC settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCQNetPassTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCQNetPassTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCQNetPassTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCQNetPassTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCQNetPassTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1257,11 +1680,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCQNetUserNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCQNetUserNameTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCQNetUserNameTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCQNetUserNameTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCQNetUserNameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1273,6 +1706,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modIRCResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCResetSettingsButton_Click(object sender, EventArgs e)
         {
             var ircOptions = _cfgHandler.Config.IrcOptions;
@@ -1284,6 +1722,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modIRCSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1346,11 +1789,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCServerAddressTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCServerAddressTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCServerAddressTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCServerAddressTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCServerAddressTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1362,11 +1815,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCServerPassTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCServerPassTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCServerPassTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCServerPassTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCServerPassTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1378,11 +1841,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modIRCServerPortTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCServerPortTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modIRCServerPortTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modIRCServerPortTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modIRCServerPortTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1394,17 +1867,32 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modMOTDLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModMotdUi();
             ShowInfoMessage("MOTD settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modMOTDRepeatMsgTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDRepeatMsgTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modMOTDRepeatMsgTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modMOTDRepeatMsgTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modMOTDRepeatMsgTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1418,11 +1906,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modMOTDRepeatTimeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDRepeatTimeTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modMOTDRepeatTimeTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modMOTDRepeatTimeTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modMOTDRepeatTimeTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1436,6 +1934,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modMOTDResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDResetSettingsButton_Click(object sender, EventArgs e)
         {
             var motdOptions = _cfgHandler.Config.MotdOptions;
@@ -1447,6 +1950,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modMOTDSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1465,17 +1973,32 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modPickupLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModPickupUi();
             ShowInfoMessage("Pickup settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modPickupMaxNoShowsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupMaxNoShowsTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modPickupMaxNoShowsTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modPickupMaxNoShowsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modPickupMaxNoShowsTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1489,11 +2012,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modPickupMaxSubsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupMaxSubsTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modPickupMaxSubsTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modPickupMaxSubsTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modPickupMaxSubsTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1507,11 +2040,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modPickupNoShowsTimeBanTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupNoShowsTimeBanTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modPickupNoShowsTimeBanTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modPickupNoShowsTimeBanTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modPickupNoShowsTimeBanTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1525,11 +2068,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modPickupPlayersPerTeamTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupPlayersPerTeamTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modPickupPlayersPerTeamTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modPickupPlayersPerTeamTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modPickupPlayersPerTeamTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1543,6 +2096,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modPickupResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modPickupResetSettingsButton_Click(object sender, EventArgs e)
         {
             var pickupOptions = _cfgHandler.Config.PickupOptions;
@@ -1554,6 +2112,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modPickupSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modPickupSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1597,11 +2160,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modPickupSubsTimeBanTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modPickupSubsTimeBanTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modPickupSubsTimeBanTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modPickupSubsTimeBanTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modPickupSubsTimeBanTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1615,17 +2188,32 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modServerListLoadSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListLoadSettingsButton_Click(object sender, EventArgs e)
         {
             PopulateModServerListUi();
             ShowInfoMessage("Server list settings loaded.", "Settings Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modServerListMaxServersTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListMaxServersTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modServerListMaxServersTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modServerListMaxServersTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modServerListMaxServersTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1639,6 +2227,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modServerListResetSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListResetSettingsButton_Click(object sender, EventArgs e)
         {
             var serverListOptions = _cfgHandler.Config.ServersOptions;
@@ -1650,6 +2243,11 @@ namespace SSB.Ui
                 "Defaults Loaded");
         }
 
+        /// <summary>
+        ///     Handles the Click event of the modServerListSaveSettingsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListSaveSettingsButton_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
@@ -1673,11 +2271,21 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Validated event of the modServerListTimeBetweenTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListTimeBetweenTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(modServerListTimeBetweenTextBox, string.Empty);
         }
 
+        /// <summary>
+        ///     Handles the Validating event of the modServerListTimeBetweenTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void modServerListTimeBetweenTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -1691,6 +2299,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the SelectedIndexChanged event of the moduleTabControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void moduleTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tabControl = sender as TabControl;
@@ -1719,6 +2332,9 @@ namespace SSB.Ui
                 PopulateModServerListUi();
         }
 
+        /// <summary>
+        ///     Populates all UI tabs.
+        /// </summary>
         private void PopulateAllUiTabs()
         {
             PopulateCoreOptionsUi();
@@ -1735,6 +2351,9 @@ namespace SSB.Ui
             PopulateBanManagementUi();
         }
 
+        /// <summary>
+        ///     Populates the core options UI tab.
+        /// </summary>
         private void PopulateCoreOptionsUi()
         {
             _cfgHandler.ReadConfiguration();
@@ -1763,6 +2382,9 @@ namespace SSB.Ui
             _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
         }
 
+        /// <summary>
+        ///     Sets the automatic vote optional text.
+        /// </summary>
         private void SetAutoVoteOptionalText()
         {
             modAutoVoterContainingDescLabel.Text =
@@ -1771,23 +2393,43 @@ namespace SSB.Ui
                         Environment.NewLine, ((modAutoVoterPassRadioButton.Checked) ? "PASS." : "FAIL."))));
         }
 
+        /// <summary>
+        ///     Shows an error message box.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="title">The title.</param>
         private void ShowErrorMessage(string text, string title)
         {
             MessageBox.Show(text, title,
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        ///     Shows the information message box.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="title">The title.</param>
         private void ShowInfoMessage(string text, string title)
         {
             MessageBox.Show(text, title,
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the ssbExitButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void ssbExitButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        /// <summary>
+        ///     Handles the MouseMove event of the ssbLogo control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void ssbLogo_MouseMove(object sender, MouseEventArgs e)
         {
             if ((e.Button & MouseButtons.Left) == 0)
@@ -1798,6 +2440,11 @@ namespace SSB.Ui
             Win32Api.SendMessage(Handle, Win32Api.WM_NCLBUTTONDOWN, Win32Api.HT_CAPTION, 0);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the ssbResetButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void ssbResetButton_Click(object sender, EventArgs e)
         {
             var qlw = new QlWindowUtils();
@@ -1824,6 +2471,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the Click event of the ssbStartButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void ssbStartButton_Click(object sender, EventArgs e)
         {
             var qlw = new QlWindowUtils();
@@ -1850,6 +2502,11 @@ namespace SSB.Ui
             await _ssb.BeginMonitoring();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the ssbStopButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void ssbStopButton_Click(object sender, EventArgs e)
         {
             if (!_ssb.IsMonitoringServer)
@@ -1863,6 +2520,11 @@ namespace SSB.Ui
             Debug.WriteLine("[UI]: Got user request to stop monitoring server. Stopping monitoring.");
         }
 
+        /// <summary>
+        ///     Handles the Paint event of the statusBar control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="PaintEventArgs" /> instance containing the event data.</param>
         private void statusBar_Paint(object sender, PaintEventArgs e)
         {
             // left, top, right, bottom
@@ -1874,11 +2536,21 @@ namespace SSB.Ui
                 Color.Black, 0, ButtonBorderStyle.Solid);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the sysTrayExitMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void sysTrayExitMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        /// <summary>
+        ///     Handles the MouseClick event of the sysTrayIcon control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void sysTrayIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -1893,6 +2565,11 @@ namespace SSB.Ui
             }
         }
 
+        /// <summary>
+        ///     Handles the SelectedIndexChanged event of the UiTabCtl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void UiTabCtl_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tabControl = sender as TabControl;
@@ -1909,6 +2586,11 @@ namespace SSB.Ui
                 PopulateBanManagementUi();
         }
 
+        /// <summary>
+        ///     Handles the Click event of the usrMAddUserButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void usrMAddUserButton_Click(object sender, EventArgs e)
         {
             if (usrMUserQlNameTextBox.Text.Length == 0 ||
@@ -1947,6 +2629,11 @@ namespace SSB.Ui
                 owner, user, accessLevel);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the usrMDelAllUsersButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void usrMDelAllUsersButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.ReadConfiguration();
@@ -1979,6 +2666,11 @@ namespace SSB.Ui
                 owner, allUsers.Count);
         }
 
+        /// <summary>
+        ///     Handles the Click event of the usrMDelUserButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void usrMDelUserButton_Click(object sender, EventArgs e)
         {
             if (usrMCurrentUserBindingSource.Count == 0 ||
