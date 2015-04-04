@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using SSB.Interfaces;
 
 namespace SSB.Core.Commands.Modules
@@ -10,7 +11,7 @@ namespace SSB.Core.Commands.Modules
     public class ModuleManager
     {
         private readonly List<IModule> _moduleList;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ModuleManager" /> class.
         /// </summary>
@@ -19,44 +20,33 @@ namespace SSB.Core.Commands.Modules
         {
             var s = ssb;
             _moduleList = new List<IModule>();
-            
+
             EloLimit = new EloLimit(s);
             _moduleList.Add(EloLimit);
-            
+
             AccountDateLimit = new AccountDateLimit(s);
             _moduleList.Add(AccountDateLimit);
-            
+
             Accuracy = new Accuracy(s);
             _moduleList.Add(Accuracy);
-            
+
             AutoVoter = new AutoVoter(s);
             _moduleList.Add(AutoVoter);
-            
+
             EarlyQuit = new EarlyQuit(s);
             _moduleList.Add(EarlyQuit);
-            
+
             Motd = new Motd(s);
             _moduleList.Add(Motd);
-            
+
             Pickup = new Pickup(s);
             _moduleList.Add(Pickup);
-            
+
             Servers = new Servers(s);
             _moduleList.Add(Servers);
-            
+
             Irc = new Irc(s);
             _moduleList.Add(Irc);
-        }
-
-        /// <summary>
-        /// Gets the module list.
-        /// </summary>
-        /// <value>
-        /// The module list.
-        /// </value>
-        public List<IModule> ModuleList
-        {
-            get { return _moduleList;}
         }
 
         /// <summary>
@@ -74,6 +64,17 @@ namespace SSB.Core.Commands.Modules
         ///     The accuracy scanner module.
         /// </value>
         public Accuracy Accuracy { get; private set; }
+
+        /// <summary>
+        /// Gets the active module count.
+        /// </summary>
+        /// <value>
+        /// The active module count.
+        /// </value>
+        public int ActiveModuleCount
+        {
+            get { return ModuleList.Count(mod => mod.Active); }
+        }
 
         /// <summary>
         ///     Gets the automatic voter module.
@@ -108,6 +109,17 @@ namespace SSB.Core.Commands.Modules
         public Irc Irc { get; private set; }
 
         /// <summary>
+        /// Gets the module list.
+        /// </summary>
+        /// <value>
+        /// The module list.
+        /// </value>
+        public List<IModule> ModuleList
+        {
+            get { return _moduleList; }
+        }
+
+        /// <summary>
         ///     Gets the message of the day module.
         /// </summary>
         /// <value>
@@ -134,10 +146,19 @@ namespace SSB.Core.Commands.Modules
         /// <summary>
         /// Gets the active modules.
         /// </summary>
-        /// <returns>A list of the active modules.</returns>
-        public List<IModule> GetActiveModules()
+        /// <returns>A list of the active modules as a string.</returns>
+        public string GetActiveModules()
         {
-            return ModuleList.Where(mod => mod.Active).ToList();
+            var active = ModuleList.Where(mod => mod.Active).ToList();
+            if (active.Count == 0) return string.Empty;
+
+            var sb = new StringBuilder();
+            foreach (var mod in active)
+            {
+                sb.Append(string.Format("{0}, ", mod.ModuleName));
+            }
+
+            return sb.ToString().TrimEnd(',', ' ');
         }
     }
 }

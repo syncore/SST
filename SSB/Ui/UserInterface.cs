@@ -91,6 +91,7 @@ namespace SSB.Ui
             modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = acctDateOptions.isActive; });
             modAccDateAccAgeTextBox.InvokeIfRequired(
                 c => { c.Text = acctDateOptions.minimumDaysRequired.ToString(); });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated account date limiter module user interface.");
         }
 
@@ -102,6 +103,7 @@ namespace SSB.Ui
             _cfgHandler.ReadConfiguration();
             modAccuracyEnableCheckBox.InvokeIfRequired(
                 c => { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated accuracy display module user interface.");
         }
 
@@ -126,6 +128,7 @@ namespace SSB.Ui
             });
             // Current votes listbox
             RefreshCurrentVotesDataSource();
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated auto voter module user interface.");
         }
 
@@ -149,6 +152,7 @@ namespace SSB.Ui
 
             // Current early quitters listbox
             RefreshCurrentQuittersDataSource();
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated early quit banner module user interface.");
         }
 
@@ -168,6 +172,7 @@ namespace SSB.Ui
                     ? string.Empty
                     : eloLimitOptions.maximumRequiredElo.ToString());
             });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated Elo limiter module user interface.");
         }
 
@@ -193,6 +198,7 @@ namespace SSB.Ui
             modIRCChannelTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannel; });
             modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
             modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated IRC module user interface.");
         }
 
@@ -206,6 +212,7 @@ namespace SSB.Ui
             modMOTDEnableCheckBox.InvokeIfRequired(c => { c.Checked = motdOptions.isActive; });
             modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
             modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated MOTD module user interface.");
         }
 
@@ -244,6 +251,7 @@ namespace SSB.Ui
                 c.SelectedIndex =
                     pickupOptions.excessiveNoShowBanTimeScaleIndex;
             });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated pickup module user interface.");
         }
 
@@ -262,6 +270,7 @@ namespace SSB.Ui
                 c.Text = serverListOptions.timeBetweenQueries.ToString(
                     CultureInfo.InvariantCulture);
             });
+            UpdateActiveModulesStatusBarText();
             Debug.WriteLine("[UI]: Populated server list module user interface.");
         }
 
@@ -271,7 +280,7 @@ namespace SSB.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
+            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SSB users listbox
@@ -410,7 +419,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
+            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
             banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
@@ -491,7 +500,7 @@ namespace SSB.Ui
 
             var banDb = new DbBans();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -661,10 +670,30 @@ namespace SSB.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreResetAllButton_Click(object sender, EventArgs e)
+        private async void coreResetAllButton_Click(object sender, EventArgs e)
         {
             _cfgHandler.RestoreDefaultConfiguration();
+            _cfgHandler.ReadConfiguration();
+
+            await HandleAccountDateModActivation(_cfgHandler.Config.AccountDateOptions.isActive,
+                _cfgHandler.Config.AccountDateOptions.minimumDaysRequired);
+            await HandleEloLimitModActivation(_cfgHandler.Config.EloLimitOptions.isActive);
+            await HandlePickupModActivation(_cfgHandler.Config.PickupOptions.isActive);
+
+            HandleMotdModActivation(_cfgHandler.Config.MotdOptions.isActive);
+            HandleIrcModActivation(_cfgHandler.Config.IrcOptions.isActive);
+
+            HandleStandardModuleActivation(_ssb.Mod.Accuracy,
+                _cfgHandler.Config.AccuracyOptions.isActive);
+            HandleStandardModuleActivation(_ssb.Mod.AutoVoter,
+                _cfgHandler.Config.AutoVoterOptions.isActive);
+            HandleStandardModuleActivation(_ssb.Mod.EarlyQuit,
+                _cfgHandler.Config.EarlyQuitOptions.isActive);
+            HandleStandardModuleActivation(_ssb.Mod.Servers,
+                _cfgHandler.Config.ServersOptions.isActive);
+
             PopulateAllUiTabs();
+
             ShowInfoMessage("All SSB settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -705,6 +734,7 @@ namespace SSB.Ui
                 coreOptions.owner = coreOwnerNameTextBox.Text;
                 _cfgHandler.WriteConfiguration();
                 HandleCoreSettingsUpdate(coreOptions);
+                UpdateAccountInfoStatusBarText();
                 ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
             else
@@ -847,6 +877,12 @@ namespace SSB.Ui
         ///     if set to <c>true</c> then the module
         ///     is enabled in the UI.
         /// </param>
+        /// <remarks>
+        /// This is the module activation method used for modules that do not
+        /// require any special actions (i.e. initilization methods)
+        /// to occur when being enabled or and do not require async.
+        /// Currently these are: acc, autovoter, earlyquit, servers.
+        /// </remarks>
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
             module.Active = isActiveInUi;
@@ -922,10 +958,10 @@ namespace SSB.Ui
             var accountDateOptions = _cfgHandler.Config.AccountDateOptions;
             accountDateOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModAccountDateUi();
             await
                 HandleAccountDateModActivation(accountDateOptions.isActive,
                     accountDateOptions.minimumDaysRequired);
+            PopulateModAccountDateUi();
             ShowInfoMessage("Account date limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -945,6 +981,7 @@ namespace SSB.Ui
                 acctDateOptions.minimumDaysRequired = minAccountAge;
                 _cfgHandler.WriteConfiguration();
                 await HandleAccountDateModActivation(acctDateOptions.isActive, minAccountAge);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
             }
             else
@@ -974,8 +1011,8 @@ namespace SSB.Ui
             var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
             accuracyOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModAccuracyUi();
             HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
+            PopulateModAccuracyUi();
             ShowInfoMessage("Accuracy display settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -993,6 +1030,7 @@ namespace SSB.Ui
                 accuracyOptions.isActive = modAccuracyEnableCheckBox.Checked;
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Accuracy display settings saved.", "Settings Saved");
             }
             else
@@ -1083,7 +1121,7 @@ namespace SSB.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Debug.WriteLine("[UI]: Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -1138,8 +1176,8 @@ namespace SSB.Ui
             var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
             autoVoterOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModAutoVoterUi();
             HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
+            PopulateModAutoVoterUi();
             ShowInfoMessage("Auto voter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1158,6 +1196,7 @@ namespace SSB.Ui
                 autoVoterOptions.autoVotes = _ssb.Mod.AutoVoter.AutoVotes;
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Auto voter settings saved.", "Settings Saved");
             }
             else
@@ -1190,7 +1229,7 @@ namespace SSB.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter) p;
+                var player = (EarlyQuitter)p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
             }
@@ -1212,7 +1251,7 @@ namespace SSB.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1241,7 +1280,7 @@ namespace SSB.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1311,8 +1350,8 @@ namespace SSB.Ui
             var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
             earlyQuitOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModEarlyQuitUi();
             HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+            PopulateModEarlyQuitUi();
             ShowInfoMessage("Early quit banner settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1330,7 +1369,7 @@ namespace SSB.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
 
@@ -1341,6 +1380,7 @@ namespace SSB.Ui
                 _ssb.Mod.EarlyQuit.BanTimeScaleIndex = earlyQuitOptions.banTimeScaleIndex;
 
                 HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
             }
             else
@@ -1448,8 +1488,8 @@ namespace SSB.Ui
             var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
             eloLimitOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModEloLimiterUi();
             await HandleEloLimitModActivation(eloLimitOptions.isActive);
+            PopulateModEloLimiterUi();
             ShowInfoMessage("Elo limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1492,6 +1532,7 @@ namespace SSB.Ui
                 _ssb.Mod.EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
 
                 await HandleEloLimitModActivation(eloLimitOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
             }
             else
@@ -1716,8 +1757,8 @@ namespace SSB.Ui
             var ircOptions = _cfgHandler.Config.IrcOptions;
             ircOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModIrcUi();
             HandleIrcModActivation(ircOptions.isActive);
+            PopulateModIrcUi();
             ShowInfoMessage("IRC settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1781,6 +1822,7 @@ namespace SSB.Ui
                 _ssb.Mod.Irc.IrcManager.IrcSettings.hideHostnameOnQuakeNet = ircOptions.hideHostnameOnQuakeNet;
 
                 HandleIrcModActivation(ircOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("IRC settings saved.", "Settings Saved");
             }
             else
@@ -1944,8 +1986,8 @@ namespace SSB.Ui
             var motdOptions = _cfgHandler.Config.MotdOptions;
             motdOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModMotdUi();
             HandleMotdModActivation(motdOptions.isActive);
+            PopulateModMotdUi();
             ShowInfoMessage("Account date limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1965,6 +2007,7 @@ namespace SSB.Ui
                 motdOptions.message = modMOTDRepeatMsgTextBox.Text;
                 _cfgHandler.WriteConfiguration();
                 HandleMotdModActivation(motdOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("MOTD settings saved.", "Settings Saved");
             }
             else
@@ -2106,8 +2149,8 @@ namespace SSB.Ui
             var pickupOptions = _cfgHandler.Config.PickupOptions;
             pickupOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModPickupUi();
             await HandlePickupModActivation(pickupOptions.isActive);
+            PopulateModPickupUi();
             ShowInfoMessage("Pickup settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -2128,9 +2171,9 @@ namespace SSB.Ui
                 pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
                 pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
                 pickupOptions.excessiveSubUseBanTimeScale =
-                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveNoShowBanTimeScale =
-                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
                 pickupOptions.excessiveNoShowBanTimeScaleIndex =
@@ -2152,6 +2195,7 @@ namespace SSB.Ui
                 _ssb.Mod.Pickup.Teamsize = pickupOptions.teamSize;
 
                 await HandlePickupModActivation(pickupOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Pickup settings saved.", "Settings Saved");
             }
             else
@@ -2237,8 +2281,8 @@ namespace SSB.Ui
             var serverListOptions = _cfgHandler.Config.ServersOptions;
             serverListOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
-            PopulateModServerListUi();
             HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
+            PopulateModServerListUi();
             ShowInfoMessage("Server list settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -2263,6 +2307,7 @@ namespace SSB.Ui
                 _ssb.Mod.Servers.MaxServersToDisplay = serverListOptions.maxServers;
 
                 HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
+                UpdateActiveModulesStatusBarText();
                 ShowInfoMessage("Server list settings saved.", "Settings Saved");
             }
             else
@@ -2366,6 +2411,7 @@ namespace SSB.Ui
             coreLogEventsDiskCheckBox.Checked = coreOptions.logSsbEventsToDisk;
             coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
+            UpdateAccountInfoStatusBarText();
             Debug.WriteLine("[UI]: Populated core options user interface.");
         }
 
@@ -2376,8 +2422,7 @@ namespace SSB.Ui
         private void SetAppWideUiControls()
         {
             _ssb.AppWideUiControls.LogConsoleTextBox = logConsoleTextBox;
-            _ssb.AppWideUiControls.StatusBar = statusLabel;
-            _ssb.AppWideUiControls.ModStatusBar = modStatusLabel;
+            _ssb.AppWideUiControls.MonitoringStatusBar = monitoringStatusLabel;
             _ssb.AppWideUiControls.StartMonitoringButton = ssbStartButton;
             _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
         }
@@ -2587,6 +2632,26 @@ namespace SSB.Ui
         }
 
         /// <summary>
+        /// Updates the account information status bar text.
+        /// </summary>
+        private void UpdateAccountInfoStatusBarText()
+        {
+            _cfgHandler.ReadConfiguration();
+            activeAccountsLabel.Text = string.Format("SSB Account: {0} \t Owner Account: {1}",
+                _cfgHandler.Config.CoreOptions.owner, _cfgHandler.Config.CoreOptions.accountName);
+        }
+
+        /// <summary>
+        ///     Updates the active modules status bar text.
+        /// </summary>
+        private void UpdateActiveModulesStatusBarText()
+        {
+            activeModulesLabel.Text = _ssb.Mod.ActiveModuleCount == 0
+                ? @"No active modules"
+                : string.Format("Active modules: {0}", _ssb.Mod.GetActiveModules());
+        }
+
+        /// <summary>
         ///     Handles the Click event of the usrMAddUserButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -2614,7 +2679,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
+            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -2680,7 +2745,7 @@ namespace SSB.Ui
 
             var userDb = new DbUsers();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);

@@ -18,12 +18,12 @@ namespace SSB.Ui
         public TextBox LogConsoleTextBox { get; set; }
 
         /// <summary>
-        /// Gets or sets the module status bar.
+        ///     Gets or sets the monitoring status bar label.
         /// </summary>
         /// <value>
-        /// The module status bar.
+        ///     The monitoring status bar label.
         /// </value>
-        public ToolStripStatusLabel ModStatusBar { get; set; }
+        public ToolStripStatusLabel MonitoringStatusBar { get; set; }
 
         /// <summary>
         ///     Gets or sets the 'start monitoring' button.
@@ -32,14 +32,6 @@ namespace SSB.Ui
         ///     The 'start monitoring' button.
         /// </value>
         public Button StartMonitoringButton { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the status bar label.
-        /// </summary>
-        /// <value>
-        ///     The status bar label.
-        /// </value>
-        public ToolStripStatusLabel StatusBar { get; set; }
 
         /// <summary>
         ///     Gets or sets the 'stop monitoring' button.
@@ -64,7 +56,7 @@ namespace SSB.Ui
             StopMonitoringButton.InvokeIfRequired(c => { c.Enabled = isMonitoring; });
 
             // Invoke not required for ToolStripStatusLabel
-            StatusBar.Text = string.Format("{0}", (isMonitoring) ? string.Format(
+            MonitoringStatusBar.Text = string.Format("{0}", (isMonitoring) ? string.Format(
                     "Monitoring server at http://www.quakelive.com/#!join/{0}",
                     (string.IsNullOrEmpty(serverId)
                         ? "..."

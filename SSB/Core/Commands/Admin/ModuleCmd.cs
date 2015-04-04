@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Modules;
 using SSB.Enums;
@@ -223,8 +222,9 @@ namespace SSB.Core.Commands.Admin
         /// </summary>
         private string GetActiveModules(CmdArgs c)
         {
-            var activeMods = _ssb.Mod.GetActiveModules();
-            if (activeMods.Count == 0)
+            var activeCount = _ssb.Mod.ActiveModuleCount;
+
+            if (activeCount == 0)
             {
                 return string.Format(
                     "^7[MOD]^1 No modules are active at this time. Use: {0}{1} to activate module(s).",
@@ -232,13 +232,9 @@ namespace SSB.Core.Commands.Admin
                 ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
             }
 
-            var sb = new StringBuilder();
-            foreach (var mod in activeMods)
-            {
-                sb.Append(string.Format("^7{0}^2, ", mod.ModuleName));
-            }
+            var activeMods = _ssb.Mod.GetActiveModules();
             return string.Format("^2[ACTIVE MODULES]^7 {0}",
-                sb.ToString().TrimEnd(',', ' '));
+                activeMods);
         }
     }
 }

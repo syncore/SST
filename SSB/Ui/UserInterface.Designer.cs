@@ -302,10 +302,8 @@
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ssbStopButton = new System.Windows.Forms.Button();
             this.ssbResetButton = new System.Windows.Forms.Button();
-            this.statusBar = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.fakeAlignStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.modStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.secondaryStatusBar = new System.Windows.Forms.StatusStrip();
+            this.activeModulesLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.minimizeButton = new System.Windows.Forms.PictureBox();
             this.closeButton = new System.Windows.Forms.PictureBox();
             this.titleBarVersionLabel = new System.Windows.Forms.Label();
@@ -317,6 +315,10 @@
             this.sysTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.sysTrayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.sysTrayExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.monitoringStatusBar = new System.Windows.Forms.StatusStrip();
+            this.monitoringStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.fakeAlignmentLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.activeAccountsLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -405,7 +407,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).BeginInit();
-            this.statusBar.SuspendLayout();
+            this.secondaryStatusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -414,6 +416,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).BeginInit();
             this.sysTrayContextMenuStrip.SuspendLayout();
+            this.monitoringStatusBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // ssbLogo
@@ -1251,7 +1254,7 @@
             this.modAutoVoterClearVotesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterClearVotesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterClearVotesButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(131, 271);
+            this.modAutoVoterClearVotesButton.Location = new System.Drawing.Point(119, 271);
             this.modAutoVoterClearVotesButton.Name = "modAutoVoterClearVotesButton";
             this.modAutoVoterClearVotesButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterClearVotesButton.TabIndex = 15;
@@ -1267,7 +1270,7 @@
             this.modAutoVoterDelVoteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterDelVoteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterDelVoteButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(18, 271);
+            this.modAutoVoterDelVoteButton.Location = new System.Drawing.Point(6, 271);
             this.modAutoVoterDelVoteButton.Name = "modAutoVoterDelVoteButton";
             this.modAutoVoterDelVoteButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterDelVoteButton.TabIndex = 14;
@@ -1448,7 +1451,7 @@
             this.modAutoVoterResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(247, 20);
+            this.modAutoVoterResetSettingsButton.Location = new System.Drawing.Point(235, 21);
             this.modAutoVoterResetSettingsButton.Name = "modAutoVoterResetSettingsButton";
             this.modAutoVoterResetSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterResetSettingsButton.TabIndex = 9;
@@ -1463,7 +1466,7 @@
             this.modAutoVoterLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(131, 20);
+            this.modAutoVoterLoadSettingsButton.Location = new System.Drawing.Point(119, 21);
             this.modAutoVoterLoadSettingsButton.Name = "modAutoVoterLoadSettingsButton";
             this.modAutoVoterLoadSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterLoadSettingsButton.TabIndex = 1;
@@ -1478,7 +1481,7 @@
             this.modAutoVoterSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modAutoVoterSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modAutoVoterSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(18, 20);
+            this.modAutoVoterSaveSettingsButton.Location = new System.Drawing.Point(6, 21);
             this.modAutoVoterSaveSettingsButton.Name = "modAutoVoterSaveSettingsButton";
             this.modAutoVoterSaveSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modAutoVoterSaveSettingsButton.TabIndex = 8;
@@ -1568,7 +1571,7 @@
             this.modEarlyQuitForgiveQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitForgiveQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitForgiveQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(17, 264);
+            this.modEarlyQuitForgiveQuitButton.Location = new System.Drawing.Point(6, 265);
             this.modEarlyQuitForgiveQuitButton.Name = "modEarlyQuitForgiveQuitButton";
             this.modEarlyQuitForgiveQuitButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitForgiveQuitButton.TabIndex = 16;
@@ -1583,7 +1586,7 @@
             this.modEarlyQuitClearQuitsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitClearQuitsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitClearQuitsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(294, 264);
+            this.modEarlyQuitClearQuitsButton.Location = new System.Drawing.Point(307, 265);
             this.modEarlyQuitClearQuitsButton.Name = "modEarlyQuitClearQuitsButton";
             this.modEarlyQuitClearQuitsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitClearQuitsButton.TabIndex = 15;
@@ -1598,7 +1601,7 @@
             this.modEarlyQuitDelQuitButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitDelQuitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitDelQuitButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(152, 264);
+            this.modEarlyQuitDelQuitButton.Location = new System.Drawing.Point(161, 264);
             this.modEarlyQuitDelQuitButton.Name = "modEarlyQuitDelQuitButton";
             this.modEarlyQuitDelQuitButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitDelQuitButton.TabIndex = 14;
@@ -1733,7 +1736,7 @@
             this.modEarlyQuitResetSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitResetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitResetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(294, 19);
+            this.modEarlyQuitResetSettingsButton.Location = new System.Drawing.Point(307, 19);
             this.modEarlyQuitResetSettingsButton.Name = "modEarlyQuitResetSettingsButton";
             this.modEarlyQuitResetSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitResetSettingsButton.TabIndex = 9;
@@ -1748,7 +1751,7 @@
             this.modEarlyQuitLoadSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitLoadSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitLoadSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(152, 19);
+            this.modEarlyQuitLoadSettingsButton.Location = new System.Drawing.Point(161, 19);
             this.modEarlyQuitLoadSettingsButton.Name = "modEarlyQuitLoadSettingsButton";
             this.modEarlyQuitLoadSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitLoadSettingsButton.TabIndex = 1;
@@ -1763,7 +1766,7 @@
             this.modEarlyQuitSaveSettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.modEarlyQuitSaveSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modEarlyQuitSaveSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(17, 19);
+            this.modEarlyQuitSaveSettingsButton.Location = new System.Drawing.Point(6, 19);
             this.modEarlyQuitSaveSettingsButton.Name = "modEarlyQuitSaveSettingsButton";
             this.modEarlyQuitSaveSettingsButton.Size = new System.Drawing.Size(90, 23);
             this.modEarlyQuitSaveSettingsButton.TabIndex = 8;
@@ -3917,49 +3920,29 @@
             this.ssbResetButton.UseVisualStyleBackColor = false;
             this.ssbResetButton.Click += new System.EventHandler(this.ssbResetButton_Click);
             // 
-            // statusBar
+            // secondaryStatusBar
             // 
-            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.statusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel,
-            this.fakeAlignStatusLabel,
-            this.modStatusLabel});
-            this.statusBar.Location = new System.Drawing.Point(0, 683);
-            this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(752, 22);
-            this.statusBar.SizingGrip = false;
-            this.statusBar.TabIndex = 3;
-            this.statusBar.Text = "statusStrip1";
-            this.statusBar.Paint += new System.Windows.Forms.PaintEventHandler(this.statusBar_Paint);
+            this.secondaryStatusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.secondaryStatusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.secondaryStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.activeModulesLabel});
+            this.secondaryStatusBar.Location = new System.Drawing.Point(0, 706);
+            this.secondaryStatusBar.Name = "secondaryStatusBar";
+            this.secondaryStatusBar.Size = new System.Drawing.Size(752, 22);
+            this.secondaryStatusBar.SizingGrip = false;
+            this.secondaryStatusBar.TabIndex = 3;
+            this.secondaryStatusBar.Paint += new System.Windows.Forms.PaintEventHandler(this.statusBar_Paint);
             // 
-            // statusLabel
+            // activeModulesLabel
             // 
-            this.statusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.statusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.ForeColor = System.Drawing.Color.White;
-            this.statusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(183, 17);
-            this.statusLabel.Text = "Status: Not monitoring a server.";
-            this.statusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            // 
-            // fakeAlignStatusLabel
-            // 
-            this.fakeAlignStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.fakeAlignStatusLabel.Name = "fakeAlignStatusLabel";
-            this.fakeAlignStatusLabel.Size = new System.Drawing.Size(460, 17);
-            this.fakeAlignStatusLabel.Spring = true;
-            // 
-            // modStatusLabel
-            // 
-            this.modStatusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.modStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.modStatusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            this.modStatusLabel.Name = "modStatusLabel";
-            this.modStatusLabel.Size = new System.Drawing.Size(94, 17);
-            this.modStatusLabel.Text = "Active modules:";
-            this.modStatusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.activeModulesLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.activeModulesLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activeModulesLabel.ForeColor = System.Drawing.Color.White;
+            this.activeModulesLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.activeModulesLabel.Name = "activeModulesLabel";
+            this.activeModulesLabel.Size = new System.Drawing.Size(94, 17);
+            this.activeModulesLabel.Text = "Active modules:";
+            this.activeModulesLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
             // 
             // minimizeButton
             // 
@@ -4015,27 +3998,66 @@
             this.sysTrayExitMenuItem});
             this.sysTrayContextMenuStrip.Name = "sysTrayContextMenuStrip";
             this.sysTrayContextMenuStrip.ShowImageMargin = false;
-            this.sysTrayContextMenuStrip.Size = new System.Drawing.Size(128, 48);
+            this.sysTrayContextMenuStrip.Size = new System.Drawing.Size(95, 26);
             // 
             // sysTrayExitMenuItem
             // 
             this.sysTrayExitMenuItem.Name = "sysTrayExitMenuItem";
-            this.sysTrayExitMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.sysTrayExitMenuItem.Size = new System.Drawing.Size(94, 22);
             this.sysTrayExitMenuItem.Text = "Exit SSB";
             this.sysTrayExitMenuItem.Click += new System.EventHandler(this.sysTrayExitMenuItem_Click);
+            // 
+            // monitoringStatusBar
+            // 
+            this.monitoringStatusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.monitoringStatusBar.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.monitoringStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.monitoringStatusLabel,
+            this.fakeAlignmentLabel,
+            this.activeAccountsLabel});
+            this.monitoringStatusBar.Location = new System.Drawing.Point(0, 684);
+            this.monitoringStatusBar.Name = "monitoringStatusBar";
+            this.monitoringStatusBar.Size = new System.Drawing.Size(752, 22);
+            this.monitoringStatusBar.SizingGrip = false;
+            this.monitoringStatusBar.TabIndex = 9;
+            // 
+            // monitoringStatusLabel
+            // 
+            this.monitoringStatusLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.monitoringStatusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.monitoringStatusLabel.ForeColor = System.Drawing.Color.White;
+            this.monitoringStatusLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.monitoringStatusLabel.Name = "monitoringStatusLabel";
+            this.monitoringStatusLabel.Size = new System.Drawing.Size(183, 17);
+            this.monitoringStatusLabel.Text = "Status: Not monitoring a server.";
+            this.monitoringStatusLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            // 
+            // fakeAlignmentLabel
+            // 
+            this.fakeAlignmentLabel.Name = "fakeAlignmentLabel";
+            this.fakeAlignmentLabel.Size = new System.Drawing.Size(346, 17);
+            this.fakeAlignmentLabel.Spring = true;
+            // 
+            // activeAccountsLabel
+            // 
+            this.activeAccountsLabel.ForeColor = System.Drawing.Color.White;
+            this.activeAccountsLabel.Name = "activeAccountsLabel";
+            this.activeAccountsLabel.Size = new System.Drawing.Size(177, 17);
+            this.activeAccountsLabel.Text = "SSB Account: Owner Account:";
             // 
             // UserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(752, 705);
+            this.ClientSize = new System.Drawing.Size(752, 728);
+            this.Controls.Add(this.monitoringStatusBar);
             this.Controls.Add(this.ssbResetButton);
             this.Controls.Add(this.ssbStopButton);
             this.Controls.Add(this.titleBarVersionLabel);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.minimizeButton);
-            this.Controls.Add(this.statusBar);
+            this.Controls.Add(this.secondaryStatusBar);
             this.Controls.Add(this.ssbExitButton);
             this.Controls.Add(this.ssbStartButton);
             this.Controls.Add(this.UiTabCtl);
@@ -4171,8 +4193,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).EndInit();
-            this.statusBar.ResumeLayout(false);
-            this.statusBar.PerformLayout();
+            this.secondaryStatusBar.ResumeLayout(false);
+            this.secondaryStatusBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
@@ -4181,6 +4203,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).EndInit();
             this.sysTrayContextMenuStrip.ResumeLayout(false);
+            this.monitoringStatusBar.ResumeLayout(false);
+            this.monitoringStatusBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4202,7 +4226,7 @@
         private System.Windows.Forms.Label coreEloCacheLabel;
         private System.Windows.Forms.CheckBox coreLogEventsDiskCheckBox;
         private System.Windows.Forms.ToolTip coreToolTip;
-        private System.Windows.Forms.StatusStrip statusBar;
+        private System.Windows.Forms.StatusStrip secondaryStatusBar;
         private System.Windows.Forms.TabPage modulesTab;
         private System.Windows.Forms.TabPage aboutTab;
         private System.Windows.Forms.GroupBox aboutGroupBox;
@@ -4451,7 +4475,7 @@
         private System.Windows.Forms.GroupBox abtContainerGroupBox;
         private System.Windows.Forms.Label abtAuthorLabel;
         private System.Windows.Forms.PictureBox xaeroPictureBox;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel activeModulesLabel;
         private System.Windows.Forms.Button ssbStopButton;
         private System.Windows.Forms.CheckBox coreAppendEventsCheckBox;
         private System.Windows.Forms.ErrorProvider errorProvider;
@@ -4461,8 +4485,6 @@
         private System.Windows.Forms.BindingSource modEarlyQuitCurrentQuitBindingSource;
         private System.Windows.Forms.Button modIRCGenerateRandomNamesButton;
         private System.Windows.Forms.BindingSource usrMCurrentUserBindingSource;
-        private System.Windows.Forms.ToolStripStatusLabel fakeAlignStatusLabel;
-        private System.Windows.Forms.ToolStripStatusLabel modStatusLabel;
         private System.Windows.Forms.BindingSource banMCurrentBanBindingSource;
         private System.Windows.Forms.Button banMDelAllBansButton;
         private System.Windows.Forms.Button banMDelExpiredBansButton;
@@ -4475,5 +4497,9 @@
         private System.Windows.Forms.Button coreResetSettingsButton;
         private System.Windows.Forms.ContextMenuStrip sysTrayContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem sysTrayExitMenuItem;
+        private System.Windows.Forms.StatusStrip monitoringStatusBar;
+        private System.Windows.Forms.ToolStripStatusLabel monitoringStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel fakeAlignmentLabel;
+        private System.Windows.Forms.ToolStripStatusLabel activeAccountsLabel;
     }
 }

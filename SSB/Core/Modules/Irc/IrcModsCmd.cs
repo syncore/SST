@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -14,9 +13,9 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
+        private int _ircMinArgs = 0;
         private bool _isAsync = false;
         private bool _requiresMonitoring = false;
-        private int _ircMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcModsCmd" /> class.
@@ -27,6 +26,17 @@ namespace SSB.Core.Modules.Irc
         {
             _ssb = ssb;
             _irc = irc;
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs
+        {
+            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -48,17 +58,6 @@ namespace SSB.Core.Modules.Irc
         public bool RequiresMonitoring
         {
             get { return _requiresMonitoring; }
-        }
-
-        /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
-        public int IrcMinArgs
-        {
-            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -89,22 +88,19 @@ namespace SSB.Core.Modules.Irc
         /// <param name="c">The cmd args.</param>
         public void Exec(CmdArgs c)
         {
-            var activeMods = _ssb.Mod.GetActiveModules();
-            if (activeMods.Count == 0)
+            var activeCount = _ssb.Mod.ActiveModuleCount;
+
+            if (activeCount == 0)
             {
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     string.Format("\u0003My server has no active modules loaded at this time"));
                 return;
             }
 
-            var sb = new StringBuilder();
-            foreach (var mod in activeMods)
-            {
-                sb.Append(string.Format("\u00033{0}\u0003, ", mod.ModuleName));
-            }
-
-            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003My server has \u0002{0}\u0002 active {1} loaded: {2}",
-                activeMods.Count, (activeMods.Count > 1 ? "modules" : "module"), sb.ToString().TrimEnd(',', ' ')));
+            var activeMods = _ssb.Mod.GetActiveModules();
+            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                string.Format("\u0003My server has \u0002{0}\u0002 active {1} loaded: {2}",
+                activeCount, (activeCount > 1 ? "modules" : "module"), activeMods));
         }
 
         /// <summary>
