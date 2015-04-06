@@ -34,6 +34,7 @@
             this.UiTabCtl = new System.Windows.Forms.TabControl();
             this.logTab = new System.Windows.Forms.TabPage();
             this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.clearLogEventsButton = new System.Windows.Forms.Button();
             this.logEventsGroupBox = new System.Windows.Forms.GroupBox();
             this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.logHeaderDescLabel = new System.Windows.Forms.Label();
@@ -41,6 +42,11 @@
             this.logHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
             this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreResetAllButton = new System.Windows.Forms.Button();
+            this.coreSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
             this.coreAccountGroupBox = new System.Windows.Forms.GroupBox();
             this.coreAccountNameLabel = new System.Windows.Forms.Label();
@@ -55,7 +61,6 @@
             this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
             this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
             this.coreLogEventsDiskCheckBox = new System.Windows.Forms.CheckBox();
-            this.coreResetAllButton = new System.Windows.Forms.Button();
             this.coreHeaderDescLabel = new System.Windows.Forms.Label();
             this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.coreHeaderLabel = new System.Windows.Forms.Label();
@@ -63,6 +68,10 @@
             this.moduleTabControl = new System.Windows.Forms.TabControl();
             this.accountDateTab = new System.Windows.Forms.TabPage();
             this.modAccDateContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccDateResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAccDateLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAccDateSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccDateOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modAccDateOptAccAgeGroupBox = new System.Windows.Forms.GroupBox();
             this.modAccDateAccAgeTextBox = new System.Windows.Forms.TextBox();
@@ -73,6 +82,10 @@
             this.modAccDateHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.accuracyTab = new System.Windows.Forms.TabPage();
             this.modAccuracyContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccuracySettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAccuracyResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAccuracyLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAccuracySaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccuracyOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modAccuracyEnableCheckBox = new System.Windows.Forms.CheckBox();
             this.modAccuracyHeaderLabelDesc = new System.Windows.Forms.Label();
@@ -80,6 +93,10 @@
             this.modAccuracyHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.autoVoterTab = new System.Windows.Forms.TabPage();
             this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modAutoVoterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAutoVoterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modAutoVoterSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAutoVoterOptCurVotesGroupBox = new System.Windows.Forms.GroupBox();
             this.modAutoVoterClearVotesButton = new System.Windows.Forms.Button();
             this.modAutoVoterDelVoteButton = new System.Windows.Forms.Button();
@@ -100,6 +117,10 @@
             this.modAutoVoterHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.earlyQuitTab = new System.Windows.Forms.TabPage();
             this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEarlyQuitResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modEarlyQuitLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modEarlyQuitSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modEarlyQuitOptCurQuitsGroupBox = new System.Windows.Forms.GroupBox();
             this.modEarlyQuitForgiveQuitButton = new System.Windows.Forms.Button();
             this.modEarlyQuitClearQuitsButton = new System.Windows.Forms.Button();
@@ -117,6 +138,10 @@
             this.modEarlyQuitHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.eloLimitTab = new System.Windows.Forms.TabPage();
             this.modEloLimiterContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modEloLimiterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modEloLimiterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modEloLimiterSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modEloLimiterOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modEloLimiterOptEloGroupBox = new System.Windows.Forms.GroupBox();
             this.modEloLimiterMinEloLabel = new System.Windows.Forms.Label();
@@ -129,6 +154,10 @@
             this.modEloLimiterHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.ircTab = new System.Windows.Forms.TabPage();
             this.modIRCContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modIRCResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modIRCLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modIRCSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modIRCOptGroupBox = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
             this.modIRCOptServerGroupBox = new System.Windows.Forms.GroupBox();
@@ -164,6 +193,10 @@
             this.modIRCHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.motdTab = new System.Windows.Forms.TabPage();
             this.modMOTDContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modMOTDResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modMOTDLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modMOTDSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modMOTDOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modMOTDOptMsgRepeatGroupBox = new System.Windows.Forms.GroupBox();
             this.modMOTDRepeatMsgLabel = new System.Windows.Forms.Label();
@@ -176,6 +209,10 @@
             this.modMOTDHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.pickupTab = new System.Windows.Forms.TabPage();
             this.modPickupContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modPickupResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modPickupLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modPickupSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modPickupOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modPickupOptTeamSizeGroupBox = new System.Windows.Forms.GroupBox();
             this.modPickupPlayersPerTeamLabel = new System.Windows.Forms.Label();
@@ -198,6 +235,10 @@
             this.modPickupHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.serversTab = new System.Windows.Forms.TabPage();
             this.modServerListContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.modServerListResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modServerListLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.modServerListSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modServerListOptGroupBox = new System.Windows.Forms.GroupBox();
             this.modServerListOptDisplayGroupBox = new System.Windows.Forms.GroupBox();
             this.modServerListMaxServersLabel = new System.Windows.Forms.Label();
@@ -244,6 +285,7 @@
             this.aboutTab = new System.Windows.Forms.TabPage();
             this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.aboutGroupBox = new System.Windows.Forms.GroupBox();
+            this.abtWebsiteButton = new System.Windows.Forms.Button();
             this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
             this.abtAuthorLabel = new System.Windows.Forms.Label();
             this.abtIrcInfoLabel = new System.Windows.Forms.Label();
@@ -271,53 +313,12 @@
             this.sysTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.sysTrayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.sysTrayExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.modAccDateSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAccDateSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAccDateLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAccDateResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAccuracySettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAccuracyResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAccuracyLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAccuracySaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAutoVoterSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAutoVoterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAutoVoterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modAutoVoterSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEarlyQuitSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modEarlyQuitResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEarlyQuitLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEarlyQuitSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEloLimiterSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modEloLimiterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEloLimiterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modEloLimiterSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modIRCSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modIRCResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modIRCLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modIRCSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modMOTDSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modMOTDResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modMOTDLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modMOTDSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modPickupSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modPickupResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modPickupLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modPickupSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modServerListSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.modServerListResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modServerListLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.modServerListSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.coreSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.coreResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.coreLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.coreSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
-            this.clearLogEventsButton = new System.Windows.Forms.Button();
             this.monitorIconPictureBox = new System.Windows.Forms.PictureBox();
             this.activeModulesLabel = new System.Windows.Forms.Label();
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.abtWebsiteButton = new System.Windows.Forms.Button();
+            this.uiTabImageList = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -326,6 +327,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).BeginInit();
             this.coreOptionsTab.SuspendLayout();
             this.coreContainerGroupBox.SuspendLayout();
+            this.coreSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).BeginInit();
             this.coreCfgGroupBox.SuspendLayout();
             this.coreAccountGroupBox.SuspendLayout();
             this.coreInterfaceGroupBox.SuspendLayout();
@@ -334,30 +339,54 @@
             this.moduleTabControl.SuspendLayout();
             this.accountDateTab.SuspendLayout();
             this.modAccDateContainerGroupBox.SuspendLayout();
+            this.modAccDateSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).BeginInit();
             this.modAccDateOptGroupBox.SuspendLayout();
             this.modAccDateOptAccAgeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccDateHeaderPictureBox)).BeginInit();
             this.accuracyTab.SuspendLayout();
             this.modAccuracyContainerGroupBox.SuspendLayout();
+            this.modAccuracySettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).BeginInit();
             this.modAccuracyOptGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).BeginInit();
             this.autoVoterTab.SuspendLayout();
             this.modAutoVoterContainerGroupBox.SuspendLayout();
+            this.modAutoVoterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).BeginInit();
             this.modAutoVoterOptCurVotesGroupBox.SuspendLayout();
             this.modAutoVoterOptVoteDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterHeaderPictureBox)).BeginInit();
             this.earlyQuitTab.SuspendLayout();
             this.modEarlyQuitContainerGroupBox.SuspendLayout();
+            this.modEarlyQuitSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).BeginInit();
             this.modEarlyQuitOptCurQuitsGroupBox.SuspendLayout();
             this.modEarlyQuitOptDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitHeaderPictureBox)).BeginInit();
             this.eloLimitTab.SuspendLayout();
             this.modEloLimiterContainerGroupBox.SuspendLayout();
+            this.modEloLimiterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).BeginInit();
             this.modEloLimiterOptGroupBox.SuspendLayout();
             this.modEloLimiterOptEloGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterHeaderPictureBox)).BeginInit();
             this.ircTab.SuspendLayout();
             this.modIRCContainerGroupBox.SuspendLayout();
+            this.modIRCSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).BeginInit();
             this.modIRCOptGroupBox.SuspendLayout();
             this.modIRCOptServerGroupBox.SuspendLayout();
             this.modIRCOptNamingGroupBox.SuspendLayout();
@@ -365,11 +394,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.modIRCHeaderPictureBox)).BeginInit();
             this.motdTab.SuspendLayout();
             this.modMOTDContainerGroupBox.SuspendLayout();
+            this.modMOTDSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).BeginInit();
             this.modMOTDOptGroupBox.SuspendLayout();
             this.modMOTDOptMsgRepeatGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modMOTDHeaderPictureBox)).BeginInit();
             this.pickupTab.SuspendLayout();
             this.modPickupContainerGroupBox.SuspendLayout();
+            this.modPickupSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).BeginInit();
             this.modPickupOptGroupBox.SuspendLayout();
             this.modPickupOptTeamSizeGroupBox.SuspendLayout();
             this.modPickupOptNoShowsGroupBox.SuspendLayout();
@@ -377,6 +414,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.modPickupHeaderPictureBox)).BeginInit();
             this.serversTab.SuspendLayout();
             this.modServerListContainerGroupBox.SuspendLayout();
+            this.modServerListSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).BeginInit();
             this.modServerListOptGroupBox.SuspendLayout();
             this.modServerListOptDisplayGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modServerListHeaderPictureBox)).BeginInit();
@@ -404,46 +445,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).BeginInit();
             this.sysTrayContextMenuStrip.SuspendLayout();
-            this.modAccDateSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).BeginInit();
-            this.modAccuracySettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).BeginInit();
-            this.modAutoVoterSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).BeginInit();
-            this.modEarlyQuitSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).BeginInit();
-            this.modEloLimiterSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).BeginInit();
-            this.modIRCSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).BeginInit();
-            this.modMOTDSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).BeginInit();
-            this.modPickupSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).BeginInit();
-            this.modServerListSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).BeginInit();
-            this.coreSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.monitorIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.moduleIconPictureBox)).BeginInit();
             this.statusPanel.SuspendLayout();
@@ -471,6 +472,7 @@
             this.UiTabCtl.Controls.Add(this.aboutTab);
             this.UiTabCtl.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UiTabCtl.HotTrack = true;
+            this.UiTabCtl.ImageList = this.uiTabImageList;
             this.UiTabCtl.Location = new System.Drawing.Point(7, 124);
             this.UiTabCtl.Name = "UiTabCtl";
             this.UiTabCtl.SelectedIndex = 0;
@@ -484,6 +486,7 @@
             this.logTab.Controls.Add(this.logContainerGroupBox);
             this.logTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logTab.ForeColor = System.Drawing.Color.White;
+            this.logTab.ImageIndex = 0;
             this.logTab.Location = new System.Drawing.Point(4, 26);
             this.logTab.Name = "logTab";
             this.logTab.Padding = new System.Windows.Forms.Padding(3);
@@ -506,6 +509,21 @@
             this.logContainerGroupBox.TabIndex = 10;
             this.logContainerGroupBox.TabStop = false;
             this.logContainerGroupBox.Text = "Activity Log";
+            // 
+            // clearLogEventsButton
+            // 
+            this.clearLogEventsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.clearLogEventsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.clearLogEventsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearLogEventsButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clearLogEventsButton.ForeColor = System.Drawing.Color.White;
+            this.clearLogEventsButton.Location = new System.Drawing.Point(591, 441);
+            this.clearLogEventsButton.Name = "clearLogEventsButton";
+            this.clearLogEventsButton.Size = new System.Drawing.Size(111, 28);
+            this.clearLogEventsButton.TabIndex = 10;
+            this.clearLogEventsButton.Text = "Clear Events";
+            this.coreToolTip.SetToolTip(this.clearLogEventsButton, "Click this button to clear the activity log.");
+            this.clearLogEventsButton.UseVisualStyleBackColor = false;
             // 
             // logEventsGroupBox
             // 
@@ -570,6 +588,7 @@
             this.coreOptionsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
             this.coreOptionsTab.Controls.Add(this.coreContainerGroupBox);
             this.coreOptionsTab.ForeColor = System.Drawing.Color.White;
+            this.coreOptionsTab.ImageIndex = 1;
             this.coreOptionsTab.Location = new System.Drawing.Point(4, 26);
             this.coreOptionsTab.Name = "coreOptionsTab";
             this.coreOptionsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -593,6 +612,72 @@
             this.coreContainerGroupBox.TabIndex = 6;
             this.coreContainerGroupBox.TabStop = false;
             this.coreContainerGroupBox.Text = "Core Options";
+            // 
+            // coreResetAllButton
+            // 
+            this.coreResetAllButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreResetAllButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.coreResetAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreResetAllButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreResetAllButton.ForeColor = System.Drawing.Color.White;
+            this.coreResetAllButton.Location = new System.Drawing.Point(544, 72);
+            this.coreResetAllButton.Name = "coreResetAllButton";
+            this.coreResetAllButton.Size = new System.Drawing.Size(160, 28);
+            this.coreResetAllButton.TabIndex = 4;
+            this.coreResetAllButton.Text = "Reset ALL SSB settings";
+            this.coreToolTip.SetToolTip(this.coreResetAllButton, "Reset all options to their defaults, \r\nincluding module options as well.");
+            this.coreResetAllButton.UseVisualStyleBackColor = false;
+            this.coreResetAllButton.Click += new System.EventHandler(this.coreResetAllButton_Click);
+            // 
+            // coreSettingsGroupBox
+            // 
+            this.coreSettingsGroupBox.Controls.Add(this.coreResetSettingsPictureBox);
+            this.coreSettingsGroupBox.Controls.Add(this.coreLoadSettingsPictureBox);
+            this.coreSettingsGroupBox.Controls.Add(this.coreSaveSettingsPictureBox);
+            this.coreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.coreSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.coreSettingsGroupBox.Location = new System.Drawing.Point(544, 11);
+            this.coreSettingsGroupBox.Name = "coreSettingsGroupBox";
+            this.coreSettingsGroupBox.Size = new System.Drawing.Size(160, 52);
+            this.coreSettingsGroupBox.TabIndex = 39;
+            this.coreSettingsGroupBox.TabStop = false;
+            this.coreSettingsGroupBox.Text = "Settings";
+            // 
+            // coreResetSettingsPictureBox
+            // 
+            this.coreResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreResetSettingsPictureBox.Image")));
+            this.coreResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.coreResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.coreResetSettingsPictureBox.Name = "coreResetSettingsPictureBox";
+            this.coreResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.coreResetSettingsPictureBox.TabIndex = 2;
+            this.coreResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.coreResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.coreResetSettingsPictureBox.Click += new System.EventHandler(this.coreResetSettingsPictureBox_Click);
+            // 
+            // coreLoadSettingsPictureBox
+            // 
+            this.coreLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreLoadSettingsPictureBox.Image")));
+            this.coreLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.coreLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.coreLoadSettingsPictureBox.Name = "coreLoadSettingsPictureBox";
+            this.coreLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.coreLoadSettingsPictureBox.TabIndex = 1;
+            this.coreLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.coreLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.coreLoadSettingsPictureBox.Click += new System.EventHandler(this.coreLoadSettingsPictureBox_Click);
+            // 
+            // coreSaveSettingsPictureBox
+            // 
+            this.coreSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreSaveSettingsPictureBox.Image")));
+            this.coreSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.coreSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.coreSaveSettingsPictureBox.Name = "coreSaveSettingsPictureBox";
+            this.coreSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.coreSaveSettingsPictureBox.TabIndex = 0;
+            this.coreSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.coreSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.coreSaveSettingsPictureBox.Click += new System.EventHandler(this.coreSaveSettingsPictureBox_Click);
             // 
             // coreCfgGroupBox
             // 
@@ -774,22 +859,6 @@
         "ainly for debugging purposes).");
             this.coreLogEventsDiskCheckBox.UseVisualStyleBackColor = true;
             // 
-            // coreResetAllButton
-            // 
-            this.coreResetAllButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.coreResetAllButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.coreResetAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.coreResetAllButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.coreResetAllButton.ForeColor = System.Drawing.Color.White;
-            this.coreResetAllButton.Location = new System.Drawing.Point(544, 72);
-            this.coreResetAllButton.Name = "coreResetAllButton";
-            this.coreResetAllButton.Size = new System.Drawing.Size(160, 28);
-            this.coreResetAllButton.TabIndex = 4;
-            this.coreResetAllButton.Text = "Reset ALL SSB settings";
-            this.coreToolTip.SetToolTip(this.coreResetAllButton, "Reset all options to their defaults, \r\nincluding module options as well.");
-            this.coreResetAllButton.UseVisualStyleBackColor = false;
-            this.coreResetAllButton.Click += new System.EventHandler(this.coreResetAllButton_Click);
-            // 
             // coreHeaderDescLabel
             // 
             this.coreHeaderDescLabel.AutoSize = true;
@@ -825,6 +894,7 @@
             this.modulesTab.BackColor = System.Drawing.Color.Black;
             this.modulesTab.Controls.Add(this.moduleTabControl);
             this.modulesTab.ForeColor = System.Drawing.Color.White;
+            this.modulesTab.ImageIndex = 2;
             this.modulesTab.Location = new System.Drawing.Point(4, 26);
             this.modulesTab.Name = "modulesTab";
             this.modulesTab.Size = new System.Drawing.Size(718, 485);
@@ -882,6 +952,56 @@
             this.modAccDateContainerGroupBox.TabIndex = 2;
             this.modAccDateContainerGroupBox.TabStop = false;
             this.modAccDateContainerGroupBox.Text = "Account Date Limiter";
+            // 
+            // modAccDateSettingsGroupBox
+            // 
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateResetSettingsPictureBox);
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateLoadSettingsPictureBox);
+            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateSaveSettingsPictureBox);
+            this.modAccDateSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modAccDateSettingsGroupBox.Name = "modAccDateSettingsGroupBox";
+            this.modAccDateSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modAccDateSettingsGroupBox.TabIndex = 30;
+            this.modAccDateSettingsGroupBox.TabStop = false;
+            this.modAccDateSettingsGroupBox.Text = "Settings";
+            // 
+            // modAccDateResetSettingsPictureBox
+            // 
+            this.modAccDateResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateResetSettingsPictureBox.Image")));
+            this.modAccDateResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modAccDateResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccDateResetSettingsPictureBox.Name = "modAccDateResetSettingsPictureBox";
+            this.modAccDateResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccDateResetSettingsPictureBox.TabIndex = 2;
+            this.modAccDateResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccDateResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modAccDateResetSettingsPictureBox.Click += new System.EventHandler(this.modAccDateResetSettingsPictureBox_Click);
+            // 
+            // modAccDateLoadSettingsPictureBox
+            // 
+            this.modAccDateLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateLoadSettingsPictureBox.Image")));
+            this.modAccDateLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modAccDateLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccDateLoadSettingsPictureBox.Name = "modAccDateLoadSettingsPictureBox";
+            this.modAccDateLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccDateLoadSettingsPictureBox.TabIndex = 1;
+            this.modAccDateLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccDateLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modAccDateLoadSettingsPictureBox.Click += new System.EventHandler(this.modAccDateLoadSettingsPictureBox_Click);
+            // 
+            // modAccDateSaveSettingsPictureBox
+            // 
+            this.modAccDateSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateSaveSettingsPictureBox.Image")));
+            this.modAccDateSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modAccDateSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccDateSaveSettingsPictureBox.Name = "modAccDateSaveSettingsPictureBox";
+            this.modAccDateSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccDateSaveSettingsPictureBox.TabIndex = 0;
+            this.modAccDateSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccDateSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modAccDateSaveSettingsPictureBox.Click += new System.EventHandler(this.modAccDateSaveSettingsPictureBox_Click);
             // 
             // modAccDateOptGroupBox
             // 
@@ -1006,6 +1126,56 @@
             this.modAccuracyContainerGroupBox.TabStop = false;
             this.modAccuracyContainerGroupBox.Text = "Accuracy Display";
             // 
+            // modAccuracySettingsGroupBox
+            // 
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyResetSettingsPictureBox);
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyLoadSettingsPictureBox);
+            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracySaveSettingsPictureBox);
+            this.modAccuracySettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracySettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccuracySettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modAccuracySettingsGroupBox.Name = "modAccuracySettingsGroupBox";
+            this.modAccuracySettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modAccuracySettingsGroupBox.TabIndex = 31;
+            this.modAccuracySettingsGroupBox.TabStop = false;
+            this.modAccuracySettingsGroupBox.Text = "Settings";
+            // 
+            // modAccuracyResetSettingsPictureBox
+            // 
+            this.modAccuracyResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyResetSettingsPictureBox.Image")));
+            this.modAccuracyResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modAccuracyResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccuracyResetSettingsPictureBox.Name = "modAccuracyResetSettingsPictureBox";
+            this.modAccuracyResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccuracyResetSettingsPictureBox.TabIndex = 2;
+            this.modAccuracyResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccuracyResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modAccuracyResetSettingsPictureBox.Click += new System.EventHandler(this.modAccuracyResetSettingsPictureBox_Click);
+            // 
+            // modAccuracyLoadSettingsPictureBox
+            // 
+            this.modAccuracyLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyLoadSettingsPictureBox.Image")));
+            this.modAccuracyLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modAccuracyLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccuracyLoadSettingsPictureBox.Name = "modAccuracyLoadSettingsPictureBox";
+            this.modAccuracyLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccuracyLoadSettingsPictureBox.TabIndex = 1;
+            this.modAccuracyLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccuracyLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modAccuracyLoadSettingsPictureBox.Click += new System.EventHandler(this.modAccuracyLoadSettingsPictureBox_Click);
+            // 
+            // modAccuracySaveSettingsPictureBox
+            // 
+            this.modAccuracySaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracySaveSettingsPictureBox.Image")));
+            this.modAccuracySaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modAccuracySaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAccuracySaveSettingsPictureBox.Name = "modAccuracySaveSettingsPictureBox";
+            this.modAccuracySaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAccuracySaveSettingsPictureBox.TabIndex = 0;
+            this.modAccuracySaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAccuracySaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modAccuracySaveSettingsPictureBox.Click += new System.EventHandler(this.modAccuracySaveSettingsPictureBox_Click);
+            // 
             // modAccuracyOptGroupBox
             // 
             this.modAccuracyOptGroupBox.BackColor = System.Drawing.Color.Black;
@@ -1088,6 +1258,56 @@
             this.modAutoVoterContainerGroupBox.TabIndex = 4;
             this.modAutoVoterContainerGroupBox.TabStop = false;
             this.modAutoVoterContainerGroupBox.Text = "Automatic Voter";
+            // 
+            // modAutoVoterSettingsGroupBox
+            // 
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterResetSettingsPictureBox);
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterLoadSettingsPictureBox);
+            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterSaveSettingsPictureBox);
+            this.modAutoVoterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modAutoVoterSettingsGroupBox.Name = "modAutoVoterSettingsGroupBox";
+            this.modAutoVoterSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modAutoVoterSettingsGroupBox.TabIndex = 32;
+            this.modAutoVoterSettingsGroupBox.TabStop = false;
+            this.modAutoVoterSettingsGroupBox.Text = "Settings";
+            // 
+            // modAutoVoterResetSettingsPictureBox
+            // 
+            this.modAutoVoterResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterResetSettingsPictureBox.Image")));
+            this.modAutoVoterResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modAutoVoterResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAutoVoterResetSettingsPictureBox.Name = "modAutoVoterResetSettingsPictureBox";
+            this.modAutoVoterResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAutoVoterResetSettingsPictureBox.TabIndex = 2;
+            this.modAutoVoterResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAutoVoterResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modAutoVoterResetSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterResetSettingsPictureBox_Click);
+            // 
+            // modAutoVoterLoadSettingsPictureBox
+            // 
+            this.modAutoVoterLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterLoadSettingsPictureBox.Image")));
+            this.modAutoVoterLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modAutoVoterLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAutoVoterLoadSettingsPictureBox.Name = "modAutoVoterLoadSettingsPictureBox";
+            this.modAutoVoterLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAutoVoterLoadSettingsPictureBox.TabIndex = 1;
+            this.modAutoVoterLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAutoVoterLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modAutoVoterLoadSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterLoadSettingsPictureBox_Click);
+            // 
+            // modAutoVoterSaveSettingsPictureBox
+            // 
+            this.modAutoVoterSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterSaveSettingsPictureBox.Image")));
+            this.modAutoVoterSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modAutoVoterSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modAutoVoterSaveSettingsPictureBox.Name = "modAutoVoterSaveSettingsPictureBox";
+            this.modAutoVoterSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modAutoVoterSaveSettingsPictureBox.TabIndex = 0;
+            this.modAutoVoterSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modAutoVoterSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modAutoVoterSaveSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterSaveSettingsPictureBox_Click);
             // 
             // modAutoVoterOptCurVotesGroupBox
             // 
@@ -1345,6 +1565,56 @@
             this.modEarlyQuitContainerGroupBox.TabStop = false;
             this.modEarlyQuitContainerGroupBox.Text = "Early Quit Banner";
             // 
+            // modEarlyQuitSettingsGroupBox
+            // 
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitResetSettingsPictureBox);
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitLoadSettingsPictureBox);
+            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitSaveSettingsPictureBox);
+            this.modEarlyQuitSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modEarlyQuitSettingsGroupBox.Name = "modEarlyQuitSettingsGroupBox";
+            this.modEarlyQuitSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modEarlyQuitSettingsGroupBox.TabIndex = 33;
+            this.modEarlyQuitSettingsGroupBox.TabStop = false;
+            this.modEarlyQuitSettingsGroupBox.Text = "Settings";
+            // 
+            // modEarlyQuitResetSettingsPictureBox
+            // 
+            this.modEarlyQuitResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitResetSettingsPictureBox.Image")));
+            this.modEarlyQuitResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modEarlyQuitResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEarlyQuitResetSettingsPictureBox.Name = "modEarlyQuitResetSettingsPictureBox";
+            this.modEarlyQuitResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEarlyQuitResetSettingsPictureBox.TabIndex = 2;
+            this.modEarlyQuitResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modEarlyQuitResetSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitResetSettingsPictureBox_Click);
+            // 
+            // modEarlyQuitLoadSettingsPictureBox
+            // 
+            this.modEarlyQuitLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitLoadSettingsPictureBox.Image")));
+            this.modEarlyQuitLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modEarlyQuitLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEarlyQuitLoadSettingsPictureBox.Name = "modEarlyQuitLoadSettingsPictureBox";
+            this.modEarlyQuitLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEarlyQuitLoadSettingsPictureBox.TabIndex = 1;
+            this.modEarlyQuitLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modEarlyQuitLoadSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitLoadSettingsPictureBox_Click);
+            // 
+            // modEarlyQuitSaveSettingsPictureBox
+            // 
+            this.modEarlyQuitSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitSaveSettingsPictureBox.Image")));
+            this.modEarlyQuitSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modEarlyQuitSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEarlyQuitSaveSettingsPictureBox.Name = "modEarlyQuitSaveSettingsPictureBox";
+            this.modEarlyQuitSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEarlyQuitSaveSettingsPictureBox.TabIndex = 0;
+            this.modEarlyQuitSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEarlyQuitSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modEarlyQuitSaveSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitSaveSettingsPictureBox_Click);
+            // 
             // modEarlyQuitOptCurQuitsGroupBox
             // 
             this.modEarlyQuitOptCurQuitsGroupBox.BackColor = System.Drawing.Color.Black;
@@ -1570,6 +1840,56 @@
             this.modEloLimiterContainerGroupBox.TabStop = false;
             this.modEloLimiterContainerGroupBox.Text = "Elo Limiter";
             // 
+            // modEloLimiterSettingsGroupBox
+            // 
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterResetSettingsPictureBox);
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterLoadSettingsPictureBox);
+            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterSaveSettingsPictureBox);
+            this.modEloLimiterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modEloLimiterSettingsGroupBox.Name = "modEloLimiterSettingsGroupBox";
+            this.modEloLimiterSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modEloLimiterSettingsGroupBox.TabIndex = 34;
+            this.modEloLimiterSettingsGroupBox.TabStop = false;
+            this.modEloLimiterSettingsGroupBox.Text = "Settings";
+            // 
+            // modEloLimiterResetSettingsPictureBox
+            // 
+            this.modEloLimiterResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterResetSettingsPictureBox.Image")));
+            this.modEloLimiterResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modEloLimiterResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEloLimiterResetSettingsPictureBox.Name = "modEloLimiterResetSettingsPictureBox";
+            this.modEloLimiterResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEloLimiterResetSettingsPictureBox.TabIndex = 2;
+            this.modEloLimiterResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEloLimiterResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modEloLimiterResetSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterResetSettingsPictureBox_Click);
+            // 
+            // modEloLimiterLoadSettingsPictureBox
+            // 
+            this.modEloLimiterLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterLoadSettingsPictureBox.Image")));
+            this.modEloLimiterLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modEloLimiterLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEloLimiterLoadSettingsPictureBox.Name = "modEloLimiterLoadSettingsPictureBox";
+            this.modEloLimiterLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEloLimiterLoadSettingsPictureBox.TabIndex = 1;
+            this.modEloLimiterLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEloLimiterLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modEloLimiterLoadSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterLoadSettingsPictureBox_Click);
+            // 
+            // modEloLimiterSaveSettingsPictureBox
+            // 
+            this.modEloLimiterSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterSaveSettingsPictureBox.Image")));
+            this.modEloLimiterSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modEloLimiterSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modEloLimiterSaveSettingsPictureBox.Name = "modEloLimiterSaveSettingsPictureBox";
+            this.modEloLimiterSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modEloLimiterSaveSettingsPictureBox.TabIndex = 0;
+            this.modEloLimiterSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modEloLimiterSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modEloLimiterSaveSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterSaveSettingsPictureBox_Click);
+            // 
             // modEloLimiterOptGroupBox
             // 
             this.modEloLimiterOptGroupBox.BackColor = System.Drawing.Color.Black;
@@ -1714,6 +2034,56 @@
             this.modIRCContainerGroupBox.TabIndex = 4;
             this.modIRCContainerGroupBox.TabStop = false;
             this.modIRCContainerGroupBox.Text = "Internet Relay Chat";
+            // 
+            // modIRCSettingsGroupBox
+            // 
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCResetSettingsPictureBox);
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCLoadSettingsPictureBox);
+            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCSaveSettingsPictureBox);
+            this.modIRCSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modIRCSettingsGroupBox.Name = "modIRCSettingsGroupBox";
+            this.modIRCSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modIRCSettingsGroupBox.TabIndex = 35;
+            this.modIRCSettingsGroupBox.TabStop = false;
+            this.modIRCSettingsGroupBox.Text = "Settings";
+            // 
+            // modIRCResetSettingsPictureBox
+            // 
+            this.modIRCResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCResetSettingsPictureBox.Image")));
+            this.modIRCResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modIRCResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modIRCResetSettingsPictureBox.Name = "modIRCResetSettingsPictureBox";
+            this.modIRCResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modIRCResetSettingsPictureBox.TabIndex = 2;
+            this.modIRCResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modIRCResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modIRCResetSettingsPictureBox.Click += new System.EventHandler(this.modIRCResetSettingsPictureBox_Click);
+            // 
+            // modIRCLoadSettingsPictureBox
+            // 
+            this.modIRCLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCLoadSettingsPictureBox.Image")));
+            this.modIRCLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modIRCLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modIRCLoadSettingsPictureBox.Name = "modIRCLoadSettingsPictureBox";
+            this.modIRCLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modIRCLoadSettingsPictureBox.TabIndex = 1;
+            this.modIRCLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modIRCLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modIRCLoadSettingsPictureBox.Click += new System.EventHandler(this.modIRCLoadSettingsPictureBox_Click);
+            // 
+            // modIRCSaveSettingsPictureBox
+            // 
+            this.modIRCSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCSaveSettingsPictureBox.Image")));
+            this.modIRCSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modIRCSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modIRCSaveSettingsPictureBox.Name = "modIRCSaveSettingsPictureBox";
+            this.modIRCSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modIRCSaveSettingsPictureBox.TabIndex = 0;
+            this.modIRCSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modIRCSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modIRCSaveSettingsPictureBox.Click += new System.EventHandler(this.modIRCSaveSettingsPictureBox_Click);
             // 
             // modIRCOptGroupBox
             // 
@@ -2156,6 +2526,56 @@
             this.modMOTDContainerGroupBox.TabStop = false;
             this.modMOTDContainerGroupBox.Text = "Message of the Day";
             // 
+            // modMOTDSettingsGroupBox
+            // 
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDResetSettingsPictureBox);
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDLoadSettingsPictureBox);
+            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDSaveSettingsPictureBox);
+            this.modMOTDSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modMOTDSettingsGroupBox.Name = "modMOTDSettingsGroupBox";
+            this.modMOTDSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modMOTDSettingsGroupBox.TabIndex = 36;
+            this.modMOTDSettingsGroupBox.TabStop = false;
+            this.modMOTDSettingsGroupBox.Text = "Settings";
+            // 
+            // modMOTDResetSettingsPictureBox
+            // 
+            this.modMOTDResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDResetSettingsPictureBox.Image")));
+            this.modMOTDResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modMOTDResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modMOTDResetSettingsPictureBox.Name = "modMOTDResetSettingsPictureBox";
+            this.modMOTDResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modMOTDResetSettingsPictureBox.TabIndex = 2;
+            this.modMOTDResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modMOTDResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modMOTDResetSettingsPictureBox.Click += new System.EventHandler(this.modMOTDResetSettingsPictureBox_Click);
+            // 
+            // modMOTDLoadSettingsPictureBox
+            // 
+            this.modMOTDLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDLoadSettingsPictureBox.Image")));
+            this.modMOTDLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modMOTDLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modMOTDLoadSettingsPictureBox.Name = "modMOTDLoadSettingsPictureBox";
+            this.modMOTDLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modMOTDLoadSettingsPictureBox.TabIndex = 1;
+            this.modMOTDLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modMOTDLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modMOTDLoadSettingsPictureBox.Click += new System.EventHandler(this.modMOTDLoadSettingsPictureBox_Click);
+            // 
+            // modMOTDSaveSettingsPictureBox
+            // 
+            this.modMOTDSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDSaveSettingsPictureBox.Image")));
+            this.modMOTDSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modMOTDSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modMOTDSaveSettingsPictureBox.Name = "modMOTDSaveSettingsPictureBox";
+            this.modMOTDSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modMOTDSaveSettingsPictureBox.TabIndex = 0;
+            this.modMOTDSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modMOTDSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modMOTDSaveSettingsPictureBox.Click += new System.EventHandler(this.modMOTDSaveSettingsPictureBox_Click);
+            // 
             // modMOTDOptGroupBox
             // 
             this.modMOTDOptGroupBox.BackColor = System.Drawing.Color.Black;
@@ -2298,6 +2718,56 @@
             this.modPickupContainerGroupBox.TabIndex = 5;
             this.modPickupContainerGroupBox.TabStop = false;
             this.modPickupContainerGroupBox.Text = "Pickup";
+            // 
+            // modPickupSettingsGroupBox
+            // 
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupResetSettingsPictureBox);
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupLoadSettingsPictureBox);
+            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupSaveSettingsPictureBox);
+            this.modPickupSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modPickupSettingsGroupBox.Name = "modPickupSettingsGroupBox";
+            this.modPickupSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modPickupSettingsGroupBox.TabIndex = 37;
+            this.modPickupSettingsGroupBox.TabStop = false;
+            this.modPickupSettingsGroupBox.Text = "Settings";
+            // 
+            // modPickupResetSettingsPictureBox
+            // 
+            this.modPickupResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupResetSettingsPictureBox.Image")));
+            this.modPickupResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modPickupResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modPickupResetSettingsPictureBox.Name = "modPickupResetSettingsPictureBox";
+            this.modPickupResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modPickupResetSettingsPictureBox.TabIndex = 2;
+            this.modPickupResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modPickupResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modPickupResetSettingsPictureBox.Click += new System.EventHandler(this.modPickupResetSettingsPictureBox_Click);
+            // 
+            // modPickupLoadSettingsPictureBox
+            // 
+            this.modPickupLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupLoadSettingsPictureBox.Image")));
+            this.modPickupLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modPickupLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modPickupLoadSettingsPictureBox.Name = "modPickupLoadSettingsPictureBox";
+            this.modPickupLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modPickupLoadSettingsPictureBox.TabIndex = 1;
+            this.modPickupLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modPickupLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modPickupLoadSettingsPictureBox.Click += new System.EventHandler(this.modPickupLoadSettingsPictureBox_Click);
+            // 
+            // modPickupSaveSettingsPictureBox
+            // 
+            this.modPickupSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupSaveSettingsPictureBox.Image")));
+            this.modPickupSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modPickupSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modPickupSaveSettingsPictureBox.Name = "modPickupSaveSettingsPictureBox";
+            this.modPickupSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modPickupSaveSettingsPictureBox.TabIndex = 0;
+            this.modPickupSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modPickupSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modPickupSaveSettingsPictureBox.Click += new System.EventHandler(this.modPickupSaveSettingsPictureBox_Click);
             // 
             // modPickupOptGroupBox
             // 
@@ -2573,6 +3043,56 @@
             this.modServerListContainerGroupBox.TabStop = false;
             this.modServerListContainerGroupBox.Text = "Server List";
             // 
+            // modServerListSettingsGroupBox
+            // 
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListResetSettingsPictureBox);
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListLoadSettingsPictureBox);
+            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListSaveSettingsPictureBox);
+            this.modServerListSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListSettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
+            this.modServerListSettingsGroupBox.Name = "modServerListSettingsGroupBox";
+            this.modServerListSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
+            this.modServerListSettingsGroupBox.TabIndex = 38;
+            this.modServerListSettingsGroupBox.TabStop = false;
+            this.modServerListSettingsGroupBox.Text = "Settings";
+            // 
+            // modServerListResetSettingsPictureBox
+            // 
+            this.modServerListResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListResetSettingsPictureBox.Image")));
+            this.modServerListResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
+            this.modServerListResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modServerListResetSettingsPictureBox.Name = "modServerListResetSettingsPictureBox";
+            this.modServerListResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modServerListResetSettingsPictureBox.TabIndex = 2;
+            this.modServerListResetSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modServerListResetSettingsPictureBox, "Reset this module to its default settings.");
+            this.modServerListResetSettingsPictureBox.Click += new System.EventHandler(this.modServerListResetSettingsPictureBox_Click);
+            // 
+            // modServerListLoadSettingsPictureBox
+            // 
+            this.modServerListLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListLoadSettingsPictureBox.Image")));
+            this.modServerListLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
+            this.modServerListLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modServerListLoadSettingsPictureBox.Name = "modServerListLoadSettingsPictureBox";
+            this.modServerListLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modServerListLoadSettingsPictureBox.TabIndex = 1;
+            this.modServerListLoadSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modServerListLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
+            this.modServerListLoadSettingsPictureBox.Click += new System.EventHandler(this.modServerListLoadSettingsPictureBox_Click);
+            // 
+            // modServerListSaveSettingsPictureBox
+            // 
+            this.modServerListSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListSaveSettingsPictureBox.Image")));
+            this.modServerListSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
+            this.modServerListSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.modServerListSaveSettingsPictureBox.Name = "modServerListSaveSettingsPictureBox";
+            this.modServerListSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
+            this.modServerListSaveSettingsPictureBox.TabIndex = 0;
+            this.modServerListSaveSettingsPictureBox.TabStop = false;
+            this.coreToolTip.SetToolTip(this.modServerListSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
+            this.modServerListSaveSettingsPictureBox.Click += new System.EventHandler(this.modServerListSaveSettingsPictureBox_Click);
+            // 
             // modServerListOptGroupBox
             // 
             this.modServerListOptGroupBox.BackColor = System.Drawing.Color.Black;
@@ -2695,6 +3215,7 @@
             this.usersTab.BackColor = System.Drawing.Color.Black;
             this.usersTab.Controls.Add(this.usrMContainerGroupBox);
             this.usersTab.ForeColor = System.Drawing.Color.White;
+            this.usersTab.ImageIndex = 3;
             this.usersTab.Location = new System.Drawing.Point(4, 26);
             this.usersTab.Name = "usersTab";
             this.usersTab.Size = new System.Drawing.Size(718, 485);
@@ -2888,6 +3409,7 @@
             this.banTab.BackColor = System.Drawing.Color.Black;
             this.banTab.Controls.Add(this.banMContainerGroupBox);
             this.banTab.ForeColor = System.Drawing.Color.White;
+            this.banTab.ImageIndex = 4;
             this.banTab.Location = new System.Drawing.Point(4, 26);
             this.banTab.Name = "banTab";
             this.banTab.Size = new System.Drawing.Size(718, 485);
@@ -3122,6 +3644,7 @@
             this.aboutTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
             this.aboutTab.Controls.Add(this.abtContainerGroupBox);
             this.aboutTab.ForeColor = System.Drawing.Color.White;
+            this.aboutTab.ImageIndex = 5;
             this.aboutTab.Location = new System.Drawing.Point(4, 26);
             this.aboutTab.Name = "aboutTab";
             this.aboutTab.Size = new System.Drawing.Size(718, 485);
@@ -3163,6 +3686,21 @@
             this.aboutGroupBox.TabIndex = 1;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "Application Info";
+            // 
+            // abtWebsiteButton
+            // 
+            this.abtWebsiteButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.abtWebsiteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.abtWebsiteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abtWebsiteButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtWebsiteButton.ForeColor = System.Drawing.Color.White;
+            this.abtWebsiteButton.Location = new System.Drawing.Point(49, 277);
+            this.abtWebsiteButton.Name = "abtWebsiteButton";
+            this.abtWebsiteButton.Size = new System.Drawing.Size(132, 28);
+            this.abtWebsiteButton.TabIndex = 10;
+            this.abtWebsiteButton.Text = "SSB Website";
+            this.coreToolTip.SetToolTip(this.abtWebsiteButton, "Click this button to visit the SSB website.");
+            this.abtWebsiteButton.UseVisualStyleBackColor = false;
             // 
             // xaeroPictureBox
             // 
@@ -3338,7 +3876,7 @@
             // minimizeButton
             // 
             this.minimizeButton.Image = ((System.Drawing.Image)(resources.GetObject("minimizeButton.Image")));
-            this.minimizeButton.Location = new System.Drawing.Point(678, 5);
+            this.minimizeButton.Location = new System.Drawing.Point(681, 5);
             this.minimizeButton.Name = "minimizeButton";
             this.minimizeButton.Size = new System.Drawing.Size(21, 17);
             this.minimizeButton.TabIndex = 4;
@@ -3348,7 +3886,7 @@
             // closeButton
             // 
             this.closeButton.Image = ((System.Drawing.Image)(resources.GetObject("closeButton.Image")));
-            this.closeButton.Location = new System.Drawing.Point(708, 5);
+            this.closeButton.Location = new System.Drawing.Point(711, 5);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(21, 17);
             this.closeButton.TabIndex = 5;
@@ -3397,521 +3935,6 @@
             this.sysTrayExitMenuItem.Size = new System.Drawing.Size(94, 22);
             this.sysTrayExitMenuItem.Text = "Exit SSB";
             this.sysTrayExitMenuItem.Click += new System.EventHandler(this.sysTrayExitMenuItem_Click);
-            // 
-            // modAccDateSettingsGroupBox
-            // 
-            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateResetSettingsPictureBox);
-            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateLoadSettingsPictureBox);
-            this.modAccDateSettingsGroupBox.Controls.Add(this.modAccDateSaveSettingsPictureBox);
-            this.modAccDateSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAccDateSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAccDateSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modAccDateSettingsGroupBox.Name = "modAccDateSettingsGroupBox";
-            this.modAccDateSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modAccDateSettingsGroupBox.TabIndex = 30;
-            this.modAccDateSettingsGroupBox.TabStop = false;
-            this.modAccDateSettingsGroupBox.Text = "Settings";
-            // 
-            // modAccDateSaveSettingsPictureBox
-            // 
-            this.modAccDateSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateSaveSettingsPictureBox.Image")));
-            this.modAccDateSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modAccDateSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccDateSaveSettingsPictureBox.Name = "modAccDateSaveSettingsPictureBox";
-            this.modAccDateSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccDateSaveSettingsPictureBox.TabIndex = 0;
-            this.modAccDateSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccDateSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modAccDateSaveSettingsPictureBox.Click += new System.EventHandler(this.modAccDateSaveSettingsPictureBox_Click);
-            // 
-            // modAccDateLoadSettingsPictureBox
-            // 
-            this.modAccDateLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateLoadSettingsPictureBox.Image")));
-            this.modAccDateLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modAccDateLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccDateLoadSettingsPictureBox.Name = "modAccDateLoadSettingsPictureBox";
-            this.modAccDateLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccDateLoadSettingsPictureBox.TabIndex = 1;
-            this.modAccDateLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccDateLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modAccDateLoadSettingsPictureBox.Click += new System.EventHandler(this.modAccDateLoadSettingsPictureBox_Click);
-            // 
-            // modAccDateResetSettingsPictureBox
-            // 
-            this.modAccDateResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateResetSettingsPictureBox.Image")));
-            this.modAccDateResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modAccDateResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccDateResetSettingsPictureBox.Name = "modAccDateResetSettingsPictureBox";
-            this.modAccDateResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccDateResetSettingsPictureBox.TabIndex = 2;
-            this.modAccDateResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccDateResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modAccDateResetSettingsPictureBox.Click += new System.EventHandler(this.modAccDateResetSettingsPictureBox_Click);
-            // 
-            // modAccuracySettingsGroupBox
-            // 
-            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyResetSettingsPictureBox);
-            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracyLoadSettingsPictureBox);
-            this.modAccuracySettingsGroupBox.Controls.Add(this.modAccuracySaveSettingsPictureBox);
-            this.modAccuracySettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAccuracySettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAccuracySettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modAccuracySettingsGroupBox.Name = "modAccuracySettingsGroupBox";
-            this.modAccuracySettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modAccuracySettingsGroupBox.TabIndex = 31;
-            this.modAccuracySettingsGroupBox.TabStop = false;
-            this.modAccuracySettingsGroupBox.Text = "Settings";
-            // 
-            // modAccuracyResetSettingsPictureBox
-            // 
-            this.modAccuracyResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyResetSettingsPictureBox.Image")));
-            this.modAccuracyResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modAccuracyResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccuracyResetSettingsPictureBox.Name = "modAccuracyResetSettingsPictureBox";
-            this.modAccuracyResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccuracyResetSettingsPictureBox.TabIndex = 2;
-            this.modAccuracyResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccuracyResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modAccuracyResetSettingsPictureBox.Click += new System.EventHandler(this.modAccuracyResetSettingsPictureBox_Click);
-            // 
-            // modAccuracyLoadSettingsPictureBox
-            // 
-            this.modAccuracyLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyLoadSettingsPictureBox.Image")));
-            this.modAccuracyLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modAccuracyLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccuracyLoadSettingsPictureBox.Name = "modAccuracyLoadSettingsPictureBox";
-            this.modAccuracyLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccuracyLoadSettingsPictureBox.TabIndex = 1;
-            this.modAccuracyLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccuracyLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modAccuracyLoadSettingsPictureBox.Click += new System.EventHandler(this.modAccuracyLoadSettingsPictureBox_Click);
-            // 
-            // modAccuracySaveSettingsPictureBox
-            // 
-            this.modAccuracySaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracySaveSettingsPictureBox.Image")));
-            this.modAccuracySaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modAccuracySaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAccuracySaveSettingsPictureBox.Name = "modAccuracySaveSettingsPictureBox";
-            this.modAccuracySaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAccuracySaveSettingsPictureBox.TabIndex = 0;
-            this.modAccuracySaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAccuracySaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modAccuracySaveSettingsPictureBox.Click += new System.EventHandler(this.modAccuracySaveSettingsPictureBox_Click);
-            // 
-            // modAutoVoterSettingsGroupBox
-            // 
-            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterResetSettingsPictureBox);
-            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterLoadSettingsPictureBox);
-            this.modAutoVoterSettingsGroupBox.Controls.Add(this.modAutoVoterSaveSettingsPictureBox);
-            this.modAutoVoterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAutoVoterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modAutoVoterSettingsGroupBox.Name = "modAutoVoterSettingsGroupBox";
-            this.modAutoVoterSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modAutoVoterSettingsGroupBox.TabIndex = 32;
-            this.modAutoVoterSettingsGroupBox.TabStop = false;
-            this.modAutoVoterSettingsGroupBox.Text = "Settings";
-            // 
-            // modAutoVoterResetSettingsPictureBox
-            // 
-            this.modAutoVoterResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterResetSettingsPictureBox.Image")));
-            this.modAutoVoterResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modAutoVoterResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAutoVoterResetSettingsPictureBox.Name = "modAutoVoterResetSettingsPictureBox";
-            this.modAutoVoterResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAutoVoterResetSettingsPictureBox.TabIndex = 2;
-            this.modAutoVoterResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAutoVoterResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modAutoVoterResetSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterResetSettingsPictureBox_Click);
-            // 
-            // modAutoVoterLoadSettingsPictureBox
-            // 
-            this.modAutoVoterLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterLoadSettingsPictureBox.Image")));
-            this.modAutoVoterLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modAutoVoterLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAutoVoterLoadSettingsPictureBox.Name = "modAutoVoterLoadSettingsPictureBox";
-            this.modAutoVoterLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAutoVoterLoadSettingsPictureBox.TabIndex = 1;
-            this.modAutoVoterLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAutoVoterLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modAutoVoterLoadSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterLoadSettingsPictureBox_Click);
-            // 
-            // modAutoVoterSaveSettingsPictureBox
-            // 
-            this.modAutoVoterSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterSaveSettingsPictureBox.Image")));
-            this.modAutoVoterSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modAutoVoterSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modAutoVoterSaveSettingsPictureBox.Name = "modAutoVoterSaveSettingsPictureBox";
-            this.modAutoVoterSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modAutoVoterSaveSettingsPictureBox.TabIndex = 0;
-            this.modAutoVoterSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modAutoVoterSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modAutoVoterSaveSettingsPictureBox.Click += new System.EventHandler(this.modAutoVoterSaveSettingsPictureBox_Click);
-            // 
-            // modEarlyQuitSettingsGroupBox
-            // 
-            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitResetSettingsPictureBox);
-            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitLoadSettingsPictureBox);
-            this.modEarlyQuitSettingsGroupBox.Controls.Add(this.modEarlyQuitSaveSettingsPictureBox);
-            this.modEarlyQuitSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modEarlyQuitSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modEarlyQuitSettingsGroupBox.Name = "modEarlyQuitSettingsGroupBox";
-            this.modEarlyQuitSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modEarlyQuitSettingsGroupBox.TabIndex = 33;
-            this.modEarlyQuitSettingsGroupBox.TabStop = false;
-            this.modEarlyQuitSettingsGroupBox.Text = "Settings";
-            // 
-            // modEarlyQuitResetSettingsPictureBox
-            // 
-            this.modEarlyQuitResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitResetSettingsPictureBox.Image")));
-            this.modEarlyQuitResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modEarlyQuitResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEarlyQuitResetSettingsPictureBox.Name = "modEarlyQuitResetSettingsPictureBox";
-            this.modEarlyQuitResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEarlyQuitResetSettingsPictureBox.TabIndex = 2;
-            this.modEarlyQuitResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEarlyQuitResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modEarlyQuitResetSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitResetSettingsPictureBox_Click);
-            // 
-            // modEarlyQuitLoadSettingsPictureBox
-            // 
-            this.modEarlyQuitLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitLoadSettingsPictureBox.Image")));
-            this.modEarlyQuitLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modEarlyQuitLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEarlyQuitLoadSettingsPictureBox.Name = "modEarlyQuitLoadSettingsPictureBox";
-            this.modEarlyQuitLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEarlyQuitLoadSettingsPictureBox.TabIndex = 1;
-            this.modEarlyQuitLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEarlyQuitLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modEarlyQuitLoadSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitLoadSettingsPictureBox_Click);
-            // 
-            // modEarlyQuitSaveSettingsPictureBox
-            // 
-            this.modEarlyQuitSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitSaveSettingsPictureBox.Image")));
-            this.modEarlyQuitSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modEarlyQuitSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEarlyQuitSaveSettingsPictureBox.Name = "modEarlyQuitSaveSettingsPictureBox";
-            this.modEarlyQuitSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEarlyQuitSaveSettingsPictureBox.TabIndex = 0;
-            this.modEarlyQuitSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEarlyQuitSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modEarlyQuitSaveSettingsPictureBox.Click += new System.EventHandler(this.modEarlyQuitSaveSettingsPictureBox_Click);
-            // 
-            // modEloLimiterSettingsGroupBox
-            // 
-            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterResetSettingsPictureBox);
-            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterLoadSettingsPictureBox);
-            this.modEloLimiterSettingsGroupBox.Controls.Add(this.modEloLimiterSaveSettingsPictureBox);
-            this.modEloLimiterSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modEloLimiterSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEloLimiterSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modEloLimiterSettingsGroupBox.Name = "modEloLimiterSettingsGroupBox";
-            this.modEloLimiterSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modEloLimiterSettingsGroupBox.TabIndex = 34;
-            this.modEloLimiterSettingsGroupBox.TabStop = false;
-            this.modEloLimiterSettingsGroupBox.Text = "Settings";
-            // 
-            // modEloLimiterResetSettingsPictureBox
-            // 
-            this.modEloLimiterResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterResetSettingsPictureBox.Image")));
-            this.modEloLimiterResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modEloLimiterResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEloLimiterResetSettingsPictureBox.Name = "modEloLimiterResetSettingsPictureBox";
-            this.modEloLimiterResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEloLimiterResetSettingsPictureBox.TabIndex = 2;
-            this.modEloLimiterResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEloLimiterResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modEloLimiterResetSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterResetSettingsPictureBox_Click);
-            // 
-            // modEloLimiterLoadSettingsPictureBox
-            // 
-            this.modEloLimiterLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterLoadSettingsPictureBox.Image")));
-            this.modEloLimiterLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modEloLimiterLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEloLimiterLoadSettingsPictureBox.Name = "modEloLimiterLoadSettingsPictureBox";
-            this.modEloLimiterLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEloLimiterLoadSettingsPictureBox.TabIndex = 1;
-            this.modEloLimiterLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEloLimiterLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modEloLimiterLoadSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterLoadSettingsPictureBox_Click);
-            // 
-            // modEloLimiterSaveSettingsPictureBox
-            // 
-            this.modEloLimiterSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterSaveSettingsPictureBox.Image")));
-            this.modEloLimiterSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modEloLimiterSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modEloLimiterSaveSettingsPictureBox.Name = "modEloLimiterSaveSettingsPictureBox";
-            this.modEloLimiterSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modEloLimiterSaveSettingsPictureBox.TabIndex = 0;
-            this.modEloLimiterSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modEloLimiterSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modEloLimiterSaveSettingsPictureBox.Click += new System.EventHandler(this.modEloLimiterSaveSettingsPictureBox_Click);
-            // 
-            // modIRCSettingsGroupBox
-            // 
-            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCResetSettingsPictureBox);
-            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCLoadSettingsPictureBox);
-            this.modIRCSettingsGroupBox.Controls.Add(this.modIRCSaveSettingsPictureBox);
-            this.modIRCSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modIRCSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modIRCSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modIRCSettingsGroupBox.Name = "modIRCSettingsGroupBox";
-            this.modIRCSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modIRCSettingsGroupBox.TabIndex = 35;
-            this.modIRCSettingsGroupBox.TabStop = false;
-            this.modIRCSettingsGroupBox.Text = "Settings";
-            // 
-            // modIRCResetSettingsPictureBox
-            // 
-            this.modIRCResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCResetSettingsPictureBox.Image")));
-            this.modIRCResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modIRCResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modIRCResetSettingsPictureBox.Name = "modIRCResetSettingsPictureBox";
-            this.modIRCResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modIRCResetSettingsPictureBox.TabIndex = 2;
-            this.modIRCResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modIRCResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modIRCResetSettingsPictureBox.Click += new System.EventHandler(this.modIRCResetSettingsPictureBox_Click);
-            // 
-            // modIRCLoadSettingsPictureBox
-            // 
-            this.modIRCLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCLoadSettingsPictureBox.Image")));
-            this.modIRCLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modIRCLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modIRCLoadSettingsPictureBox.Name = "modIRCLoadSettingsPictureBox";
-            this.modIRCLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modIRCLoadSettingsPictureBox.TabIndex = 1;
-            this.modIRCLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modIRCLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modIRCLoadSettingsPictureBox.Click += new System.EventHandler(this.modIRCLoadSettingsPictureBox_Click);
-            // 
-            // modIRCSaveSettingsPictureBox
-            // 
-            this.modIRCSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCSaveSettingsPictureBox.Image")));
-            this.modIRCSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modIRCSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modIRCSaveSettingsPictureBox.Name = "modIRCSaveSettingsPictureBox";
-            this.modIRCSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modIRCSaveSettingsPictureBox.TabIndex = 0;
-            this.modIRCSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modIRCSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modIRCSaveSettingsPictureBox.Click += new System.EventHandler(this.modIRCSaveSettingsPictureBox_Click);
-            // 
-            // modMOTDSettingsGroupBox
-            // 
-            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDResetSettingsPictureBox);
-            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDLoadSettingsPictureBox);
-            this.modMOTDSettingsGroupBox.Controls.Add(this.modMOTDSaveSettingsPictureBox);
-            this.modMOTDSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modMOTDSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modMOTDSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modMOTDSettingsGroupBox.Name = "modMOTDSettingsGroupBox";
-            this.modMOTDSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modMOTDSettingsGroupBox.TabIndex = 36;
-            this.modMOTDSettingsGroupBox.TabStop = false;
-            this.modMOTDSettingsGroupBox.Text = "Settings";
-            // 
-            // modMOTDResetSettingsPictureBox
-            // 
-            this.modMOTDResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDResetSettingsPictureBox.Image")));
-            this.modMOTDResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modMOTDResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modMOTDResetSettingsPictureBox.Name = "modMOTDResetSettingsPictureBox";
-            this.modMOTDResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modMOTDResetSettingsPictureBox.TabIndex = 2;
-            this.modMOTDResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modMOTDResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modMOTDResetSettingsPictureBox.Click += new System.EventHandler(this.modMOTDResetSettingsPictureBox_Click);
-            // 
-            // modMOTDLoadSettingsPictureBox
-            // 
-            this.modMOTDLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDLoadSettingsPictureBox.Image")));
-            this.modMOTDLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modMOTDLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modMOTDLoadSettingsPictureBox.Name = "modMOTDLoadSettingsPictureBox";
-            this.modMOTDLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modMOTDLoadSettingsPictureBox.TabIndex = 1;
-            this.modMOTDLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modMOTDLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modMOTDLoadSettingsPictureBox.Click += new System.EventHandler(this.modMOTDLoadSettingsPictureBox_Click);
-            // 
-            // modMOTDSaveSettingsPictureBox
-            // 
-            this.modMOTDSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDSaveSettingsPictureBox.Image")));
-            this.modMOTDSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modMOTDSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modMOTDSaveSettingsPictureBox.Name = "modMOTDSaveSettingsPictureBox";
-            this.modMOTDSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modMOTDSaveSettingsPictureBox.TabIndex = 0;
-            this.modMOTDSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modMOTDSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modMOTDSaveSettingsPictureBox.Click += new System.EventHandler(this.modMOTDSaveSettingsPictureBox_Click);
-            // 
-            // modPickupSettingsGroupBox
-            // 
-            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupResetSettingsPictureBox);
-            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupLoadSettingsPictureBox);
-            this.modPickupSettingsGroupBox.Controls.Add(this.modPickupSaveSettingsPictureBox);
-            this.modPickupSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modPickupSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modPickupSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modPickupSettingsGroupBox.Name = "modPickupSettingsGroupBox";
-            this.modPickupSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modPickupSettingsGroupBox.TabIndex = 37;
-            this.modPickupSettingsGroupBox.TabStop = false;
-            this.modPickupSettingsGroupBox.Text = "Settings";
-            // 
-            // modPickupResetSettingsPictureBox
-            // 
-            this.modPickupResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupResetSettingsPictureBox.Image")));
-            this.modPickupResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modPickupResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modPickupResetSettingsPictureBox.Name = "modPickupResetSettingsPictureBox";
-            this.modPickupResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modPickupResetSettingsPictureBox.TabIndex = 2;
-            this.modPickupResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modPickupResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modPickupResetSettingsPictureBox.Click += new System.EventHandler(this.modPickupResetSettingsPictureBox_Click);
-            // 
-            // modPickupLoadSettingsPictureBox
-            // 
-            this.modPickupLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupLoadSettingsPictureBox.Image")));
-            this.modPickupLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modPickupLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modPickupLoadSettingsPictureBox.Name = "modPickupLoadSettingsPictureBox";
-            this.modPickupLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modPickupLoadSettingsPictureBox.TabIndex = 1;
-            this.modPickupLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modPickupLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modPickupLoadSettingsPictureBox.Click += new System.EventHandler(this.modPickupLoadSettingsPictureBox_Click);
-            // 
-            // modPickupSaveSettingsPictureBox
-            // 
-            this.modPickupSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupSaveSettingsPictureBox.Image")));
-            this.modPickupSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modPickupSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modPickupSaveSettingsPictureBox.Name = "modPickupSaveSettingsPictureBox";
-            this.modPickupSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modPickupSaveSettingsPictureBox.TabIndex = 0;
-            this.modPickupSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modPickupSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modPickupSaveSettingsPictureBox.Click += new System.EventHandler(this.modPickupSaveSettingsPictureBox_Click);
-            // 
-            // modServerListSettingsGroupBox
-            // 
-            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListResetSettingsPictureBox);
-            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListLoadSettingsPictureBox);
-            this.modServerListSettingsGroupBox.Controls.Add(this.modServerListSaveSettingsPictureBox);
-            this.modServerListSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modServerListSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modServerListSettingsGroupBox.Location = new System.Drawing.Point(550, 33);
-            this.modServerListSettingsGroupBox.Name = "modServerListSettingsGroupBox";
-            this.modServerListSettingsGroupBox.Size = new System.Drawing.Size(152, 52);
-            this.modServerListSettingsGroupBox.TabIndex = 38;
-            this.modServerListSettingsGroupBox.TabStop = false;
-            this.modServerListSettingsGroupBox.Text = "Settings";
-            // 
-            // modServerListResetSettingsPictureBox
-            // 
-            this.modServerListResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListResetSettingsPictureBox.Image")));
-            this.modServerListResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.modServerListResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modServerListResetSettingsPictureBox.Name = "modServerListResetSettingsPictureBox";
-            this.modServerListResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modServerListResetSettingsPictureBox.TabIndex = 2;
-            this.modServerListResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modServerListResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.modServerListResetSettingsPictureBox.Click += new System.EventHandler(this.modServerListResetSettingsPictureBox_Click);
-            // 
-            // modServerListLoadSettingsPictureBox
-            // 
-            this.modServerListLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListLoadSettingsPictureBox.Image")));
-            this.modServerListLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.modServerListLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modServerListLoadSettingsPictureBox.Name = "modServerListLoadSettingsPictureBox";
-            this.modServerListLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modServerListLoadSettingsPictureBox.TabIndex = 1;
-            this.modServerListLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modServerListLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.modServerListLoadSettingsPictureBox.Click += new System.EventHandler(this.modServerListLoadSettingsPictureBox_Click);
-            // 
-            // modServerListSaveSettingsPictureBox
-            // 
-            this.modServerListSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListSaveSettingsPictureBox.Image")));
-            this.modServerListSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.modServerListSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.modServerListSaveSettingsPictureBox.Name = "modServerListSaveSettingsPictureBox";
-            this.modServerListSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.modServerListSaveSettingsPictureBox.TabIndex = 0;
-            this.modServerListSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.modServerListSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.modServerListSaveSettingsPictureBox.Click += new System.EventHandler(this.modServerListSaveSettingsPictureBox_Click);
-            // 
-            // coreSettingsGroupBox
-            // 
-            this.coreSettingsGroupBox.Controls.Add(this.coreResetSettingsPictureBox);
-            this.coreSettingsGroupBox.Controls.Add(this.coreLoadSettingsPictureBox);
-            this.coreSettingsGroupBox.Controls.Add(this.coreSaveSettingsPictureBox);
-            this.coreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.coreSettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.coreSettingsGroupBox.Location = new System.Drawing.Point(544, 11);
-            this.coreSettingsGroupBox.Name = "coreSettingsGroupBox";
-            this.coreSettingsGroupBox.Size = new System.Drawing.Size(160, 52);
-            this.coreSettingsGroupBox.TabIndex = 39;
-            this.coreSettingsGroupBox.TabStop = false;
-            this.coreSettingsGroupBox.Text = "Settings";
-            // 
-            // coreResetSettingsPictureBox
-            // 
-            this.coreResetSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreResetSettingsPictureBox.Image")));
-            this.coreResetSettingsPictureBox.Location = new System.Drawing.Point(112, 18);
-            this.coreResetSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.coreResetSettingsPictureBox.Name = "coreResetSettingsPictureBox";
-            this.coreResetSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.coreResetSettingsPictureBox.TabIndex = 2;
-            this.coreResetSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.coreResetSettingsPictureBox, "Reset this module to its default settings.");
-            this.coreResetSettingsPictureBox.Click += new System.EventHandler(this.coreResetSettingsPictureBox_Click);
-            // 
-            // coreLoadSettingsPictureBox
-            // 
-            this.coreLoadSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreLoadSettingsPictureBox.Image")));
-            this.coreLoadSettingsPictureBox.Location = new System.Drawing.Point(60, 18);
-            this.coreLoadSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.coreLoadSettingsPictureBox.Name = "coreLoadSettingsPictureBox";
-            this.coreLoadSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.coreLoadSettingsPictureBox.TabIndex = 1;
-            this.coreLoadSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.coreLoadSettingsPictureBox, "Load the current settings from the configuration file.\r\n");
-            this.coreLoadSettingsPictureBox.Click += new System.EventHandler(this.coreLoadSettingsPictureBox_Click);
-            // 
-            // coreSaveSettingsPictureBox
-            // 
-            this.coreSaveSettingsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreSaveSettingsPictureBox.Image")));
-            this.coreSaveSettingsPictureBox.Location = new System.Drawing.Point(8, 18);
-            this.coreSaveSettingsPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.coreSaveSettingsPictureBox.Name = "coreSaveSettingsPictureBox";
-            this.coreSaveSettingsPictureBox.Size = new System.Drawing.Size(30, 30);
-            this.coreSaveSettingsPictureBox.TabIndex = 0;
-            this.coreSaveSettingsPictureBox.TabStop = false;
-            this.coreToolTip.SetToolTip(this.coreSaveSettingsPictureBox, "Save the current settings to the configuration file.\r\n");
-            this.coreSaveSettingsPictureBox.Click += new System.EventHandler(this.coreSaveSettingsPictureBox_Click);
-            // 
-            // clearLogEventsButton
-            // 
-            this.clearLogEventsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.clearLogEventsButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.clearLogEventsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearLogEventsButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearLogEventsButton.ForeColor = System.Drawing.Color.White;
-            this.clearLogEventsButton.Location = new System.Drawing.Point(591, 441);
-            this.clearLogEventsButton.Name = "clearLogEventsButton";
-            this.clearLogEventsButton.Size = new System.Drawing.Size(111, 28);
-            this.clearLogEventsButton.TabIndex = 10;
-            this.clearLogEventsButton.Text = "Clear Events";
-            this.coreToolTip.SetToolTip(this.clearLogEventsButton, "Click this button to clear the activity log.");
-            this.clearLogEventsButton.UseVisualStyleBackColor = false;
             // 
             // monitorIconPictureBox
             // 
@@ -3971,20 +3994,16 @@
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
             // 
-            // abtWebsiteButton
+            // uiTabImageList
             // 
-            this.abtWebsiteButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.abtWebsiteButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.abtWebsiteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.abtWebsiteButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.abtWebsiteButton.ForeColor = System.Drawing.Color.White;
-            this.abtWebsiteButton.Location = new System.Drawing.Point(49, 277);
-            this.abtWebsiteButton.Name = "abtWebsiteButton";
-            this.abtWebsiteButton.Size = new System.Drawing.Size(132, 28);
-            this.abtWebsiteButton.TabIndex = 10;
-            this.abtWebsiteButton.Text = "SSB Website";
-            this.coreToolTip.SetToolTip(this.abtWebsiteButton, "Click this button to visit the SSB website.");
-            this.abtWebsiteButton.UseVisualStyleBackColor = false;
+            this.uiTabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uiTabImageList.ImageStream")));
+            this.uiTabImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uiTabImageList.Images.SetKeyName(0, "tab_log_icon");
+            this.uiTabImageList.Images.SetKeyName(1, "tab_coreoptions_icon");
+            this.uiTabImageList.Images.SetKeyName(2, "tab_module_icon");
+            this.uiTabImageList.Images.SetKeyName(3, "tab_user_icon");
+            this.uiTabImageList.Images.SetKeyName(4, "tab_bans_icon");
+            this.uiTabImageList.Images.SetKeyName(5, "tab_about_icon");
             // 
             // UserInterface
             // 
@@ -4017,6 +4036,10 @@
             this.coreOptionsTab.ResumeLayout(false);
             this.coreContainerGroupBox.ResumeLayout(false);
             this.coreContainerGroupBox.PerformLayout();
+            this.coreSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).EndInit();
             this.coreCfgGroupBox.ResumeLayout(false);
             this.coreAccountGroupBox.ResumeLayout(false);
             this.coreAccountGroupBox.PerformLayout();
@@ -4028,6 +4051,10 @@
             this.accountDateTab.ResumeLayout(false);
             this.modAccDateContainerGroupBox.ResumeLayout(false);
             this.modAccDateContainerGroupBox.PerformLayout();
+            this.modAccDateSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).EndInit();
             this.modAccDateOptGroupBox.ResumeLayout(false);
             this.modAccDateOptGroupBox.PerformLayout();
             this.modAccDateOptAccAgeGroupBox.ResumeLayout(false);
@@ -4036,12 +4063,20 @@
             this.accuracyTab.ResumeLayout(false);
             this.modAccuracyContainerGroupBox.ResumeLayout(false);
             this.modAccuracyContainerGroupBox.PerformLayout();
+            this.modAccuracySettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).EndInit();
             this.modAccuracyOptGroupBox.ResumeLayout(false);
             this.modAccuracyOptGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).EndInit();
             this.autoVoterTab.ResumeLayout(false);
             this.modAutoVoterContainerGroupBox.ResumeLayout(false);
             this.modAutoVoterContainerGroupBox.PerformLayout();
+            this.modAutoVoterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).EndInit();
             this.modAutoVoterOptCurVotesGroupBox.ResumeLayout(false);
             this.modAutoVoterOptVoteDetailsGroupBox.ResumeLayout(false);
             this.modAutoVoterOptVoteDetailsGroupBox.PerformLayout();
@@ -4049,6 +4084,10 @@
             this.earlyQuitTab.ResumeLayout(false);
             this.modEarlyQuitContainerGroupBox.ResumeLayout(false);
             this.modEarlyQuitContainerGroupBox.PerformLayout();
+            this.modEarlyQuitSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).EndInit();
             this.modEarlyQuitOptCurQuitsGroupBox.ResumeLayout(false);
             this.modEarlyQuitOptDetailsGroupBox.ResumeLayout(false);
             this.modEarlyQuitOptDetailsGroupBox.PerformLayout();
@@ -4056,6 +4095,10 @@
             this.eloLimitTab.ResumeLayout(false);
             this.modEloLimiterContainerGroupBox.ResumeLayout(false);
             this.modEloLimiterContainerGroupBox.PerformLayout();
+            this.modEloLimiterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).EndInit();
             this.modEloLimiterOptGroupBox.ResumeLayout(false);
             this.modEloLimiterOptGroupBox.PerformLayout();
             this.modEloLimiterOptEloGroupBox.ResumeLayout(false);
@@ -4064,6 +4107,10 @@
             this.ircTab.ResumeLayout(false);
             this.modIRCContainerGroupBox.ResumeLayout(false);
             this.modIRCContainerGroupBox.PerformLayout();
+            this.modIRCSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).EndInit();
             this.modIRCOptGroupBox.ResumeLayout(false);
             this.modIRCOptGroupBox.PerformLayout();
             this.modIRCOptServerGroupBox.ResumeLayout(false);
@@ -4076,6 +4123,10 @@
             this.motdTab.ResumeLayout(false);
             this.modMOTDContainerGroupBox.ResumeLayout(false);
             this.modMOTDContainerGroupBox.PerformLayout();
+            this.modMOTDSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).EndInit();
             this.modMOTDOptGroupBox.ResumeLayout(false);
             this.modMOTDOptGroupBox.PerformLayout();
             this.modMOTDOptMsgRepeatGroupBox.ResumeLayout(false);
@@ -4084,6 +4135,10 @@
             this.pickupTab.ResumeLayout(false);
             this.modPickupContainerGroupBox.ResumeLayout(false);
             this.modPickupContainerGroupBox.PerformLayout();
+            this.modPickupSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).EndInit();
             this.modPickupOptGroupBox.ResumeLayout(false);
             this.modPickupOptGroupBox.PerformLayout();
             this.modPickupOptTeamSizeGroupBox.ResumeLayout(false);
@@ -4096,6 +4151,10 @@
             this.serversTab.ResumeLayout(false);
             this.modServerListContainerGroupBox.ResumeLayout(false);
             this.modServerListContainerGroupBox.PerformLayout();
+            this.modServerListSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).EndInit();
             this.modServerListOptGroupBox.ResumeLayout(false);
             this.modServerListOptGroupBox.PerformLayout();
             this.modServerListOptDisplayGroupBox.ResumeLayout(false);
@@ -4131,46 +4190,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.usrMCurrentUserBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.banMCurrentBanBindingSource)).EndInit();
             this.sysTrayContextMenuStrip.ResumeLayout(false);
-            this.modAccDateSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).EndInit();
-            this.modAccuracySettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).EndInit();
-            this.modAutoVoterSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).EndInit();
-            this.modEarlyQuitSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).EndInit();
-            this.modEloLimiterSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).EndInit();
-            this.modIRCSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).EndInit();
-            this.modMOTDSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).EndInit();
-            this.modPickupSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).EndInit();
-            this.modServerListSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).EndInit();
-            this.coreSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.monitorIconPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.moduleIconPictureBox)).EndInit();
             this.statusPanel.ResumeLayout(false);
@@ -4470,5 +4489,6 @@
         private System.Windows.Forms.Label monitorStatusLabel;
         private System.Windows.Forms.Panel statusPanel;
         private System.Windows.Forms.Button abtWebsiteButton;
+        private System.Windows.Forms.ImageList uiTabImageList;
     }
 }

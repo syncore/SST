@@ -39,6 +39,10 @@
     <Reference Include="IrcDotNet">
       <HintPath>..\ExternalProjects\IrcDotNet\source\IrcDotNet\bin\Release\IrcDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -223,6 +227,7 @@
     <Compile Include="Enums\QlCommandType.cs" />
     <Compile Include="Core\ConsoleTextProcessor.cs" />
     <Compile Include="Ui\GuiOptions.cs" />
+    <Compile Include="Util\Log.cs" />
     <Compile Include="Util\Parser.cs" />
     <Compile Include="Core\PlayerEventProcessor.cs" />
     <Compile Include="Model\PlayerInfo.cs" />

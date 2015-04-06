@@ -30,9 +30,6 @@ namespace SSB.Config
         {
             try
             {
-                // Might need fail-safe configuration
-                ValidateConfiguration();
-
                 using (var sr = new StreamReader(Filepaths.ConfigurationFilePath))
                 using (var jsonTextReader = new JsonTextReader(sr))
                 {
@@ -96,14 +93,6 @@ namespace SSB.Config
                 writer.WriteLine(json);
                 Debug.WriteLine("> Loaded default configuration from: " + Filepaths.ConfigurationFilePath);
             }
-        }
-
-        /// <summary>
-        ///     Validates the configuration.
-        /// </summary>
-        public void ValidateConfiguration()
-        {
-            // Nothing here; now validation is handled from the class that calls the cfg handler via LoadConfig() on as-needed basis.
         }
 
         /// <summary>

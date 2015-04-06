@@ -98,7 +98,7 @@ namespace SSB.Config.Core
             owner = "syncore";
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;
-            logSsbEventsToDisk = true;
+            logSsbEventsToDisk = false;
             minimizeToTray = true;
         }
     }

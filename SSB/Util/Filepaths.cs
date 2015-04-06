@@ -20,6 +20,9 @@ namespace SSB.Util
 
         private static readonly string DataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
             "data");
+
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            "log");
         
         private static readonly string _accountDateDatabaseFilePath = Path.Combine(DataDirectory,
             AccountDateDatabaseFile);
@@ -143,6 +146,23 @@ namespace SSB.Util
             catch (Exception ex)
             {
                 Debug.WriteLine("Unable to create data directory: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Creates the log directory.
+        /// </summary>
+        public static void CreateLogDirectory()
+        {
+            if (Directory.Exists(LogDirectory)) return;
+            try
+            {
+                Directory.CreateDirectory(LogDirectory);
+                Debug.WriteLine("Created log directory at: " + LogDirectory);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to create log directory: " + ex.Message);
             }
         }
     }

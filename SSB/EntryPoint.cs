@@ -19,10 +19,18 @@ namespace SSB
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Create necessary directories
+            // Create log directory
+            Filepaths.CreateLogDirectory();
+            
+            // Set up logging
+            Log.Configure();
+            
+            // Create data directory
             Filepaths.CreateDataDirectory();
+            
             // Main class
             _ssb = new SynServerBot();
+            
             // Load the GUI
             Application.Run(new UserInterface(_ssb));
         }
