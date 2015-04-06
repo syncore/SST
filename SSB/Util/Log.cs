@@ -15,26 +15,76 @@ namespace SSB.Util
     /// </summary>
     public static class Log
     {
-        public static readonly Type LogClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private static readonly Type LogClassType = MethodBase.GetCurrentMethod().DeclaringType;
         public static readonly ILog Logger = LogManager.GetLogger(LogClassType);
+        private static readonly string _logPrefix = "[CORE]";
         private static readonly ConfigHandler CfgHandler;
 
+        /// <summary>
+        /// Initializes the <see cref="Log"/> class.
+        /// </summary>
         static Log()
         {
             CfgHandler = new ConfigHandler();
+            Configure();
+        }
+
+        /// <summary>
+        /// Writes the specified message to various loggers.
+        /// </summary>
+        /// <param name="msg">The message to log.</param>
+        /// <param name="type">The type of class that initiated the log request.</param>
+        /// <param name="prefix">The manually-specified class prefix.</param>
+        public static void Write(string msg, Type type, string prefix)
+        {
+            ILog logger = LogManager.GetLogger(type);
+
+            // debug output
+#if DEBUG
+            logger.Debug(string.Format("{0} {1}", prefix, msg));
+#endif
+
+            CfgHandler.ReadConfiguration();
+            if (CfgHandler.Config.CoreOptions.logSsbEventsToDisk)
+            {
+                // disk file
+                logger.Info(string.Format("{0} {1}", prefix, msg));
+            }
+        }
+
+        /// <summary>
+        /// Writes a critical message that bypasses a configuration read and thus
+        /// the user's 'log to disk' setting. Typically used for logging high priority messages
+        /// and/or fatal errors.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="prefix">The prefix.</param>
+        public static void WriteCritical(string msg, Type type, string prefix)
+        {
+            ILog logger = LogManager.GetLogger(type);
+
+            // debug output
+#if DEBUG
+            logger.Debug(string.Format("{0} {1}", prefix, msg));
+#endif
+
+            logger.Info(string.Format("{0} {1}", prefix, msg));
         }
 
         /// <summary>
         /// Programatically sets up the logger without using an XML configuration file on disk.
         /// </summary>
-        public static void Configure()
+        private static void Configure()
         {
+            var dirCreated = Filepaths.CreateLogDirectory();
+
             var hierarchy = (Hierarchy)LogManager.GetRepository();
 
             var rollingPatternLayout = new PatternLayout
             {
                 //ConversionPattern = "%date [%thread] %level %logger - %message%newline%exception"
-                ConversionPattern = "[%level] %date{G} [%thread] - %message%newline%exception"
+                ConversionPattern = "[%level] %date{G} [%thread] %message%newline%exception"
             };
 
             rollingPatternLayout.ActivateOptions();
@@ -47,7 +97,8 @@ namespace SSB.Util
 
             var rollingFileAppender = new RollingFileAppender
             {
-                File = @"log\ssbdebug.log",
+                File = ((dirCreated) ?
+                string.Format(@"{0}\ssbdebug.log", Filepaths.LogDirectoryName) : "ssbdebug.log"),
                 AppendToFile = true,
                 RollingStyle = RollingFileAppender.RollingMode.Size,
                 MaxSizeRollBackups = 3,
@@ -62,7 +113,7 @@ namespace SSB.Util
 
             var debugPatternLayout = new PatternLayout
             {
-                ConversionPattern = "[%level] %date{G} [%thread] - %logger: %message%newline%exception"
+                ConversionPattern = "[%level] %date{G} [%thread] (%logger) %message%newline%exception"
             };
             debugPatternLayout.ActivateOptions();
 
@@ -79,25 +130,10 @@ namespace SSB.Util
 
             hierarchy.Root.Level = Level.Debug;
             hierarchy.Configured = true;
-        }
 
-        /// <summary>
-        ///     Logs the current message to both the loggers specified for handling
-        ///  information and debug messages.
-        /// </summary>
-        /// <param name="msg">The message to log.</param>
-        /// <param name="type">The type of class that initiated the log request.</param>
-        public static void LogInfoAndDebug(string msg, Type type)
-        {
-            ILog logger = LogManager.GetLogger(type);
-            // debug output
-            logger.Debug(msg);
-            
-            CfgHandler.ReadConfiguration();
-            if (CfgHandler.Config.CoreOptions.logSsbEventsToDisk)
+            if (!dirCreated)
             {
-                // disk file
-                logger.Info(msg);    
+                WriteCritical("Problem creating log directory!", LogClassType, _logPrefix);
             }
         }
     }

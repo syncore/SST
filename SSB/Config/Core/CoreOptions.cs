@@ -87,6 +87,18 @@ namespace SSB.Config.Core
         public string owner { get; set; }
 
         /// <summary>
+        ///     Gets or sets the required time that must pass (in seconds) between user commands.
+        /// </summary>
+        /// <value>
+        ///     The required time (in seconds) that must pass between user commands.
+        /// </value>
+        /// <remarks>
+        ///     If sufficient time does not pass (i.e. time since user's last command is less than this value)
+        ///     then the command will be ignored. This does not apply to Admins or higher.
+        /// </remarks>
+        public double requiredTimeBetweenCommands { get; set; }
+
+        /// <summary>
         ///     Sets the defaults.
         /// </summary>
         public void SetDefaults()
@@ -96,6 +108,7 @@ namespace SSB.Config.Core
             appendToActivityLog = true;
             autoMonitorServerOnStart = false;
             owner = "syncore";
+            requiredTimeBetweenCommands = 6.5;
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;
             logSsbEventsToDisk = false;

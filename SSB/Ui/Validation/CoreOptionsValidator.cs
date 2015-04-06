@@ -52,5 +52,26 @@ namespace SSB.Ui.Validation
             errorMsg = "Invalid characters detected in QL account name.";
             return false;
         }
+
+        /// <summary>
+        ///     Determines whether the specified user input is a valid time between
+        ///     user commands value.
+        /// </summary>
+        /// <param name="userInput">The user input.</param>
+        /// <param name="errorMsg">The error message.</param>
+        /// <returns>
+        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
+        /// </returns>
+        public bool IsValidTimeBetweenCommands(string userInput, out string errorMsg)
+        {
+            errorMsg = "Time limit between user commands value must be a positive number.";
+            if (userInput.Length == 0) return false;
+
+            uint val;
+            if (!uint.TryParse(userInput, out val)) return false;
+
+            errorMsg = string.Empty;
+            return true;
+        }
     }
 }

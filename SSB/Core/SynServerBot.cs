@@ -367,14 +367,9 @@ namespace SSB.Core
         private string GetAccountNameFromConfig()
         {
             var cfgHandler = new ConfigHandler();
-            if (!File.Exists(Filepaths.ConfigurationFilePath))
-            {
-                cfgHandler.RestoreDefaultConfiguration();
-            }
-            else
-            {
-                cfgHandler.ReadConfiguration();
-            }
+            cfgHandler.VerifyConfigLocation();
+            cfgHandler.ReadConfiguration();
+            
             return cfgHandler.Config.CoreOptions.accountName;
         }
 

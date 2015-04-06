@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SSB.Util
@@ -13,36 +12,35 @@ namespace SSB.Util
         private const string BanDatabaseFile = "bannedusers.db";
         private const string ConfigurationFile = "ssbconfig.cfg";
         private const string EloDatabaseFile = "elo.db";
+        private const string NameDataDirectory = "data";
+        private const string NameLogDirectory = "log";
         private const string PickupGameDatabaseFile = "pickups.db";
         private const string QuitDatabaseFile = "earlyquits.db";
         private const string SeenDateDatabaseFile = "seendate.db";
         private const string UserDatabaseFile = "ssbusers.db";
 
         private static readonly string DataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-            "data");
+            NameDataDirectory);
 
         private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-            "log");
+            NameLogDirectory);
         
         private static readonly string _accountDateDatabaseFilePath = Path.Combine(DataDirectory,
             AccountDateDatabaseFile);
 
+        private static readonly string _banDatabaseFilePath = Path.Combine(DataDirectory, BanDatabaseFile);
         private static readonly string _configurationFilePath = Path.Combine(DataDirectory, ConfigurationFile);
-
         private static readonly string _eloDatabaseFilePath = Path.Combine(DataDirectory, EloDatabaseFile);
 
         private static readonly string _pickupGameDatabaseFilePath = Path.Combine(DataDirectory,
             PickupGameDatabaseFile);
-        
+
         private static readonly string _quitDatabaseFilePath = Path.Combine(DataDirectory, QuitDatabaseFile);
 
         private static readonly string _seenDateDatabaseFilePath = Path.Combine(DataDirectory,
             SeenDateDatabaseFile);
 
-        private static readonly string _banDatabaseFilePath = Path.Combine(DataDirectory, BanDatabaseFile);
-        
         private static readonly string _userDatabaseFilePath = Path.Combine(DataDirectory, UserDatabaseFile);
-
 
         /// <summary>
         /// Gets the account date database file path.
@@ -53,6 +51,17 @@ namespace SSB.Util
         public static string AccountDateDatabaseFilePath
         {
             get { return _accountDateDatabaseFilePath; }
+        }
+
+        /// <summary>
+        /// Gets the ban database file path.
+        /// </summary>
+        /// <value>
+        /// The ban database file path.
+        /// </value>
+        public static string BanDatabaseFilePath
+        {
+            get { return _banDatabaseFilePath; }
         }
 
         /// <summary>
@@ -67,6 +76,17 @@ namespace SSB.Util
         }
 
         /// <summary>
+        /// Gets the data directory path.
+        /// </summary>
+        /// <value>
+        /// The data directory path.
+        /// </value>
+        public static string DataDirectoryPath
+        {
+            get { return DataDirectory;}
+        }
+        
+        /// <summary>
         /// Gets the elo database file path.
         /// </summary>
         /// <value>
@@ -75,6 +95,28 @@ namespace SSB.Util
         public static string EloDatabaseFilePath
         {
             get { return _eloDatabaseFilePath; }
+        }
+
+        /// <summary>
+        /// Gets the name of the log directory.
+        /// </summary>
+        /// <value>
+        /// The name of the log directory.
+        /// </value>
+        public static string LogDirectoryName
+        {
+            get { return NameLogDirectory; }
+        }
+
+        /// <summary>
+        /// Gets the log directory path.
+        /// </summary>
+        /// <value>
+        /// The log directory path.
+        /// </value>
+        public static string LogDirectoryPath
+        {
+            get { return LogDirectory; }
         }
 
         /// <summary>
@@ -111,17 +153,6 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Gets the ban database file path.
-        /// </summary>
-        /// <value>
-        /// The ban database file path.
-        /// </value>
-        public static string BanDatabaseFilePath
-        {
-            get { return _banDatabaseFilePath; }
-        }
-
-        /// <summary>
         /// Gets the user database path.
         /// </summary>
         /// <value>
@@ -135,35 +166,39 @@ namespace SSB.Util
         /// <summary>
         /// Creates the data directory.
         /// </summary>
-        public static void CreateDataDirectory()
+        /// <returns><c>true</c> if the data directory already exists
+        /// or was successfully created, otherwise <c>false</c>.</returns>
+        public static bool CreateDataDirectory()
         {
-            if (Directory.Exists(DataDirectory)) return;
+            if (Directory.Exists(DataDirectory)) return true;
             try
             {
                 Directory.CreateDirectory(DataDirectory);
-                Debug.WriteLine("Created data directory at: " + DataDirectory);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine("Unable to create data directory: " + ex.Message);
+                return false;
             }
+            return true;
         }
 
         /// <summary>
         /// Creates the log directory.
         /// </summary>
-        public static void CreateLogDirectory()
+        /// <returns><c>true</c> if the log directory already exists
+        /// or was successfully created, otherwise <c>false</c>.</returns>
+        public static bool CreateLogDirectory()
         {
-            if (Directory.Exists(LogDirectory)) return;
+            if (Directory.Exists(LogDirectoryPath)) return true;
             try
             {
-                Directory.CreateDirectory(LogDirectory);
-                Debug.WriteLine("Created log directory at: " + LogDirectory);
+                Directory.CreateDirectory(LogDirectoryPath);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine("Unable to create log directory: " + ex.Message);
+                return false;
             }
+            return true;
         }
     }
 }

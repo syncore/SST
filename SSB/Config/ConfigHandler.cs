@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using SSB.Config.Core;
 using SSB.Config.Modules;
@@ -13,6 +13,9 @@ namespace SSB.Config
     /// </summary>
     public class ConfigHandler
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CFG]";
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ConfigHandler" /> class.
         /// </summary>
@@ -21,6 +24,12 @@ namespace SSB.Config
             Config = new Configuration();
         }
 
+        /// <summary>
+        /// Gets or sets the configuration.
+        /// </summary>
+        /// <value>
+        /// The configuration.
+        /// </value>
         public Configuration Config { get; set; }
 
         /// <summary>
@@ -28,6 +37,7 @@ namespace SSB.Config
         /// </summary>
         public void ReadConfiguration()
         {
+            VerifyConfigLocation();
             try
             {
                 using (var sr = new StreamReader(Filepaths.ConfigurationFilePath))
@@ -35,13 +45,12 @@ namespace SSB.Config
                 {
                     var serializer = new JsonSerializer();
                     var cfg = serializer.Deserialize<Configuration>(jsonTextReader);
-
                     Config = cfg;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error loading configuration " + ex.Message);
+                Log.WriteCritical("Error loading configuration " + ex.Message, _logClassType, _logPrefix);
                 RestoreDefaultConfiguration();
             }
         }
@@ -51,9 +60,7 @@ namespace SSB.Config
         /// </summary>
         public void RestoreDefaultConfiguration()
         {
-            // TODO: re-examine some reasonable defaults for these options, including isActive before release
             // Load these fail-safe defaults and save as the new configuration
-
             var acctDateOptions = new AccountDateOptions();
             acctDateOptions.SetDefaults();
             var accuracyOptions = new AccuracyOptions();
@@ -75,23 +82,27 @@ namespace SSB.Config
             var serversOptions = new ServersOptions();
             serversOptions.SetDefaults();
 
-            Config.AccountDateOptions = acctDateOptions;
-            Config.AccuracyOptions = accuracyOptions;
-            Config.AutoVoterOptions = autoVoterOptions;
-            Config.CoreOptions = coreOptions;
-            Config.EarlyQuitOptions = earlyQuitOptions;
-            Config.EloLimitOptions = eloLimitOptions;
-            Config.IrcOptions = ircOptions;
-            Config.MotdOptions = motdOptions;
-            Config.PickupOptions = pickupOptions;
-            Config.ServersOptions = serversOptions;
+            Config = new Configuration
+            {
+                AccountDateOptions = acctDateOptions,
+                AccuracyOptions = accuracyOptions,
+                AutoVoterOptions = autoVoterOptions,
+                CoreOptions = coreOptions,
+                EarlyQuitOptions = earlyQuitOptions,
+                EloLimitOptions = eloLimitOptions,
+                IrcOptions = ircOptions,
+                MotdOptions = motdOptions,
+                PickupOptions = pickupOptions,
+                ServersOptions = serversOptions
+            };
 
             var json = JsonConvert.SerializeObject(Config);
             using (var fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {
                 writer.WriteLine(json);
-                Debug.WriteLine("> Loaded default configuration from: " + Filepaths.ConfigurationFilePath);
+                Log.WriteCritical("Restored fail-safe, default configuration to: " + Filepaths.ConfigurationFilePath,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -105,9 +116,36 @@ namespace SSB.Config
             using (TextWriter writer = new StreamWriter(fs))
             {
                 writer.WriteLine(json);
-                Debug.WriteLine("> Wrote configuration to disk at: " + Filepaths.ConfigurationFilePath +
-                                " **");
+                Log.Write(
+                    "Wrote configuration to disk at: " + Filepaths.ConfigurationFilePath,
+                    _logClassType, _logPrefix);
             }
         }
+
+        
+        /// <summary>
+        /// Verifies the configuration location and file.
+        /// </summary>
+        public void VerifyConfigLocation()
+        {
+            if (!Directory.Exists(Filepaths.DataDirectoryPath))
+            {
+                Log.WriteCritical("Data directory does not exist. Will attempt to create.",
+                    _logClassType, _logPrefix);
+                Filepaths.CreateDataDirectory();
+            }
+            if (!File.Exists(Filepaths.ConfigurationFilePath))
+            {
+                Log.WriteCritical("Config file does not exist. Restoring default config.",
+                    _logClassType, _logPrefix);
+                RestoreDefaultConfiguration();
+            }
+            var fileInfo = new FileInfo(Filepaths.ConfigurationFilePath);
+            if (fileInfo.Length != 0) return;
+            Log.WriteCritical("Config exists but is empty. Restoring default config.",
+                _logClassType, _logPrefix);
+            RestoreDefaultConfiguration();
+        }
+         
     }
 }

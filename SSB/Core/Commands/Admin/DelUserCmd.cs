@@ -98,7 +98,8 @@ namespace SSB.Core.Commands.Admin
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             var todelUserLevel = _users.GetUserLevel(Helpers.GetArgVal(c, 1));
-            var result = _users.DeleteUserFromDb(Helpers.GetArgVal(c, 1), c.FromUser, _users.GetUserLevel(c.FromUser));
+            var result = _users.DeleteUserFromDb(Helpers.GetArgVal(c, 1), c.FromUser,
+                _users.GetUserLevel(c.FromUser));
             if (result == UserDbResult.Success)
             {
                 // UI: reflect changes

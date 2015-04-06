@@ -25,13 +25,14 @@ namespace SSB.Ui
     /// </summary>
     public partial class UserInterface : Form
     {
-        private static readonly Type LogClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly AccountDateLimitValidator _accountDateLimitValidator;
         private readonly ConfigHandler _cfgHandler;
         private readonly CoreOptionsValidator _coreOptionsValidator;
         private readonly EarlyQuitValidator _earlyQuitValidator;
         private readonly EloLimitValidator _eloLimitValidator;
         private readonly IrcValidator _ircValidator;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[UI]";
         private readonly MotdValidator _motdValidator;
         private readonly PickupValidator _pickupValidator;
         private readonly ServerListValidator _serverListValidator;
@@ -80,7 +81,8 @@ namespace SSB.Ui
             });
             // Current bans listbox
             RefreshCurrentBansDataSource();
-            Log.LogInfoAndDebug("[UI]: Populated ban management user interface.", LogClassType);
+            Log.Write("Populated ban management user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -94,8 +96,8 @@ namespace SSB.Ui
             modAccDateAccAgeTextBox.InvokeIfRequired(
                 c => { c.Text = acctDateOptions.minimumDaysRequired.ToString(); });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated account date limiter module user interface.",
-                LogClassType);
+            Log.Write("Populated account date limiter module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -107,8 +109,8 @@ namespace SSB.Ui
             modAccuracyEnableCheckBox.InvokeIfRequired(
                 c => { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated accuracy display module user interface.",
-                LogClassType);
+            Log.Write("Populated accuracy display module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -133,7 +135,8 @@ namespace SSB.Ui
             // Current votes listbox
             RefreshCurrentVotesDataSource();
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated auto voter module user interface.", LogClassType);
+            Log.Write("Populated auto voter module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -157,7 +160,8 @@ namespace SSB.Ui
             // Current early quitters listbox
             RefreshCurrentQuittersDataSource();
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated early quit banner module user interface.", LogClassType);
+            Log.Write("Populated early quit banner module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -177,7 +181,8 @@ namespace SSB.Ui
                     : eloLimitOptions.maximumRequiredElo.ToString());
             });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated Elo limiter module user interface.", LogClassType);
+            Log.Write("Populated Elo limiter module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -203,7 +208,8 @@ namespace SSB.Ui
             modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
             modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated IRC module user interface.", LogClassType);
+            Log.Write("Populated IRC module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -217,7 +223,8 @@ namespace SSB.Ui
             modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
             modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated MOTD module user interface.", LogClassType);
+            Log.Write("Populated MOTD module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -256,7 +263,8 @@ namespace SSB.Ui
                     pickupOptions.excessiveNoShowBanTimeScaleIndex;
             });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated pickup module user interface.", LogClassType);
+            Log.Write("Populated pickup module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -275,7 +283,8 @@ namespace SSB.Ui
                     CultureInfo.InvariantCulture);
             });
             UpdateActiveModulesStatusText();
-            Log.LogInfoAndDebug("[UI]: Populated server list module user interface.", LogClassType);
+            Log.Write("Populated server list module user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -284,12 +293,13 @@ namespace SSB.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
+            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SSB users listbox
             RefreshCurrentSsbUsersDataSource();
-            Log.LogInfoAndDebug("[UI]: Populated user management user interface.", LogClassType);
+            Log.Write("Populated user management user interface.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -395,12 +405,12 @@ namespace SSB.Ui
             if (banMUserQlNameTextBox.Text.Length == 0 ||
                 !Helpers.IsValidQlUsernameFormat(banMUserQlNameTextBox.Text, false))
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Invalid QL name entered when attempting to add ban.", LogClassType);
-                
+                Log.Write(
+                    "Invalid QL name entered when attempting to add ban.", _logClassType, _logPrefix);
+
                 ShowErrorMessage("You must specify a valid Quake Live name.",
                     "Invalid QL name");
-                
+
                 return;
             }
 
@@ -409,13 +419,13 @@ namespace SSB.Ui
                 !double.TryParse(banMBanDurationTextBox.Text, out duration) ||
                 Math.Abs(duration) <= 0)
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Invalid duration entered when attempting to add ban.",
-                    LogClassType);
-                
+                Log.Write(
+                    "Invalid duration entered when attempting to add ban.",
+                    _logClassType, _logPrefix);
+
                 ShowErrorMessage("You must specify a valid duration number.",
                     "Invalid duration");
-                
+
                 return;
             }
 
@@ -424,13 +434,13 @@ namespace SSB.Ui
             var user = banMUserQlNameTextBox.Text;
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            
+
             if (banDb.UserAlreadyBanned(user))
             {
-                Log.LogInfoAndDebug(string.Format(
-                    "[UI]: Owner {0} attempted to add ban for user {1} but {1} is already banned.",
-                    owner, user), LogClassType);
-                
+                Log.Write(string.Format(
+                    "Owner {0} attempted to add ban for user {1} but {1} is already banned.",
+                    owner, user), _logClassType, _logPrefix);
+
                 ShowErrorMessage(
                     string.Format(
                         "User {0} already exists in the ban database. Remove the user then re-add.",
@@ -438,8 +448,8 @@ namespace SSB.Ui
 
                 return;
             }
-            
-            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
+
+            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
             banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
@@ -457,10 +467,10 @@ namespace SSB.Ui
             banMBanDurationTextBox.Clear();
             banMUserQlNameTextBox.Clear();
 
-            Log.LogInfoAndDebug(string.Format(
-                "[UI]: Owner {0} added ban of length {1} {2} for user: {3} expires on {4} to ban database.",
+            Log.Write(string.Format(
+                "Owner {0} added ban of length {1} {2} for user: {3} expires on {4} to ban database.",
                 owner, duration, scale, user, expiration.ToString("G", DateTimeFormatInfo.InvariantInfo)),
-                LogClassType);
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -478,10 +488,10 @@ namespace SSB.Ui
 
             if (allBans.Count == 0)
             {
-                Log.LogInfoAndDebug(
-                    string.Format("[UI]: Owner {0} attempted to clear all bans from ban database, but no bans exist.",
-                    owner), LogClassType);
-                
+                Log.Write(
+                    string.Format("Owner {0} attempted to clear all bans from ban database, but no bans exist.",
+                    owner), _logClassType, _logPrefix);
+
                 ShowErrorMessage("There are no expired bans to remove.",
                     "No expired bans");
                 return;
@@ -505,8 +515,8 @@ namespace SSB.Ui
 
             RefreshCurrentBansDataSource();
 
-            Log.LogInfoAndDebug(string.Format("[UI]: Owner {0} cleared all bans from the ban database.",
-                owner), LogClassType);
+            Log.Write(string.Format("Owner {0} cleared all bans from the ban database.",
+                owner), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -523,7 +533,7 @@ namespace SSB.Ui
 
             var banDb = new DbBans();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -540,14 +550,14 @@ namespace SSB.Ui
                 : -1);
             RefreshCurrentBansDataSource();
 
-            Log.LogInfoAndDebug(
+            Log.Write(
                 string.Format(
-                "[UI]: Owner {0} removed ban for user: {1} from ban database. Ban originally added: {2}" +
+                "Owner {0} removed ban for user: {1} from ban database. Ban originally added: {2}" +
                 " was set to expire on {3}",
                 owner, selectedUser.PlayerName,
                 selectedUser.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                 selectedUser.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
-                LogClassType);
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -567,9 +577,10 @@ namespace SSB.Ui
 
             if (expiredBans.Count == 0)
             {
-                Log.LogInfoAndDebug(
-                    string.Format("[UI]: Owner {0} attempted to remove all expired bans from ban" +
-                                  " database, but no expired bans exist.", owner), LogClassType);
+                Log.Write(
+                    string.Format("Owner {0} attempted to remove all expired bans from ban" +
+                                  " database, but no expired bans exist.", owner),
+                                  _logClassType, _logPrefix);
                 ShowErrorMessage("There are no expired bans to remove.",
                     "No expired bans");
                 return;
@@ -587,9 +598,9 @@ namespace SSB.Ui
                 : -1);
             RefreshCurrentBansDataSource();
 
-            Log.LogInfoAndDebug(string.Format(
-                "[UI]: Owner {0} cleared all {1} expired bans from the ban database.",
-                owner, expiredBans.Count), LogClassType);
+            Log.Write(string.Format(
+                "Owner {0} cleared all {1} expired bans from the ban database.",
+                owner, expiredBans.Count), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -662,8 +673,8 @@ namespace SSB.Ui
         private void coreLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateCoreOptionsUi();
-            Log.LogInfoAndDebug("[UI]: Core options settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Core options settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Core options settings loaded.", "Settings Loaded");
         }
 
@@ -700,6 +711,7 @@ namespace SSB.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void coreResetAllButton_Click(object sender, EventArgs e)
         {
+            _cfgHandler.VerifyConfigLocation();
             _cfgHandler.RestoreDefaultConfiguration();
             _cfgHandler.ReadConfiguration();
 
@@ -722,8 +734,9 @@ namespace SSB.Ui
 
             PopulateAllUiTabs();
 
-            Log.LogInfoAndDebug(
-                "[UI]: ALL SSB settings (including modules) were reset to their default values", LogClassType);
+            Log.Write(
+                "ALL SSB settings (including modules) were reset to their default values",
+                _logClassType, _logPrefix);
             ShowInfoMessage("All SSB settings (including modules) were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -740,7 +753,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             PopulateCoreOptionsUi();
             HandleCoreSettingsUpdate(coreOptions);
-            Log.LogInfoAndDebug("[UI]: Core settings were reset to their default values", LogClassType);
+            Log.Write("Core settings were reset to their default values",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Core settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -759,20 +773,47 @@ namespace SSB.Ui
                 coreOptions.appendToActivityLog = coreAppendEventsCheckBox.Checked;
                 coreOptions.autoMonitorServerOnStart = coreAutoMonitorStartCheckBox.Checked;
                 coreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
+                coreOptions.requiredTimeBetweenCommands = double.Parse(coreTimeCommandTextBox.Text);
                 coreOptions.hideAllQlConsoleText = coreHideQlConsoleCheckBox.Checked;
                 coreOptions.logSsbEventsToDisk = coreLogEventsDiskCheckBox.Checked;
                 coreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
                 coreOptions.owner = coreOwnerNameTextBox.Text;
                 _cfgHandler.WriteConfiguration();
                 HandleCoreSettingsUpdate(coreOptions);
-                Log.LogInfoAndDebug("[UI]: Core settings saved.", LogClassType);
+                Log.Write("Core settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented core settings from being saved.",
-                    LogClassType);
+                Log.Write("Validation error prevented core settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
+            }
+        }
+
+        /// <summary>
+        /// Handles the Validated event of the coreTimeCommandTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void coreTimeCommandTextBox_Validated(object sender, EventArgs e)
+        {
+            errorProvider.SetError(coreTimeCommandTextBox, string.Empty);
+        }
+
+        /// <summary>
+        /// Handles the Validating event of the coreTimeCommandTextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        private void coreTimeCommandTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            string errorMsg;
+            if (!_coreOptionsValidator.IsValidTimeBetweenCommands(coreAccountNameTextBox.Text, out errorMsg))
+            {
+                e.Cancel = true;
+                coreAccountNameTextBox.Select(0, coreAccountNameTextBox.Text.Length);
+                errorProvider.SetError(coreAccountNameTextBox, errorMsg);
             }
         }
 
@@ -787,9 +828,10 @@ namespace SSB.Ui
         private async Task HandleAccountDateModActivation(bool isActiveInUi, uint minAccountAge)
         {
             _ssb.Mod.AccountDateLimit.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? "[UI]: Activating account date limiter module from UI. Updating old values as necessary."
-                : "[UI]: Deactivating account date limiter module from UI if active."), LogClassType);
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? "Activating account date limiter module from UI. Updating old values as necessary."
+                : "Deactivating account date limiter module from UI if active."),
+                _logClassType, _logPrefix);
 
             if (!_ssb.IsMonitoringServer) return;
             await _ssb.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
@@ -818,9 +860,10 @@ namespace SSB.Ui
         private async Task HandleEloLimitModActivation(bool isActiveInUi)
         {
             _ssb.Mod.EloLimit.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? "[UI]: Activating Elo limiter module from UI. Updating old values as necessary."
-                : "[UI]: Deactivating Elo limiter module from UI if active."), LogClassType);
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? "Activating Elo limiter module from UI. Updating old values as necessary."
+                : "Deactivating Elo limiter module from UI if active."),
+                _logClassType, _logPrefix);
 
             if (!_ssb.IsMonitoringServer) return;
             await _ssb.Mod.EloLimit.BatchRemoveEloPlayers();
@@ -836,9 +879,10 @@ namespace SSB.Ui
         private void HandleIrcModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Irc.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? "[UI]: Activating IRC module from UI. Updating old values as necessary."
-                : "[UI]: Deactivating IRC module from UI if active."), LogClassType);
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? "Activating IRC module from UI. Updating old values as necessary."
+                : "Deactivating IRC module from UI if active."),
+                _logClassType, _logPrefix);
 
             if (isActiveInUi)
             {
@@ -861,9 +905,9 @@ namespace SSB.Ui
         private void HandleMotdModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Motd.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? "[UI]: Activating MOTD module from UI. Updating old values as necessary."
-                : "[UI]: Deactivating MOTD module from UI if active."), LogClassType);
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? "Activating MOTD module from UI. Updating old values as necessary."
+                : "Deactivating MOTD module from UI if active."), _logClassType, _logPrefix);
 
             if (isActiveInUi)
             {
@@ -886,9 +930,9 @@ namespace SSB.Ui
         private async Task HandlePickupModActivation(bool isActiveInUi)
         {
             _ssb.Mod.Pickup.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? "[UI]: Activating pickup module from UI. Updating old values as necessary."
-                : "[UI]: Deactivating pickup module from UI if active."), LogClassType);
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? "Activating pickup module from UI. Updating old values as necessary."
+                : "Deactivating pickup module from UI if active."), _logClassType, _logPrefix);
 
             if (!isActiveInUi)
             {
@@ -919,11 +963,11 @@ namespace SSB.Ui
         private void HandleStandardModuleActivation(IModule module, bool isActiveInUi)
         {
             module.Active = isActiveInUi;
-            Log.LogInfoAndDebug(string.Format("{0}", (isActiveInUi)
-                ? string.Format("[UI]: Activating {0} module from UI. Updating old values as necessary.",
+            Log.Write(string.Format("{0}", (isActiveInUi)
+                ? string.Format("Activating {0} module from UI. Updating old values as necessary.",
                     module.ModuleName)
-                : string.Format("[UI]: Deactivating {0} module from UI if active.",
-                    module.ModuleName)), LogClassType);
+                : string.Format("Deactivating {0} module from UI if active.",
+                    module.ModuleName)), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -978,9 +1022,9 @@ namespace SSB.Ui
         private void modAccDateLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAccountDateUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Account date limiter options settings loaded from configuration file.",
-                LogClassType);
+            Log.Write(
+                "Account date limiter options settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Account date limiter settings loaded.", "Settings Loaded");
         }
 
@@ -998,9 +1042,9 @@ namespace SSB.Ui
                 HandleAccountDateModActivation(accountDateOptions.isActive,
                     accountDateOptions.minimumDaysRequired);
             PopulateModAccountDateUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Account date limiter settings were reset to their default values",
-                LogClassType);
+            Log.Write(
+                "Account date limiter settings were reset to their default values",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Account date limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1021,14 +1065,14 @@ namespace SSB.Ui
                 _cfgHandler.WriteConfiguration();
                 await HandleAccountDateModActivation(acctDateOptions.isActive, minAccountAge);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Account date limiter settings saved.", LogClassType);
+                Log.Write("Account date limiter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Validation error prevented account date limiter settings from being saved.",
-                    LogClassType);
+                Log.Write(
+                    "Validation error prevented account date limiter settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -1041,8 +1085,8 @@ namespace SSB.Ui
         private void modAccuracyLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAccuracyUi();
-            Log.LogInfoAndDebug("[UI]: Accuracy display settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Accuracy display settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Accuracy display settings loaded.", "Settings Loaded");
         }
 
@@ -1058,9 +1102,9 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
             PopulateModAccuracyUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Accuracy display settings were reset to their default values",
-                LogClassType);
+            Log.Write(
+                "Accuracy display settings were reset to their default values",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Accuracy display settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1079,13 +1123,13 @@ namespace SSB.Ui
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.Accuracy, accuracyOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Accuracy display settings saved.", LogClassType);
+                Log.Write("Accuracy display settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Accuracy display settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented accuracy settings from being saved.",
-                    LogClassType);
+                Log.Write("Validation error prevented accuracy settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -1133,9 +1177,9 @@ namespace SSB.Ui
             modAutoVoterVoteTypeComboxBox.SelectedIndex = 0;
             modAutoVoterContainingTextBox.Clear();
 
-            Log.LogInfoAndDebug(string.Format("[UI]: Owner {0} added auto {1} vote for: {2}",
+            Log.Write(string.Format("Owner {0} added auto {1} vote for: {2}",
                 addedByAdmin, ((intendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
-                fullVoteText), LogClassType);
+                fullVoteText), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -1159,7 +1203,7 @@ namespace SSB.Ui
             _cfgHandler.Config.AutoVoterOptions.autoVotes = new List<AutoVote>();
             _cfgHandler.WriteConfiguration();
 
-            Log.LogInfoAndDebug("[UI]: All automatic votes were cleared by owner.", LogClassType);
+            Log.Write("All automatic votes were cleared by owner.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -1172,11 +1216,11 @@ namespace SSB.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
-            Log.LogInfoAndDebug(string.Format("[UI]: Owner removed auto {0} vote: {1}",
+            Log.Write(string.Format("Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
-                selectedVote.VoteText), LogClassType);
+                selectedVote.VoteText), _logClassType, _logPrefix);
 
             // Set appropriate index to prevent weird ArgumentOutOfRangeException when
             //re-binding the datasource (RefreshCurrentVotesDataSource())
@@ -1194,8 +1238,8 @@ namespace SSB.Ui
         private void modAutoVoterLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModAutoVoterUi();
-            Log.LogInfoAndDebug("[UI]: Auto voter display settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Auto voter display settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Auto voter display settings loaded.", "Settings Loaded");
         }
 
@@ -1231,8 +1275,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
             PopulateModAutoVoterUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Auto voter settings were reset to their default values", LogClassType);
+            Log.Write(
+                "Auto voter settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Auto voter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1252,14 +1296,14 @@ namespace SSB.Ui
                 _cfgHandler.WriteConfiguration();
                 HandleStandardModuleActivation(_ssb.Mod.AutoVoter, autoVoterOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Auto voter settings saved.", LogClassType);
+                Log.Write("Auto voter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Auto voter settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Validation error prevented auto voter settings from being saved.",
-                    LogClassType);                
+                Log.Write(
+                    "Validation error prevented auto voter settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -1288,7 +1332,7 @@ namespace SSB.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter) p;
+                var player = (EarlyQuitter)p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
             }
@@ -1299,7 +1343,7 @@ namespace SSB.Ui
 
             // Update
             RefreshCurrentQuittersDataSource();
-            Log.LogInfoAndDebug("[UI]: Cleared early quit database.", LogClassType);
+            Log.Write("Cleared early quit database.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -1310,7 +1354,7 @@ namespace SSB.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1321,8 +1365,8 @@ namespace SSB.Ui
             }
             earlyQuitDb.DeleteUserFromDb(player.Name);
             await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
-            Log.LogInfoAndDebug(string.Format("[UI]: Removed {0} from early quit database",
-                player.Name), LogClassType);
+            Log.Write(string.Format("Removed {0} from early quit database",
+                player.Name), _logClassType, _logPrefix);
 
             modEarlyQuitCurQuitsListBox.SelectedIndex = ((modEarlyQuitCurrentQuitBindingSource.Count > 0)
                 ? 0
@@ -1339,7 +1383,7 @@ namespace SSB.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1357,8 +1401,8 @@ namespace SSB.Ui
             }
 
             earlyQuitDb.DecrementUserQuitCount(player.Name, 1);
-            Log.LogInfoAndDebug(string.Format("[UI]: Forgave 1 early quit for {0}",
-                player.Name), LogClassType);
+            Log.Write(string.Format("Forgave 1 early quit for {0}",
+                player.Name), _logClassType, _logPrefix);
             RefreshCurrentQuittersDataSource();
         }
 
@@ -1370,8 +1414,8 @@ namespace SSB.Ui
         private void modEarlyQuitLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModEarlyQuitUi();
-            Log.LogInfoAndDebug("[UI]: Early quit banner settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Early quit banner settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Early quit banner settings loaded.", "Settings Loaded");
         }
 
@@ -1413,8 +1457,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
             PopulateModEarlyQuitUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Early quit banner settings were reset to their default values", LogClassType);
+            Log.Write(
+                "Early quit banner settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Early quit banner settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1432,7 +1476,7 @@ namespace SSB.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
 
@@ -1444,14 +1488,14 @@ namespace SSB.Ui
 
                 HandleStandardModuleActivation(_ssb.Mod.EarlyQuit, earlyQuitOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Early quit banner settings saved.", LogClassType);
+                Log.Write("Early quit banner settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Validation error prevented early quit banner settings from being saved.",
-                    LogClassType); 
+                Log.Write(
+                    "Validation error prevented early quit banner settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -1490,8 +1534,8 @@ namespace SSB.Ui
         private void modEloLimiterLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModEloLimiterUi();
-            Log.LogInfoAndDebug("[UI]: Elo limiter settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Elo limiter settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Elo limiter settings loaded.", "Settings Loaded");
         }
 
@@ -1559,8 +1603,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             await HandleEloLimitModActivation(eloLimitOptions.isActive);
             PopulateModEloLimiterUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Elo limiter settings were reset to their default values", LogClassType);
+            Log.Write(
+                "Elo limiter settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Elo limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1584,9 +1628,9 @@ namespace SSB.Ui
                 }
                 if ((maxElo != 0) && (maxElo < minElo))
                 {
-                    Log.LogInfoAndDebug(
-                        "[UI]: Maximum Elo was less than minimum Elo when attempting to save Elo" +
-                        " limiter settings. Cannot save.", LogClassType);  
+                    Log.Write(
+                        "Maximum Elo was less than minimum Elo when attempting to save Elo" +
+                        " limiter settings. Cannot save.", _logClassType, _logPrefix);
                     ShowErrorMessage("The maximum elo value cannot be less than the minimum Elo value.",
                         "Errors Detected");
                     modEloLimiterMaxEloTextBox.Clear();
@@ -1607,13 +1651,13 @@ namespace SSB.Ui
 
                 await HandleEloLimitModActivation(eloLimitOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Elo limiter settings saved.", LogClassType);
+                Log.Write("Elo limiter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented Elo limiter settings from being saved.",
-                    LogClassType); 
+                Log.Write("Validation error prevented Elo limiter settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -1769,8 +1813,8 @@ namespace SSB.Ui
         private void modIRCLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModIrcUi();
-            Log.LogInfoAndDebug("[UI]: IRC settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("IRC settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("IRC settings loaded.", "Settings Loaded");
         }
 
@@ -1838,7 +1882,7 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleIrcModActivation(ircOptions.isActive);
             PopulateModIrcUi();
-            Log.LogInfoAndDebug("[UI]: IRC settings were reset to their default values", LogClassType);
+            Log.Write("IRC settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("IRC settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -1859,9 +1903,9 @@ namespace SSB.Ui
                     if (modIRCQNetUserNameTextBox.Text.Length == 0 ||
                         modIRCQNetPassTextBox.Text.Length == 0)
                     {
-                        Log.LogInfoAndDebug("[UI]: Auto-Q auth or auto hide hostname was specified in IRC" +
+                        Log.Write("Auto-Q auth or auto hide hostname was specified in IRC" +
                                             " settings, but Q user/pass not specified. Cannot save.",
-                                            LogClassType);
+                                            _logClassType, _logPrefix);
                         ShowErrorMessage(
                             "You must specify a QuakeNet Q username & password to auto-auth with Q.",
                             "Error");
@@ -1906,13 +1950,13 @@ namespace SSB.Ui
 
                 HandleIrcModActivation(ircOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: IRC settings saved.", LogClassType);
+                Log.Write("IRC settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("IRC settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented IRC settings from being saved.",
-                    LogClassType);  
+                Log.Write("Validation error prevented IRC settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -2003,8 +2047,8 @@ namespace SSB.Ui
         private void modMOTDLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModMotdUi();
-            Log.LogInfoAndDebug("[UI]: MOTD settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("MOTD settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("MOTD settings loaded.", "Settings Loaded");
         }
 
@@ -2076,8 +2120,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleMotdModActivation(motdOptions.isActive);
             PopulateModMotdUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Account date limiter settings were reset to their default values", LogClassType);
+            Log.Write(
+                "Account date limiter settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Account date limiter settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -2098,13 +2142,13 @@ namespace SSB.Ui
                 _cfgHandler.WriteConfiguration();
                 HandleMotdModActivation(motdOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: MOTD settings saved.", LogClassType);
+                Log.Write("MOTD settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("MOTD settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented MOTD settings from being saved.",
-                    LogClassType);
+                Log.Write("Validation error prevented MOTD settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -2117,8 +2161,8 @@ namespace SSB.Ui
         private void modPickupLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModPickupUi();
-            Log.LogInfoAndDebug("[UI]: Pickup settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Pickup settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Pickup settings loaded.", "Settings Loaded");
         }
 
@@ -2246,7 +2290,7 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             await HandlePickupModActivation(pickupOptions.isActive);
             PopulateModPickupUi();
-            Log.LogInfoAndDebug("[UI]: Pickup settings were reset to their default values", LogClassType);
+            Log.Write("Pickup settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Pickup settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -2267,9 +2311,9 @@ namespace SSB.Ui
                 pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
                 pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
                 pickupOptions.excessiveSubUseBanTimeScale =
-                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveNoShowBanTimeScale =
-                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
                 pickupOptions.excessiveNoShowBanTimeScaleIndex =
@@ -2292,13 +2336,13 @@ namespace SSB.Ui
 
                 await HandlePickupModActivation(pickupOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Pickup settings saved.", LogClassType);
+                Log.Write("Pickup settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Pickup settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug("[UI]: Validation error prevented pickup settings from being saved.",
-                    LogClassType);
+                Log.Write("Validation error prevented pickup settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -2339,8 +2383,8 @@ namespace SSB.Ui
         private void modServerListLoadSettingsPictureBox_Click(object sender, EventArgs e)
         {
             PopulateModServerListUi();
-            Log.LogInfoAndDebug("[UI]: Server list settings loaded from configuration file.",
-                LogClassType);
+            Log.Write("Server list settings loaded from configuration file.",
+                _logClassType, _logPrefix);
             ShowInfoMessage("Server list settings loaded.", "Settings Loaded");
         }
 
@@ -2384,8 +2428,8 @@ namespace SSB.Ui
             _cfgHandler.WriteConfiguration();
             HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
             PopulateModServerListUi();
-            Log.LogInfoAndDebug(
-                "[UI]: Server list settings were reset to their default values", LogClassType);
+            Log.Write(
+                "Server list settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Server list settings were reset to their default values.",
                 "Defaults Loaded");
         }
@@ -2411,14 +2455,14 @@ namespace SSB.Ui
 
                 HandleStandardModuleActivation(_ssb.Mod.Servers, serverListOptions.isActive);
                 UpdateActiveModulesStatusText();
-                Log.LogInfoAndDebug("[UI]: Server list settings saved.", LogClassType);
+                Log.Write("Server list settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Server list settings saved.", "Settings Saved");
             }
             else
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: Validation error prevented server liset settings from being saved.",
-                    LogClassType); 
+                Log.Write(
+                    "Validation error prevented server liset settings from being saved.",
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("Please correct all errors.", "Errors Detected");
             }
         }
@@ -2514,11 +2558,13 @@ namespace SSB.Ui
             coreAppendEventsCheckBox.Checked = coreOptions.appendToActivityLog;
             coreAutoMonitorStartCheckBox.Checked = coreOptions.autoMonitorServerOnStart;
             coreEloCacheTextBox.Text = coreOptions.eloCacheExpiration.ToString();
+            coreTimeCommandTextBox.Text = coreOptions.requiredTimeBetweenCommands.
+                ToString(CultureInfo.InvariantCulture);
             coreHideQlConsoleCheckBox.Checked = coreOptions.hideAllQlConsoleText;
             coreLogEventsDiskCheckBox.Checked = coreOptions.logSsbEventsToDisk;
             coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
-            Log.LogInfoAndDebug("[UI]: Populated core options user interface.", LogClassType);
+            Log.Write("Populated core options user interface.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2591,18 +2637,18 @@ namespace SSB.Ui
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: User attempted to reset monitoring of server but QL window not found. Won't allow.",
-                    LogClassType);
+                Log.Write(
+                    "User attempted to reset monitoring of server but QL window not found. Won't allow.",
+                    _logClassType, _logPrefix);
                 MessageBox.Show(@"Unable to locate a running instance of Quake Live!",
                     @"Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            Log.LogInfoAndDebug(
-                "[UI]: Got user request to reset server monitoring; Stopping if exists, starting if it doesn't.",
-                LogClassType);
+            Log.Write(
+                "Got user request to reset server monitoring; Stopping if exists, starting if it doesn't.",
+                _logClassType, _logPrefix);
 
             if (_ssb.IsMonitoringServer)
             {
@@ -2624,9 +2670,9 @@ namespace SSB.Ui
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: User attempted to start monitoring of server but QL window not found. Won't allow.",
-                    LogClassType);
+                Log.Write(
+                    "User attempted to start monitoring of server but QL window not found. Won't allow.",
+                    _logClassType, _logPrefix);
                 MessageBox.Show(@"Unable to locate a running instance of Quake Live!",
                     @"Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2636,9 +2682,9 @@ namespace SSB.Ui
             if (_ssb.IsMonitoringServer)
             {
                 // Do nothing if we're already monitoring
-                Log.LogInfoAndDebug(
-                    "[UI]: Got user's request to start monitoring, but we're already monitoring the server. Ignoring.",
-                    LogClassType);
+                Log.Write(
+                    "Got user's request to start monitoring, but we're already monitoring the server. Ignoring.",
+                    _logClassType, _logPrefix);
                 MessageBox.Show(@"Already monitoring a Quake Live server!", @"Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -2656,14 +2702,15 @@ namespace SSB.Ui
         {
             if (!_ssb.IsMonitoringServer)
             {
-                Log.LogInfoAndDebug(
-                    "[UI]: SSB was not previously monitoring server; ignoring user's request to stop monitoring.",
-                    LogClassType);
+                Log.Write(
+                    "SSB was not previously monitoring server; ignoring user's request to stop monitoring.",
+                    _logClassType, _logPrefix);
                 return;
             }
 
             _ssb.StopMonitoring();
-            Log.LogInfoAndDebug("[UI]: Got user request to stop monitoring server. Stopping monitoring.", LogClassType);
+            Log.Write("Got user request to stop monitoring server. Stopping monitoring.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2785,7 +2832,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
+            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -2796,9 +2843,9 @@ namespace SSB.Ui
             usrMUserAccessComboBox.SelectedIndex = 0;
             usrMUserQlNameTextBox.Clear();
 
-            Log.LogInfoAndDebug(
-                string.Format("[UI]: Owner {0} added user {1} with access level {2} to user database.",
-                owner, user, accessLevel), LogClassType);
+            Log.Write(
+                string.Format("Owner {0} added user {1} with access level {2} to user database.",
+                owner, user, accessLevel), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2816,8 +2863,9 @@ namespace SSB.Ui
 
             if (allUsers.Count == 0)
             {
-                Log.LogInfoAndDebug(string.Format("[UI]: Owner {0} attempted to remove all users from user" +
-                                              " database, but no users exist.", owner), LogClassType);
+                Log.Write(string.Format("Owner {0} attempted to remove all users from user" +
+                                              " database, but no users exist.", owner),
+                                              _logClassType, _logPrefix);
 
                 ShowErrorMessage("There are no users to remove.",
                     "No users");
@@ -2834,8 +2882,8 @@ namespace SSB.Ui
                 : -1);
             RefreshCurrentSsbUsersDataSource();
 
-            Log.LogInfoAndDebug(string.Format("[UI]: Owner {0} removed all {1} users from the user database",
-                owner, allUsers.Count), LogClassType);
+            Log.Write(string.Format("Owner {0} removed all {1} users from the user database",
+                owner, allUsers.Count), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2852,7 +2900,7 @@ namespace SSB.Ui
 
             var userDb = new DbUsers();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
@@ -2862,9 +2910,9 @@ namespace SSB.Ui
                 : -1);
             RefreshCurrentSsbUsersDataSource();
 
-            Log.LogInfoAndDebug(
-                string.Format("[UI]: Owner {0} removed user {1} with access level {2} from user database.",
-                owner, selectedUser.Name, selectedUser.AccessLevel), LogClassType);
+            Log.Write(
+                string.Format("Owner {0} removed user {1} with access level {2} from user database.",
+                owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
         }
     }
 }

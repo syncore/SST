@@ -155,14 +155,9 @@ namespace SSB.Util
         private uint GetExpirationFromConfig()
         {
             var cfgHandler = new ConfigHandler();
-            if (!File.Exists(Filepaths.ConfigurationFilePath))
-            {
-                cfgHandler.RestoreDefaultConfiguration();
-            }
-            else
-            {
-                cfgHandler.ReadConfiguration();
-            }
+            cfgHandler.VerifyConfigLocation();
+            cfgHandler.ReadConfiguration();
+            
             return cfgHandler.Config.CoreOptions.eloCacheExpiration;
         }
 

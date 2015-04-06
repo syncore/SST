@@ -298,6 +298,7 @@
             this.abtHeaderDescLabel = new System.Windows.Forms.Label();
             this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.abtHeaderLabel = new System.Windows.Forms.Label();
+            this.uiTabImageList = new System.Windows.Forms.ImageList(this.components);
             this.ssbStartButton = new System.Windows.Forms.Button();
             this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ssbStopButton = new System.Windows.Forms.Button();
@@ -318,7 +319,8 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.uiTabImageList = new System.Windows.Forms.ImageList(this.components);
+            this.coreTimeCommandTextBox = new System.Windows.Forms.TextBox();
+            this.coreTimeCommandLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -695,6 +697,8 @@
             // 
             // coreAccountGroupBox
             // 
+            this.coreAccountGroupBox.Controls.Add(this.coreTimeCommandTextBox);
+            this.coreAccountGroupBox.Controls.Add(this.coreTimeCommandLabel);
             this.coreAccountGroupBox.Controls.Add(this.coreAccountNameLabel);
             this.coreAccountGroupBox.Controls.Add(this.coreAccountNameTextBox);
             this.coreAccountGroupBox.Controls.Add(this.coreOwnerNameTextBox);
@@ -708,7 +712,7 @@
             this.coreAccountGroupBox.Size = new System.Drawing.Size(692, 175);
             this.coreAccountGroupBox.TabIndex = 31;
             this.coreAccountGroupBox.TabStop = false;
-            this.coreAccountGroupBox.Text = "Accounts";
+            this.coreAccountGroupBox.Text = "Accounts and Time";
             // 
             // coreAccountNameLabel
             // 
@@ -757,7 +761,7 @@
             this.coreEloCacheTextBox.Location = new System.Drawing.Point(9, 139);
             this.coreEloCacheTextBox.MaxLength = 10;
             this.coreEloCacheTextBox.Name = "coreEloCacheTextBox";
-            this.coreEloCacheTextBox.Size = new System.Drawing.Size(205, 22);
+            this.coreEloCacheTextBox.Size = new System.Drawing.Size(66, 22);
             this.coreEloCacheTextBox.TabIndex = 5;
             this.coreToolTip.SetToolTip(this.coreEloCacheTextBox, resources.GetString("coreEloCacheTextBox.ToolTip"));
             this.coreEloCacheTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreEloCacheTextBox_Validating);
@@ -3815,6 +3819,17 @@
             this.abtHeaderLabel.TabIndex = 7;
             this.abtHeaderLabel.Text = "About SSB";
             // 
+            // uiTabImageList
+            // 
+            this.uiTabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uiTabImageList.ImageStream")));
+            this.uiTabImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uiTabImageList.Images.SetKeyName(0, "tab_log_icon");
+            this.uiTabImageList.Images.SetKeyName(1, "tab_coreoptions_icon");
+            this.uiTabImageList.Images.SetKeyName(2, "tab_module_icon");
+            this.uiTabImageList.Images.SetKeyName(3, "tab_user_icon");
+            this.uiTabImageList.Images.SetKeyName(4, "tab_bans_icon");
+            this.uiTabImageList.Images.SetKeyName(5, "tab_about_icon");
+            // 
             // ssbStartButton
             // 
             this.ssbStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
@@ -3994,16 +4009,32 @@
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
             // 
-            // uiTabImageList
+            // coreTimeCommandTextBox
             // 
-            this.uiTabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uiTabImageList.ImageStream")));
-            this.uiTabImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.uiTabImageList.Images.SetKeyName(0, "tab_log_icon");
-            this.uiTabImageList.Images.SetKeyName(1, "tab_coreoptions_icon");
-            this.uiTabImageList.Images.SetKeyName(2, "tab_module_icon");
-            this.uiTabImageList.Images.SetKeyName(3, "tab_user_icon");
-            this.uiTabImageList.Images.SetKeyName(4, "tab_bans_icon");
-            this.uiTabImageList.Images.SetKeyName(5, "tab_about_icon");
+            this.coreTimeCommandTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreTimeCommandTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreTimeCommandTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreTimeCommandTextBox.Location = new System.Drawing.Point(342, 139);
+            this.coreTimeCommandTextBox.MaxLength = 10;
+            this.coreTimeCommandTextBox.Name = "coreTimeCommandTextBox";
+            this.coreTimeCommandTextBox.Size = new System.Drawing.Size(66, 22);
+            this.coreTimeCommandTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.coreTimeCommandTextBox, "Enter the time in seconds that must pass between a user\'s commands.\r\nIf the user " +
+        "issues more than one command during this period, then the\r\ncommand will be ignor" +
+        "ed.");
+            this.coreTimeCommandTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreTimeCommandTextBox_Validating);
+            this.coreTimeCommandTextBox.Validated += new System.EventHandler(this.coreTimeCommandTextBox_Validated);
+            // 
+            // coreTimeCommandLabel
+            // 
+            this.coreTimeCommandLabel.AutoSize = true;
+            this.coreTimeCommandLabel.Location = new System.Drawing.Point(339, 107);
+            this.coreTimeCommandLabel.Name = "coreTimeCommandLabel";
+            this.coreTimeCommandLabel.Size = new System.Drawing.Size(279, 14);
+            this.coreTimeCommandLabel.TabIndex = 12;
+            this.coreTimeCommandLabel.Text = "Time Limit Between User Commands [in seconds]";
+            this.coreToolTip.SetToolTip(this.coreTimeCommandLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
+        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
             // 
             // UserInterface
             // 
@@ -4490,5 +4521,7 @@
         private System.Windows.Forms.Panel statusPanel;
         private System.Windows.Forms.Button abtWebsiteButton;
         private System.Windows.Forms.ImageList uiTabImageList;
+        private System.Windows.Forms.TextBox coreTimeCommandTextBox;
+        private System.Windows.Forms.Label coreTimeCommandLabel;
     }
 }

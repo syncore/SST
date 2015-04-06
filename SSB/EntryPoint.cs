@@ -19,18 +19,19 @@ namespace SSB
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Create log directory
-            Filepaths.CreateLogDirectory();
-            
-            // Set up logging
-            Log.Configure();
-            
             // Create data directory
-            Filepaths.CreateDataDirectory();
-            
+            if (!Filepaths.CreateDataDirectory())
+            {
+                MessageBox.Show(
+                    @"Could not create data directory! Make sure that your SSB directory is not read-only. Exiting.",
+                    @"Fatal error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+
             // Main class
             _ssb = new SynServerBot();
-            
+
             // Load the GUI
             Application.Run(new UserInterface(_ssb));
         }
