@@ -18,7 +18,7 @@ namespace SSB
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            
             // Create data directory
             if (!Filepaths.CreateDataDirectory())
             {

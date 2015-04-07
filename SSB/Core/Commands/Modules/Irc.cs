@@ -232,7 +232,7 @@ namespace SSB.Core.Commands.Modules
 
             if (Active && _configHandler.Config.IrcOptions.autoConnectOnStart)
             {
-                Log.Write("Initial load of IRC module configuration detected that module is to be" +
+                Log.WriteCritical("Initial load of IRC module configuration detected that module is to be" +
                           " activated and that auto connect on start is enabled.",
                     _logClassType, _logPrefix);
                 Init();

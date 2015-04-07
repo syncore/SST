@@ -172,7 +172,7 @@ namespace SSB.Core.Commands.Modules
         {
             _configHandler.ReadConfiguration();
             Active = _configHandler.Config.AccuracyOptions.isActive;
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of accuracy display module configuration - active: {0}",
                (Active ? "YES": "NO")), _logClassType, _logPrefix);
         }

@@ -231,7 +231,7 @@ namespace SSB.Core.Commands.Modules
                 sb.Append(string.Format("{0}, ", a.VoteFormatDisplay));
             }
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of auto voter module configuration - active: {0}, auto-votes: {1}",
                 (Active ? "YES": "NO"), ((AutoVotes.Count > 0) ? sb.ToString().TrimEnd(',', ' ') : "none")),
                 _logClassType, _logPrefix);

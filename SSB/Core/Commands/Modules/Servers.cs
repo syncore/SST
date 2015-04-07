@@ -238,18 +238,24 @@ namespace SSB.Core.Commands.Modules
             if (_configHandler.Config.ServersOptions.maxServers == 0 ||
                 _configHandler.Config.ServersOptions.timeBetweenQueries < 0)
             {
+                Log.WriteCritical(
+                    "Invalid max servers or time between queries value detected during initial load" +
+                    "of server list module configuration. Will not active. Will set defaults.",
+                    _logClassType, _logPrefix);
+                
                 Active = false;
                 _configHandler.Config.ServersOptions.SetDefaults();
                 return;
             }
+            
             Active = _configHandler.Config.ServersOptions.isActive;
             MaxServersToDisplay = _configHandler.Config.ServersOptions.maxServers;
             TimeBetweenQueries = _configHandler.Config.ServersOptions.timeBetweenQueries;
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of server list module configuration - active: {0}, max servers to display: {1}," +
                 " time between queries: {2} seconds",
-                Active, MaxServersToDisplay, TimeBetweenQueries), _logClassType, _logPrefix);
+                (Active ? "YES" : "NO"), MaxServersToDisplay, TimeBetweenQueries), _logClassType, _logPrefix);
         }
 
         /// <summary>

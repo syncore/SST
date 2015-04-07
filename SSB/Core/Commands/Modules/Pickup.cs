@@ -283,7 +283,7 @@ namespace SSB.Core.Commands.Modules
             if (_configHandler.Config.PickupOptions.teamSize < TeamMinSize ||
                 _configHandler.Config.PickupOptions.teamSize > TeamMaxSize)
             {
-                Log.Write("Invalid team size detected on initial load of pickup module configuration." +
+                Log.WriteCritical("Invalid team size detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
@@ -299,7 +299,7 @@ namespace SSB.Core.Commands.Modules
                 ((!Helpers.ValidTimeScales.Contains(
                     _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale))))
             {
-                Log.Write("Invalid time scales detected on initial load of pickup module configuration." +
+                Log.WriteCritical("Invalid time scales detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
@@ -319,7 +319,7 @@ namespace SSB.Core.Commands.Modules
             ExcessiveSubUseBanTimeScaleIndex = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
             Teamsize = _configHandler.Config.PickupOptions.teamSize;
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of pickup module configuration - active: {0}, max no shows per player: {1}," +
                 " max subs per player: {2}, no-show ban time: {3} {4}, sub abuse ban time: {5} {6}, team size: {7}v{7}",
                 (Active ? "YES" : "NO"), MaxNoShowsPerPlayer, MaxSubsPerPlayer, ExcessiveNoShowBanTime, ExcessiveNoShowBanTimeScale,

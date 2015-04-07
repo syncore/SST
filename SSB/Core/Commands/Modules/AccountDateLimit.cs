@@ -177,7 +177,7 @@ namespace SSB.Core.Commands.Modules
             MinimumDaysRequired =
                 _configHandler.Config.AccountDateOptions.minimumDaysRequired;
             
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of account date limiter module configuration - active: {0}, minimum days" +
                 " required: {1}", (Active ? "YES": "NO"), MinimumDaysRequired), _logClassType, _logPrefix);
         }

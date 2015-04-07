@@ -221,9 +221,9 @@ namespace SSB.Core.Commands.Modules
             Message = _configHandler.Config.MotdOptions.message;
             RepeatInterval = _configHandler.Config.MotdOptions.repeatInterval;
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of MOTD module configuration - active: {0}, message: {1}," +
-                " to repeat every: {2} seconds",
+                " will repeat every: {2} seconds",
                 (Active ? "YES" : "NO"), Message, RepeatInterval), _logClassType, _logPrefix);
         }
 

@@ -715,11 +715,15 @@ namespace SSB.Ui
             _cfgHandler.RestoreDefaultConfiguration();
             _cfgHandler.ReadConfiguration();
 
+            
+            
             await HandleAccountDateModActivation(_cfgHandler.Config.AccountDateOptions.isActive,
                 _cfgHandler.Config.AccountDateOptions.minimumDaysRequired);
             await HandleEloLimitModActivation(_cfgHandler.Config.EloLimitOptions.isActive);
             await HandlePickupModActivation(_cfgHandler.Config.PickupOptions.isActive);
 
+            HandleCoreSettingsUpdate(_cfgHandler.Config.CoreOptions);
+            
             HandleMotdModActivation(_cfgHandler.Config.MotdOptions.isActive);
             HandleIrcModActivation(_cfgHandler.Config.IrcOptions.isActive);
 
@@ -809,11 +813,11 @@ namespace SSB.Ui
         private void coreTimeCommandTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
-            if (!_coreOptionsValidator.IsValidTimeBetweenCommands(coreAccountNameTextBox.Text, out errorMsg))
+            if (!_coreOptionsValidator.IsValidTimeBetweenCommands(coreTimeCommandTextBox.Text, out errorMsg))
             {
                 e.Cancel = true;
-                coreAccountNameTextBox.Select(0, coreAccountNameTextBox.Text.Length);
-                errorProvider.SetError(coreAccountNameTextBox, errorMsg);
+                coreAccountNameTextBox.Select(0, coreTimeCommandTextBox.Text.Length);
+                errorProvider.SetError(coreTimeCommandTextBox, errorMsg);
             }
         }
 
@@ -845,6 +849,7 @@ namespace SSB.Ui
         {
             // Go into effect now
             _ssb.AccountName = coreOptions.accountName;
+            Log.LogToDisk = coreOptions.logSsbEventsToDisk;
             // ReSharper disable once UnusedVariable
             // Add the owner (via constructor)
             var userDb = new DbUsers();
@@ -2562,6 +2567,8 @@ namespace SSB.Ui
                 ToString(CultureInfo.InvariantCulture);
             coreHideQlConsoleCheckBox.Checked = coreOptions.hideAllQlConsoleText;
             coreLogEventsDiskCheckBox.Checked = coreOptions.logSsbEventsToDisk;
+            // Special case for logging. Set value on population, otherwise it would be ignored
+            Log.LogToDisk = coreLogEventsDiskCheckBox.Checked;
             coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
             Log.Write("Populated core options user interface.", _logClassType, _logPrefix);

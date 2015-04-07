@@ -67,8 +67,8 @@ namespace SSB.Ui.Validation
             errorMsg = "Time limit between user commands value must be a positive number.";
             if (userInput.Length == 0) return false;
 
-            uint val;
-            if (!uint.TryParse(userInput, out val)) return false;
+            double val;
+            if (!double.TryParse(userInput, out val) || val < 0.0) return false;
 
             errorMsg = string.Empty;
             return true;

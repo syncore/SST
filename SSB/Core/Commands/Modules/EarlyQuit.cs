@@ -211,7 +211,7 @@ namespace SSB.Core.Commands.Modules
             // See if it's a valid scale
             if (!Helpers.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
             {
-                Log.Write("Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
+                Log.WriteCritical("Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
                     _logClassType, _logPrefix);
                 
                 Active = false;
@@ -224,7 +224,7 @@ namespace SSB.Core.Commands.Modules
             BanTimeScale = _configHandler.Config.EarlyQuitOptions.banTimeScale;
             MaxQuitsAllowed = _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed;
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of early quit banner module configuration - active: {0}," +
                 " ban time: {1} {2}, max early quits allowed: {3}",
                 (Active ? "YES" : "NO"), BanTime, BanTimeScale, MaxQuitsAllowed), _logClassType, _logPrefix);

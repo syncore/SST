@@ -281,7 +281,7 @@ namespace SSB.Core.Commands.Modules
                 (_configHandler.Config.EloLimitOptions.minimumRequiredElo >
                  _configHandler.Config.EloLimitOptions.maximumRequiredElo))
             {
-                Log.Write("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
+                Log.WriteCritical("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
                           " module configuration. Will not enable & will set defaults.", _logClassType, _logPrefix);
                 Active = false;
                 _configHandler.Config.EloLimitOptions.SetDefaults();
@@ -291,7 +291,7 @@ namespace SSB.Core.Commands.Modules
             MaximumRequiredElo = _configHandler.Config.EloLimitOptions.maximumRequiredElo;
             MinimumRequiredElo = _configHandler.Config.EloLimitOptions.minimumRequiredElo;
 
-            Log.Write(string.Format(
+            Log.WriteCritical(string.Format(
                 "Initial load of Elo limiter module configuration - active: {0}, minimum Elo" +
                 " required: {1}, maxmium Elo: {2}", (Active ? "YES" : "NO"), MinimumRequiredElo,
                 ((MaximumRequiredElo == 0) ? "none" : MaximumRequiredElo.ToString())),
