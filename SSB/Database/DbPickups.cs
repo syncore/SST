@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using SSB.Enums;
 using SSB.Model;
@@ -16,12 +17,10 @@ namespace SSB.Database
     /// </summary>
     public class DbPickups : CommonSqliteDb
     {
-        private readonly string _sqlConString = "Data Source=" +
-                                                Filepaths
-                                                    .PickupGameDatabaseFilePath;
-
-        private readonly string _sqlDbPath =
-            Filepaths.PickupGameDatabaseFilePath;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
+        private readonly string _sqlConString = "Data Source=" + Filepaths.PickupGameDatabaseFilePath;
+        private readonly string _sqlDbPath = Filepaths.PickupGameDatabaseFilePath;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DbPickups" /> class.
@@ -50,7 +49,8 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "INSERT INTO pickupgames(redTeam, blueTeam, redCaptain, blueCaptain, subs, noShows, startDate) VALUES(@redTeam, @blueTeam, @redCaptain, " +
+                                "INSERT INTO pickupgames(redTeam, blueTeam, redCaptain, blueCaptain, subs," +
+                                " noShows, startDate) VALUES(@redTeam, @blueTeam, @redCaptain, " +
                                 "@blueCaptain, @subs, @noShows, @startDate)";
                             cmd.Parameters.AddWithValue("@redTeam",
                                 pInfo.RedTeam);
@@ -69,21 +69,23 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@endDate",
                                 default(DateTime));
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
+                            Log.Write(string.Format(
                                 "AddPickupGame: Successfully added pickup game: Red team: {0}, Blue Team: {1}, Red captain: {2}, Blue captain:" +
                                 " {3}, Subs: {4}, No-shows: {5}, Starting at: {6} to pickup database.",
                                 pInfo.RedTeam, pInfo.BlueTeam, pInfo.RedCaptain,
                                 pInfo.BlueCaptain, pInfo.Subs,
                                 pInfo.NoShows,
                                 pInfo.StartDate.ToString("G",
-                                    DateTimeFormatInfo.InvariantInfo));
+                                    DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding pickup game to database: " +
-                                    ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem adding pickup game (dated: {0}) to pickup database: {1}",
+                        pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo), ex.Message),
+                        _logClassType, _logPrefix);
                 }
             }
         }
@@ -122,19 +124,18 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@lastPlayedDate",
                                 lastPlayedDate);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
-                                string.Format(
-                                    "AddUserToPickupDb: {0} successfully added to pickup user DB",
-                                    user));
+                            Log.Write(string.Format("{0} successfully added to pickup user database",
+                                user), _logClassType, _logPrefix);
                             result = UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem adding user to pickup user database: " +
-                        ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem adding player {0} to pickup user database: {1}", user,
+                            ex.Message), _logClassType, _logPrefix);
+
                     result = UserDbResult.InternalError;
                 }
             }
@@ -167,18 +168,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
+                                Log.Write(string.Format(
                                     "Deleted user: {0} from pickup users database.",
-                                    user));
+                                    user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem deleting user from pickup users database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem deleting player {0} from pickup users database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -206,8 +207,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetLastPickup: No games exist in the pickup database.");
                                     return null;
                                 }
                                 while (reader.Read())
@@ -221,16 +220,11 @@ namespace SSB.Database
                                     pInfo.NoShows = (string)reader["noShows"];
                                     pInfo.StartDate =
                                         (DateTime)reader["startDate"];
-                                    //var startDateStr = ((startDate !=
-                                    //                     default(DateTime))
-                                    //    ? startDate.ToString("G",
-                                    //        DateTimeFormatInfo.InvariantInfo)
-                                    //    : string.Empty);
-                                    //pugInfo.Append(
-                                    //    string.Format(
-                                    //        "^7{0}: ^1{1} (cap: {2}), ^5{3} (cap: {4}),^3 Subs: {5}^6 No-shows: {6}",
-                                    //        startDateStr, redTeam, redCapt,
-                                    //        blueTeam, blueCapt, subs, noShows));
+                                    Log.Write(string.Format(
+                                        "Got last pickup info from pickup database. Red: {0} (cap: {1}), Blue: {2}" +
+                                        " (cap: {3}), Subs: {4}, No-shows: {5}, Started: {6}", pInfo.RedTeam, pInfo.RedCaptain,
+                                        pInfo.BlueTeam, pInfo.BlueCaptain, pInfo.Subs, pInfo.NoShows, pInfo.StartDate.ToString(
+                                        "G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -238,9 +232,10 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem getting last pickup game: info from pickup database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting info for pickup game (dated: {0}) from pickup database: {1}",
+                        pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo), ex.Message),
+                        _logClassType, _logPrefix);
                 }
             }
             return pInfo;
@@ -269,8 +264,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetTopTenUsers: No users found in pickup usersdatabase");
                                     return string.Empty;
                                 }
                                 while (reader.Read())
@@ -287,9 +280,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem checking if user exists in seen database: " +
-                        ex.Message);
+                    Log.WriteCritical(
+                        "Problem retrieving top 10 users from pickup database" + ex.Message, _logClassType,
+                        _logPrefix);
                 }
             }
             return users.ToString().TrimEnd(',', ' ');
@@ -324,16 +317,15 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetGamesPlayedCount: User does not exist in pickup users database.");
                                     return 0;
                                 }
                                 while (reader.Read())
                                 {
                                     gamesCount = (long)reader["gamesFinished"];
-                                    Debug.WriteLine(
-                                        "GetGamesPlayedCount: {0} has finished {1} pickup games.",
-                                        user, gamesCount);
+                                    Log.Write(string.Format(
+                                        "Got games finished count for player {0}: from pickup database," +
+                                        " games finished: {1}",
+                                        user, gamesCount), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -341,9 +333,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem getting games played count from pickup users database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting game finished count for player {0} from pickup database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return gamesCount;
@@ -378,17 +370,14 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetNoShowCount: User does not exist in pickup users database.");
                                     return 0;
                                 }
                                 while (reader.Read())
                                 {
                                     noShowCount = (long)reader["noShows"];
-                                    Debug.WriteLine(
-                                        "GetNoShowCount: {0} has failed to show up for {1} pickup games.",
-                                        user,
-                                        noShowCount);
+                                    Log.Write(string.Format(
+                                        "Got no-show count for player {0}: from pickup database, games no-showed: {1}",
+                                        user, noShowCount), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -396,9 +385,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem getting no show count from pickup users database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting no-show count for player {0} from pickup database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return noShowCount;
@@ -433,8 +422,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetPickupInfo: User does not exist in pickup users database.");
                                     return string.Empty;
                                 }
                                 while (reader.Read())
@@ -456,7 +443,8 @@ namespace SSB.Database
                                         DateTimeFormatInfo.InvariantInfo);
                                     userInfo.Append(
                                         string.Format(
-                                            "^3subs used: {0}^7 | ^1no-shows: {1}^7 | ^2games: started {2}, finished {3}^7 (^5{4}%^7), last: {5}",
+                                            "^3subs used: {0}^7 | ^1no-shows: {1}^7 | ^2games: started {2}," +
+                                            " finished {3}^7 (^5{4}%^7), last: {5}",
                                             subCount, noShowCount,
                                             gamesStartedCount,
                                             gamesFinishedCount,
@@ -469,9 +457,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem getting user: {0}'s info from pickup users database: {1}",
-                        user, ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting pickup info for player {0} from pickup database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return userInfo.ToString();
@@ -506,17 +494,14 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetSubsUsedCount: User does not exist in pickup users database.");
                                     return 0;
                                 }
                                 while (reader.Read())
                                 {
                                     subsUsedCount = (long)reader["subsUsed"];
-                                    Debug.WriteLine(
-                                        "GetSubsUsedCount: {0} has used {1} substitute players.",
-                                        user,
-                                        subsUsedCount);
+                                    Log.Write(string.Format(
+                                        "Got subs used count for player {0}: from pickup database, games subbed: {1}",
+                                        user, subsUsedCount), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -524,9 +509,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem getting subs used count from pickup users database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting subs used count for player {0} from pickup database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return subsUsedCount;
@@ -562,8 +547,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "IncrementUserGamesFinishedCount: user not found");
                                     return;
                                 }
                                 while (reader.Read())
@@ -583,18 +566,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format("Incremented games finished count for: {0} in pickup users database.",
-                                    user));
+                                Log.Write(string.Format("Incremented games finished count for player" +
+                                                        " {0} in pickup users database.",
+                                    user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem incrementing games finished count for {0} in pickup users database: {1}",
-                        user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem incrementing games finished count for player {0} in pickup database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -629,8 +612,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "IncrementUserGamesStartedCount: user not found");
                                     return;
                                 }
                                 while (reader.Read())
@@ -650,18 +631,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format("Incremented games started count for: {0} in pickup users database.",
-                                    user));
+                                Log.Write(string.Format("Incremented games started count for player" +
+                                                        " {0} in pickup users database.",
+                                    user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem incrementing games started count for {0} in pickup users database: {1}",
-                        user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                         "Problem incrementing games started count for player {0} in pickup database: {1}",
+                         user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -694,18 +675,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format("Incremented no-show count for: {0} in pickup users database.",
-                                    user));
+                                Log.Write(string.Format("Incremented no-show count for" +
+                                                        " player {0} in pickup users database.",
+                                     user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem incrementing no-show count for {0} in pickup users database: {1}",
-                        user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                         "Problem incrementing no-show count for player {0} in pickup database: {1}",
+                         user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -738,18 +719,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format("Incremented subs used count for: {0} in pickup users database.",
-                                    user));
+                                Log.Write(string.Format("Incremented subs used count for" +
+                                                        " player {0} in pickup users database.",
+                                     user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem incrementing subs used count for {0} in pickup users database: {1}",
-                        user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                         "Problem incrementing subs used count for player {0} in pickup database: {1}",
+                         user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -790,17 +771,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
-                                    "{0} Reset no-shows count for: {1} to zero in pickup users database.",
-                                    user);
+                                Log.Write(string.Format("Reset no-show count for" +
+                                                        " player {0} in pickup users database.",
+                                     user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem resetting no-show count for {0} in pickup users database: {1}",
-                        user, ex.Message);
+                    Log.WriteCritical(string.Format(
+                         "Problem resetting no-show count for player {0} in pickup database: {1}",
+                         user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -832,17 +814,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
-                                    "{0} Reset subs used count for: {1} to zero in pickup users database.",
-                                    user);
+                                Log.Write(string.Format("Reset subs used count for" +
+                                                        " player {0} in pickup users database.",
+                                     user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem resetting subs used count for {0} in pickup users database: {1}",
-                        user, ex.Message);
+                    Log.WriteCritical(string.Format(
+                          "Problem resetting subs used count for player {0} in pickup database: {1}",
+                          user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -865,7 +848,8 @@ namespace SSB.Database
                         {
                             cmd.CommandText =
                                 "UPDATE pickupgames SET redTeam = @redTeam, blueTeam = @blueTeam, redCaptain = @redCaptain, " +
-                                "blueCaptain = @blueCaptain, subs = @subs, noShows = @noShows, startDate = @startDate WHERE id IN (SELECT id FROM pickupgames ORDER BY startDate DESC LIMIT 1)";
+                                "blueCaptain = @blueCaptain, subs = @subs, noShows = @noShows, startDate = @startDate WHERE" +
+                                " id IN (SELECT id FROM pickupgames ORDER BY startDate DESC LIMIT 1)";
                             cmd.Parameters.AddWithValue("@redTeam", pInfo.RedTeam);
                             cmd.Parameters.AddWithValue("@blueTeam", pInfo.BlueTeam);
                             cmd.Parameters.AddWithValue("@redCaptain",
@@ -876,19 +860,21 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@noShows", pInfo.NoShows);
                             cmd.Parameters.AddWithValue("@startDate", pInfo.StartDate);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
-                                "AddPickupGame: Successfully UPDATED most recent pickup game: Red team: {0}, Blue Team: {1}, Red captain: {2}, Blue captain:" +
+                            Log.Write(string.Format(
+                                "Successfully UPDATED most recent pickup game: Red team: {0}, Blue Team: {1}, Red captain: {2}, Blue captain:" +
                                 " {3}, Subs: {4}, No-shows: {5}, Starting at: {6} in pickup database.",
                                 pInfo.RedTeam, pInfo.BlueTeam, pInfo.RedCaptain,
                                 pInfo.BlueCaptain, pInfo.Subs, pInfo.NoShows,
-                                pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
+                                pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding pickup game to database: " +
-                                    ex.Message);
+                    Log.WriteCritical(string.Format(
+                       "Problem updating most recent pickup game (dated: {0}) in pickup database: {1}",
+                       pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo), ex.Message),
+                       _logClassType, _logPrefix);
                 }
             }
         }
@@ -910,24 +896,26 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "UPDATE pickupgames SET endDate = @newEndDate WHERE id IN (SELECT id FROM pickupgames ORDER BY startDate DESC LIMIT 1)";
+                                "UPDATE pickupgames SET endDate = @newEndDate WHERE id IN (SELECT id FROM pickupgames ORDER BY" +
+                                " startDate DESC LIMIT 1)";
                             cmd.Parameters.AddWithValue("@newEndDate", endDate);
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "AddPickupGame: Successfully updated last pickup game's end date to: {0} in pickup database.",
+                                Log.Write(string.Format(
+                                    "Successfully updated last pickup game's end date to: {0} in pickup database.",
                                     endDate.ToString("G",
-                                        DateTimeFormatInfo.InvariantInfo)));
+                                        DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem updating last pickup game's end date in pickup database: " +
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                       "Problem updating most recent pickup game (dated: {0}) in pickup database: {1}",
+                       endDate.ToString("G", DateTimeFormatInfo.InvariantInfo), ex.Message),
+                       _logClassType, _logPrefix);
                 }
             }
         }
@@ -959,18 +947,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format("Updated last played date for: {0} in pickup users database.",
-                                    user));
+                                Log.Write(string.Format("Updated last played date for player {0} in pickup users database.",
+                                    user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem updating last played date for {0} in pickup users database: {1}",
-                        user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                       "Problem updating most recent pickup game for player {0} in pickup database: {1}",
+                       user, ex.Message),
+                       _logClassType, _logPrefix);
                 }
             }
         }
@@ -1008,19 +996,20 @@ namespace SSB.Database
                         Debug.WriteLine("Pickup users table created.");
                     }
                     var gamestr =
-                        "CREATE TABLE pickupgames (id INTEGER PRIMARY KEY AUTOINCREMENT, redTeam TEXT NOT NULL, blueTeam TEXT NOT NULL, redCaptain TEXT NOT NULL," +
+                        "CREATE TABLE pickupgames (id INTEGER PRIMARY KEY AUTOINCREMENT, redTeam TEXT NOT NULL, " +
+                        "blueTeam TEXT NOT NULL, redCaptain TEXT NOT NULL," +
                         " blueCaptain TEXT NOT NULL, subs TEXT NOT NULL, noShows TEXT NOT NULL, startDate DATETIME, endDate DATETIME)";
                     using (var cmd = new SQLiteCommand(gamestr, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Pickup games table created.");
+                        Log.Write("Pickup games database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating Pickup database: " +
-                                ex.Message);
+                Log.WriteCritical("Problem creating Pickup database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -1047,8 +1036,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete pickup users database: " +
-                                ex.Message);
+                Log.WriteCritical("Unable to delete pickup users database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -1080,9 +1069,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(
-                    "Problem checking if user exists in early quitter database: " +
-                    ex.Message);
+                Log.WriteCritical(string.Format(
+                       "Problem checknig if player {0} exists in pickup database: {1}", user, ex.Message),
+                       _logClassType, _logPrefix);
             }
             return false;
         }
@@ -1138,8 +1127,8 @@ namespace SSB.Database
                 {
                     return true;
                 }
-                Debug.WriteLine(
-                    "Users or games table not found in pickup database... Creating DB tables...");
+                Log.WriteCritical("pickupusers or pickupgames table(s) not found in pickup database... Creating pickup database...",
+                            _logClassType, _logPrefix);
                 CreateDb();
                 return false;
             }

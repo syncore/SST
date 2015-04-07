@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Interfaces;
@@ -18,6 +19,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "accountdate";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[ACCOUNTDATE]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
@@ -173,31 +176,10 @@ namespace SSB.Core.Commands.Modules
                      _configHandler.Config.AccountDateOptions.isActive;
             MinimumDaysRequired =
                 _configHandler.Config.AccountDateOptions.minimumDaysRequired;
-        }
-
-        /// <summary>
-        ///     Runs the user date check on all current players.
-        /// </summary>
-        /// <param name="players">The players.</param>
-        public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
-        {
-            var qlDateChecker = new QlAccountDateChecker();
-            foreach (var player in players.ToList())
-            {
-                var date = await qlDateChecker.GetUserRegistrationDate(player.Key);
-                await VerifyUserDate(player.Key, date);
-            }
-        }
-
-        /// <summary>
-        ///     Runs the user date check on a given player.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        public async Task RunUserDateCheck(string user)
-        {
-            var qlDateChecker = new QlAccountDateChecker();
-            var date = await qlDateChecker.GetUserRegistrationDate(user);
-            await VerifyUserDate(user, date);
+            
+            Log.Write(string.Format(
+                "Initial load of account date limiter module configuration - active: {0}, minimum days" +
+                " required: {1}", (Active ? "YES": "NO"), MinimumDaysRequired), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -229,40 +211,13 @@ namespace SSB.Core.Commands.Modules
         {
             // Go into effect now
             Active = active;
-            
+
             _configHandler.Config.AccountDateOptions.isActive = active;
             _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
             _configHandler.WriteConfiguration();
 
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModAccountDateUi();
-        }
-
-        /// <summary>
-        ///     Disables the account date limiter.
-        /// </summary>
-        private async Task DisableAccountDateLimiter(CmdArgs c)
-        {
-            UpdateConfig(false);
-            StatusMessage =
-                "^2[SUCCESS]^7 Account date limit ^2OFF.^7 Players who registered on any date ^2CAN^7 play.";
-            await SendServerSay(c, StatusMessage);
-        }
-
-        /// <summary>
-        ///     Enables the account date limiter.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="days">The minimum amount of days.</param>
-        private async Task EnableAccountDateLimiter(CmdArgs c, uint days)
-        {
-            MinimumDaysRequired = days;
-            UpdateConfig(true);
-            StatusMessage = string.Format(
-                "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last^1 {0} ^7days ^1CANNOT^7 play.",
-                days);
-            await SendServerSay(c, StatusMessage);
-            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
         }
 
         /// <summary>
@@ -280,6 +235,64 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Runs the user date check on all current players.
+        /// </summary>
+        /// <param name="players">The players.</param>
+        public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
+        {
+            var qlDateChecker = new QlAccountDateChecker();
+            foreach (var player in players.ToList())
+            {
+                var date = await qlDateChecker.GetUserRegistrationDate(player.Key);
+                await VerifyUserDate(player.Key, date);
+            }
+        }
+
+        /// <summary>
+        ///     Runs the user date check on a given player.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public async Task RunUserDateCheck(string user)
+        {
+            var qlDateChecker = new QlAccountDateChecker();
+            var date = await qlDateChecker.GetUserRegistrationDate(user);
+            await VerifyUserDate(user, date);
+        }
+
+        /// <summary>
+        ///     Disables the account date limiter.
+        /// </summary>
+        private async Task DisableAccountDateLimiter(CmdArgs c)
+        {
+            UpdateConfig(false);
+            StatusMessage =
+                "^2[SUCCESS]^7 Account date limit ^2OFF.^7 Players who registered on any date ^2CAN^7 play.";
+            await SendServerSay(c, StatusMessage);
+            Log.Write(string.Format("Received {0} request from {1} to disable account date limiter module. Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        ///     Enables the account date limiter.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="days">The minimum amount of days.</param>
+        private async Task EnableAccountDateLimiter(CmdArgs c, uint days)
+        {
+            MinimumDaysRequired = days;
+            UpdateConfig(true);
+            StatusMessage = string.Format(
+                "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last^1 {0} ^7days ^1CANNOT^7 play.",
+                days);
+            await SendServerSay(c, StatusMessage);
+            
+            Log.Write(string.Format("Received {0} request from {1} to enable account date limiter module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+            
+            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
         ///     Verifies the user's registration date and kicks the user if the requirement is not met.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -289,13 +302,14 @@ namespace SSB.Core.Commands.Modules
             if (regDate == default(DateTime)) return;
             if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
-                Debug.WriteLine(
-                    "User {0} has created account within the last {1} days. Date created: {2}. Kicking...",
-                    user, MinimumDaysRequired, regDate);
                 await _ssb.QlCommands.CustCmdKickban(user);
                 await _ssb.QlCommands.QlCmdSay(string.Format(
                     "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2} ^7days",
                     user, regDate.ToString("d"), MinimumDaysRequired));
+                Log.Write(string.Format(
+                    "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Kicking player.",
+                    user, MinimumDaysRequired,
+                    regDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
             }
         }
     }

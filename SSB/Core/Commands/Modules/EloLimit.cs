@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
@@ -19,6 +19,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "elo";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[ELO]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
@@ -34,22 +36,6 @@ namespace SSB.Core.Commands.Modules
             _users = new DbUsers();
             LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets or sets the maximum required Elo.
-        /// </summary>
-        /// <value>
-        ///     The maximum required Elo.
-        /// </value>
-        public int MaximumRequiredElo { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the minimum required Elo.
-        /// </summary>
-        /// <value>
-        ///     The minimum required Elo.
-        /// </value>
-        public int MinimumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -91,6 +77,22 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
+
+        /// <summary>
+        ///     Gets or sets the maximum required Elo.
+        /// </summary>
+        /// <value>
+        ///     The maximum required Elo.
+        /// </value>
+        public int MaximumRequiredElo { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the minimum required Elo.
+        /// </summary>
+        /// <value>
+        ///     The minimum required Elo.
+        /// </value>
+        public int MinimumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -144,7 +146,10 @@ namespace SSB.Core.Commands.Modules
                 if (qlr == null)
                 {
                     await _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^7 Unable to retrieve QlRanks data. Elo limit might not be enforced.");
+                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.");
+
+                    Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
+                        _logClassType, _logPrefix);
                 }
             }
             // Kick the players from the server...
@@ -153,8 +158,8 @@ namespace SSB.Core.Commands.Modules
                 // Still have invalid elo data...skip.
                 if (qlrHelper.PlayerHasInvalidEloData(player.Value))
                 {
-                    Debug.WriteLine(string.Format("Still have invalid elo data for {0}...skipping.",
-                        player.Key));
+                    Log.Write(string.Format("Still have invalid Elo data for player {0}; player won't be evaluated for kicking.",
+                        player.Key), _logClassType, _logPrefix);
                     break;
                 }
                 await KickPlayerIfEloNotMet(player.Key);
@@ -209,7 +214,9 @@ namespace SSB.Core.Commands.Modules
                 StatusMessage = "^1[ERROR]^7 Unable to process gametype information. Try again.";
                 await SendServerTell(c, StatusMessage);
                 // Request it
-                Debug.WriteLine("ELOLIMITER: Server's gametype is unspecified. Now trying to retrieve.");
+                Log.Write(string.Format(
+                    "Could not determine server's gametype when trying to enable Elo limiter module from {0}. Will re-request game info.",
+                    (c.FromIrc ? "IRC" : "in-game")), _logClassType, _logPrefix);
                 await _ssb.QlCommands.QlCmdServerInfo();
                 return false;
             }
@@ -274,6 +281,8 @@ namespace SSB.Core.Commands.Modules
                 (_configHandler.Config.EloLimitOptions.minimumRequiredElo >
                  _configHandler.Config.EloLimitOptions.maximumRequiredElo))
             {
+                Log.Write("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
+                          " module configuration. Will not enable & will set defaults.", _logClassType, _logPrefix);
                 Active = false;
                 _configHandler.Config.EloLimitOptions.SetDefaults();
                 return;
@@ -281,6 +290,12 @@ namespace SSB.Core.Commands.Modules
             // Set
             MaximumRequiredElo = _configHandler.Config.EloLimitOptions.maximumRequiredElo;
             MinimumRequiredElo = _configHandler.Config.EloLimitOptions.minimumRequiredElo;
+
+            Log.Write(string.Format(
+                "Initial load of Elo limiter module configuration - active: {0}, minimum Elo" +
+                " required: {1}, maxmium Elo: {2}", (Active ? "YES" : "NO"), MinimumRequiredElo,
+                ((MaximumRequiredElo == 0) ? "none" : MaximumRequiredElo.ToString())),
+            _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -338,6 +353,9 @@ namespace SSB.Core.Commands.Modules
                 "^2[SUCCESS]^7 {0} Elo limit ^1disabled^7. Players with any {0} Elo can now play on this server.",
                 ((GameType != QlGameTypes.Unspecified) ? GameType.ToString().ToUpper() : string.Empty));
             await SendServerSay(c, StatusMessage);
+
+            Log.Write("Received in-game request to disable Elo limiter module. Disabling.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -374,6 +392,11 @@ namespace SSB.Core.Commands.Modules
                 GameType.ToString().ToUpper(), min, max);
             await SendServerSay(c, StatusMessage);
             await BatchRemoveEloPlayers();
+
+            Log.Write(string.Format(
+                "Received {0} request from {1} to enable Elo limiter module with {2}-{3} min-max Elo range. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser, min, max), _logClassType, _logPrefix);
+
             return true;
         }
 
@@ -404,6 +427,10 @@ namespace SSB.Core.Commands.Modules
 
             await SendServerSay(c, StatusMessage);
             await BatchRemoveEloPlayers();
+
+            Log.Write(string.Format(
+                "Received {0} request from {1} to enable Elo limiter module with {2} minimum Elo. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser, min), _logClassType, _logPrefix);
             return true;
         }
 
@@ -464,8 +491,9 @@ namespace SSB.Core.Commands.Modules
             // Handle minimum
             if (playerElo < MinimumRequiredElo)
             {
-                Debug.WriteLine("{0}'s {1} Elo is less than min ({2})...Kicking.", player,
-                    GameType.ToString().ToUpper(), MinimumRequiredElo);
+                Log.Write(string.Format("{0}'s {1} Elo is less than minimum required ({2})...Kicking player.", player,
+                    GameType.ToString().ToUpper(), MinimumRequiredElo), _logClassType, _logPrefix);
+
                 await _ssb.QlCommands.CustCmdKickban(player);
                 await _ssb.QlCommands.QlCmdSay(
                     string.Format(
@@ -478,8 +506,10 @@ namespace SSB.Core.Commands.Modules
             }
             if (!hasMaxEloSpecified) return;
             if (playerElo <= MaximumRequiredElo) return;
-            Debug.WriteLine("{0}'s {1} Elo is greater than max ({2})...Kicking.", player,
-                GameType.ToString().ToUpper(), MaximumRequiredElo);
+
+            Log.Write(string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Kicking player.", player,
+                    GameType.ToString().ToUpper(), MaximumRequiredElo), _logClassType, _logPrefix);
+
             await _ssb.QlCommands.CustCmdKickban(player);
             await _ssb.QlCommands.QlCmdSay(
                 string.Format(

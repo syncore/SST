@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using SSB.Enums;
 using SSB.Model;
 using SSB.Model.QlRanks;
@@ -16,6 +16,8 @@ namespace SSB.Database
     /// </summary>
     public class DbElo : CommonSqliteDb
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.EloDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.EloDatabaseFilePath;
 
@@ -57,7 +59,8 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "INSERT INTO elo(user, lastUpdated, caElo, ctfElo, duelElo, ffaElo, tdmElo) VALUES(@user, @lastUpdatedDate, @caElo, @ctfElo, @duelElo, @ffaElo, @tdmElo)";
+                                "INSERT INTO elo(user, lastUpdated, caElo, ctfElo, duelElo, ffaElo, tdmElo) VALUES(@user," +
+                                " @lastUpdatedDate, @caElo, @ctfElo, @duelElo, @ffaElo, @tdmElo)";
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@lastUpdatedDate", lastUpdatedDate);
                             cmd.Parameters.AddWithValue("@caElo", caElo);
@@ -66,17 +69,19 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@ffaElo", ffaElo);
                             cmd.Parameters.AddWithValue("@tdmElo", tdmElo);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
-                                "AddUserToEloDb: {0} successfully added to elo DB. Elo last updated: {1}. CA: {2} | CTF: {3} | DUEL: {4} | FFA: {5} | TDM: {6}",
+                            Log.Write(string.Format(
+                                "{0} successfully added to Elo database. Elo last updated:" +
+                                " {1}. CA: {2} | CTF: {3} | DUEL: {4} | FFA: {5} | TDM: {6}",
                                 user, lastUpdatedDate.ToString("G", DateTimeFormatInfo.InvariantInfo), caElo,
-                                ctfElo, duelElo, ffaElo, tdmElo);
+                                ctfElo, duelElo, ffaElo, tdmElo), _logClassType, _logPrefix);
                             result = UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to elo database: " + ex.Message);
+                    Log.WriteCritical(string.Format("Problem adding player {0} to Elo database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                     result = UserDbResult.InternalError;
                 }
             }
@@ -111,17 +116,16 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine("GetEloData: User does not exist in elo database.");
                                     return null;
                                 }
                                 while (reader.Read())
                                 {
-                                    eloData.LastUpdatedDate = (DateTime) reader["lastUpdated"];
-                                    eloData.CaElo = (long) reader["caElo"];
-                                    eloData.CtfElo = (long) reader["ctfElo"];
-                                    eloData.DuelElo = (long) reader["duelElo"];
-                                    eloData.FfaElo = (long) reader["ffaElo"];
-                                    eloData.TdmElo = (long) reader["tdmElo"];
+                                    eloData.LastUpdatedDate = (DateTime)reader["lastUpdated"];
+                                    eloData.CaElo = (long)reader["caElo"];
+                                    eloData.CtfElo = (long)reader["ctfElo"];
+                                    eloData.DuelElo = (long)reader["duelElo"];
+                                    eloData.FfaElo = (long)reader["ffaElo"];
+                                    eloData.TdmElo = (long)reader["tdmElo"];
                                 }
                             }
                         }
@@ -129,7 +133,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem getting elo data from elo database: " + ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting Elo data for player {0} from Elo database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return eloData;
@@ -163,7 +169,8 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "UPDATE elo SET lastUpdated = @lastUpdatedDate, caElo = @caElo, ctfElo = @ctfElo, duelElo = @duelElo, ffaElo = @ffaElo, tdmElo = @tdmElo WHERE user = @user";
+                                "UPDATE elo SET lastUpdated = @lastUpdatedDate, caElo = @caElo, ctfElo = @ctfElo," +
+                                " duelElo = @duelElo, ffaElo = @ffaElo, tdmElo = @tdmElo WHERE user = @user";
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@lastUpdatedDate", lastUpdatedDate);
                             cmd.Parameters.AddWithValue("@caElo", caElo);
@@ -174,19 +181,20 @@ namespace SSB.Database
                             int total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
-                                    "Successfully updated QLRanks elo DB data for user: {0}. Elo last updated: {1}. CA: {2} | CTF: {3} | DUEL: {4} | FFA: {5} | TDM: {6}",
+                                Log.Write(string.Format(
+                                    "Successfully updated QLRanks Elo database data for user: {0}. Elo last updated: {1}." +
+                                    " CA: {2} | CTF: {3} | DUEL: {4} | FFA: {5} | TDM: {6}",
                                     user, lastUpdatedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                                    caElo, ctfElo, duelElo, ffaElo, tdmElo);
+                                    caElo, ctfElo, duelElo, ffaElo, tdmElo), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem updating QLRanks elo data for {0} in elo DB: {1}", user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem updating QLRanks Elo data for player {0} in Elo database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -216,17 +224,20 @@ namespace SSB.Database
                 {
                     sqlcon.Open();
                     string s =
-                        "CREATE TABLE elo (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, lastUpdated DATETIME, caElo INTEGER, ctfElo INTEGER, duelElo INTEGER, ffaElo INTEGER, tdmElo INTEGER)";
+                        "CREATE TABLE elo (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL," +
+                        " lastUpdated DATETIME, caElo INTEGER, ctfElo INTEGER, duelElo INTEGER," +
+                        " ffaElo INTEGER, tdmElo INTEGER)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Elo database created.");
+                        Log.Write("Elo database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating elo database: " + ex.Message);
+                Log.WriteCritical("Problem creating Elo database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -253,7 +264,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete elo database: " + ex.Message);
+                Log.WriteCritical("Unable to delete Elo database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -283,7 +295,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in elo database: " + ex.Message);
+                Log.WriteCritical(string.Format("Problem checking if player {0} exists in Elo database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
             }
             return false;
         }
@@ -314,7 +327,8 @@ namespace SSB.Database
                         {
                             return true;
                         }
-                        Debug.WriteLine("Elo table not found in DB... Creating DB...");
+                        Log.WriteCritical("elo table not found in Elo database... Creating Elo database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

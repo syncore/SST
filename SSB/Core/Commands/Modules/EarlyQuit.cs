@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
@@ -15,6 +16,8 @@ namespace SSB.Core.Commands.Modules
     public class EarlyQuit : IModule
     {
         public const string NameModule = "earlyquit";
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[EARLYQUIT]";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly int _qlMinModuleArgs = 3;
@@ -30,6 +33,14 @@ namespace SSB.Core.Commands.Modules
             _configHandler = new ConfigHandler();
             LoadConfig();
         }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets or sets a numeric value representing the time to ban early quitters.
@@ -57,22 +68,6 @@ namespace SSB.Core.Commands.Modules
         /// The array index of the ban time scale.
         /// </value>
         public int BanTimeScaleIndex { get; set; }
-        
-        /// <summary>
-        ///     Gets or sets the maximum quits allowed before a user is banned.
-        /// </summary>
-        /// <value>
-        ///     The maximum quits allowed before a user is banned.
-        /// </value>
-        public uint MaxQuitsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -95,6 +90,14 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
+
+        /// <summary>
+        ///     Gets or sets the maximum quits allowed before a user is banned.
+        /// </summary>
+        /// <value>
+        ///     The maximum quits allowed before a user is banned.
+        /// </value>
+        public uint MaxQuitsAllowed { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -208,6 +211,9 @@ namespace SSB.Core.Commands.Modules
             // See if it's a valid scale
             if (!Helpers.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
             {
+                Log.Write("Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
+                    _logClassType, _logPrefix);
+                
                 Active = false;
                 _configHandler.Config.EarlyQuitOptions.SetDefaults();
                 return;
@@ -217,6 +223,11 @@ namespace SSB.Core.Commands.Modules
             BanTime = _configHandler.Config.EarlyQuitOptions.banTime;
             BanTimeScale = _configHandler.Config.EarlyQuitOptions.banTimeScale;
             MaxQuitsAllowed = _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed;
+
+            Log.Write(string.Format(
+                "Initial load of early quit banner module configuration - active: {0}," +
+                " ban time: {1} {2}, max early quits allowed: {3}",
+                (Active ? "YES" : "NO"), BanTime, BanTimeScale, MaxQuitsAllowed), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -260,7 +271,7 @@ namespace SSB.Core.Commands.Modules
             _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
 
             _configHandler.WriteConfiguration();
-            
+
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModEarlyQuitUi();
         }
@@ -273,16 +284,14 @@ namespace SSB.Core.Commands.Modules
         private async Task ClearEarlyQuits(CmdArgs c, DbQuits qdb)
         {
             qdb.DeleteUserFromDb(Helpers.GetArgVal(c, 3));
-            
+
             // UI: reflect changes
             _ssb.UserInterface.RefreshCurrentQuittersDataSource();
-            
+
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}",
                 Helpers.GetArgVal(c, 3));
             await SendServerSay(c, StatusMessage);
-            Debug.WriteLine(string.Format("Cleared all early quits for player {0} at admin's request.",
-                Helpers.GetArgVal(c, 3)));
-            
+
             // See if there is an early quit-related ban and remove it as well
             await qdb.RemoveQuitRelatedBan(_ssb, Helpers.GetArgVal(c, 3));
 
@@ -301,6 +310,9 @@ namespace SSB.Core.Commands.Modules
             StatusMessage = "^2[SUCCESS]^7 Early quit tracker ^1disabled^7. Players may quit" +
                             " early without incurring a ban penalty.";
             await SendServerSay(c, StatusMessage);
+            
+            Log.Write(string.Format("Received {0} request from {1} to disable early quit banner module. Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -323,6 +335,9 @@ namespace SSB.Core.Commands.Modules
                 "more than^2 {0} ^7times before the game is over will be banned for^1 {1} ^7{2}.",
                 maxQuits, time, scale);
             await SendServerSay(c, StatusMessage);
+            
+            Log.Write(string.Format("Received {0} request from {1} to enable early quit banner module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -494,10 +509,10 @@ namespace SSB.Core.Commands.Modules
         private async Task ForgiveEarlyQuits(CmdArgs c, int num, string player, DbQuits qdb)
         {
             qdb.DecrementUserQuitCount(player, num);
-            
+
             // UI: reflect changes
             _ssb.UserInterface.RefreshCurrentQuittersDataSource();
-            
+
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Forgave^3 {0} ^7of ^3{1}^7's early quits.",
                 num, player);
             await SendServerSay(c, StatusMessage);

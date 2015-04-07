@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using IrcDotNet;
 using SSB.Config;
 using SSB.Config.Modules;
 using SSB.Enums;
+using SSB.Util;
 
 namespace SSB.Core.Modules.Irc
 {
@@ -15,13 +16,16 @@ namespace SSB.Core.Modules.Irc
     /// </summary>
     public class IrcManager
     {
-        public const int MaxReconnectionTries = 5;
-
         // MaxNickLength: 15 for QuakeNet; Freenode is 16; some others might be up to 32
         public const int MaxNickLength = 15;
 
+        public const int MaxReconnectionTries = 5;
         private readonly ConfigHandler _configHandler;
         private readonly IrcEvents _ircEvent;
+
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+
+        private readonly string _logPrefix = "[IRC]";
 
         // Regex for testing validity of IRC nick according to IRC RFC specification;
         // currently set from 2-15 max length
@@ -46,20 +50,20 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the bot is connected to IRC.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsConnectedToIrc { get; set; }
-
-        /// <summary>
         /// Gets the IRC configuration settings.
         /// </summary>
         /// <value>
         /// The IRC configuration settings.
         /// </value>
         public IrcOptions IrcSettings { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the bot is connected to IRC.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnectedToIrc { get; set; }
 
         /// <summary>
         /// Gets the Irc client registration information.
@@ -90,7 +94,6 @@ namespace SSB.Core.Modules.Irc
         public Regex ValidIrcNickRegex
         {
             get { return _validIrcNick; }
-
         }
 
         /// <summary>
@@ -104,25 +107,24 @@ namespace SSB.Core.Modules.Irc
         {
             if (_reconnectTries >= MaxReconnectionTries && !isManualReconnection)
             {
-                Debug.WriteLine("Maximum reconnection attempts exceeded. Will not retry.");
+                Log.Write("Maximum reconnection attempts exceeded. Will not retry.",
+                    _logClassType, _logPrefix);
                 return;
             }
 
-            Debug.WriteLine(string.Format("{0}",
+            Log.Write(string.Format("{0}",
                 ((isManualReconnection) ?
                 "Attempting IRC reconnection (user-issued)" :
-                string.Format("Attempting IRC reconnection. Attempt #{0}", _reconnectTries))));
+                string.Format("Attempting IRC reconnection. Attempt #{0}", _reconnectTries))),
+                _logClassType, _logPrefix);
 
             try
             {
                 Disconnect();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // IrcDotNet: Client might already be disposed
-                Debug.WriteLine(
-                    string.Format("Exception caught while attempting to disconnect IRC client: {0}",
-                        ex.Message));
             }
             finally
             {
@@ -176,32 +178,37 @@ namespace SSB.Core.Modules.Irc
                             false, RegistrationInfo);
                         if (!connectedEvent.Wait(10000))
                         {
-                            Debug.WriteLine("Connection to '{0}:{1}' timed out. Will try to reconnect up to {2} times.",
-                                IrcSettings.ircServerAddress, IrcSettings.ircServerPort, MaxReconnectionTries);
+                            Log.Write(string.Format("Connection to '{0}:{1}' timed out. Will try to reconnect up to {2} times.",
+                                IrcSettings.ircServerAddress, IrcSettings.ircServerPort,
+                                MaxReconnectionTries), _logClassType, _logPrefix);
+
                             StopIrcThread();
                             AttemptReconnection(false);
                             return;
                         }
                     }
-                    Debug.WriteLine("Now connected to '{0}:{1}'.",
-                        IrcSettings.ircServerAddress, IrcSettings.ircServerPort);
+                    Log.Write(string.Format("Now connected to '{0}:{1}'.",
+                        IrcSettings.ircServerAddress, IrcSettings.ircServerPort), _logClassType, _logPrefix);
                     if (!registeredEvent.Wait(10000))
                     {
-                        Debug.WriteLine("Could not register to '{0}:{1}'. Will try to reconnect up to {2} times.",
-                            IrcSettings.ircServerAddress, IrcSettings.ircServerPort, MaxReconnectionTries);
+                        Log.Write(string.Format("Could not register to '{0}:{1}'. Will try to reconnect up to {2} times.",
+                            IrcSettings.ircServerAddress,
+                            IrcSettings.ircServerPort, MaxReconnectionTries), _logClassType, _logPrefix);
+
                         StopIrcThread();
                         AttemptReconnection(false);
                         return;
                     }
                 }
 
-                Console.Out.WriteLine("Now registered to '{0}:{1}' as '{2}'.",
-                    IrcSettings.ircServerAddress, IrcSettings.ircServerPort, IrcSettings.ircUserName);
+                Log.Write(string.Format("Now registered to '{0}:{1}' as '{2}'.",
+                    IrcSettings.ircServerAddress, IrcSettings.ircServerPort,
+                    IrcSettings.ircUserName), _logClassType, _logPrefix);
 
                 // Connected: reset attempt count
                 _reconnectTries = 0;
                 IsConnectedToIrc = true;
-                Loop(_client);
+                Loop();
             }
         }
 
@@ -212,14 +219,12 @@ namespace SSB.Core.Modules.Irc
         {
             try
             {
+                Log.Write("Closing IRC client connection.", _logClassType, _logPrefix);
                 _client.Quit(_quitMessage);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // IrcDotNet: Client might already be disposed
-                Debug.WriteLine(
-                    string.Format("Exception caught while attempting to disconnect IRC client: {0}",
-                        ex.Message));
             }
             finally
             {
@@ -316,7 +321,6 @@ namespace SSB.Core.Modules.Irc
         public void StartIrcThread()
         {
             if (_isRunning) return;
-            Debug.WriteLine("...starting a thread for IRC");
             _isRunning = true;
             var ircThread = new Thread(Connect) { IsBackground = true };
             ircThread.Start();
@@ -327,10 +331,6 @@ namespace SSB.Core.Modules.Irc
         /// </summary>
         public void StopIrcThread()
         {
-            if (_isRunning)
-            {
-                Debug.WriteLine("...stopping IRC thread");
-            }
             _isRunning = false;
         }
 
@@ -444,15 +444,12 @@ namespace SSB.Core.Modules.Irc
         /// <summary>
         /// Loops while the client is active to keep it alive.
         /// </summary>
-        /// <param name="client">The client.</param>
-        private void Loop(IrcClient client)
+        private void Loop()
         {
             while (_isRunning)
             {
                 Thread.Sleep(10);
             }
-            //StopIrcThread();
-            //client.Quit(_quitMessage);
             Disconnect();
         }
     }

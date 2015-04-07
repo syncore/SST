@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enums;
@@ -12,6 +14,8 @@ namespace SSB.Core.Modules
     /// </summary>
     public class PickupCaptains
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[PICKUP]";
         private readonly PickupManager _manager;
         private readonly SynServerBot _ssb;
 
@@ -248,6 +252,9 @@ namespace SSB.Core.Modules
                     break;
             }
 
+            Log.Write(string.Format("It is the {0} captain's turn to pick.",
+                (team == Team.Red) ? "RED" : "BLUE"), _logClassType, _logPrefix);
+
             await ShowWhosePick(team);
             await _manager.DisplayAvailablePlayers();
         }
@@ -279,6 +286,9 @@ namespace SSB.Core.Modules
                 await _ssb.QlCommands.CustCmdPutPlayer(Helpers.GetArgVal(c, 1), Team.Red);
                 _manager.AddActivePickupPlayer(Helpers.GetArgVal(c, 1));
                 await SetPickingTeam(Team.Blue);
+
+                Log.Write(string.Format("RED captain picked player {0}",
+                    Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
             }
             else if (team == Team.Blue)
             {
@@ -286,6 +296,9 @@ namespace SSB.Core.Modules
                 await _ssb.QlCommands.CustCmdPutPlayer(Helpers.GetArgVal(c, 1), Team.Blue);
                 _manager.AddActivePickupPlayer(Helpers.GetArgVal(c, 1));
                 await SetPickingTeam(Team.Red);
+
+                Log.Write(string.Format("BLUE captain picked player {0}",
+                    Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
             }
 
             // Notify player
@@ -305,6 +318,8 @@ namespace SSB.Core.Modules
                 await
                     _ssb.QlCommands.QlCmdSay(
                         "^5[PICKUP]^7 Any unpicked players or late-adders will be automatically added to the substitutes list when the game starts!");
+
+                Log.Write("Teams are now full!", _logClassType, _logPrefix);
             }
         }
 

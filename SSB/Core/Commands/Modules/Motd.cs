@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Modules;
@@ -17,6 +18,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "motd";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[MOTD]";
         private readonly MotdHandler _motd;
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
@@ -165,6 +168,11 @@ namespace SSB.Core.Commands.Modules
                                 NameModule))
                             : NameModule));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} request received from {1} to enable MOTD module, but module is already active. Ignoring.",
+                    (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (c.Args.Length < (c.FromIrc ? 5 : 4))
@@ -212,6 +220,11 @@ namespace SSB.Core.Commands.Modules
             }
             Message = _configHandler.Config.MotdOptions.message;
             RepeatInterval = _configHandler.Config.MotdOptions.repeatInterval;
+
+            Log.Write(string.Format(
+                "Initial load of MOTD module configuration - active: {0}, message: {1}," +
+                " to repeat every: {2} seconds",
+                (Active ? "YES" : "NO"), Message, RepeatInterval), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -247,7 +260,7 @@ namespace SSB.Core.Commands.Modules
             _configHandler.Config.MotdOptions.isActive = active;
             _configHandler.Config.MotdOptions.message = Message;
             _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
-            
+
             _configHandler.WriteConfiguration();
 
             // Reflect changes in UI
@@ -279,7 +292,6 @@ namespace SSB.Core.Commands.Modules
             _motd.Message = message;
             _motd.RepeatInterval = interval;
             _motd.RestartMotdTimer();
-            Debug.WriteLine("Active flag detected in saved configuration; auto-initializing motd module.");
         }
 
         /// <summary>
@@ -292,6 +304,9 @@ namespace SSB.Core.Commands.Modules
             UpdateConfig(false);
             StatusMessage = string.Format("^2[SUCCESS]^7 Message of the day has been disabled.");
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to disable MOTD module. Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -335,6 +350,9 @@ namespace SSB.Core.Commands.Modules
                 "^2[SUCCESS]^7 Message of the day set to:^5 {0}^7 and will repeat every^5 {1}^7 minutes.",
                 Message, interval);
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to enable MOTD module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
     }
 }

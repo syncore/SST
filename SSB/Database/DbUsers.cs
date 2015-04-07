@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using SSB.Config;
 using SSB.Enums;
@@ -18,6 +18,8 @@ namespace SSB.Database
     /// </summary>
     public class DbUsers : CommonSqliteDb, IConfiguration
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.UserDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.UserDatabaseFilePath;
         private string _owner;
@@ -30,49 +32,6 @@ namespace SSB.Database
             VerifyDb();
             LoadCfg();
             AddOwnerToDb();
-        }
-
-        /// <summary>
-        ///     Checks whether the configuration already exists.
-        /// </summary>
-        /// <returns>
-        ///     <c>true</c> if configuration exists, otherwise <c>false</c>
-        /// </returns>
-        public bool CfgExists()
-        {
-            return (File.Exists(Filepaths.ConfigurationFilePath));
-        }
-
-        /// <summary>
-        ///     Loads the configuration.
-        /// </summary>
-        public void LoadCfg()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.VerifyConfigLocation();
-            cfgHandler.ReadConfiguration();
-            _owner = cfgHandler.Config.CoreOptions.owner;
-        }
-
-        /// <summary>
-        ///     Loads the default configuration.
-        /// </summary>
-        public void LoadDefaultCfg()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.RestoreDefaultConfiguration();
-        }
-
-        /// <summary>
-        ///     Saves the configuration.
-        /// </summary>
-        public void SaveCfg()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.VerifyConfigLocation();
-            cfgHandler.ReadConfiguration();
-            cfgHandler.Config.CoreOptions.owner = _owner;
-            cfgHandler.WriteConfiguration();
         }
 
         /// <summary>
@@ -100,24 +59,41 @@ namespace SSB.Database
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
                             cmd.CommandText =
-                                "INSERT INTO users(user, accesslevel, addedby, dateadded) VALUES(@user, @accesslevel, @addedby, @dateadded)";
+                                "INSERT INTO users(user, accesslevel, addedby, dateadded) VALUES(@user," +
+                                " @accesslevel, @addedby, @dateadded)";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            cmd.Parameters.AddWithValue("@accesslevel", (long) accessLevel);
+                            cmd.Parameters.AddWithValue("@accesslevel", (long)accessLevel);
                             cmd.Parameters.AddWithValue("@addedby", addedBy);
                             cmd.Parameters.AddWithValue("@dateadded", dateAdded);
                             cmd.ExecuteNonQuery();
+                            Log.Write(string.Format(
+                                "{0} successfully added to user database. Access level: {1}, added by: {2} on: {3}",
+                                user, Enum.GetName(typeof(UserLevel), accessLevel), addedBy, dateAdded), _logClassType, _logPrefix);
                             return UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem adding player {0} to user database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                     return UserDbResult.InternalError;
                 }
             }
             return UserDbResult.Unspecified;
+        }
+
+        /// <summary>
+        ///     Checks whether the configuration already exists.
+        /// </summary>
+        /// <returns>
+        ///     <c>true</c> if configuration exists, otherwise <c>false</c>
+        /// </returns>
+        public bool CfgExists()
+        {
+            return (File.Exists(Filepaths.ConfigurationFilePath));
         }
 
         /// <summary>
@@ -153,20 +129,22 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from the user database.", user));
+                                Log.Write(string.Format(
+                                    "Deleted user: {0} from user database.", user), _logClassType, _logPrefix);
                                 return UserDbResult.Success;
                             }
-                            Debug.WriteLine(
-                                "User: {0} exists in the database but cannot be deleted because user was not added by {1}",
-                                user, addedBy);
+                            Log.Write(string.Format(
+                                "Player: {0} exists in the database but cannot be deleted because player was not added by {1}",
+                                user, addedBy), _logClassType, _logPrefix);
                             return UserDbResult.UserNotAddedBySender;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem deleting player {0} from last seen date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                     return UserDbResult.InternalError;
                 }
             }
@@ -195,14 +173,13 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine("GetAllUsers: No users found in database");
                                     return allUsers;
                                 }
                                 while (reader.Read())
                                 {
-                                    var user = (string) reader["user"];
+                                    var user = (string)reader["user"];
                                     var level = GetUserLevel(user);
-                                    allUsers.Add(new User {Name = user, AccessLevel = level});
+                                    allUsers.Add(new User { Name = user, AccessLevel = level });
                                 }
                             }
                         }
@@ -210,8 +187,8 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem verifying database when trying to get all users: " +
-                                    ex.Message);
+                    Log.WriteCritical("Problem getting all users from user database: " +
+                                    ex.Message, _logClassType, _logPrefix);
                 }
             }
             return allUsers;
@@ -278,17 +255,15 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(string.Format(
-                                        "UserDb.GetUserLevel: User: {0} does not exist in the user database.",
-                                        user));
                                     return UserLevel.None;
                                 }
                                 while (reader.Read())
                                 {
-                                    Debug.WriteLine(
-                                        "UserDb.GetUserLevel: Got user level for: {0}, level: {1}", user,
-                                        (UserLevel) reader["accesslevel"]);
-                                    level = (UserLevel) reader["accesslevel"];
+                                    level = (UserLevel)reader["accesslevel"];
+                                    Log.Write(string.Format(
+                                        "Got user level for player {0} from user database; level: {1}", user,
+                                        Enum.GetName(typeof(UserLevel), level)), _logClassType, _logPrefix);
+
                                     return level;
                                 }
                             }
@@ -297,10 +272,44 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem checking if user exists in database: " + ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting user level for player {0} from user database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return level;
+        }
+
+        /// <summary>
+        ///     Loads the configuration.
+        /// </summary>
+        public void LoadCfg()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.VerifyConfigLocation();
+            cfgHandler.ReadConfiguration();
+            _owner = cfgHandler.Config.CoreOptions.owner;
+        }
+
+        /// <summary>
+        ///     Loads the default configuration.
+        /// </summary>
+        public void LoadDefaultCfg()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.RestoreDefaultConfiguration();
+        }
+
+        /// <summary>
+        ///     Saves the configuration.
+        /// </summary>
+        public void SaveCfg()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.VerifyConfigLocation();
+            cfgHandler.ReadConfiguration();
+            cfgHandler.Config.CoreOptions.owner = _owner;
+            cfgHandler.WriteConfiguration();
         }
 
         /// <summary>
@@ -333,17 +342,18 @@ namespace SSB.Database
                     sqlcon.Open();
 
                     var s =
-                        "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, accesslevel INTEGER, addedby TEXT NOT NULL, dateadded DATETIME)";
+                        "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL," +
+                        " accesslevel INTEGER, addedby TEXT NOT NULL, dateadded DATETIME)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("User database created.");
+                        Log.Write("User database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating user database: " + ex.Message);
+                Log.WriteCritical("Problem creating user database" + ex.Message, _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -370,7 +380,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete user database: " + ex.Message);
+                Log.WriteCritical("Unable to delete user database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -401,7 +412,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in database: " + ex.Message);
+                Log.WriteCritical(string.Format(
+                    "Problem checking if player {0} exists in user database: {1}",
+                    user, ex.Message), _logClassType, _logPrefix);
             }
             return false;
         }
@@ -432,7 +445,9 @@ namespace SSB.Database
                         {
                             return true;
                         }
-                        Debug.WriteLine("Users table not found in DB... Creating DB...");
+                        Log.Write(
+                            "users table not found in user database... Creating user database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

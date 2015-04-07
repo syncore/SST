@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
@@ -17,6 +17,8 @@ namespace SSB.Database
     /// </summary>
     public class DbBans : CommonSqliteDb
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.BanDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.BanDatabaseFilePath;
 
@@ -64,17 +66,19 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@banExpirationDate", banExpirationDate);
                             cmd.Parameters.AddWithValue("@banType", (long)banType);
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
-                                "AddUserToBanDb: {0} successfully added to ban DB by: {1} on: {2}. Time-ban expires on: {3}.",
+                            Log.Write(string.Format(
+                                "{0} successfully added to ban database by: {1} on: {2}. Time-ban expires on: {3}.",
                                 user, bannedBy, banAddDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                                banExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
+                                banExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType,
+                                _logPrefix);
                             result = UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to ban database: " + ex.Message);
+                    Log.WriteCritical(string.Format("Problem adding player {0} to ban database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                     result = UserDbResult.InternalError;
                 }
             }
@@ -104,15 +108,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from ban database.", user));
+                                Log.Write(string.Format(
+                                    "Deleted player: {0} from ban database.", user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from ban database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem deleting player {0} from ban database: {1}",
+                        user, ex.Message),
+                        _logClassType, _logPrefix);
                 }
             }
         }
@@ -139,7 +146,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    //Debug.WriteLine("GetAllBans: No bans found in database");
                                     return allBans;
                                 }
                                 while (reader.Read())
@@ -157,8 +163,8 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem verifying database when trying to get all bans: " +
-                                    ex.Message);
+                    Log.WriteCritical(string.Format("Problem retrieving all bans from ban database: {0}",
+                        ex.Message), _logClassType, _logPrefix);
                 }
             }
             return allBans;
@@ -192,7 +198,8 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine("GetBanInfo: User does not exist in bans database.");
+                                    Log.Write(string.Format("GetBanInfo: Player {0} does not exist in ban database.",
+                                        user), _logClassType, _logPrefix);
                                     return null;
                                 }
                                 while (reader.Read())
@@ -211,6 +218,11 @@ namespace SSB.Database
                                             bInfo.BanType = BanType.AddedByEarlyQuit;
                                             break;
                                     }
+                                    Log.Write(string.Format(
+                                        "Got ban info for player: {0} - added by: {1}, added on: {2}, expires: {3}, type: {4}",
+                                        user, bInfo.BannedBy, bInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                                        bInfo.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                                        bInfo.BanType), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -218,7 +230,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem getting ban info from ban database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem getting ban info for player {0} from ban database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                     bInfo = null;
                 }
             }
@@ -260,8 +274,8 @@ namespace SSB.Database
 
             if (allExpiredBans.Count == 0) return;
 
-            Debug.WriteLine("Will attempt to remove {0} expired bans.",
-                allExpiredBans.Count);
+            Log.Write(string.Format("Found {0} expired bans, will attempt to remove.",
+                allExpiredBans.Count), _logClassType, _logPrefix);
 
             foreach (var ban in allExpiredBans)
             {
@@ -315,13 +329,14 @@ namespace SSB.Database
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Bans database created.");
+                        Log.Write("Ban database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating bans database: " + ex.Message);
+                Log.WriteCritical("Problem creating ban database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -348,7 +363,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete bans database: " + ex.Message);
+                Log.WriteCritical("Unable to delete ban database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -378,7 +394,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in bans database: " + ex.Message);
+                Log.WriteCritical("Problem checking if user exists in ban database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
             return false;
         }
@@ -410,7 +427,9 @@ namespace SSB.Database
                         {
                             return true;
                         }
-                        Debug.WriteLine("bannedusers table not found in DB... Creating DB...");
+                        Log.WriteCritical(
+                            "bannedusers table not found in ban database... Creating ban database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

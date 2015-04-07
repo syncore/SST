@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using SSB.Model;
 using SSB.Util;
 
@@ -13,6 +14,8 @@ namespace SSB.Database
     /// </summary>
     public class DbSeenDates : CommonSqliteDb
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.SeenDateDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.SeenDateDatabaseFilePath;
 
@@ -51,12 +54,18 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@seendate", seenDate);
                             cmd.ExecuteNonQuery();
+                            Log.Write(string.Format(
+                                "{0} successfully added to last seen date database with last seen date date: {1}",
+                                user, seenDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                                _logClassType, _logPrefix);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to seen database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem adding player {0} to last seen date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -84,18 +93,21 @@ namespace SSB.Database
                             cmd.CommandText = "DELETE FROM seendates WHERE user = @user";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            int total = cmd.ExecuteNonQuery();
+                            var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from seen database.", user));
+                                Log.Write(string.Format(
+                                    "Deleted user: {0} from last seen date database.", user), _logClassType,
+                                    _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from seen database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem deleting player {0} from last seen date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -121,20 +133,19 @@ namespace SSB.Database
                             cmd.CommandText = "SELECT * FROM seendates WHERE user = @user";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(string.Format(
-                                        "User: {0} does not exist in the seen database.", user));
                                     return date;
                                 }
                                 while (reader.Read())
                                 {
-                                    date = (DateTime)reader["seendate"];
-                                    Debug.WriteLine(
-                                        "Got last seen date {0} for User: {1} from internal database.",
-                                        date, user);
+                                    date = (DateTime) reader["seendate"];
+                                    Log.Write(string.Format(
+                                        "Got last seen date for player {0} from last seen date database; last seen: {1}",
+                                        user, date.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                                        _logClassType, _logPrefix);
                                     return date;
                                 }
                             }
@@ -143,14 +154,16 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem checking if user exists in seen database: " + ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting last seen date for player {0} from last seen date database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return date;
         }
 
         /// <summary>
-        /// Updates the last seen date.
+        ///     Updates the last seen date.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="lastSeenDate">The last seen date.</param>
@@ -160,7 +173,9 @@ namespace SSB.Database
             {
                 if (!DoesUserExistInDb(user.ToLowerInvariant()))
                 {
-                    Debug.WriteLine(string.Format("Updating {0} in seen database: {0} did not exist in database, attempting to add.", user));
+                    Log.Write(string.Format(
+                        "Updating player {0} in last seen date database; player didn't exist; attempting to add.",
+                        user), _logClassType, _logPrefix);
                     AddUserToDb(user, DateTime.Now);
                 }
                 else
@@ -173,18 +188,25 @@ namespace SSB.Database
 
                             using (var cmd = new SQLiteCommand(sqlcon))
                             {
-                                cmd.CommandText = "UPDATE seendates SET seendate = @seendate WHERE user = @user";
+                                cmd.CommandText =
+                                    "UPDATE seendates SET seendate = @seendate WHERE user = @user";
                                 cmd.Prepare();
                                 cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                                 cmd.Parameters.AddWithValue("@seendate", lastSeenDate);
                                 cmd.ExecuteNonQuery();
-                                Debug.WriteLine("Updated existing user {0}'s last seen time to: {1}", user, lastSeenDate);
+                                Log.Write(string.Format(
+                                    "Updated player {0}'s last seen time to: {1} in last seen date database.",
+                                    user,
+                                    lastSeenDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                                    _logClassType, _logPrefix);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Problem updating user: {0} in seen database: {1}", user, ex.Message);
+                        Log.WriteCritical(string.Format(
+                            "Problem updating last seen date for player {0} in last seen date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                     }
                 }
             }
@@ -205,18 +227,19 @@ namespace SSB.Database
                 {
                     sqlcon.Open();
 
-                    string s =
+                    var s =
                         "CREATE TABLE seendates (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, seendate DATETIME)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Seen database created.");
+                        Log.Write("Last seen date database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating seenn database: " + ex.Message);
+                Log.WriteCritical("Problem creating last seen date database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -243,7 +266,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete seen database: " + ex.Message);
+                Log.WriteCritical("Unable to delete last seen date database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -265,7 +289,7 @@ namespace SSB.Database
                         cmd.CommandText = "SELECT * FROM seendates WHERE user = @user";
                         cmd.Prepare();
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             return reader.HasRows;
                         }
@@ -274,7 +298,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in seen database: " + ex.Message);
+                Log.WriteCritical(string.Format(
+                    "Problem checking if player {0} exists in last seen date database: {1}",
+                    user, ex.Message), _logClassType, _logPrefix);
             }
             return false;
         }
@@ -297,15 +323,18 @@ namespace SSB.Database
                 using (var cmd = new SQLiteCommand(sqlcon))
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'seendates'";
+                    cmd.CommandText =
+                        "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'seendates'";
 
-                    using (SQLiteDataReader sdr = cmd.ExecuteReader())
+                    using (var sdr = cmd.ExecuteReader())
                     {
                         if (sdr.Read())
                         {
                             return true;
                         }
-                        Debug.WriteLine("seendates table not found in DB... Creating DB...");
+                        Log.Write(
+                            "seendates table not found in last seen date database... Creating last seen date database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

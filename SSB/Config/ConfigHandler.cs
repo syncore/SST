@@ -107,23 +107,6 @@ namespace SSB.Config
         }
 
         /// <summary>
-        ///     Writes the configuration to the disk.
-        /// </summary>
-        public void WriteConfiguration()
-        {
-            var json = JsonConvert.SerializeObject(Config);
-            using (var fs = File.Create(Filepaths.ConfigurationFilePath))
-            using (TextWriter writer = new StreamWriter(fs))
-            {
-                writer.WriteLine(json);
-                Log.Write(
-                    "Wrote configuration to disk at: " + Filepaths.ConfigurationFilePath,
-                    _logClassType, _logPrefix);
-            }
-        }
-
-        
-        /// <summary>
         /// Verifies the configuration location and file.
         /// </summary>
         public void VerifyConfigLocation()
@@ -146,6 +129,21 @@ namespace SSB.Config
                 _logClassType, _logPrefix);
             RestoreDefaultConfiguration();
         }
-         
+
+        /// <summary>
+        ///     Writes the configuration to the disk.
+        /// </summary>
+        public void WriteConfiguration()
+        {
+            var json = JsonConvert.SerializeObject(Config);
+            using (var fs = File.Create(Filepaths.ConfigurationFilePath))
+            using (TextWriter writer = new StreamWriter(fs))
+            {
+                writer.WriteLine(json);
+                Log.Write(
+                    "Wrote configuration to disk at: " + Filepaths.ConfigurationFilePath,
+                    _logClassType, _logPrefix);
+            }
+        }
     }
 }

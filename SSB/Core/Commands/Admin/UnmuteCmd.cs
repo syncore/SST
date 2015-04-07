@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -13,6 +14,8 @@ namespace SSB.Core.Commands.Admin
     public class UnmuteCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[UNMUTE]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
@@ -102,7 +105,8 @@ namespace SSB.Core.Commands.Admin
                     Helpers.GetArgVal(c, 1));
                 await _ssb.QlCommands.SendToQlAsync(string.Format("unmute {0}", id), false);
                 await SendServerSay(c, StatusMessage);
-                Debug.WriteLine("UNMUTE: Got player id {0} for player: {1}", id, Helpers.GetArgVal(c, 1));
+                Log.Write(string.Format("Unmute sent for player {0} (id: {1})",
+                    Helpers.GetArgVal(c, 1), id), _logClassType, _logPrefix);
                 return true;
             }
 
@@ -111,8 +115,9 @@ namespace SSB.Core.Commands.Admin
                     "^1[ERROR]^3 UNMUTE: Player ^1{0}^3 not found. Use player name without clan tag.",
                     Helpers.GetArgVal(c, 1));
             await SendServerTell(c, StatusMessage);
-            Debug.WriteLine(string.Format("Unable to unmute player {0} because ID could not be retrieved.",
-                Helpers.GetArgVal(c, 1)));
+            
+            Log.Write(string.Format("Could not send unmute for player {0} because ID couldn't be retrieved.",
+                   Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
             return false;
         }
 
@@ -133,17 +138,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -152,6 +146,17 @@ namespace SSB.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

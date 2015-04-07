@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Core;
 using SSB.Enums;
@@ -17,6 +17,8 @@ namespace SSB.Database
     /// </summary>
     public class DbQuits : CommonSqliteDb
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.QuitDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.QuitDatabaseFilePath;
 
@@ -59,16 +61,18 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@numQuits", (doublePenalty ? 2 : 1));
                             cmd.ExecuteNonQuery();
-                            Debug.WriteLine(
-                                string.Format("AddEarlyQuitDb: {0} successfully added to early quitter DB",
-                                    user));
+                            Log.Write(
+                                string.Format("{0} successfully added to early quitter database",
+                                    user), _logClassType, _logPrefix);
                             result = UserDbResult.Success;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to early quitter database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem adding player {0} to early quitter database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                     result = UserDbResult.InternalError;
                 }
             }
@@ -105,18 +109,19 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
-                                    "Decremented early quit count for: {0} by {1} from early quitter database.",
-                                    user, amount);
+                                Log.Write(string.Format(
+                                    "Decremented early quit count for player {0} by {1} in early quitter database.",
+                                    user, amount), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem decrementing user quit count for {0} in early quitters database: {1}", user,
-                        ex.Message);
+                    Log.WriteCritical(
+                        string.Format(
+                            "Problem decrementing quit count for player {0} in early quitter database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -146,15 +151,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from early quitter database.", user));
+                                Log.Write(string.Format(
+                                    "Deleted user: {0} from early quitter database.", user), _logClassType,
+                                    _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from early quitter database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem deleting player {0} from earliy quitter database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -181,7 +189,6 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine("GetAllQuits: No earlyquit users found in database");
                                     return allQuitters;
                                 }
                                 while (reader.Read())
@@ -196,8 +203,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem verifying database when trying to get all quitters: " +
-                                    ex.Message);
+                    Log.WriteCritical(
+                        "Problem getting all quitters from early quitter database." + ex.Message,
+                        _logClassType, _logPrefix);
                 }
             }
             return allQuitters;
@@ -231,15 +239,15 @@ namespace SSB.Database
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(
-                                        "GetUserQuitCount: User does not exist in early quitter database.");
                                     return 0;
                                 }
                                 while (reader.Read())
                                 {
                                     quitCount = (long) reader["numQuits"];
-                                    Debug.WriteLine("GetUserQuitCount: {0} has {1} early quits.", user,
-                                        quitCount);
+                                    Log.Write(
+                                        string.Format(
+                                            "Got early quit count for player {0} from early quitter database; early quits: {1}"
+                                            , user, quitCount), _logClassType, _logPrefix);
                                 }
                             }
                         }
@@ -247,7 +255,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem getting quit count from early quitters database: " + ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting early quit count for player {0} from earliy quitter database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return quitCount;
@@ -288,18 +298,18 @@ namespace SSB.Database
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(
-                                    "{0} Incremented early quit count for: {1} from early quitter database.",
-                                    doublePenalty ? "[DOUBLE PENALTY]" : "", user);
+                                Log.Write(string.Format(
+                                    "{0} Incremented early quit count for: {1} in early quitter database.",
+                                    doublePenalty ? "DOUBLE PENALTY - " : "", user), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(
-                        "Problem incrementing user quit count for {0} in early quitters database: {1}", user,
-                        ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem incrementing early quit count for player {0} in earliy quitter database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -334,8 +344,8 @@ namespace SSB.Database
                             ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user),
                                 false);
                     }
-                    Debug.WriteLine(string.Format("Removed early quit-related ban for player {0}.",
-                        user));
+                    Log.Write(string.Format("Removed early quit-related ban for player {0}.",
+                        user), _logClassType, _logPrefix);
                 }
             }
         }
@@ -369,13 +379,14 @@ namespace SSB.Database
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("EarlyQuitter database created.");
+                        Log.Write("Early quitter database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating early quitter database: " + ex.Message);
+                Log.WriteCritical("Problem creating early quitter database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -402,7 +413,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete early quitter database: " + ex.Message);
+                Log.WriteCritical("Unable to delete early quitter database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -432,7 +444,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in early quitter database: " + ex.Message);
+                Log.WriteCritical(string.Format(
+                    "Problem checking if player {0} exists in earliy quitter database: {1}",
+                    user, ex.Message), _logClassType, _logPrefix);
             }
             return false;
         }
@@ -464,7 +478,9 @@ namespace SSB.Database
                         {
                             return true;
                         }
-                        Debug.WriteLine("earlyquitters table not found in DB... Creating DB...");
+                        Log.Write(
+                            "earlyquitters table not found in early quitter database... Creating early quitter database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

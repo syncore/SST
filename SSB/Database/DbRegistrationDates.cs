@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using SSB.Model;
 using SSB.Util;
 
@@ -13,6 +14,8 @@ namespace SSB.Database
     /// </summary>
     public class DbRegistrationDates : CommonSqliteDb
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[DB]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.AccountDateDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.AccountDateDatabaseFilePath;
 
@@ -51,12 +54,18 @@ namespace SSB.Database
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
                             cmd.Parameters.AddWithValue("@acctdate", registrationDate);
                             cmd.ExecuteNonQuery();
+                            Log.Write(string.Format(
+                                "{0} successfully added to registration date database with registration date: {1}",
+                                user, registrationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                                _logClassType, _logPrefix);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem adding user to registration database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem adding player {0} to registration date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -84,18 +93,21 @@ namespace SSB.Database
                             cmd.CommandText = "DELETE FROM regdates WHERE user = @user";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            int total = cmd.ExecuteNonQuery();
+                            var total = cmd.ExecuteNonQuery();
                             if (total > 0)
                             {
-                                Debug.WriteLine(string.Format(
-                                    "Deleted user: {0} from registration database.", user));
+                                Log.Write(string.Format(
+                                    "Deleted user: {0} from registration date database.", user), _logClassType,
+                                    _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem deleting user from registration database: " + ex.Message);
+                    Log.WriteCritical(
+                        string.Format("Problem deleting player {0} from registration date database: {1}",
+                            user, ex.Message), _logClassType, _logPrefix);
                 }
             }
         }
@@ -121,20 +133,18 @@ namespace SSB.Database
                             cmd.CommandText = "SELECT * FROM regdates WHERE user = @user";
                             cmd.Prepare();
                             cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            using (var reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
-                                    Debug.WriteLine(string.Format(
-                                        "User: {0} does not exist in the registration database.", user));
                                     return date;
                                 }
                                 while (reader.Read())
                                 {
-                                    date = (DateTime)reader["acctdate"];
-                                    Debug.WriteLine(
-                                        "Got registration date {0} for User: {1} from internal database.",
-                                        date, user);
+                                    date = (DateTime) reader["acctdate"];
+                                    Log.Write(string.Format(
+                                        "Got registration date for player {0} from registration database; registration date: {1}",
+                                        user, date.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
                                     return date;
                                 }
                             }
@@ -143,7 +153,9 @@ namespace SSB.Database
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem checking if user exists in registration database: " + ex.Message);
+                    Log.WriteCritical(string.Format(
+                        "Problem getting registration date for player {0} from registration date database: {1}",
+                        user, ex.Message), _logClassType, _logPrefix);
                 }
             }
             return date;
@@ -164,18 +176,19 @@ namespace SSB.Database
                 {
                     sqlcon.Open();
 
-                    string s =
+                    var s =
                         "CREATE TABLE regdates (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, acctdate DATETIME)";
                     using (var cmd = new SQLiteCommand(s, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Registration database created.");
+                        Log.Write("Registration database created.", _logClassType, _logPrefix);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem creating registration database: " + ex.Message);
+                Log.WriteCritical("Problem creating registration date database: " + ex.Message,
+                    _logClassType, _logPrefix);
                 DeleteDb();
             }
         }
@@ -202,7 +215,8 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Unable to delete registration database: " + ex.Message);
+                Log.WriteCritical("Unable to delete registration date database: " + ex.Message,
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -224,7 +238,7 @@ namespace SSB.Database
                         cmd.CommandText = "SELECT * FROM regdates WHERE user = @user";
                         cmd.Prepare();
                         cmd.Parameters.AddWithValue("@user", user.ToLowerInvariant());
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             return reader.HasRows;
                         }
@@ -233,7 +247,9 @@ namespace SSB.Database
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem checking if user exists in registration database: " + ex.Message);
+                Log.WriteCritical(string.Format(
+                    "Problem checking if player {0} exists in registration date database: {1}",
+                    user, ex.Message), _logClassType, _logPrefix);
             }
             return false;
         }
@@ -258,13 +274,15 @@ namespace SSB.Database
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'regdates'";
 
-                    using (SQLiteDataReader sdr = cmd.ExecuteReader())
+                    using (var sdr = cmd.ExecuteReader())
                     {
                         if (sdr.Read())
                         {
                             return true;
                         }
-                        Debug.WriteLine("regdates table not found in DB... Creating DB...");
+                        Log.Write(
+                            "regdates table not found in registration date database... Creating registration date database...",
+                            _logClassType, _logPrefix);
                         CreateDb();
                         return false;
                     }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Modules.Irc;
@@ -17,6 +18,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "irc";
         private readonly ConfigHandler _configHandler;
         private readonly IrcManager _irc;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[IRC]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
@@ -107,6 +110,14 @@ namespace SSB.Core.Commands.Modules
         public string StatusMessage { get; set; }
 
         /// <summary>
+        /// Deactivates this module.
+        /// </summary>
+        public void Deactivate()
+        {
+            _irc.Disconnect();
+        }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -176,13 +187,31 @@ namespace SSB.Core.Commands.Modules
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
             return string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect|reconnect> ^7 - this uses" +
-                " server info from config file!",
+                "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect|reconnect> ^7 - you must" +
+                " first set up the IRC server options as well!",
                 CommandList.GameCommandPrefix, c.CmdName,
                 ((c.FromIrc)
                     ? (string.Format("{0} {1}", c.Args[1],
                         NameModule))
                     : NameModule));
+        }
+
+        /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        /// <remarks>
+        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
+        ///     server on load, if applicable.
+        /// </remarks>
+        public void Init()
+        {
+            if (IsConnectedToIrc)
+            {
+                Deactivate();
+            }
+
+            Log.Write("Initializing IRC module.", _logClassType, _logPrefix);
+            _irc.StartIrcThread();
         }
 
         /// <summary>
@@ -203,6 +232,9 @@ namespace SSB.Core.Commands.Modules
 
             if (Active && _configHandler.Config.IrcOptions.autoConnectOnStart)
             {
+                Log.Write("Initial load of IRC module configuration detected that module is to be" +
+                          " activated and that auto connect on start is enabled.",
+                    _logClassType, _logPrefix);
                 Init();
             }
         }
@@ -254,6 +286,9 @@ namespace SSB.Core.Commands.Modules
             StatusMessage =
                 "^2[SUCCESS]^7 Internet Relay Chat module disabled. Existing connection has been terminated.";
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received in-game request from {0} to disable IRC module. Disabling.",
+                c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -278,34 +313,11 @@ namespace SSB.Core.Commands.Modules
             // This was successful, but send as a /tell msg (error) to hide IRC server info.
             await SendServerTell(c, StatusMessage);
 
+            Log.Write(string.Format("Received in-game request from {0} to enable IRC module. Enabling.",
+                c.FromUser), _logClassType, _logPrefix);
+
             // Attempt to make the connection
             _irc.StartIrcThread();
-        }
-
-        /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        /// <remarks>
-        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
-        ///     server on load, if applicable.
-        /// </remarks>
-        public void Init()
-        {
-            if (IsConnectedToIrc)
-            {
-                Deactivate();
-            }
-            
-            Debug.WriteLine("Active flag detected in saved configuration; initializing IRC module.");
-            _irc.StartIrcThread();
-        }
-
-        /// <summary>
-        /// Deactivates this module.
-        /// </summary>
-        public void Deactivate()
-        {
-            _irc.Disconnect();
         }
 
         /// <summary>
@@ -337,6 +349,13 @@ namespace SSB.Core.Commands.Modules
 
             StatusMessage = "^1[ERROR]^3 Invalid IRC setting(s) found in config. Cannot load.";
             await SendServerTell(c, StatusMessage);
+
+            Log.Write(string.Format(
+                "{0} attempted to send IRC connect command from in-game, but invalid IRC setting(s) were" +
+                " detected in configuration. Will not connect.",
+                c.FromUser),
+                _logClassType, _logPrefix);
+
             return false;
         }
 
@@ -360,6 +379,11 @@ namespace SSB.Core.Commands.Modules
                             NameModule))
                         : NameModule));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to send IRC disconnect command from in-game, but IRC active flag is not set. Ignroring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -398,6 +422,11 @@ namespace SSB.Core.Commands.Modules
                             NameModule))
                         : NameModule));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to send IRC reconnect command from in-game, but IRC active flag is not set. Ignroring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             // Validity check
@@ -419,6 +448,13 @@ namespace SSB.Core.Commands.Modules
 
             StatusMessage = "^1[ERROR]^3 Invalid IRC setting(s) found in config. Will not connect.";
             await SendServerTell(c, StatusMessage);
+
+            Log.Write(string.Format(
+                "{0} attempted to send IRC reconnect command from in-game, but invalid IRC setting(s) were" +
+                " detected in configuration. Will not reconnect.",
+                c.FromUser),
+                _logClassType, _logPrefix);
+
             return false;
         }
     }

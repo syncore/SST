@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Interfaces;
 using SSB.Model;
@@ -14,6 +16,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "acc";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[ACCURACY]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
@@ -129,7 +133,7 @@ namespace SSB.Core.Commands.Modules
                 if (Active)
                 {
                     StatusMessage = string.Format(
-                        "^1[ERROR]^3 Accuracy scanner is already active. To disable: ^1{0}{1} {2} off",
+                        "^1[ERROR]^3 Accuracy display is already active. To disable: ^1{0}{1} {2} off",
                         CommandList.GameCommandPrefix, c.CmdName,
                         ((c.FromIrc)
                             ? (string.Format("{0} {1}", c.Args[1],
@@ -168,6 +172,9 @@ namespace SSB.Core.Commands.Modules
         {
             _configHandler.ReadConfiguration();
             Active = _configHandler.Config.AccuracyOptions.isActive;
+            Log.Write(string.Format(
+                "Initial load of accuracy display module configuration - active: {0}",
+               (Active ? "YES": "NO")), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -217,8 +224,11 @@ namespace SSB.Core.Commands.Modules
         private async Task DisableAcc(CmdArgs c)
         {
             UpdateConfig(false);
-            StatusMessage = "^2[SUCCESS]^7 Accuracy scanning has been ^1disabled.";
+            StatusMessage = "^2[SUCCESS]^7 Accuracy display has been ^1disabled.";
             await SendServerSay(c, StatusMessage);
+            
+            Log.Write(string.Format("Received {0} request from {1} to disable accuracy display module. Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -227,8 +237,10 @@ namespace SSB.Core.Commands.Modules
         private async Task EnableAcc(CmdArgs c)
         {
             UpdateConfig(true);
-            StatusMessage = "^2[SUCCESS]^7 Accuracy scanning has been ^2enabled.";
+            StatusMessage = "^2[SUCCESS]^7 Accuracy display has been ^2enabled.";
             await SendServerSay(c, StatusMessage);
+            Log.Write(string.Format("Received {0} request from {1} to enable accuracy display module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
     }
 }

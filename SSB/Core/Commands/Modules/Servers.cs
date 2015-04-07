@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Interfaces;
@@ -15,6 +16,8 @@ namespace SSB.Core.Commands.Modules
         public const string NameModule = "servers";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[SERVERLIST]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
@@ -24,30 +27,6 @@ namespace SSB.Core.Commands.Modules
             _configHandler = new ConfigHandler();
             LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets or sets the date and time that the query command was last used.
-        /// </summary>
-        /// <value>
-        ///     The date and time that the query command was last used.
-        /// </value>
-        public DateTime LastQueryTime { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the maximum servers to display.
-        /// </summary>
-        /// <value>
-        ///     The maximum servers to display.
-        /// </value>
-        public int MaxServersToDisplay { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the time between queries.
-        /// </summary>
-        /// <value>
-        ///     The time between queries.
-        /// </value>
-        public double TimeBetweenQueries { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
@@ -80,6 +59,22 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets or sets the date and time that the query command was last used.
+        /// </summary>
+        /// <value>
+        ///     The date and time that the query command was last used.
+        /// </value>
+        public DateTime LastQueryTime { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the maximum servers to display.
+        /// </summary>
+        /// <value>
+        ///     The maximum servers to display.
+        /// </value>
+        public int MaxServersToDisplay { get; set; }
+
+        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -110,6 +105,28 @@ namespace SSB.Core.Commands.Modules
         public string StatusMessage { get; set; }
 
         /// <summary>
+        ///     Gets or sets the time between queries.
+        /// </summary>
+        /// <value>
+        ///     The time between queries.
+        /// </value>
+        public double TimeBetweenQueries { get; set; }
+
+        /// <summary>
+        ///     Disables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        public async Task DisableServers(CmdArgs c)
+        {
+            UpdateConfig(false);
+            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
+            await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to disable server list . Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -117,6 +134,30 @@ namespace SSB.Core.Commands.Modules
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Enables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="maxServers">The maximum servers to display.</param>
+        /// <param name="timeBetween">
+        ///     The time in seconds that must elapse between users issuing the
+        ///     query command.
+        /// </param>
+        public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
+        {
+            MaxServersToDisplay = maxServers;
+            TimeBetweenQueries = timeBetween;
+            UpdateConfig(true);
+            StatusMessage = string.Format(
+                "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
+                " see up to^5 {0}^7 active servers every^5 {1}^7 seconds.",
+                maxServers, timeBetween);
+            await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to enable server list module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -161,7 +202,6 @@ namespace SSB.Core.Commands.Modules
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
-            
 
             await EnableServers(c, maxNum, timebtNum);
             return true;
@@ -205,6 +245,11 @@ namespace SSB.Core.Commands.Modules
             Active = _configHandler.Config.ServersOptions.isActive;
             MaxServersToDisplay = _configHandler.Config.ServersOptions.maxServers;
             TimeBetweenQueries = _configHandler.Config.ServersOptions.timeBetweenQueries;
+
+            Log.Write(string.Format(
+                "Initial load of server list module configuration - active: {0}, max servers to display: {1}," +
+                " time between queries: {2} seconds",
+                Active, MaxServersToDisplay, TimeBetweenQueries), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -247,38 +292,6 @@ namespace SSB.Core.Commands.Modules
 
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModServerListUi();
-        }
-
-        /// <summary>
-        ///     Disables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        public async Task DisableServers(CmdArgs c)
-        {
-            UpdateConfig(false);
-            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
-            await SendServerSay(c, StatusMessage);
-        }
-
-        /// <summary>
-        ///     Enables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="maxServers">The maximum servers to display.</param>
-        /// <param name="timeBetween">
-        ///     The time in seconds that must elapse between users issuing the
-        ///     query command.
-        /// </param>
-        public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
-        {
-            MaxServersToDisplay = maxServers;
-            TimeBetweenQueries = timeBetween;
-            UpdateConfig(true);
-            StatusMessage = string.Format(
-                "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
-                " see up to^5 {0}^7 active servers every^5 {1}^7 seconds.",
-                maxServers, timeBetween);
-            await SendServerSay(c, StatusMessage);
         }
     }
 }
