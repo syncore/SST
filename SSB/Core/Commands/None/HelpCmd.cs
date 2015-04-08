@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SSB.Database;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -28,7 +32,6 @@ namespace SSB.Core.Commands.None
         /// The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
-
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -91,8 +94,21 @@ namespace SSB.Core.Commands.None
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            //TODO: implement
-            StatusMessage = "^7The ^2!help ^7command will go here.";
+            var userDb = new DbUsers();
+            var senderLevel = userDb.GetUserLevel(c.FromUser);
+            var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
+            var cmds = new StringBuilder();
+            foreach (var cmd in _ssb.CommandProcessor.Commands.Where(cmd => senderLevel <= cmd.Value.UserLevel))
+            {
+                cmds.Append(string.Format("{0}, ", cmd.Key));
+            }
+            StatusMessage = string.Format(
+                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
+                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
+
+            await SendServerSay(c, StatusMessage);
+
+            StatusMessage = "^7For detailed help visit the website at ^3ssb.syncore.org^7, or ^3#ssb_ql^7 on QuakeNet.";
             await SendServerSay(c, StatusMessage);
             return true;
         }
@@ -111,17 +127,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -130,6 +135,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

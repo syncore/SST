@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -19,6 +19,8 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class SuggestTeamsCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:SUGGEST]";
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
         private readonly Timer _suggestionTimer;
@@ -52,7 +54,6 @@ namespace SSB.Core.Commands.None
         /// The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
-
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -122,6 +123,11 @@ namespace SSB.Core.Commands.None
                 StatusMessage = "^1[ERROR]^3 Team balancing is not available on this server!";
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to request team balance suggestion, but server is running game type" +
+                    " unsupported by QLRanks. Ignoring.", c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -131,6 +137,11 @@ namespace SSB.Core.Commands.None
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
                 StatusMessage = "^1[ERROR]^3 Team balancing is unavailable when pickup module is active!";
+
+                Log.Write(string.Format(
+                    "{0} attempted to request team balance suggestion, but balancing is unavailable when" +
+                    " pickup module is active. Ignoring.", c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -143,6 +154,11 @@ namespace SSB.Core.Commands.None
                 StatusMessage = "^1[ERROR]^3 Teams can only be suggested if there are a total even number of red and blue players!";
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to request team balance suggestion, but teams are uneven. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if ((redAndBlueTotalPlayers) < 4)
@@ -150,6 +166,11 @@ namespace SSB.Core.Commands.None
                 StatusMessage = "^1[ERROR]^3 There must be at least 4 total players for the team suggestion!";
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to request team balance suggestion, but there are fewer than 4 players. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -158,6 +179,11 @@ namespace SSB.Core.Commands.None
                 StatusMessage = "^1[ERROR]^3 A team balance vote is already pending!";
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to request team balance suggestion, but balance suggestion vote is already pending. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -169,8 +195,18 @@ namespace SSB.Core.Commands.None
                 if (userLevel < UserLevel.SuperUser)
                 {
                     StatusMessage = "^1[ERROR]^7 You do not have permission to use that command.";
+
+                    Log.Write(string.Format(
+                    "{0} tried to force team balance suggestion, but has an insufficient access level. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                     return false;
                 }
+
+                Log.Write(string.Format("Player {0} with sufficient access level {1} forced balanced teams from {2}.",
+                    c.FromUser, Enum.GetName(typeof(UserLevel), userLevel),
+                    (c.FromIrc ? "IRC" : "in-game")), _logClassType, _logPrefix);
+
                 await InitiateBalance(redTeam, blueTeam, true);
                 return true;
             }
@@ -193,17 +229,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -212,6 +237,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>
@@ -269,8 +305,8 @@ namespace SSB.Core.Commands.None
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Could not verify all players' Elo data. Will skip team suggestion." +
-                                ex.Message);
+                Log.WriteCritical("Could not verify all players' Elo data. Will skip team suggestion." +
+                                ex.Message, _logClassType, _logPrefix);
                 StatusMessage =
                     "^1[ERROR]^3 Couldn't verify player data. Team suggestion is not possible at this time.";
                 return;
@@ -324,6 +360,8 @@ namespace SSB.Core.Commands.None
         /// </remarks>
         private async Task MovePlayersToBalancedTeams()
         {
+            Log.Write("Attempting to move players to balanced teams.", _logClassType, _logPrefix);
+
             await _ssb.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
             foreach (var player in _balancedBlueTeam)
             {
@@ -358,6 +396,9 @@ namespace SSB.Core.Commands.None
             _suggestionTimer.AutoReset = false;
             _suggestionTimer.Start();
             _ssb.VoteManager.IsTeamSuggestionVotePending = true;
+
+            Log.Write(string.Format("Started team suggestion vote. {0} seconds until results are known.",
+                (interval / 1000)), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -386,17 +427,25 @@ namespace SSB.Core.Commands.None
 
                 if (_ssb.VoteManager.TeamSuggestionYesVoteCount > _ssb.VoteManager.TeamSuggestionNoVoteCount)
                 {
+                    Log.Write(
+                        "Team suggestion 'YES' vote count is greater than 'NO' vote count. Will attempt" +
+                        " to move players to balanced teams.", _logClassType, _logPrefix);
+
                     await MovePlayersToBalancedTeams();
+                }
+                else
+                {
+                    Log.Write(
+                        "Team suggestion 'NO' vote count is greater than 'YES' vote count. Teams will remain unchanged",
+                        _logClassType, _logPrefix);
                 }
 
                 // Reset votes
                 _ssb.VoteManager.ResetTeamSuggestionVote();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(
-                    "Caught exception in TeamSuggestionTimerElapsed asynchronous void (event handler) method: " +
-                    ex.Message);
+                // ignored
             }
         }
 
@@ -420,6 +469,8 @@ namespace SSB.Core.Commands.None
                 {
                     await _ssb.QlCommands.QlCmdSay(
                         "^1[ERROR]^3 Unable to verify player data. Try again in a few seconds.");
+
+                    Log.WriteCritical("Unable to verify player Elo data.", _logClassType, _logPrefix);
                     throw new Exception("Unable to verify player Elo data");
                 }
             }

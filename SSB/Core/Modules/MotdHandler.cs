@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Reflection;
 using System.Timers;
+using SSB.Util;
 
 namespace SSB.Core.Modules
 {
@@ -9,6 +10,8 @@ namespace SSB.Core.Modules
     /// </summary>
     public class MotdHandler
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[MOD:MOTD]";
         private readonly Timer _motdTimer;
         private readonly SynServerBot _ssb;
 
@@ -56,7 +59,9 @@ namespace SSB.Core.Modules
             _motdTimer.AutoReset = true;
             _motdTimer.Elapsed += _motdTimerElapsed;
             _motdTimer.Enabled = true;
-            Debug.WriteLine("MOTD timer started.");
+
+            Log.Write("Started message of the day timer.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -66,7 +71,9 @@ namespace SSB.Core.Modules
         {
             _motdTimer.Elapsed -= _motdTimerElapsed;
             _motdTimer.Enabled = false;
-            Debug.WriteLine("MOTD timer stopped.");
+
+            Log.Write("Stopped message of the day timer.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -85,11 +92,11 @@ namespace SSB.Core.Modules
 
             try
             {
-                await _ssb.QlCommands.QlCmdSay(string.Format("^3**^7 {0}^3 **", Message));
+                await _ssb.QlCommands.QlCmdSay(string.Format("^7{0}", Message));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine("Caught exception in _motdTimerElapsed asynchronous void (event handler) method: " + ex.Message);
+                // ignored
             }
         }
     }

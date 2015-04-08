@@ -1,35 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using SSB.Enums;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core
 {
     /// <summary>
-    /// Quick and dirty team balancer by Elo
-    /// Algorithm idea by 'Nari' <see cref="http://forums.faforever.com/forums//viewtopic.php?f=42&t=3659&start=10"/>
+    ///     Quick and dirty team balancer according to Elo ranking
+    ///     Algorithm idea by 'Nari' <see cref="http://forums.faforever.com/forums//viewtopic.php?f=42&t=3659&start=10" />
     /// </summary>
     public class TeamBalancer
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[TEAMBALANCE]";
+
         /// <summary>
-        /// Main method for performing the team balance operation.
+        ///     Main method for performing the team balance operation.
         /// </summary>
         /// <param name="players">The players.</param>
         /// <param name="gametype">The gametype.</param>
         /// <param name="desiredTeam">The desired team to return.</param>
         /// <returns>
-        /// A list of players for the desired team.
+        ///     A list of players for the desired team.
         /// </returns>
         public List<PlayerInfo> DoBalance(IList<PlayerInfo> players, QlGameTypes gametype, Team desiredTeam)
         {
             // Ascending array sort
-            var playersSortedByElo = players.OrderBy(player => player.EloData.GetEloFromGameType(gametype)).ToList();
-            int numPlayers = playersSortedByElo.Count;
-            Debug.WriteLine("Sorted (asc.) array is: " + string.Join(",",
-                playersSortedByElo.Select(p => p.EloData.GetEloFromGameType(gametype))));
+            var playersSortedByElo =
+                players.OrderBy(player => player.EloData.GetEloFromGameType(gametype)).ToList();
+            var numPlayers = playersSortedByElo.Count;
             var redTeam = new List<PlayerInfo>();
             var blueTeam = new List<PlayerInfo>();
             // The first four players are predetermined:
@@ -42,14 +45,16 @@ namespace SSB.Core
             // Fourth highest ranked player to red
             redTeam.Add(playersSortedByElo[numPlayers - 4]);
             // Determine the ordering for the remaining players.
-            for (int i = 5; i < numPlayers; i++)
+            for (var i = 5; i < numPlayers; i++)
             {
                 // We're only interested in the even iterations
-                if (i % 2 == 0) i++;
+                if (i%2 == 0) i++;
 
-                long lowVsHigh = CompareBothPlayers(playersSortedByElo[numPlayers - i].EloData.GetEloFromGameType(gametype),
-                    playersSortedByElo[numPlayers - (i + 1)].EloData.GetEloFromGameType(gametype),
-                    redTeam, blueTeam, gametype);
+                var lowVsHigh =
+                    CompareBothPlayers(
+                        playersSortedByElo[numPlayers - i].EloData.GetEloFromGameType(gametype),
+                        playersSortedByElo[numPlayers - (i + 1)].EloData.GetEloFromGameType(gametype),
+                        redTeam, blueTeam, gametype);
                 // better ranked player: playerElos[numPlayers - i]
                 // worse ranked player: playerElos[numPlayers - (i+1)]
                 if (lowVsHigh == 0)
@@ -69,23 +74,23 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Adds a player's Elo to the existing Elo of a team to determine what the average Elo
-        /// would be if that player were on that team.
+        ///     Adds a player's Elo to the existing Elo of a team to determine what the average Elo
+        ///     would be if that player were on that team.
         /// </summary>
         /// <param name="team">The team.</param>
         /// <param name="playerEloToAdd">The player's Elo to add.</param>
         /// <param name="gametype">The gametype.</param>
         /// <returns>
-        /// The average once the player's Elo has been added to the existing team's Elo.
+        ///     The average once the player's Elo has been added to the existing team's Elo.
         /// </returns>
         private long AddToTeamGetAvg(IList<PlayerInfo> team, long playerEloToAdd, QlGameTypes gametype)
         {
-            long teamExistingTotal = team.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            return ((teamExistingTotal + playerEloToAdd) / (team.Count() + 1));
+            var teamExistingTotal = team.Sum(player => player.EloData.GetEloFromGameType(gametype));
+            return ((teamExistingTotal + playerEloToAdd)/(team.Count() + 1));
         }
 
         /// <summary>
-        /// Compares a higher ranked player's Elo versus a lower ranked player's Elo.
+        ///     Compares a higher ranked player's Elo versus a lower ranked player's Elo.
         /// </summary>
         /// <param name="betterRankedPlayerElo">The better ranked player's Elo.</param>
         /// <param name="worseRankedPlayerElo">The worse ranked player's Elo.</param>
@@ -93,9 +98,10 @@ namespace SSB.Core
         /// <param name="teamBlue">The blue team.</param>
         /// <param name="gametype">The gametype.</param>
         /// <returns>
-        /// See comment for explanation.
+        ///     See comment for explanation.
         /// </returns>
-        private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo, IList<PlayerInfo> teamRed,
+        private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo,
+            IList<PlayerInfo> teamRed,
             IList<PlayerInfo> teamBlue, QlGameTypes gametype)
         {
             /* Example:
@@ -158,29 +164,30 @@ namespace SSB.Core
              *
              */
 
-            long t1A = AddToTeamGetAvg(teamRed, betterRankedPlayerElo, gametype);
-            long t2A = AddToTeamGetAvg(teamBlue, worseRankedPlayerElo, gametype);
-            long t1aT2ADiff = Math.Abs(t1A - t2A);
+            var t1A = AddToTeamGetAvg(teamRed, betterRankedPlayerElo, gametype);
+            var t2A = AddToTeamGetAvg(teamBlue, worseRankedPlayerElo, gametype);
+            var t1aT2ADiff = Math.Abs(t1A - t2A);
 
-            long t1B = AddToTeamGetAvg(teamRed, worseRankedPlayerElo, gametype);
-            long t2B = AddToTeamGetAvg(teamBlue, betterRankedPlayerElo, gametype);
-            long t1bT2BDiff = Math.Abs(t1B - t2B);
+            var t1B = AddToTeamGetAvg(teamRed, worseRankedPlayerElo, gametype);
+            var t2B = AddToTeamGetAvg(teamBlue, betterRankedPlayerElo, gametype);
+            var t1bT2BDiff = Math.Abs(t1B - t2B);
 
             return (t1bT2BDiff <= t1aT2ADiff) ? 0 : 1;
         }
 
         /// <summary>
-        /// Gets and displays the results (for debug purposes)
+        ///     Gets and displays the results (for debug purposes)
         /// </summary>
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>
         /// <param name="gametype">The gametype.</param>
-        private void DisplayResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue, QlGameTypes gametype)
+        private void DisplayResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue,
+            QlGameTypes gametype)
         {
-            long redTeamElo = teamRed.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            long redTeamAvgElo = (redTeamElo / teamRed.Count);
-            long blueTeamElo = teamBlue.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            long blueTeamAvgElo = (blueTeamElo / teamBlue.Count);
+            var redTeamElo = teamRed.Sum(player => player.EloData.GetEloFromGameType(gametype));
+            var redTeamAvgElo = (redTeamElo/teamRed.Count);
+            var blueTeamElo = teamBlue.Sum(player => player.EloData.GetEloFromGameType(gametype));
+            var blueTeamAvgElo = (blueTeamElo/teamBlue.Count);
             var red = new StringBuilder();
             var blue = new StringBuilder();
 
@@ -194,11 +201,20 @@ namespace SSB.Core
                 blue.Append(string.Format("{0} [{1}], ", player.ShortName,
                     player.EloData.GetEloFromGameType(gametype)));
             }
-            Debug.WriteLine("Balanced teams are:");
-            Debug.WriteLine("[RED]: {0} | Total Elo: {1} | Avg Elo Per Player: {2}", red.ToString().TrimEnd(',', ' '), redTeamElo, redTeamAvgElo);
-            Debug.WriteLine("[BLUE]: {0} | Total Elo: {1} | Avg Elo Per Player: {2}", blue.ToString().TrimEnd(',', ' '), blueTeamElo, blueTeamAvgElo);
-            Debug.WriteLine("[RED - BLUE Total Elo Difference]: abs({0}-{1}): {2}", redTeamElo, blueTeamElo, Math.Abs(redTeamElo - blueTeamElo));
-            Debug.WriteLine("[RED - BLUE Avg Elo Per Player Difference]: {0}", Math.Abs(redTeamAvgElo) - (blueTeamAvgElo));
+
+            Log.Write("Team balance results:", _logClassType, _logPrefix);
+
+            Log.Write(string.Format("RED: {0} | Total Elo: {1} | Avg Elo Per Red Player: {2}",
+                red.ToString().TrimEnd(',', ' '), redTeamElo, redTeamAvgElo), _logClassType, _logPrefix);
+
+            Log.Write(string.Format("BLUE: {0} | Total Elo: {1} | Avg Elo Per Blue Player: {2}",
+                blue.ToString().TrimEnd(',', ' '), blueTeamElo, blueTeamAvgElo), _logClassType, _logPrefix);
+
+            Log.Write(string.Format("RED - BLUE Total Elo Difference: abs({0}-{1}): {2}",
+                redTeamElo, blueTeamElo, Math.Abs(redTeamElo - blueTeamElo)), _logClassType, _logPrefix);
+
+            Log.Write(string.Format("RED - BLUE Avg Elo Per Player Difference: {0}",
+                Math.Abs(redTeamAvgElo) - (blueTeamAvgElo)), _logClassType, _logPrefix);
         }
     }
 }

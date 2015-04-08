@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -47,14 +47,14 @@ namespace SSB.Util
                     }
 
                     _httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                    HttpResponseMessage response = await _httpClient.GetAsync(url);
+                    var response = await _httpClient.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                    using (var responseStream = await response.Content.ReadAsStreamAsync())
                     {
                         using (var sr = new StreamReader(responseStream))
                         {
-                            string json = sr.ReadToEnd();
+                            var json = sr.ReadToEnd();
                             // QL site actually doesn't send "application/json", but "text/html"
                             // even though it is actually JSON HtmlDecode replaces &gt;, &lt; same
                             // as quakelive.js's EscapeHTML function
@@ -66,7 +66,8 @@ namespace SSB.Util
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Log.Write(string.Format("Problem when making generic REST API query: {0}", ex.Message),
+                        MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
                     return default(T);
                 }
             }

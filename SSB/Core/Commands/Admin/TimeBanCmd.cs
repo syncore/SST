@@ -20,7 +20,7 @@ namespace SSB.Core.Commands.Admin
         private readonly DbBans _banDb;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[TIMEBAN]";
+        private readonly string _logPrefix = "[CMD:TIMEBAN]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _userDb;
@@ -300,8 +300,7 @@ namespace SSB.Core.Commands.Admin
                 _ssb.UserInterface.RefreshCurrentBansDataSource();
 
                 // Unban immediately from QL's internal ban system
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}",
-                    Helpers.GetArgVal(c, 2)), false);
+                await _ssb.QlCommands.CmdUnban(Helpers.GetArgVal(c, 2));
 
                 StatusMessage = string.Format("^2[SUCCESS]^7 Removed time-ban for player^2 {0}",
                     Helpers.GetArgVal(c, 2));
@@ -312,7 +311,7 @@ namespace SSB.Core.Commands.Admin
             catch (Exception e)
             {
                 Log.WriteCritical(string.Format(
-                    "Exception encountered while trying to delete user {0} from ban database: {1}",
+                    "Problem encountered while trying to delete user {0} from ban database: {1}",
                     Helpers.GetArgVal(c, 2),
                     e.Message), _logClassType, _logPrefix);
             }
@@ -337,6 +336,10 @@ namespace SSB.Core.Commands.Admin
         {
             BanInfo bInfo;
             if (_banDb.IsExistingBanStillValid(user, out bInfo)) return false;
+
+            Log.Write(string.Format("Attempting to remove expired ban for player {0}",
+                user), _logClassType, _logPrefix);
+
             var bManager = new BanManager(_ssb);
             var result = await bManager.RemoveBan(bInfo);
             return result;

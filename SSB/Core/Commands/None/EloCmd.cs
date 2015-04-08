@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -12,7 +14,8 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class EloCmd : IBotCommand
     {
-        private readonly QlRanksEloRetriever _qlrEloRetriever;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:ELO]";
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerBot _ssb;
         private bool _isIrcAccessAllowed = true;
@@ -26,7 +29,6 @@ namespace SSB.Core.Commands.None
         public EloCmd(SynServerBot ssb)
         {
             _ssb = ssb;
-            _qlrEloRetriever = new QlRanksEloRetriever();
             _qlrHelper = new QlRanksHelper();
         }
 
@@ -108,12 +110,17 @@ namespace SSB.Core.Commands.None
                 await DisplayArgLengthError(c);
                 return false;
             }
+
             string user = c.Args.Length == (c.FromIrc ? 2 : 1) ? c.FromUser : Helpers.GetArgVal(c, 1);
             if (!Helpers.IsValidQlUsernameFormat(user, true))
             {
                 StatusMessage = string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
                             Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format("{0} specified QL name(s) that contained invalid character(s) from {1}",
+                    c.FromUser, (c.FromIrc) ? "IRC" : "in-game"), _logClassType, _logPrefix);
+
                 return false;
             }
             // We will need to retrieve the Elo from the API
@@ -128,11 +135,19 @@ namespace SSB.Core.Commands.None
                       (!_qlrHelper.PlayerHasInvalidEloData(_ssb.ServerInfo.CurrentPlayers[user]))))
             {
                 var player = _ssb.ServerInfo.CurrentPlayers[user];
+
                 StatusMessage = string.Format(
                             "^4[ELO]^7 {0}'s Elo:^4 |CA|^7 {1} ^4|CTF|^7 {2} ^4|DUEL|^7 {3} ^4|FFA|^7 {4} ^4|TDM|^7 {5}",
                             user, player.EloData.CaElo, player.EloData.CtfElo,
                             player.EloData.DuelElo, player.EloData.FfaElo, player.EloData.TdmElo);
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "Got pre-existing Elo data for player {0}: |CA| {1} |CTF| {2} |DUEL| {3} |FFA| {4} |TDM| {5}",
+                        user, player.EloData.CaElo, player.EloData.CtfElo, player.EloData.DuelElo,
+                        player.EloData.FfaElo, player.EloData.TdmElo), _logClassType, _logPrefix);
+
                 return true;
             }
             await GetAndSayElo(c, user);
@@ -150,7 +165,7 @@ namespace SSB.Core.Commands.None
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
             return string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} [name1,name2,name3] ^7- Comma sep list of" +
+                "^1[ERROR]^3 Usage: {0}{1} [name1,name2,name3] ^7- Comma separated list of" +
                 " names with ^1NO^7 spaces checks up to 3 names",
                 CommandList.GameCommandPrefix,
                 ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName));
@@ -196,7 +211,7 @@ namespace SSB.Core.Commands.None
             var playersToRetrive = multiPlayers.TakeWhile((t, i) => i != 3).ToList();
             var qlrdata =
                 await
-                    _qlrEloRetriever.DoQlRanksRetrievalAsync((hasMultiple
+                    _qlrHelper.DoQlRanksRetrievalAsync((hasMultiple
                         ? string.Join(",", playersToRetrive)
                         : user));
             if (qlrdata == null)

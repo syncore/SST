@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -11,6 +14,8 @@ namespace SSB.Core.Commands.Admin
     public class VoteNoCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:VOTENO]";
         private readonly SynServerBot _ssb;
         private int _qlMinArgs = 0;
         private UserLevel _userLevel = UserLevel.Admin;
@@ -98,6 +103,7 @@ namespace SSB.Core.Commands.Admin
             StatusMessage = "^2[SUCCESS]^7 Attempted to reject the vote.";
             await _ssb.QlCommands.SendToQlAsync("vote no", false);
             await SendServerTell(c, StatusMessage);
+            Log.Write("Attempting to reject the vote, if active.", _logClassType, _logPrefix);
             return true;
         }
 
@@ -118,17 +124,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -137,6 +132,17 @@ namespace SSB.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

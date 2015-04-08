@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Enums;
@@ -13,6 +13,8 @@ namespace SSB.Core
     /// </summary>
     public class ConsoleTextProcessor
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
         private readonly PlayerEventProcessor _playerEventProcessor;
         private readonly SynServerBot _ssb;
         private readonly VoteHandler _voteHandler;
@@ -29,8 +31,6 @@ namespace SSB.Core
             _playerEventProcessor = new PlayerEventProcessor(ssb);
             _voteHandler = new VoteHandler(_ssb);
         }
-
-        private delegate void ProcessEntireConsoleTextCb(string text, int length);
 
         /// <summary>
         ///     Gets or sets the old length of the last line.
@@ -83,23 +83,12 @@ namespace SSB.Core
         /// <param name="length">The length of all of the text in the QL console.</param>
         public void ProcessEntireConsoleText(string text, int length)
         {
-            if (_oldWholeConsoleLineLength == length)
-            {
-                Debug.WriteLine(
-                    "text length is same: {0} equals {1}...nothing new to add to console UI window.",
-                    _oldWholeConsoleLineLength, length);
-                return;
-            }
+            if (_oldWholeConsoleLineLength == length) return;
 
             _oldWholeConsoleLineLength = length;
+
             // Handle larger, crucial events.
             DetectMultiLineEvent(text);
-
-            // Append to our pretty UI or not
-            if (_ssb.GuiOptions.IsAppendToSsbGuiConsole)
-            {
-                AppendConsoleTextToGui(text, length);
-            }
         }
 
         /// <summary>
@@ -111,14 +100,11 @@ namespace SSB.Core
             if (msg.Equals(_oldLastLineText)) return;
 
             _oldLastLineText = msg;
-            // See if it's something we've issued
-            if (msg.StartsWith("]/"))
-            {
-                Debug.WriteLine(string.Format("** Detected our own command: {0} **", Strip(msg)));
-                return;
-            }
 
-            Debug.WriteLine(string.Format("Received console text: {0}", msg));
+            // See if it's something we've issued
+            if (msg.StartsWith("]/")) return;
+
+            //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
             var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -136,25 +122,6 @@ namespace SSB.Core
             var m = _ssb.Parser.ScmdAccuracy.Match(text);
             _playerEventProcessor.HandlePlayerAccuracyData(m);
             return true;
-        }
-
-        /// <summary>
-        ///     Appends the console text to GUI.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <param name="length">The length of the text.</param>
-        private void AppendConsoleTextToGui(string text, int length)
-        {
-            // Can't update UI control from different thread
-            if (_ssb.AppWideUiControls.LogConsoleTextBox.InvokeRequired)
-            {
-                var a = new ProcessEntireConsoleTextCb(ProcessEntireConsoleText);
-                _ssb.AppWideUiControls.LogConsoleTextBox.BeginInvoke(a, text, length);
-                return;
-            }
-            // If appending to textbox, must clear first
-            _ssb.AppWideUiControls.LogConsoleTextBox.Clear();
-            _ssb.AppWideUiControls.LogConsoleTextBox.AppendText(text);
         }
 
         /// <summary>
@@ -355,14 +322,14 @@ namespace SSB.Core
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
                 // Large batch of text incoming
                 _ssb.QlCommands.ClearQlWinConsole();
-                Debug.WriteLine(@"Gamestate change detected (\time\ info): setting warm-up mode.");
+                Log.Write(@"Gamestate change detected; setting warm-up mode.", _logClassType, _logPrefix);
             }
             else if (m.Groups["time"].Value.Equals(@"\time\0", StringComparison.InvariantCultureIgnoreCase))
             {
                 _ssb.ServerInfo.CurrentServerGameState = QlGameStates.InProgress;
                 // Large batch of text incoming
                 _ssb.QlCommands.ClearQlWinConsole();
-                Debug.WriteLine(@"Gamestate change detected (\time\ info): setting in-progress mode.");
+                Log.Write(@"Gamestate change detected; setting in-progress mode.", _logClassType, _logPrefix);
             }
             return true;
         }
@@ -377,8 +344,10 @@ namespace SSB.Core
         {
             if (!_ssb.Parser.CfgStringGameType.IsMatch(text)) return false;
             var m = _ssb.Parser.CfgStringGameType.Match(text);
-            Debug.WriteLine(string.Format("Found gametype number {0} in configstrings, will set...",
-                m.Groups["gametype"].Value));
+
+            Log.Write(string.Format("Found game type {0} in cstr, will set.",
+                m.Groups["gametype"].Value), _logClassType, _logPrefix);
+
             _ssb.ServerEventProcessor.SetServerGameType(m.Groups["gametype"].Value);
             return true;
         }
@@ -425,7 +394,7 @@ namespace SSB.Core
         {
             if (!_ssb.Parser.ScmdMatchAborted.IsMatch(text)) return false;
             _ssb.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
-            Debug.WriteLine("Match abort detected. Resetting to warmup.");
+            Log.Write("Match abort detected. Resetting to warmup.", _logClassType, _logPrefix);
             return true;
         }
 
@@ -500,12 +469,10 @@ namespace SSB.Core
         {
             if (!_ssb.Parser.CfgStringPlayerInfo.IsMatch(text)) return false;
             var m = _ssb.Parser.CfgStringPlayerInfo.Match(text);
-            if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
-            {
-                Debug.WriteLine("Detected empty playerinfo configstring (kick or outgoing)" +
-                                "returning to prevent NEWPLAYER(CS).");
-                return false;
-            }
+
+            if (m.Groups["playerinfo"].Value.Equals(@"""",
+                StringComparison.InvariantCultureIgnoreCase)) return false;
+
             _playerEventProcessor.HandlePlayerConfigString(m);
             return true;
         }
@@ -598,10 +565,12 @@ namespace SSB.Core
                 return false;
             }
 
+            Log.Write("Detected that we've disconnected from Quake Live server. Stopping server monitoring.",
+                _logClassType, _logPrefix);
+
             // Stop monitoring, stop reading console, set server as disconnected.
             _ssb.StopMonitoring();
 
-            Debug.WriteLine("Detected SSB disconnection from Quake Live server. Stopping monitoring.");
             return true;
         }
 
@@ -621,8 +590,10 @@ namespace SSB.Core
             {
                 return false;
             }
-            Debug.WriteLine("Detected a render initilization message. Will evaluate connection status.");
+            Log.Write("Detected a render initilization message. Will evaluate connection status.",
+                _logClassType, _logPrefix);
             _ssb.ServerEventProcessor.HandleDisconnectionScan();
+
             return true;
         }
 

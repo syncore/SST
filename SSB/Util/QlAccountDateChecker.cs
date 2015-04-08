@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using SSB.Database;
@@ -14,6 +14,8 @@ namespace SSB.Util
     /// </summary>
     public class QlAccountDateChecker
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[ACCOUNTDATECHECKER]";
         private readonly DbRegistrationDates _regDateDb;
 
         private string _userAgent =
@@ -37,7 +39,7 @@ namespace SSB.Util
             // See if the user already exists in internal database
             var registeredDate = _regDateDb.GetRegistrationDate(user);
             if (registeredDate != default(DateTime)) return registeredDate;
-            
+
             // User doesn't exist in our db, retrieve from QL.
             registeredDate = await GetUserRegistrationDateFromQl(user);
             if (registeredDate != default(DateTime))
@@ -84,7 +86,8 @@ namespace SSB.Util
                             var htmlDocument = new HtmlDocument();
                             htmlDocument.LoadHtml(result);
                             /* <div class="prf_vitals">
-                            <img src="http://cdn.quakelive.com/web/2014091104/images/profile/titles/ttl_vitalstats_v2014091104.0.png" alt="Vital Stats" width="108" height="13" class="prf_title" />
+                            <img src="http://cdn.quakelive.com/web/2014091104/images/profile/titles/ttl_vitalstats_v2014091104.0.png"
+                             * alt="Vital Stats" width="108" height="13" class="prf_title" />
                             <br />
                             <p>
                             <b>Member Since:</b> Sep. 19, 2014<br />
@@ -102,14 +105,17 @@ namespace SSB.Util
 
                                 string regdateStr = pg.ChildNodes[2].InnerText.Trim();
                                 DateTime.TryParse(regdateStr, out registeredDate);
-                                Debug.WriteLine("Got date text: " + regdateStr);
+
+                                Log.Write(string.Format("Got account date for {0} from remote site: {1}",
+                                    user, regdateStr), _logClassType, _logPrefix);
                             }
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Error accessing Quake Live website: " + e.Message);
+                    Log.WriteCritical("Error accessing Quake Live website: " + e.Message,
+                        _logClassType, _logPrefix);
                 }
             }
             return registeredDate;

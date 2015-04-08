@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Core.Modules;
@@ -15,6 +15,8 @@ namespace SSB.Core
     /// </summary>
     public class PlayerEventProcessor
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
         private readonly QlRanksHelper _qlRanksHelper;
         private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
@@ -39,6 +41,8 @@ namespace SSB.Core
             // "/?" command, regex would otherwise match, so ignore
             if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase)) return;
 
+            Log.Write("Detected incoming connection for " + player, _logClassType, _logPrefix);
+
             // Player connections include the clan tag, so we need to remove it
             player = Helpers.GetStrippedName(player);
 
@@ -50,13 +54,13 @@ namespace SSB.Core
                 await HandleEloUpdate(player);
             }
 
-            // If IRC module is active, send the message to the IRC channel 
+            // If IRC module is active, send the message to the IRC channel
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
             {
                 _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
                     string.Format("{0} has connected to my QL server.", player));
             }
-            
+
             // Elo limiter kick, if active
             if (_ssb.Mod.EloLimit.Active)
             {
@@ -76,8 +80,6 @@ namespace SSB.Core
             // Check for time-bans
             var bManager = new BanManager(_ssb);
             await bManager.CheckForBans(player);
-
-            Debug.WriteLine("Detected incoming connection for " + player);
         }
 
         /// <summary>
@@ -86,8 +88,10 @@ namespace SSB.Core
         /// <param name="player">The player.</param>
         public async Task HandleOutgoingPlayerConnection(string player)
         {
+            Log.Write("Detected outgoing connection for " + player, _logClassType, _logPrefix);
+
             player = player.ToLowerInvariant();
-            
+
             // The outgoing player was actually in the game, and not a spectator
             bool outgoingWasActive = _ssb.ServerInfo.IsActivePlayer(player);
             // Get the outgoing player's team before he disconnected
@@ -111,23 +115,21 @@ namespace SSB.Core
                 _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
             }
 
-            Debug.WriteLine("Detected outgoing connection for " + player);
-
-            // If IRC module is active, send the message to the IRC channel 
+            // If IRC module is active, send the message to the IRC channel
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
             {
                 _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
                     string.Format("{0} has left my QL server.", player));
             }
-            
+
             // Evaluate player's early quit situation if that module is active
             if (!_ssb.Mod.EarlyQuit.Active) return;
             if (!outgoingWasActive) return;
-            
+
             // Do not increase player's early quit count if already banned.
             var banDb = new DbBans();
             if (banDb.UserAlreadyBanned(player)) return;
-            
+
             var eqh = new EarlyQuitHandler(_ssb);
             await eqh.EvalCountdownQuitter(player);
             await eqh.EvalInProgressQuitter(player);
@@ -142,21 +144,25 @@ namespace SSB.Core
             string player = _ssb.ServerInfo.PlayerCurrentlyFollowing;
             if (string.IsNullOrEmpty(player))
             {
-                Debug.WriteLine(
-                    "Accuracy data detected but is of no use because no player is currently being followed. Ignoring.");
+                Log.Write(
+                    "Accuracy data detected but is of no use because no player is currently being followed. Ignoring.",
+                    _logClassType, _logPrefix);
+
                 return;
             }
             if (!Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
             {
-                Debug.WriteLine(
-                    "Player currently being followed is no longer on the server/doesn't exist in internal list. Ignoring.");
+                Log.Write(
+                    "Player currently being followed is no longer on the server/doesn't exist in internal list. Ignoring.",
+                    _logClassType, _logPrefix);
+
                 return;
             }
             string extracted = m.Groups["accdata"].Value;
             string[] accstrings = extracted.Split(' ');
             if (accstrings.Length < 15)
             {
-                Debug.WriteLine("Invalid accuracy data array length.");
+                Log.Write("Got accuracy data length of invalid size. Ignoring.", _logClassType, _logPrefix);
                 return;
             }
             var accs = new int[accstrings.Length];
@@ -184,14 +190,14 @@ namespace SSB.Core
             };
             // Set
             _ssb.ServerInfo.CurrentPlayers[player].Acc = playerAccInfo;
-            Debug.WriteLine(
-                "Set accuracy data for currently followed player: {0}. Data: [MG] {1} | [SG] {2}" +
-                " | [GL] {3} | [RL] {4} | [LG] {5} | [RG] {6} | [PG] {7} | [BFG] {8} | [GH] {9} |" +
-                " [NG] {10} | [PRX] {11} | [CG] {12} | [HMG] {13}", player, playerAccInfo.MachineGun,
+            Log.Write(string.Format(
+                "Set accuracy data for currently followed player: {0}. Data: (MG) {1} | (SG) {2}" +
+                " | (GL) {3} | (RL) {4} | (LG) {5} | (RG) {6} | (PG) {7} | (BFG) {8} | (GH) {9} |" +
+                " (NG) {10} | (PRX) {11} | (CG) {12} | (HMG) {13}", player, playerAccInfo.MachineGun,
                 playerAccInfo.ShotGun, playerAccInfo.GrenadeLauncher, playerAccInfo.RocketLauncher,
                 playerAccInfo.LightningGun, playerAccInfo.RailGun, playerAccInfo.PlasmaGun, playerAccInfo.Bfg,
                 playerAccInfo.GrapplingHook, playerAccInfo.NailGun, playerAccInfo.ProximityMineLauncher,
-                playerAccInfo.ChainGun, playerAccInfo.HeavyMachineGun);
+                playerAccInfo.ChainGun, playerAccInfo.HeavyMachineGun), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -213,18 +219,20 @@ namespace SSB.Core
 
             string msgFrom = Helpers.GetStrippedName(name);
 
-            Debug.WriteLine("** Detected chat message {0} from {1} **", msgContent, msgFrom);
-            // If IRC module is active, send the message to the IRC channel 
+            Log.Write(string.Format("Detected chat message {0} from {1}",
+                msgContent, msgFrom), _logClassType, _logPrefix);
+
+            // If IRC module is active, send the message to the IRC channel
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
             {
                 // Don't show
                 if (msgContent.StartsWith("[irc]", StringComparison.InvariantCultureIgnoreCase))
                     return;
-                
+
                 _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
                     string.Format("[{0} @ QL]: {1}", msgFrom, msgContent));
             }
-            
+
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandList.GameCommandPrefix))
             {
@@ -253,7 +261,7 @@ namespace SSB.Core
             string[] pi = playerInfoMatchText.Split('\\');
             if (pi.Length == 0)
             {
-                Debug.WriteLine("Invalid player info array length.");
+                Log.Write("Received invalid player info array length.", _logClassType, _logPrefix);
                 return;
             }
             string playername = GetCsValue("n", pi);
@@ -305,7 +313,7 @@ namespace SSB.Core
                 _ssb.Mod.Pickup.Manager.RemoveEligibility(player);
             }
 
-            // If IRC module is active, send the message to the IRC channel 
+            // If IRC module is active, send the message to the IRC channel
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)
             {
                 _ssb.Mod.Irc.IrcManager.SendIrcMessage(_ssb.Mod.Irc.IrcManager.IrcSettings.ircChannel,
@@ -354,7 +362,9 @@ namespace SSB.Core
             int id;
             if (!int.TryParse(idText, out id))
             {
-                Debug.WriteLine("Unable to determine player's id from cs info.");
+                Log.Write("Unable to determine player's id from cstr.",
+                    _logClassType, _logPrefix);
+
                 return;
             }
             id = (id - 29);
@@ -362,8 +372,8 @@ namespace SSB.Core
             string playername = GetCsValue("n", pi).ToLowerInvariant();
             if (!int.TryParse(GetCsValue("t", pi), out tm))
             {
-                Debug.WriteLine(string.Format("Unable to determine team info for player {0} from cs info.",
-                    playername));
+                Log.Write(string.Format("Unable to determine team info for player {0} from cstr.",
+                    playername), _logClassType, _logPrefix);
                 return;
             }
 
@@ -375,10 +385,11 @@ namespace SSB.Core
             // Create player. Also set misc details like full clan name, country code, subscription status.
             _ssb.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
                 id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
-            Debug.Write(
+
+            Log.Write(
                 string.Format(
-                    "[NEWPLAYER(CS)]: Detected player {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
-                    playername, country, clantag, fullclanname, subscriber));
+                    "Detected player from cstr: {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
+                    playername, country, clantag, fullclanname, subscriber), _logClassType, _logPrefix);
 
             // Keep team information up to date
             UpdatePlayerTeam(playername, (Team)tm);
@@ -397,16 +408,16 @@ namespace SSB.Core
                 if (!_qlRanksHelper.IsCachedEloDataOutdated(player))
                 {
                     _qlRanksHelper.SetCachedEloData(_ssb.ServerInfo.CurrentPlayers, player);
-                    Debug.WriteLine(
-                        string.Format("Setting non-expired cached elo result for {0} from database", player));
                 }
                 else
                 {
+                    Log.Write(
+                        string.Format("Outdated cached Elo data found in database for {0}. Will update.",
+                        player), _logClassType, _logPrefix);
+
                     _qlRanksHelper.CreateNewPlayerEloData(_ssb.ServerInfo.CurrentPlayers, player);
                     await
                         _qlRanksHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, player);
-                    Debug.WriteLine(
-                        string.Format("Outdated cached elo data found in DB for {0}. Will update.", player));
                 }
             }
             else
@@ -426,14 +437,15 @@ namespace SSB.Core
             if (Helpers.KeyExists(player, _ssb.ServerInfo.CurrentPlayers))
             {
                 _ssb.ServerInfo.CurrentPlayers.Remove(player);
-                Debug.WriteLine(string.Format("Removed {0} from the current in-game players.", player));
+                Log.Write(string.Format("Removed {0} from the current in-game players.",
+                    player), _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine(
+                Log.Write(
                     string.Format(
                         "Unable to remove {0} from the current in-game players. Player was not in list of current in-game players.",
-                        player));
+                        player), _logClassType, _logPrefix);
             }
         }
 
@@ -445,7 +457,8 @@ namespace SSB.Core
         private void UpdatePlayerReadyStatus(string player, ReadyStatus status)
         {
             _ssb.ServerInfo.CurrentPlayers[player].Ready = status;
-            Debug.WriteLine("Updated {0}'s player status to: {1}", player, status);
+            Log.Write(string.Format("Updated {0}'s player status to: {1}",
+                player, status), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -456,14 +469,17 @@ namespace SSB.Core
         private void UpdatePlayerTeam(string player, Team team)
         {
             _ssb.ServerInfo.CurrentPlayers[player].Team = team;
-            Debug.WriteLine("****** Updated {0}'s team to: {1} ******", player, team);
+
+            Log.Write(string.Format("Updated {0}'s team to: {1}",
+                player, team), _logClassType, _logPrefix);
+
             // Pickup module
             if (_ssb.Mod == null) return;
             if (_ssb.Mod.Pickup.Active && (team == Team.Red || team == Team.Blue))
             {
                 if (!_ssb.Mod.Pickup.Manager.IsPickupPreGame &&
                     !_ssb.Mod.Pickup.Manager.IsPickupInProgress) return;
-                
+
                 _ssb.Mod.Pickup.Manager.AddActivePickupPlayer(player.ToLowerInvariant());
             }
         }

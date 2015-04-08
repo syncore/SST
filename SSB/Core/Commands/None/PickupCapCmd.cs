@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -13,6 +16,8 @@ namespace SSB.Core.Commands.None
     public class PickupCapCmd : IBotCommand
     {
         private readonly SynServerBot _ssb;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PICKUPCAP]";
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = false;
         private int _qlMinArgs = 0;
@@ -107,6 +112,13 @@ namespace SSB.Core.Commands.None
                         : CommandList.CmdModule),
                     ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.PickupArg), _logClassType, _logPrefix);
+                
                 return false;
             }
 

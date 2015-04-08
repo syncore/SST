@@ -9,13 +9,13 @@ using SSB.Util;
 namespace SSB.Core.Commands.Admin
 {
     /// <summary>
-    ///     Command: Unmute a player.
+    ///     Command: Un-mute a player.
     /// </summary>
     public class UnmuteCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[UNMUTE]";
+        private readonly string _logPrefix = "[CMD:UNMUTE]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
@@ -30,12 +30,15 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -101,12 +104,14 @@ namespace SSB.Core.Commands.Admin
             var id = _ssb.ServerEventProcessor.GetPlayerId(Helpers.GetArgVal(c, 1));
             if (id != -1)
             {
-                StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to unmute player ^2{0}",
+                StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to un-mute player ^2{0}",
                     Helpers.GetArgVal(c, 1));
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unmute {0}", id), false);
+                await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
                 await SendServerSay(c, StatusMessage);
-                Log.Write(string.Format("Unmute sent for player {0} (id: {1})",
+
+                Log.Write(string.Format("Unmute command sent for player {0} (id: {1})",
                     Helpers.GetArgVal(c, 1), id), _logClassType, _logPrefix);
+
                 return true;
             }
 
@@ -115,9 +120,11 @@ namespace SSB.Core.Commands.Admin
                     "^1[ERROR]^3 UNMUTE: Player ^1{0}^3 not found. Use player name without clan tag.",
                     Helpers.GetArgVal(c, 1));
             await SendServerTell(c, StatusMessage);
-            
-            Log.Write(string.Format("Could not send unmute for player {0} because ID couldn't be retrieved.",
-                   Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
+
+            Log.Write(string.Format(
+                "Could not send unmute command for player {0} because player ID couldn't be retrieved.",
+                Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
+
             return false;
         }
 

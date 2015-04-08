@@ -15,7 +15,7 @@ namespace SSB.Database
     public class DbSeenDates : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:LASTSEEN]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.SeenDateDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.SeenDateDatabaseFilePath;
 

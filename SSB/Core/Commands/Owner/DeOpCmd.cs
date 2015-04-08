@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -13,6 +14,8 @@ namespace SSB.Core.Commands.Owner
     public class DeOpCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:DEOP]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Owner;
@@ -101,15 +104,19 @@ namespace SSB.Core.Commands.Owner
                 await _ssb.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
                 StatusMessage = string.Format("^2[SUCCESS]^7 Attemped to de-op ^2{0}", Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
-                Debug.WriteLine("DEOP: Got player id {0} for player: {1}", id, Helpers.GetArgVal(c, 1));
+
+                Log.Write(string.Format(
+                    "Attempted to de-op player {0} (id: {1}) using QL's op system.",
+                    Helpers.GetArgVal(c, 1), id), _logClassType, _logPrefix);
                 return true;
             }
 
             StatusMessage = "^1[ERROR]^3 Player not found. Use player name without clan tag.";
             await SendServerTell(c, StatusMessage);
 
-            Debug.WriteLine(string.Format("Unable to deop player {0} because ID could not be retrieved.",
-                Helpers.GetArgVal(c, 1)));
+            Log.Write(string.Format(
+                    "Unable to send de-op for player {0} because player ID could not be retrieved.",
+                    Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
             return false;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Core.Commands.Admin;
@@ -21,6 +22,8 @@ namespace SSB.Core.Commands.None
     public class PickupCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PICKUP]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _userDb;
@@ -33,12 +36,15 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -100,18 +106,26 @@ namespace SSB.Core.Commands.None
             if (!_ssb.Mod.Pickup.Active)
             {
                 StatusMessage = string.Format(
-                            "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix,
+                    "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
+                    CommandList.GameCommandPrefix,
                     ((c.FromIrc)
                         ? (string.Format("{0} {1}",
                             IrcCommandList.IrcCmdQl, CommandList.CmdModule))
                         : CommandList.CmdModule),
                     ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.PickupArg), _logClassType, _logPrefix);
+
                 return false;
             }
 
-            if (!Helpers.GetArgVal(c, 1).Equals("reset") && !Helpers.GetArgVal(c, 1).Equals("start") && !Helpers.GetArgVal(c, 1).Equals("stop")
+            if (!Helpers.GetArgVal(c, 1).Equals("reset") && !Helpers.GetArgVal(c, 1).Equals("start") &&
+                !Helpers.GetArgVal(c, 1).Equals("stop")
                 && !Helpers.GetArgVal(c, 1).Equals("unban") && !Helpers.GetArgVal(c, 1).Equals("help"))
             {
                 await DisplayArgLengthError(c);
@@ -125,6 +139,12 @@ namespace SSB.Core.Commands.None
                 if (userLevel < UserLevel.SuperUser)
                 {
                     await DisplayInsufficientAccessError(c);
+
+                    Log.Write(
+                        string.Format(
+                            "{0} attempted to use a {1} command with args that require a higher user level than {0} has. Ignoring.",
+                            c.FromUser, c.CmdName), _logClassType, _logPrefix);
+
                     return false;
                 }
             }
@@ -165,8 +185,10 @@ namespace SSB.Core.Commands.None
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <start/stop/reset/unban/help>",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                c.CmdName, c.Args[1])) : c.CmdName));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>
@@ -213,9 +235,9 @@ namespace SSB.Core.Commands.None
             await SendServerSay(c, StatusMessage);
 
             StatusMessage = string.Format(
-                        "^3{0}{1}^7 captains: pick a player, ^3{0}{2}^7 request a substitute for yourself, ^3{0}{3}^7 see who's signed up",
-                        CommandList.GameCommandPrefix, CommandList.CmdPickupPick,
-                        CommandList.CmdPickupSub, CommandList.CmdPickupWho);
+                "^3{0}{1}^7 captains: pick a player, ^3{0}{2}^7 request a substitute for yourself, ^3{0}{3}^7 see who's signed up",
+                CommandList.GameCommandPrefix, CommandList.CmdPickupPick,
+                CommandList.CmdPickupSub, CommandList.CmdPickupWho);
 
             await SendServerSay(c, StatusMessage);
 
@@ -223,8 +245,10 @@ namespace SSB.Core.Commands.None
                 "^5Privileged: ^3{0}{1} start^7 lock server & start, ^3{0}{1} reset^7 reset game," +
                 " ^3{0}{1} stop^7 cancel and unlock, ^3{0}{1} unban^7 to unban no-shows",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                IrcCommandList.IrcCmdQl, CommandList.CmdPickup)) : CommandList.CmdPickup));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        IrcCommandList.IrcCmdQl, CommandList.CmdPickup))
+                    : CommandList.CmdPickup));
 
             await SendServerSay(c, StatusMessage);
         }

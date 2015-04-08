@@ -152,8 +152,7 @@ namespace SSB.Core
             // remove from QL's external temp kickban system as well
             if (_ssb.IsMonitoringServer)
             {
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}",
-                    banInfo.PlayerName), false);
+                await _ssb.QlCommands.CmdUnban(banInfo.PlayerName);
             }
 
             return true;

@@ -15,7 +15,7 @@ namespace SSB.Database
     public class DbRegistrationDates : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:REGDATE]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.AccountDateDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.AccountDateDatabaseFilePath;
 

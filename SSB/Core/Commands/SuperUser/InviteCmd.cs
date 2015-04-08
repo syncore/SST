@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -12,6 +14,8 @@ namespace SSB.Core.Commands.SuperUser
     public class InviteCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:INVITE]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.SuperUser;
@@ -98,6 +102,8 @@ namespace SSB.Core.Commands.SuperUser
             StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to invite player ^3{0} ^7to the server.",
             Helpers.GetArgVal(c, 1));
             await SendServerSay(c, StatusMessage);
+            Log.Write(string.Format("Attempted to invite player {0} to the server.",
+                Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
             return true;
         }
 

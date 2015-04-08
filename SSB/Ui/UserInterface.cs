@@ -504,8 +504,7 @@ namespace SSB.Ui
                 if (_ssb.IsMonitoringServer)
                 {
                     // remove from QL's internal temporary ban system
-                    await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}",
-                        ban.PlayerName), false);
+                    await _ssb.QlCommands.CmdUnban(ban.PlayerName);
                 }
             }
 
@@ -541,8 +540,7 @@ namespace SSB.Ui
             if (_ssb.IsMonitoringServer)
             {
                 // remove from QL's internal temporary ban system
-                await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}",
-                    selectedUser.PlayerName), false);
+                await _ssb.QlCommands.CmdUnban(selectedUser.PlayerName);
             }
 
             banMCurBansListBox.SelectedIndex = ((banMCurrentBanBindingSource.Count > 0)
@@ -611,6 +609,20 @@ namespace SSB.Ui
         private void closeButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the copyLogEventsClipboardButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void copyLogEventsClipboardButton_Click(object sender, EventArgs e)
+        {
+            if (logConsoleTextBox.TextLength != 0)
+            {
+                Clipboard.SetText(logConsoleTextBox.Text);
+                ShowInfoMessage("Copied SSB event log to clipboard.", "Copied");
+            }
         }
 
         /// <summary>
@@ -715,15 +727,13 @@ namespace SSB.Ui
             _cfgHandler.RestoreDefaultConfiguration();
             _cfgHandler.ReadConfiguration();
 
-            
-            
             await HandleAccountDateModActivation(_cfgHandler.Config.AccountDateOptions.isActive,
                 _cfgHandler.Config.AccountDateOptions.minimumDaysRequired);
             await HandleEloLimitModActivation(_cfgHandler.Config.EloLimitOptions.isActive);
             await HandlePickupModActivation(_cfgHandler.Config.PickupOptions.isActive);
 
             HandleCoreSettingsUpdate(_cfgHandler.Config.CoreOptions);
-            
+
             HandleMotdModActivation(_cfgHandler.Config.MotdOptions.isActive);
             HandleIrcModActivation(_cfgHandler.Config.IrcOptions.isActive);
 

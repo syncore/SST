@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using SSB.Enums;
 using SSB.Model;
 using SSB.Util;
@@ -13,6 +13,9 @@ namespace SSB.Core
     /// </summary>
     public class ServerInfo
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServerInfo" /> class.
         /// </summary>
@@ -112,7 +115,7 @@ namespace SSB.Core
         {
             var red = GetTeam(Team.Red);
             var blue = GetTeam(Team.Blue);
-            return (red.Count + blue.Count)%2 == 0;
+            return (red.Count + blue.Count) % 2 == 0;
         }
 
         /// <summary>
@@ -152,7 +155,7 @@ namespace SSB.Core
             PlayerCurrentlyFollowing = string.Empty;
             ScoreBlueTeam = 0;
             ScoreRedTeam = 0;
-            Debug.WriteLine("SSB: Reset server information.");
+            Log.Write("Reset server information.", _logClassType, _logPrefix);
         }
     }
 }

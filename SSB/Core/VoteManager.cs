@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Timers;
 using SSB.Enums;
+using SSB.Util;
 using Timer = System.Timers.Timer;
 
 namespace SSB.Core
@@ -11,6 +13,9 @@ namespace SSB.Core
     /// </summary>
     public class VoteManager
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[VOTE]";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VoteManager"/> class.
         /// </summary>
@@ -21,14 +26,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether a Quake Live vote is in progress.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if a QL vote is in progress; otherwise, <c>false</c>.
-        /// </value>
-        public bool QlVoteInProgress { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether a team suggestion vote is pending.
         /// </summary>
         /// <value>
@@ -37,20 +34,20 @@ namespace SSB.Core
         public bool IsTeamSuggestionVotePending { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a Quake Live vote is in progress.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if a QL vote is in progress; otherwise, <c>false</c>.
+        /// </value>
+        public bool QlVoteInProgress { get; set; }
+
+        /// <summary>
         /// Gets or sets the vote timer.
         /// </summary>
         /// <value>
         /// The vote timer.
         /// </value>
         public Timer QlVoteTimer { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the team suggestion yes vote count.
-        /// </summary>
-        /// <value>
-        /// The team suggestion yes vote count.
-        /// </value>
-        public int TeamSuggestionYesVoteCount { get; set; }
 
         /// <summary>
         /// Gets or sets the team suggestion no vote count.
@@ -69,17 +66,12 @@ namespace SSB.Core
         public Dictionary<string, TeamBalanceVote> TeamSuggestionVoters { get; private set; }
 
         /// <summary>
-        /// Starts the QL vote timer and sets the <see cref="QlVoteInProgress"/> boolean to true.
+        /// Gets or sets the team suggestion yes vote count.
         /// </summary>
-        public void StartQlVoteTimer()
-        {
-            QlVoteTimer.Interval = 30000;
-            QlVoteTimer.AutoReset = true;
-            QlVoteTimer.Elapsed += QlVoteTimerElapsed;
-            QlVoteTimer.Enabled = true;
-            QlVoteInProgress = true;
-            Debug.WriteLine("Vote timer started. Vote is in progress.");
-        }
+        /// <value>
+        /// The team suggestion yes vote count.
+        /// </value>
+        public int TeamSuggestionYesVoteCount { get; set; }
 
         /// <summary>
         /// Resets the team suggestion vote.
@@ -90,6 +82,20 @@ namespace SSB.Core
             TeamSuggestionYesVoteCount = 0;
             TeamSuggestionVoters.Clear();
             IsTeamSuggestionVotePending = false;
+            Log.Write("Reset results of team balance suggestion vote.", _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Starts the QL vote timer and sets the <see cref="QlVoteInProgress"/> boolean to true.
+        /// </summary>
+        public void StartQlVoteTimer()
+        {
+            QlVoteTimer.Interval = 30000;
+            QlVoteTimer.AutoReset = true;
+            QlVoteTimer.Elapsed += QlVoteTimerElapsed;
+            QlVoteTimer.Enabled = true;
+            QlVoteInProgress = true;
+            Log.Write("Voting started. Vote is in progress.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -99,7 +105,7 @@ namespace SSB.Core
         {
             QlVoteTimer.Enabled = false;
             QlVoteInProgress = false;
-            Debug.WriteLine("Vote timer stopped. Vote is no longer active.");
+            Log.Write("Voting ended. Vote is no longer in progress.", _logClassType, _logPrefix);
         }
 
         /// <summary>

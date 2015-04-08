@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -12,6 +13,9 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class AcceptTeamSuggestCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = false;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:ACCEPT]";
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
         private int _qlMinArgs = 0;
@@ -22,7 +26,6 @@ namespace SSB.Core.Commands.None
         /// <param name="ssb">The main class.</param>
         public AcceptTeamSuggestCmd(SynServerBot ssb)
         {
-            IsIrcAccessAllowed = false;
             _ssb = ssb;
         }
 
@@ -40,7 +43,7 @@ namespace SSB.Core.Commands.None
         /// <value>
         ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed { get; private set; }
+        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
 
         /// <summary>
         ///     Gets the minimum arguments for the QL command.
@@ -96,12 +99,19 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 A team balance vote is not in progress.";
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to accept team suggestion, but team balance vote is not in progress. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (!Helpers.KeyExists(c.FromUser, _ssb.ServerInfo.CurrentPlayers))
             {
-                Debug.WriteLine(string.Format("{0} is not in the list of current players, ignoring vote",
-                    c.FromUser));
+                Log.Write(string.Format(
+                    "{0} attempted to accept team suggestion, but {0} is not in list of current players. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (_ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.None) ||
@@ -109,12 +119,22 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 Only active players may vote.";
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to accept team suggestion, but {0} is not an active player (no team or spec). Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (Helpers.KeyExists(c.FromUser, _ssb.VoteManager.TeamSuggestionVoters))
             {
                 StatusMessage = string.Format("^1[ERROR]^3 {0} has already voted.", c.FromUser);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to accept team suggestion, but has already voted. Ignoring.", c.FromUser),
+                    _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -122,7 +142,10 @@ namespace SSB.Core.Commands.None
             _ssb.VoteManager.TeamSuggestionVoters.Add(c.FromUser, TeamBalanceVote.Yes);
             StatusMessage = string.Format("^3[TEAMBALANCE] {0}^7 voted ^2YES", c.FromUser);
             await SendServerSay(c, StatusMessage);
-            Debug.WriteLine(string.Format("Counted 'yes' team suggestion vote for {0}", c.FromUser));
+
+            Log.Write(string.Format("Counted 'yes' team suggestion vote for {0}",
+                c.FromUser), _logClassType, _logPrefix);
+
             return true;
         }
 

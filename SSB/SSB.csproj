@@ -236,7 +236,6 @@
     <Compile Include="Core\QlCommands.cs" />
     <Compile Include="Util\QlAccountDateChecker.cs" />
     <Compile Include="Util\QlLocations.cs" />
-    <Compile Include="Util\QlRanksEloRetriever.cs" />
     <Compile Include="Util\QlRanksHelper.cs" />
     <Compile Include="Util\QlRemoteInfoRetriever.cs" />
     <Compile Include="Util\QLWindowUtils.cs" />

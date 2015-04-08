@@ -20,7 +20,7 @@ namespace SSB.Core.Commands.Modules
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[ELO]";
+        private readonly string _logPrefix = "[MOD:ELOLIMIT]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;

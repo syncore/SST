@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -18,7 +17,7 @@ namespace SSB.Database
     public class DbPickups : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:PICKUP]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.PickupGameDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.PickupGameDatabaseFilePath;
 
@@ -993,7 +992,7 @@ namespace SSB.Database
                     using (var cmd = new SQLiteCommand(userstr, sqlcon))
                     {
                         cmd.ExecuteNonQuery();
-                        Debug.WriteLine("Pickup users table created.");
+                        Log.Write("Pickup users database created.", _logClassType, _logPrefix);
                     }
                     var gamestr =
                         "CREATE TABLE pickupgames (id INTEGER PRIMARY KEY AUTOINCREMENT, redTeam TEXT NOT NULL, " +

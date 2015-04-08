@@ -18,7 +18,7 @@ namespace SSB.Database
     public class DbBans : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:BANS]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.BanDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.BanDatabaseFilePath;
 

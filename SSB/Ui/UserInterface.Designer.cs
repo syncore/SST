@@ -49,6 +49,8 @@
             this.coreSaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.coreCfgGroupBox = new System.Windows.Forms.GroupBox();
             this.coreAccountGroupBox = new System.Windows.Forms.GroupBox();
+            this.coreTimeCommandTextBox = new System.Windows.Forms.TextBox();
+            this.coreTimeCommandLabel = new System.Windows.Forms.Label();
             this.coreAccountNameLabel = new System.Windows.Forms.Label();
             this.coreAccountNameTextBox = new System.Windows.Forms.TextBox();
             this.coreOwnerNameTextBox = new System.Windows.Forms.TextBox();
@@ -319,8 +321,7 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.coreTimeCommandTextBox = new System.Windows.Forms.TextBox();
-            this.coreTimeCommandLabel = new System.Windows.Forms.Label();
+            this.copyLogEventsClipboardButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -498,6 +499,7 @@
             // 
             // logContainerGroupBox
             // 
+            this.logContainerGroupBox.Controls.Add(this.copyLogEventsClipboardButton);
             this.logContainerGroupBox.Controls.Add(this.clearLogEventsButton);
             this.logContainerGroupBox.Controls.Add(this.logEventsGroupBox);
             this.logContainerGroupBox.Controls.Add(this.logHeaderDescLabel);
@@ -713,6 +715,33 @@
             this.coreAccountGroupBox.TabIndex = 31;
             this.coreAccountGroupBox.TabStop = false;
             this.coreAccountGroupBox.Text = "Accounts and Time";
+            // 
+            // coreTimeCommandTextBox
+            // 
+            this.coreTimeCommandTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.coreTimeCommandTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.coreTimeCommandTextBox.ForeColor = System.Drawing.Color.White;
+            this.coreTimeCommandTextBox.Location = new System.Drawing.Point(342, 139);
+            this.coreTimeCommandTextBox.MaxLength = 10;
+            this.coreTimeCommandTextBox.Name = "coreTimeCommandTextBox";
+            this.coreTimeCommandTextBox.Size = new System.Drawing.Size(66, 22);
+            this.coreTimeCommandTextBox.TabIndex = 13;
+            this.coreToolTip.SetToolTip(this.coreTimeCommandTextBox, "Enter the time in seconds that must pass between a user\'s commands.\r\nIf the user " +
+        "issues more than one command during this period, then the\r\ncommand will be ignor" +
+        "ed.");
+            this.coreTimeCommandTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreTimeCommandTextBox_Validating);
+            this.coreTimeCommandTextBox.Validated += new System.EventHandler(this.coreTimeCommandTextBox_Validated);
+            // 
+            // coreTimeCommandLabel
+            // 
+            this.coreTimeCommandLabel.AutoSize = true;
+            this.coreTimeCommandLabel.Location = new System.Drawing.Point(339, 107);
+            this.coreTimeCommandLabel.Name = "coreTimeCommandLabel";
+            this.coreTimeCommandLabel.Size = new System.Drawing.Size(279, 14);
+            this.coreTimeCommandLabel.TabIndex = 12;
+            this.coreTimeCommandLabel.Text = "Time Limit Between User Commands [in seconds]";
+            this.coreToolTip.SetToolTip(this.coreTimeCommandLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
+        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
             // 
             // coreAccountNameLabel
             // 
@@ -4009,32 +4038,21 @@
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
             // 
-            // coreTimeCommandTextBox
+            // copyLogEventsClipboardButton
             // 
-            this.coreTimeCommandTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.coreTimeCommandTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.coreTimeCommandTextBox.ForeColor = System.Drawing.Color.White;
-            this.coreTimeCommandTextBox.Location = new System.Drawing.Point(342, 139);
-            this.coreTimeCommandTextBox.MaxLength = 10;
-            this.coreTimeCommandTextBox.Name = "coreTimeCommandTextBox";
-            this.coreTimeCommandTextBox.Size = new System.Drawing.Size(66, 22);
-            this.coreTimeCommandTextBox.TabIndex = 13;
-            this.coreToolTip.SetToolTip(this.coreTimeCommandTextBox, "Enter the time in seconds that must pass between a user\'s commands.\r\nIf the user " +
-        "issues more than one command during this period, then the\r\ncommand will be ignor" +
-        "ed.");
-            this.coreTimeCommandTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.coreTimeCommandTextBox_Validating);
-            this.coreTimeCommandTextBox.Validated += new System.EventHandler(this.coreTimeCommandTextBox_Validated);
-            // 
-            // coreTimeCommandLabel
-            // 
-            this.coreTimeCommandLabel.AutoSize = true;
-            this.coreTimeCommandLabel.Location = new System.Drawing.Point(339, 107);
-            this.coreTimeCommandLabel.Name = "coreTimeCommandLabel";
-            this.coreTimeCommandLabel.Size = new System.Drawing.Size(279, 14);
-            this.coreTimeCommandLabel.TabIndex = 12;
-            this.coreTimeCommandLabel.Text = "Time Limit Between User Commands [in seconds]";
-            this.coreToolTip.SetToolTip(this.coreTimeCommandLabel, "Enter the time in minutes to cache QLRanks Elo results.\r\nThis will save the Elo d" +
-        "ata so SSB does not have to\r\nconstantly access the QLRanks website.");
+            this.copyLogEventsClipboardButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.copyLogEventsClipboardButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.copyLogEventsClipboardButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.copyLogEventsClipboardButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.copyLogEventsClipboardButton.ForeColor = System.Drawing.Color.White;
+            this.copyLogEventsClipboardButton.Location = new System.Drawing.Point(445, 441);
+            this.copyLogEventsClipboardButton.Name = "copyLogEventsClipboardButton";
+            this.copyLogEventsClipboardButton.Size = new System.Drawing.Size(127, 28);
+            this.copyLogEventsClipboardButton.TabIndex = 11;
+            this.copyLogEventsClipboardButton.Text = "Copy To Clipboard";
+            this.coreToolTip.SetToolTip(this.copyLogEventsClipboardButton, "Click this button to copy the activity log to the system clipboard.");
+            this.copyLogEventsClipboardButton.UseVisualStyleBackColor = false;
+            this.copyLogEventsClipboardButton.Click += new System.EventHandler(this.copyLogEventsClipboardButton_Click);
             // 
             // UserInterface
             // 
@@ -4523,5 +4541,6 @@
         private System.Windows.Forms.ImageList uiTabImageList;
         private System.Windows.Forms.TextBox coreTimeCommandTextBox;
         private System.Windows.Forms.Label coreTimeCommandLabel;
+        private System.Windows.Forms.Button copyLogEventsClipboardButton;
     }
 }

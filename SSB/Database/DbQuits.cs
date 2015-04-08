@@ -18,7 +18,7 @@ namespace SSB.Database
     public class DbQuits : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:EARLYQUIT]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.QuitDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.QuitDatabaseFilePath;
 
@@ -340,9 +340,7 @@ namespace SSB.Database
 
                     if (ssb.IsMonitoringServer)
                     {
-                        await
-                            ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", user),
-                                false);
+                        await ssb.QlCommands.CmdUnban(user);
                     }
                     Log.Write(string.Format("Removed early quit-related ban for player {0}.",
                         user), _logClassType, _logPrefix);

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -7,11 +9,13 @@ using SSB.Util;
 namespace SSB.Core.Commands.SuperUser
 {
     /// <summary>
-    ///     Command: Lock the teams
+    ///     Command: Lock the teams.
     /// </summary>
     public class LockCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:LOCK]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.SuperUser;
@@ -90,6 +94,14 @@ namespace SSB.Core.Commands.SuperUser
         /// <param name="c">The command argument information.</param>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
+            if (!Helpers.GetArgVal(c, 1).Equals("both") &&
+                !Helpers.GetArgVal(c, 1).Equals("red") &&
+                !Helpers.GetArgVal(c, 1).Equals("blue"))
+            {
+                await DisplayArgLengthError(c);
+                return false;
+            }
+
             switch (Helpers.GetArgVal(c, 1))
             {
                 case "both":
@@ -108,6 +120,10 @@ namespace SSB.Core.Commands.SuperUser
                     break;
             }
             await SendServerTell(c, StatusMessage);
+
+            Log.Write(string.Format("Attempted to lock {0} team.",
+                Helpers.GetArgVal(c, 1).ToUpper()), _logClassType, _logPrefix);
+
             return true;
         }
 

@@ -19,7 +19,7 @@ namespace SSB.Core.Commands.Modules
         private readonly ConfigHandler _configHandler;
         private readonly IrcManager _irc;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[IRC]";
+        private readonly string _logPrefix = "[MOD:IRC]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 

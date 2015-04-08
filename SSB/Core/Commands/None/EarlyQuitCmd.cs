@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
@@ -16,6 +18,8 @@ namespace SSB.Core.Commands.None
     public class EarlyQuitCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:EARLYQUIT]";
         private readonly int _qlMinArgs = 2;
         private readonly DbQuits _quitDb;
         private readonly SynServerBot _ssb;
@@ -115,10 +119,18 @@ namespace SSB.Core.Commands.None
                         : CommandList.CmdModule),
                     ModuleCmd.EarlyQuitArg);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.EarlyQuitArg), _logClassType, _logPrefix);
+
                 return false;
             }
 
-            if ((!Helpers.GetArgVal(c, 1).Equals("list")) && (!Helpers.GetArgVal(c, 1).Equals("check")))
+            if ((!Helpers.GetArgVal(c, 1).Equals("list")) &&
+                (!Helpers.GetArgVal(c, 1).Equals("check")))
             {
                 await DisplayArgLengthError(c);
                 return false;

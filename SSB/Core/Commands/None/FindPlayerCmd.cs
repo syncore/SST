@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Enums;
@@ -15,6 +16,8 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class FindPlayerCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:FINDPLAYER]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
@@ -103,6 +106,10 @@ namespace SSB.Core.Commands.None
                 StatusMessage = string.Format("^1[ERROR] {0}^7 contains invalid characters (only a-z,0-9,- allowed)",
                             Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format("{0} specified QL name(s) that contained invalid character(s) from {1}",
+                    c.FromUser, (c.FromIrc) ? "IRC" : "in-game"), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -113,6 +120,7 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 Problem querying servers, try again later.";
                 await SendServerTell(c, StatusMessage);
+                Log.Write("Problem occurred when querying QL servers.", _logClassType, _logPrefix);
                 return false;
             }
             // Player was NOT found on public servers
@@ -131,6 +139,7 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 Problem querying servers, try again later.";
                 await SendServerTell(c, StatusMessage);
+                Log.Write("Problem occurred when querying QL servers.", _logClassType, _logPrefix);
                 return false;
             }
             // Player was NOT found on the private servers either, thus player is not playing at all
@@ -197,6 +206,11 @@ namespace SSB.Core.Commands.None
                         Helpers.GetArgVal(c, 1), country, server.map, server.num_clients, server.max_clients,
                         server.host_address);
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format(
+                "Found player {0} on ({1} | {2}, {3}/{4}) at {5}",
+                Helpers.GetArgVal(c, 1), country, server.map, server.num_clients, server.max_clients,
+                server.host_address), _logClassType, _logPrefix);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace SSB.Core.Commands.Modules
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[SERVERLIST]";
+        private readonly string _logPrefix = "[MOD:SERVERLIST]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 

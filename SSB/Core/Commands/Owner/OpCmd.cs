@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -13,6 +14,8 @@ namespace SSB.Core.Commands.Owner
     public class OpCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:OP]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Owner;
@@ -27,12 +30,15 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -86,7 +92,7 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
@@ -98,18 +104,23 @@ namespace SSB.Core.Commands.Owner
             var id = _ssb.ServerEventProcessor.GetPlayerId(Helpers.GetArgVal(c, 1));
             if (id != -1)
             {
-                await _ssb.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+                await _ssb.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
                 StatusMessage = string.Format("^2[SUCCESS]^7 Attemped to op ^2{0}", Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
-                Debug.WriteLine("OP: Got player id {0} for player: {1}", id, Helpers.GetArgVal(c, 1));
+
+                Log.Write(string.Format(
+                    "Attempted to op player {0} (id: {1}) using QL's op system.",
+                    Helpers.GetArgVal(c, 1), id), _logClassType, _logPrefix);
                 return true;
             }
 
             StatusMessage = "^1[ERROR]^3 Player not found. Use player name without clan tag.";
             await SendServerTell(c, StatusMessage);
 
-            Debug.WriteLine(string.Format("Unable to op player {0} because ID could not be retrieved.",
-                Helpers.GetArgVal(c, 1)));
+            Log.Write(string.Format(
+                "Unable to send op for player {0} because player ID could not be retrieved.",
+                Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
+            
             return false;
         }
 
@@ -126,8 +137,10 @@ namespace SSB.Core.Commands.Owner
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name does NOT include clan tag.",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                c.CmdName, c.Args[1])) : c.CmdName));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>

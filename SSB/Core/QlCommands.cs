@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using SSB.Enums;
@@ -14,6 +14,8 @@ namespace SSB.Core
     {
         private const int DefaultCommandDelayMsec = 500;
         private const int MaxChatlineLength = 134;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -29,7 +31,7 @@ namespace SSB.Core
         {
             await SendToQlAsync("cmd", false);
             //QlCmdClear();
-            Debug.WriteLine("Checking status of server connection by sending cmd...");
+            Log.Write("Checking status of server connection (cmd)", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -39,7 +41,7 @@ namespace SSB.Core
         {
             await SendToQlAsync("ui_mainmenu", false);
             //QlCmdClear();
-            Debug.WriteLine("Checking status of main menu by sending ui_mainmenu...");
+            Log.Write("Checking QL main menu status", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace SSB.Core
             }
             else
             {
-                Debug.WriteLine("Unable to find 'clear' button.");
+                Log.WriteCritical("Unable to get necessary console handle", _logClassType, _logPrefix);
             }
         }
 
@@ -87,12 +89,28 @@ namespace SSB.Core
             if (id != -1)
             {
                 await SendToQlAsync(string.Format("kickban {0}", id), false);
+                Log.Write(string.Format(
+                    "Attempted to kickban player {0} (id: {1}) using QL's ban system.",
+                    player, id), _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine(string.Format("Unable to kick player {0} because ID could not be retrieved.",
-                    player));
+                Log.Write(string.Format(
+                    "Unable to send kickban for player {0} because player ID could not be retrieved.",
+                    player), _logClassType, _logPrefix);
             }
+        }
+
+        /// <summary>
+        /// Sends the 'unban' command to QL.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task CmdUnban(string player)
+        {
+            await SendToQlAsync(string.Format("unban {0}", player), false);
+            
+            Log.Write(string.Format("Attempted to unban player {0} using QL's ban system.",
+                player), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -123,12 +141,15 @@ namespace SSB.Core
                         await SendToQlAsync(string.Format("put {0} s", id), false);
                         break;
                 }
+
+                Log.Write(string.Format("Attempted to move player {0} to team {1}",
+                    player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine(
-                    string.Format("Unable to force join player {0} because ID could not be retrieved.",
-                        player));
+                Log.Write(string.Format(
+                    "Unable to move player {0} to team {1} because player ID could not be retrieved",
+                     player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
             }
         }
 
@@ -157,7 +178,7 @@ namespace SSB.Core
         {
             SendQlCommand("con_noprint 1", false);
             QlCmdClear();
-            Debug.WriteLine("Disabling in-game console printing...");
+            Log.Write("Disabling in-game console printing.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -167,7 +188,7 @@ namespace SSB.Core
         {
             SendQlCommand("developer 0", false);
             QlCmdClear();
-            Debug.WriteLine("Disabling developer mode...");
+            Log.Write("Disabling developer mode.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -182,7 +203,7 @@ namespace SSB.Core
         {
             SendQlCommand("con_noprint 0", false);
             QlCmdClear();
-            Debug.WriteLine("Enabling in-game console printing...");
+            Log.Write("Enabling in-game console printing.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -192,7 +213,7 @@ namespace SSB.Core
         {
             SendQlCommand("developer 1", false);
             QlCmdClear();
-            Debug.WriteLine("Enabling developer mode...");
+            Log.Write("Enabling developer mode.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -209,7 +230,6 @@ namespace SSB.Core
         public async Task QlCmdConfigStrings()
         {
             await SendToQlAsync("configstrings", true);
-            // ...
             QlCmdClear();
         }
 
@@ -245,15 +265,6 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Sends the 'players' command to QL when a player connects.
-        /// </summary>
-        /// <remarks>This command will execute after a specified delay in seconds.</remarks>
-        public async Task QlCmdPlayersOnConnect()
-        {
-            await SendToQlDelayedAsync("players", true, 15);
-        }
-
-        /// <summary>
         ///     Sends the 'say' command to QL. If too much text is received then issue 'say' command
         ///     over multiple lines.
         /// </summary>
@@ -277,8 +288,9 @@ namespace SSB.Core
                     var multiLine = new string[numLines];
                     var startPos = 0;
                     var lastColor = string.Empty;
-                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
-                        text.Length, numLines);
+                    Log.Write(string.Format(
+                        "Received very large text of length {0} for chat message. Will send to QL over {1} lines.",
+                        text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
                         if (i != 0)
@@ -314,7 +326,8 @@ namespace SSB.Core
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                    Log.WriteCritical("Unable send chat message text to QL: " + ex.Message,
+                        _logClassType, _logPrefix);
                 }
             }
             else
@@ -349,8 +362,9 @@ namespace SSB.Core
                     var multiLine = new string[numLines];
                     var startPos = 0;
                     var lastColor = string.Empty;
-                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
-                        text.Length, numLines);
+                    Log.Write(string.Format(
+                        "Received very large text of length {0} for team chat message. Will send to QL over {1} lines.",
+                        text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
                         if (i != 0)
@@ -386,7 +400,8 @@ namespace SSB.Core
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                    Log.WriteCritical("Unable send team chat message text to QL: " + ex.Message,
+                         _logClassType, _logPrefix);
                 }
             }
             else
@@ -435,8 +450,9 @@ namespace SSB.Core
                     var multiLine = new string[numLines];
                     var startPos = 0;
                     var lastColor = string.Empty;
-                    Debug.WriteLine("Received very large text of length {0}. Will send to QL over {1} lines.",
-                        text.Length, numLines);
+                    Log.Write(string.Format(
+                        "Received very large text of length {0} for tell message. Will send to QL over {1} lines.",
+                        text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
                         if (i != 0)
@@ -472,7 +488,8 @@ namespace SSB.Core
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Unable to send text to QL: " + ex.Message);
+                    Log.WriteCritical("Unable to send tell message text to QL: " + ex.Message,
+                         _logClassType, _logPrefix);
                 }
             }
             else
@@ -565,7 +582,7 @@ namespace SSB.Core
                 _ssb.QlWindowUtils.GetQuakeLiveConsoleInputArea(_ssb.QlWindowUtils.GetQuakeLiveConsoleWindow());
             if (iText == IntPtr.Zero)
             {
-                Debug.WriteLine("Couldn't find Quake Live input text area");
+                Log.WriteCritical("Unable to get necessary console handle.", _logClassType, _logPrefix);
                 return;
             }
 

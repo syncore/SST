@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Model.QuakeLiveApi;
@@ -14,6 +14,9 @@ namespace SSB.Util
     /// </summary>
     public class QlRemoteInfoRetriever
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[API:QUAKELIVE]";
+
         /// <summary>
         ///     Gets the server's gamestate from the QL API.
         /// </summary>
@@ -38,7 +41,7 @@ namespace SSB.Util
                     gamestate = QlGameStates.InProgress;
                     break;
             }
-            Debug.WriteLine("The server's gamestate is: " + gamestate);
+            Log.Write("The server's gamestate is: " + gamestate, _logClassType, _logPrefix);
             return gamestate;
         }
 
@@ -53,7 +56,7 @@ namespace SSB.Util
             var gtNum = server.game_type;
             var gametype = (QlGameTypes) gtNum;
 
-            Debug.WriteLine("This server's gametype is: " + gametype);
+            Log.Write("This server's gametype is: " + gametype, _logClassType, _logPrefix);
             return gametype;
         }
 
@@ -66,7 +69,7 @@ namespace SSB.Util
         {
             if (string.IsNullOrEmpty(filter))
             {
-                Debug.WriteLine("QLAPI: No encoded filter specified!");
+                Log.Write("No encoded filter was specified!", _logClassType, _logPrefix);
                 return null;
             }
             try
@@ -76,11 +79,18 @@ namespace SSB.Util
                     Math.Truncate((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds));
 
                 var filterObj = await (query.QueryRestApiAsync<FilterObject>(url));
+
+                if (filterObj != null)
+                {
+                    Log.Write("Got filter information for base64 encoded filter.", _logClassType, _logPrefix);
+                }
+
                 return filterObj;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("QLAPI: Unable to filter object from encoded filter: " + ex.Message);
+                Log.WriteCritical("Problem retrieving filter object from encoded filter: " + ex.Message,
+                    _logClassType, _logPrefix);
                 return null;
             }
         }
@@ -94,7 +104,7 @@ namespace SSB.Util
         {
             if (string.IsNullOrEmpty(serverId))
             {
-                Debug.WriteLine("QLAPI: No server ID specified!");
+                Log.Write("No server ID was specified!", _logClassType, _logPrefix);
                 return null;
             }
             try
@@ -104,11 +114,18 @@ namespace SSB.Util
                 var serverList = await (query.QueryRestApiAsync<IList<Server>>(url));
 
                 // QL always returns a collection no matter what. We're only querying one server so get first.
+                if (serverList.Count != 0)
+                {
+                    Log.Write(string.Format("Got server information for server with id {0}",
+                        serverId), _logClassType, _logPrefix);
+                }
+
                 return serverList.First();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("QLAPI: Unable to return server information: " + ex.Message);
+                Log.WriteCritical("Problem returning server information: " + ex.Message,
+                    _logClassType, _logPrefix);
                 return null;
             }
         }

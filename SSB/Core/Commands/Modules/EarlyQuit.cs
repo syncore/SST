@@ -17,7 +17,7 @@ namespace SSB.Core.Commands.Modules
     {
         public const string NameModule = "earlyquit";
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[EARLYQUIT]";
+        private readonly string _logPrefix = "[MOD:EARLYQUIT]";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly int _qlMinModuleArgs = 3;

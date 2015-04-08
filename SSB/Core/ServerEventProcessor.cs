@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 using SSB.Database;
@@ -16,6 +16,8 @@ namespace SSB.Core
     /// </summary>
     public class ServerEventProcessor
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
         private readonly List<string> _qlranksToUpdateFromPlayers;
         private readonly DbSeenDates _seenDb;
         private readonly SynServerBot _ssb;
@@ -45,7 +47,6 @@ namespace SSB.Core
             if (_ssb.ServerInfo.CurrentPlayers.TryGetValue(player, out pinfo))
             {
                 id = pinfo.Id;
-                Debug.WriteLine("Retrieved id {0} for player {1}", id, player);
             }
             return id;
         }
@@ -78,10 +79,11 @@ namespace SSB.Core
         {
             if (_ssb.IsDisconnectionScanPending) return;
             if (!_ssb.IsInitComplete) return;
-            _disconnectScanTimer = new Timer(10000) {AutoReset = false, Enabled = true};
+            _disconnectScanTimer = new Timer(10000) { AutoReset = false, Enabled = true };
             _disconnectScanTimer.Elapsed += DisconnectScanElapsed;
             _ssb.IsDisconnectionScanPending = true;
-            Debug.WriteLine("Will check if server connection still exists in 10 seconds.");
+            Log.Write("Will check if server connection still exists in 10 seconds.",
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -90,9 +92,7 @@ namespace SSB.Core
         /// <param name="text">The text.</param>
         public void HandleMapLoad(string text)
         {
-            // Large text: clear
             _ssb.QlCommands.ClearQlWinConsole();
-            Debug.WriteLine("Detected map load (pak info): " + text);
         }
 
         /// <summary>
@@ -156,12 +156,16 @@ namespace SSB.Core
                 StringComparison.InvariantCultureIgnoreCase)))
             {
                 _ssb.ServerInfo.IsQlConnectedToServer = false;
-                Debug.WriteLine("*** SSB did NOT detect that Quake Live server connection exists! ***");
+
+                Log.Write("Connection to a Quake Live server was not detected.",
+                    _logClassType, _logPrefix);
+
                 return false;
             }
 
             _ssb.ServerInfo.IsQlConnectedToServer = true;
-            Debug.WriteLine("*** SSB detected that Quake Live connection exists! ***");
+            Log.Write("Detected Quake Live server connection.", _logClassType, _logPrefix);
+
             return true;
         }
 
@@ -175,14 +179,15 @@ namespace SSB.Core
             _ssb.ServerInfo.CurrentServerGameState = gameState;
             // Large batch of text incoming
             _ssb.QlCommands.ClearQlWinConsole();
-            Debug.WriteLine(
-                "End of game (frag/time/roundlimit reached) detected: setting status back to warm-up mode.");
+
+            Log.Write("End of game (frag/time/roundlimit reached) detected: setting status back to warm-up.",
+                _logClassType, _logPrefix);
+
             // Pickup module
             if (_ssb.Mod.Pickup.Active)
             {
                 _ssb.Mod.Pickup.Manager.HandleScoreOrTimelimitHit();
             }
-            //HandlePickupEvents(gameState);
         }
 
         /// <summary>
@@ -195,14 +200,16 @@ namespace SSB.Core
             _ssb.ServerInfo.CurrentServerGameState = gameState;
             // Large batch of text incoming
             _ssb.QlCommands.ClearQlWinConsole();
-            Debug.WriteLine(
-                "START of Intermission (game end/map voting) detected: setting status back to warm-up mode.");
+
+            Log.Write(
+                "Start of intermission (game end/map voting) detected: setting status back to warm-up.",
+                _logClassType, _logPrefix);
+
             // Pickup module
             if (_ssb.Mod.Pickup.Active)
             {
                 _ssb.Mod.Pickup.Manager.HandleIntermissionStart();
             }
-            //HandlePickupEvents(gameState);
         }
 
         /// <summary>
@@ -236,9 +243,7 @@ namespace SSB.Core
             }
             // Set
             _ssb.ServerInfo.CurrentServerGameState = gameState;
-            Debug.WriteLine(
-                "*** Setting server gamestate to {0} via either 'serverinfo' cmd or bcs0/cs",
-                gameState);
+            Log.Write(string.Format("Setting server gamestate to {0} ", gameState), _logClassType, _logPrefix);
             // Large text: clear again
             _ssb.QlCommands.ClearQlWinConsole();
             // Pickup module
@@ -259,14 +264,14 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
-                gameType = (QlGameTypes) gt;
-                Debug.WriteLine("*** Found server gametype: " + gameType);
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
+                gameType = (QlGameTypes)gt;
+                Log.Write("Found server gametype: " + gameType, _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine(
-                    "Received a SetServerGameType event but was unable to convert the returned string into a QlGameTypes value.");
+                Log.Write("Received a SetServerGameType event but was unable to convert to QlGameTypes value.",
+                    _logClassType, _logPrefix);
             }
 
             return gameType;
@@ -281,7 +286,7 @@ namespace SSB.Core
         {
             var serverId = text.Trim();
             _ssb.ServerInfo.CurrentServerId = serverId;
-            Debug.WriteLine("**** Found server id: " + serverId);
+            Log.Write("Got server id: " + serverId, _logClassType, _logPrefix);
             // Clear
             _ssb.QlCommands.ClearBothQlConsoles();
             return serverId;
@@ -302,8 +307,8 @@ namespace SSB.Core
             {
                 _ssb.ServerInfo.ScoreRedTeam = score;
             }
-            Debug.WriteLine("Setting {0} team's score to {1}",
-                ((team == Team.Blue) ? "BLUE" : "RED"), score);
+            Log.Write(string.Format("Setting {0} team's score to {1}",
+                ((team == Team.Blue) ? "BLUE" : "RED"), score), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -359,18 +364,17 @@ namespace SSB.Core
             int id;
             if (!int.TryParse(idText, out id))
             {
-                Debug.WriteLine(
-                    "Unable to extract player's ID from players.");
+                Log.Write("Unable to extract player ID from players.", _logClassType, _logPrefix);
                 return false;
             }
-            Debug.Write(
+
+            Log.Write(
                 string.Format(
                     "Found player {0} with client id {1} - setting info.\n",
-                    playerNameOnly, id));
-            _ssb.ServerInfo.CurrentPlayers[playerNameOnly] =
-                new PlayerInfo(playerNameOnly, clan,
-                    Team.None,
-                    id);
+                    playerNameOnly, id), _logClassType, _logPrefix);
+
+            _ssb.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly,
+                clan, Team.None, id);
             return true;
         }
 
@@ -390,8 +394,8 @@ namespace SSB.Core
             // monitoring the non-existent server and shutdown all console reading.
             if (!_ssb.ServerInfo.IsQlConnectedToServer)
             {
-                Debug.WriteLine("Disconnection scan determined that server connection" +
-                                " no longer exists; stopping monitoring.");
+                Log.Write("Determined that QL server connection no longer exists; Will stop all" +
+                          " server monitoring.", _logClassType, _logPrefix);
 
                 // Stop monitoring, stop reading console, set server as disconnected.
                 _ssb.StopMonitoring();
@@ -430,20 +434,20 @@ namespace SSB.Core
                 {
                     qlranksHelper.SetCachedEloData(
                         _ssb.ServerInfo.CurrentPlayers, player);
-                    Debug.WriteLine(
-                        string.Format(
-                            "Setting non-expired cached elo result for {0} from database",
-                            player));
+
+                    Log.Write(string.Format(
+                        "Setting non-expired cached Elo result for {0} from database",
+                        player), _logClassType, _logPrefix);
                 }
                 else
                 {
                     qlranksHelper.CreateNewPlayerEloData(
                         _ssb.ServerInfo.CurrentPlayers, player);
                     _qlranksToUpdateFromPlayers.Add(player);
-                    Debug.WriteLine(
-                        string.Format(
-                            "Outdated cached elo data found in DB for {0}. Adding to queue to update.",
-                            player));
+
+                    Log.Write(string.Format(
+                        "Outdated cached elo data found in DB for {0}. Adding to queue to update.",
+                        player), _logClassType, _logPrefix);
                 }
             }
             else

@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.None
 {
@@ -12,10 +15,11 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class PickupRemoveCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PICKUPREMOVE]";
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
-        private bool _isIrcAccessAllowed = false;
-        private int _qlMinArgs = 0;
+        private readonly bool _isIrcAccessAllowed = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupRemoveCmd" /> class.
@@ -23,16 +27,20 @@ namespace SSB.Core.Commands.None
         /// <param name="ssb">The main class.</param>
         public PickupRemoveCmd(SynServerBot ssb)
         {
+            QlMinArgs = 0;
             _ssb = ssb;
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return QlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -40,10 +48,7 @@ namespace SSB.Core.Commands.None
         /// <value>
         ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed
-        {
-            get { return _isIrcAccessAllowed; }
-        }
+        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
 
         /// <summary>
         ///     Gets the minimum arguments for the QL command.
@@ -51,10 +56,7 @@ namespace SSB.Core.Commands.None
         /// <value>
         ///     The minimum arguments for the QL command.
         /// </value>
-        public int QlMinArgs
-        {
-            get { return _qlMinArgs; }
-        }
+        public int QlMinArgs { get; private set; }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -86,26 +88,33 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Pickup.Active)
             {
                 StatusMessage = string.Format(
-                            "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix,
+                    "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
+                    CommandList.GameCommandPrefix,
                     ((c.FromIrc)
                         ? (string.Format("{0} {1}",
                             IrcCommandList.IrcCmdQl, CommandList.CmdModule))
                         : CommandList.CmdModule),
                     ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.PickupArg), _logClassType, _logPrefix);
+
                 return false;
             }
 

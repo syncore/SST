@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Reflection;
 using IrcDotNet;
 using SSB.Config.Modules;
+using SSB.Util;
 
 namespace SSB.Core.Modules.Irc
 {
@@ -12,6 +13,8 @@ namespace SSB.Core.Modules.Irc
     {
         private readonly IrcCommandProcessor _ircCommandProcessor;
         private readonly IrcOptions _ircSettings;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[MOD:IRC]";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcEvents" /> class.
@@ -33,7 +36,9 @@ namespace SSB.Core.Modules.Irc
         {
             if (e.Source is IrcUser)
             {
-                Debug.WriteLine("[{0}]({1}): {2}", channel.Name, e.Source.Name, e.Text);
+                Log.Write(string.Format("[{0}]({1}): {2}", channel.Name, e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
+
                 // If it's a command, then process it
                 if (e.Text.StartsWith(IrcCommandList.IrcCommandPrefix))
                 {
@@ -45,7 +50,8 @@ namespace SSB.Core.Modules.Irc
             }
             else
             {
-                Debug.WriteLine("[{0}]({1}) Message: {2}", channel.Name, e.Source.Name, e.Text);
+                Log.Write(string.Format("[{0}]({1}) Message: {2}", channel.Name, e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -56,7 +62,7 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
         protected override void OnChannelNoticeReceived(IrcChannel channel, IrcMessageEventArgs e)
         {
-            Debug.WriteLine("[{0}] Notice: {1}", channel.Name, e.Text);
+            Log.Write(string.Format("[{0}] Notice: {1}", channel.Name, e.Text), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -66,7 +72,9 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
         protected override void OnChannelUserJoined(IrcChannel channel, IrcChannelUserEventArgs e)
         {
-            Debug.WriteLine("[{0}] User: {1} joined the channel", channel.Name, e.ChannelUser.User.NickName);
+            Log.Write(
+                string.Format("[{0}] User: {1} joined the channel", channel.Name, e.ChannelUser.User.NickName),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -76,7 +84,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
         protected override void OnChannelUserLeft(IrcChannel channel, IrcChannelUserEventArgs e)
         {
-            Debug.WriteLine("[{0}] User {1} left the channel", channel.Name, e.ChannelUser.User.NickName);
+            Log.Write(string.Format("[{0}] User {1} left the channel",
+                channel.Name, e.ChannelUser.User.NickName), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -87,8 +96,8 @@ namespace SSB.Core.Modules.Irc
         {
             if (client.LocalUser != null)
             {
-                Debug.WriteLine("IRC client with name {0} connected to IRC {1}",
-                    client.LocalUser.NickName, client.LocalUser.ServerName);
+                Log.Write(string.Format("IRC client with name {0} connected to IRC {1}",
+                    client.LocalUser.NickName, client.LocalUser.ServerName), _logClassType, _logPrefix);
             }
         }
 
@@ -100,8 +109,8 @@ namespace SSB.Core.Modules.Irc
         {
             if (client.LocalUser != null && client.ServerName != null)
             {
-                Debug.WriteLine("IRC client with name {0} disconnected from {1}",
-                    client.LocalUser.NickName, client.ServerName);
+                Log.Write(string.Format("IRC client with name {0} disconnected from {1}",
+                    client.LocalUser.NickName, client.ServerName), _logClassType, _logPrefix);
             }
         }
 
@@ -123,6 +132,9 @@ namespace SSB.Core.Modules.Irc
                     _ircSettings.ircNickServiceBot,
                     _ircSettings.ircNickServiceUsername,
                     _ircSettings.ircNickServicePassword));
+
+                Log.Write("Attempted to automatically auth with IRC service",
+                    _logClassType, _logPrefix);
             }
 
             // Join the main channel
@@ -137,7 +149,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
         protected override void OnLocalUserJoinedChannel(IrcLocalUser localUser, IrcChannelEventArgs e)
         {
-            Debug.WriteLine("Bot: {0} joined channel: {1}", localUser.NickName, e.Channel.Name);
+            Log.Write(string.Format("We joined channel: {0}", e.Channel.Name),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -147,7 +160,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
         protected override void OnLocalUserLeftChannel(IrcLocalUser localUser, IrcChannelEventArgs e)
         {
-            Debug.WriteLine("Bot: {0} left channel: {1}", localUser.NickName, e.Channel.Name);
+            Log.Write(string.Format("We left channel: {0}", e.Channel.Name),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -159,11 +173,13 @@ namespace SSB.Core.Modules.Irc
         {
             if (e.Source is IrcUser)
             {
-                Debug.WriteLine("Received message from nickname {0}: {1}", e.Source.Name, e.Text);
+                Log.Write(string.Format("We received message from nickname {0}: {1}", e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine("Received message from {0}: {1}", e.Source.Name, e.Text);
+                Log.Write(string.Format("We received message from {0}: {1}", e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
             }
         }
 
@@ -176,11 +192,13 @@ namespace SSB.Core.Modules.Irc
         {
             if (e.Source is IrcUser)
             {
-                Debug.WriteLine("Received notice from nickname {0}: {1}", e.Source.Name, e.Text);
+                Log.Write(string.Format("We received notice from nickname {0}: {1}", e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
             }
             else
             {
-                Debug.WriteLine("Received notice from {0}: {1}", e.Source.Name, e.Text);
+                Log.Write(string.Format("We received notice from {0}: {1}", e.Source.Name, e.Text),
+                    _logClassType, _logPrefix);
             }
 
             // Services (Quakenet) auto authentication
@@ -190,7 +208,7 @@ namespace SSB.Core.Modules.Irc
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     localUser.SetModes("+x");
-                    Debug.WriteLine("Hiding hostname...");
+                    Log.Write("Setting mode +x to hide our hostname", _logClassType, _logPrefix);
                 }
             }
         }

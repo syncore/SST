@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SSB.Database;
 using SSB.Enums;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core
 {
@@ -14,6 +15,8 @@ namespace SSB.Core
     /// </summary>
     public class VoteHandler
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[VOTE]";
         private readonly SynServerBot _ssb;
         private readonly DbUsers _users;
         private Match _voteDetails;
@@ -86,17 +89,9 @@ namespace SSB.Core
                 _ssb.QlCommands.QlCmdSay(
                     string.Format("^1[ATTEMPTED ADMIN KICK]^7 {0} is an admin and cannot be kicked.",
                         (int.TryParse(admin, out id) ? "User with id " + id : admin)));
-            Debug.WriteLine(string.Format("Denied admin kick of {0}",
-                (int.TryParse(admin, out id) ? "id: " + id + "who is an admin" : admin)));
-        }
 
-        /// <summary>
-        /// Denies the uneven shuffle vote.
-        /// </summary>
-        private async Task DenyUnevenShuffle()
-        {
-            await _ssb.QlCommands.SendToQlAsync("vote no", false);
-            await _ssb.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.");
+            Log.Write(string.Format("Denied admin kick of {0}",
+                (int.TryParse(admin, out id) ? "id: " + id + ", who is an admin" : admin)), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -107,6 +102,19 @@ namespace SSB.Core
             await _ssb.QlCommands.SendToQlAsync("vote no", false);
             await
                 _ssb.QlCommands.QlCmdSay("^3This type of vote is not allowed when pickup module is active!");
+
+            Log.Write("Denied vote this type of vote (shuffle or teamsize) because pickup module is active" +
+                      " and in pre-game or in progress.", _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Denies the uneven shuffle vote.
+        /// </summary>
+        private async Task DenyUnevenShuffle()
+        {
+            await _ssb.QlCommands.SendToQlAsync("vote no", false);
+            await _ssb.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.");
+            Log.Write("Denied shuffle vote because teams are uneven.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -156,7 +164,10 @@ namespace SSB.Core
             if (!int.TryParse(votearg, out id)) return false;
             string user = _ssb.ServerEventProcessor.GetPlayerNameFromId(id);
             if (string.IsNullOrEmpty(user)) return false;
-            Debug.WriteLine(string.Format("Detected attempted admin kick of {0}", user));
+
+            Log.Write(string.Format("Detected attempted kick (clientkick) of admin: {0}", user),
+                _logClassType, _logPrefix);
+
             return _users.GetUserLevel(user) >= UserLevel.Admin;
         }
 
@@ -172,21 +183,11 @@ namespace SSB.Core
             string type = details.Groups["votetype"].Value;
             string votearg = details.Groups["votearg"].Value;
             if (!type.Equals("kick", StringComparison.InvariantCultureIgnoreCase)) return false;
-            Debug.WriteLine(string.Format("Detected attempted admin kick of {0}", votearg));
-            return _users.GetUserLevel(votearg) >= UserLevel.Admin;
-        }
 
-        /// <summary>
-        /// Determines whether a shuffle vote occurs while the teams are uneven.
-        /// </summary>
-        /// <param name="details">The details.</param>
-        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c>
-        /// </returns>
-        private bool IsUnevenShuffle(Match details)
-        {
-            string type = details.Groups["votetype"].Value;
-            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return false;
-            return _ssb.ServerInfo.HasEvenTeams();
+            Log.Write(string.Format("Detected attempted kick (kick) of admin: {0}", votearg),
+                _logClassType, _logPrefix);
+
+            return _users.GetUserLevel(votearg) >= UserLevel.Admin;
         }
 
         /// <summary>
@@ -208,6 +209,19 @@ namespace SSB.Core
         }
 
         /// <summary>
+        /// Determines whether a shuffle vote occurs while the teams are uneven.
+        /// </summary>
+        /// <param name="details">The details.</param>
+        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c>
+        /// </returns>
+        private bool IsUnevenShuffle(Match details)
+        {
+            string type = details.Groups["votetype"].Value;
+            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return false;
+            return _ssb.ServerInfo.HasEvenTeams();
+        }
+
+        /// <summary>
         ///     Performs the automatic vote action based on the type of vote.
         /// </summary>
         /// <param name="vote">The vote.</param>
@@ -223,6 +237,10 @@ namespace SSB.Core
                         (vote.IntendedResult == IntendedVoteResult.Yes ? "^2AUTO YES" : "^1AUTO NO"),
                         vote.VoteText, vote.AddedBy,
                         (vote.IntendedResult == IntendedVoteResult.Yes ? "^2Passing..." : "^1Rejecting...")));
+
+            Log.Write(string.Format("Automatically {0} matched vote: {1} (added by: {2})",
+                (vote.IntendedResult == IntendedVoteResult.Yes ? "passing" : "rejecting..."),
+                vote.VoteText, vote.AddedBy), _logClassType, _logPrefix);
         }
 
         /// <summary>

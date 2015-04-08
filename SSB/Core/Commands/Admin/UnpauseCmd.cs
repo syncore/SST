@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -14,6 +17,8 @@ namespace SSB.Core.Commands.Admin
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private int _qlMinArgs = 0;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:UNPAUSE]";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnpauseCmd" /> class.
@@ -95,6 +100,10 @@ namespace SSB.Core.Commands.Admin
             StatusMessage = "^2[SUCCESS]^7 Attempted to unpause game.";
             await _ssb.QlCommands.SendToQlAsync("unpause", false);
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Attempting to send unpause command to QL."),
+                _logClassType, _logPrefix);
+            
             return true;
         }
 

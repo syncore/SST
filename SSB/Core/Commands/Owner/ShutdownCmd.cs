@@ -1,15 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Owner
 {
     /// <summary>
-    ///     Command: Shut down Quake Live (and SSB).
+    ///     Command: Shut down Quake Live.
     /// </summary>
     public class ShutdownCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:SHUTDOWN]";
         private readonly SynServerBot _ssb;
         private bool _isIrcAccessAllowed = true;
         private int _qlMinArgs = 0;
@@ -55,6 +60,14 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
+        ///     Gets the command's status message.
+        /// </summary>
+        /// <value>
+        ///     The command's status message.
+        /// </value>
+        public string StatusMessage { get; set; }
+
+        /// <summary>
         ///     Gets the user level.
         /// </summary>
         /// <value>
@@ -66,14 +79,6 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        ///     Gets the command's status message.
-        /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
-        public string StatusMessage { get; set; }
-
-        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -81,6 +86,19 @@ namespace SSB.Core.Commands.Owner
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Executes the specified command asynchronously.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        public async Task<bool> ExecAsync(CmdArgs c)
+        {
+            Log.Write("Quitting Quake Live", _logClassType, _logPrefix);
+            StatusMessage = "^2[SUCCESS]^7 Quitting Quake Live...";
+            await SendServerSay(c, StatusMessage);
+            await _ssb.QlCommands.SendToQlAsync("quit", false);
+            return true;
         }
 
         /// <summary>
@@ -97,17 +115,6 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -119,15 +126,14 @@ namespace SSB.Core.Commands.Owner
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        ///     Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
         {
-            StatusMessage = "^2[SUCCESS]^7 Quitting Quake Live...";
-            await SendServerSay(c, StatusMessage);
-            await _ssb.QlCommands.SendToQlAsync("quit", false);
-            return true;
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

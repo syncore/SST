@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -12,6 +13,8 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class RejectTeamSuggestCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:REJECT]";
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = false;
@@ -33,7 +36,6 @@ namespace SSB.Core.Commands.None
         /// The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
-
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -100,12 +102,19 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 A team balance vote is not in progress.";
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to reject team suggestion, but team balance vote is not in progress. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (!Helpers.KeyExists(c.FromUser, _ssb.ServerInfo.CurrentPlayers))
             {
-                Debug.WriteLine(string.Format("{0} is not in the list of current players, ignoring vote",
-                    c.FromUser));
+                Log.Write(string.Format(
+                    "{0} attempted to reject team suggestion, but {0} is not in list of current players. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (_ssb.ServerInfo.CurrentPlayers[c.FromUser].Team.Equals(Team.None) ||
@@ -113,12 +122,22 @@ namespace SSB.Core.Commands.None
             {
                 StatusMessage = "^1[ERROR]^3 Only active players may vote.";
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to reject team suggestion, but {0} is not an active player (no team or spec). Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                 return false;
             }
             if (Helpers.KeyExists(c.FromUser, _ssb.VoteManager.TeamSuggestionVoters))
             {
                 StatusMessage = string.Format("^1[ERROR]^3 {0} has already voted.", c.FromUser);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "{0} attempted to reject team suggestion, but has already voted. Ignoring.", c.FromUser),
+                    _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -126,7 +145,10 @@ namespace SSB.Core.Commands.None
             _ssb.VoteManager.TeamSuggestionVoters.Add(c.FromUser, TeamBalanceVote.No);
             StatusMessage = string.Format("^3[TEAMBALANCE] {0}^7 voted ^1NO", c.FromUser);
             await SendServerSay(c, StatusMessage);
-            Debug.WriteLine(string.Format("Counted 'no' team suggestion vote for {0}", c.FromUser));
+
+            Log.Write(string.Format("Counted 'no' team suggestion vote for {0}",
+                c.FromUser), _logClassType, _logPrefix);
+
             return true;
         }
 
@@ -144,17 +166,6 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -163,6 +174,17 @@ namespace SSB.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

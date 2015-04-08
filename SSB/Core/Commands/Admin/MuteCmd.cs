@@ -15,7 +15,7 @@ namespace SSB.Core.Commands.Admin
     {
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[MUTE]";
+        private readonly string _logPrefix = "[CMD:MUTE]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
@@ -108,8 +108,10 @@ namespace SSB.Core.Commands.Admin
                     Helpers.GetArgVal(c, 1));
                 await _ssb.QlCommands.SendToQlAsync(string.Format("mute {0}", id), false);
                 await SendServerSay(c, StatusMessage);
-                Log.Write(string.Format("Mute sent for player {0} (id: {1})",
+                
+                Log.Write(string.Format("Mute command sent for player {0} (id: {1})",
                     Helpers.GetArgVal(c, 1), id), _logClassType, _logPrefix);
+                
                 return true;
             }
 
@@ -118,8 +120,11 @@ namespace SSB.Core.Commands.Admin
                     "^1[ERROR]^3 MUTE: Player ^1{0}^3 not found. Use player name without clan tag.",
                     Helpers.GetArgVal(c, 1));
             await SendServerTell(c, StatusMessage);
-            Log.Write(string.Format("Could not send mute for player {0} because ID couldn't be retrieved.",
+            
+            Log.Write(string.Format(
+                "Could not send mute command for player {0} because player ID couldn't be retrieved.",
                 Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
+            
             return false;
         }
 

@@ -97,7 +97,7 @@ namespace SSB.Core.Commands.Admin
             StatusMessage =
                 string.Format("^2[SUCCESS]^7 Attempted to remove ^2{0}^7 from QL banlist if ban existed.",
                     Helpers.GetArgVal(c, 1));
-            await _ssb.QlCommands.SendToQlAsync(string.Format("unban {0}", Helpers.GetArgVal(c, 1)), false);
+            await _ssb.QlCommands.CmdUnban(Helpers.GetArgVal(c, 1));
             await SendServerSay(c, StatusMessage);
             return true;
         }

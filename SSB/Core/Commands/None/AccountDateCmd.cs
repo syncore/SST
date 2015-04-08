@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Database;
 using SSB.Enums;
@@ -14,6 +15,8 @@ namespace SSB.Core.Commands.None
     public class AccountDateCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:DATE]";
         private readonly int _qlMinArgs = 2;
         private readonly DbRegistrationDates _registrationDb;
         private readonly SynServerBot _ssb;
@@ -104,14 +107,11 @@ namespace SSB.Core.Commands.None
         /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
+            // DB
             var date = _registrationDb.GetRegistrationDate(Helpers.GetArgVal(c, 1));
-            // Retrieve
-            if (date != default(DateTime))
+            if (date == default(DateTime))
             {
-                date = _registrationDb.GetRegistrationDate(Helpers.GetArgVal(c, 1));
-            }
-            else
-            {
+                // Not in DB, so retrieve from QL website
                 var qlDateChecker = new QlAccountDateChecker();
                 date = await qlDateChecker.GetUserRegistrationDate(Helpers.GetArgVal(c, 1));
             }
@@ -122,9 +122,13 @@ namespace SSB.Core.Commands.None
                     "^1[ERROR]^7 Unable to retrieve {0}'s account registration date.",
                     Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format("Could not retrieve account registration date for player {0}",
+                    Helpers.GetArgVal(c, 1)), _logClassType, _logPrefix);
+
                 return false;
             }
-            var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays*100)/100;
+            var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays * 100) / 100;
             StatusMessage = string.Format(
                 "^5[DATE]^7 {0}'s account was registered on:^5 {1}^7 (^3 {2} ^7days old)",
                 Helpers.GetArgVal(c, 1), date.ToString("d"), daysAgo);

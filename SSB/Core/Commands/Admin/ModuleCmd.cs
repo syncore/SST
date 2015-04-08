@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Modules;
 using SSB.Enums;
@@ -24,6 +26,8 @@ namespace SSB.Core.Commands.Admin
         public const string ServersArg = Servers.NameModule;
         private const string ActiveModuleArg = "active";
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:MOD]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
@@ -174,6 +178,10 @@ namespace SSB.Core.Commands.Admin
             StatusMessage = string.Format("^1[ERROR]^3 Invalid module. Valid modules are: ^1{0}",
                 string.Join(", ", _validModuleNames));
             await SendServerTell(c, StatusMessage);
+
+            Log.Write(string.Format("{0} specified an invalid module name from {1}",
+                c.FromUser, (c.FromIrc) ? "from IRC" : "from in-game"), _logClassType, _logPrefix);
+
             return false;
         }
 
@@ -196,17 +204,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -215,6 +212,17 @@ namespace SSB.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>

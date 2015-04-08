@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Commands.Admin
 {
@@ -11,6 +14,8 @@ namespace SSB.Core.Commands.Admin
     public class PauseCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PAUSE]";
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private int _qlMinArgs = 0;
@@ -54,8 +59,7 @@ namespace SSB.Core.Commands.Admin
         /// </value>
         public int QlMinArgs
         {
-            get { return _qlMinArgs;}
-    
+            get { return _qlMinArgs; }
         }
 
         /// <summary>
@@ -105,6 +109,10 @@ namespace SSB.Core.Commands.Admin
                     CommandList.GameCommandPrefix, CommandList.CmdUnpause);
             await _ssb.QlCommands.SendToQlAsync("pause", false);
             await SendServerTell(c, StatusMessage);
+
+            Log.Write(string.Format("Attempting to send pause command to QL."),
+                _logClassType, _logPrefix);
+
             return true;
         }
 

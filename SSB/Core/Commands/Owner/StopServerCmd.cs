@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -12,6 +14,8 @@ namespace SSB.Core.Commands.Owner
     public class StopServerCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:STOPSERVER]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Owner;
@@ -98,6 +102,9 @@ namespace SSB.Core.Commands.Owner
                             "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
                             delay);
                 await SendServerSay(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "Server will shut down in {0} seconds", delay), _logClassType, _logPrefix);
 
                 // ReSharper disable once UnusedVariable
                 var s = Task.Run(async delegate

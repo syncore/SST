@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SSB.Core.Commands.None;
 using SSB.Database;
 using SSB.Enums;
@@ -39,7 +38,6 @@ namespace SSB.Core.Modules
             await _ssb.QlCommands.CustCmdPutPlayerDelayed(outPlayer, Team.Spec, 2);
             // Sub new player in
             await _ssb.QlCommands.CustCmdPutPlayerDelayed(inPlayer, team, 2);
-            Debug.WriteLine("Player sub: trying to put player {0} on team {1} with delay", inPlayer, team);
             // Set player as active
             _manager.AddActivePickupPlayer(inPlayer);
             // Announce
@@ -124,7 +122,7 @@ namespace SSB.Core.Modules
                         player);
 
                 // If we now have enough players, start the captain selection process.
-                if ((_manager.AvailablePlayers.Count >= _ssb.Mod.Pickup.Teamsize*2) &&
+                if ((_manager.AvailablePlayers.Count >= _ssb.Mod.Pickup.Teamsize * 2) &&
                     !_manager.HasCaptainSelectionStarted)
                 {
                     await _manager.StartCaptainSelection();

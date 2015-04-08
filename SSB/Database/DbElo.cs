@@ -17,7 +17,7 @@ namespace SSB.Database
     public class DbElo : CommonSqliteDb
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[DB]";
+        private readonly string _logPrefix = "[DB:ELO]";
         private readonly string _sqlConString = "Data Source=" + Filepaths.EloDatabaseFilePath;
         private readonly string _sqlDbPath = Filepaths.EloDatabaseFilePath;
 

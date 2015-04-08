@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
@@ -17,6 +17,8 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly IrcCommandList _ircCmds;
         private readonly Dictionary<string, DateTime> _ircCommandUserTime;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[MOD:IRC]";
         private readonly SynServerBot _ssb;
 
         /// <summary>
@@ -53,38 +55,23 @@ namespace SSB.Core.Modules.Irc
         /// <param name="msg">The full message text.</param>
         public async Task ProcessIrcCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             var args = msg.Split(sep);
             var cmdName = args[0].Substring(1);
-            if (!Helpers.KeyExists(cmdName, _ircCmds.Commands))
-            {
-                return;
-            }
-            if (!SufficientTimeElapsed(fromUser))
-            {
-                Debug.WriteLine(
-                    "Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
-                    fromUser, IrcCommandList.IrcCommandPrefix, cmdName);
-                return;
-            }
-            _ircCommandUserTime[fromUser] = DateTime.Now;
-            if (msg.Equals(IrcCommandList.IrcCommandPrefix))
-            {
-                return;
-            }
-            if (!UserHasReqLevel(fromUser, _ircCmds.Commands[cmdName].UserLevel))
-            {
-                _irc.SendIrcNotice(fromUser,
-                    "\u0002[ERROR]\u0002 You do not have permission to use that command.");
-                return;
-            }
+
+            if (!CheckCommand(fromUser, cmdName, msg)) return;
+
+            // See if command requires active server monitoring
             var c = new CmdArgs(args, cmdName, fromUser, msg, true);
             if (_ircCmds.Commands[cmdName].RequiresMonitoring &&
                 (((!_ssb.IsMonitoringServer && !_ssb.IsInitComplete))))
             {
-                _irc.SendIrcNotice(fromUser, "\u0002[ERROR]\u0002 This command requires that a server be monitored; your server is not currently being monitored.");
+                _irc.SendIrcNotice(fromUser,
+                    "\u0002[ERROR]\u0002 This command requires that a server be monitored; your server" +
+                    " is not currently being monitored.");
                 return;
             }
+            // Check argument length
             if (args.Length < _ircCmds.Commands[cmdName].IrcMinArgs)
             {
                 _ircCmds.Commands[cmdName].DisplayArgLengthError(c);
@@ -102,6 +89,47 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
+        ///     Determines whether the command can be executed without taking into account
+        ///     the command's requirement for server monitoring nor the argument length.
+        /// </summary>
+        /// <param name="fromUser">The sender of the command..</param>
+        /// <param name="commandName">Name of the command.</param>
+        /// <param name="fullMessageText">The full message text.</param>
+        /// <returns>
+        ///     <c>true</c> if the command can be executed, without taking into account
+        ///     the command's requirement for server monitoring nor the
+        /// required argument length of the command, otherwise <c>false</c>.
+        /// </returns>
+        private bool CheckCommand(string fromUser, string commandName, string fullMessageText)
+        {
+            if (!Helpers.KeyExists(commandName, _ircCmds.Commands))
+            {
+                return false;
+            }
+            if (!SufficientTimeElapsed(fromUser))
+            {
+                Log.Write(string.Format(
+                    "Sufficient time has not elapsed since {0}'s last command. Ignoring {1}{2} command.",
+                    fromUser, IrcCommandList.IrcCommandPrefix, commandName), _logClassType, _logPrefix);
+
+                return false;
+            }
+            _ircCommandUserTime[fromUser] = DateTime.Now;
+            if (fullMessageText.Equals(IrcCommandList.IrcCommandPrefix))
+            {
+                return false;
+            }
+            if (!UserHasReqLevel(fromUser, _ircCmds.Commands[commandName].UserLevel))
+            {
+                _irc.SendIrcNotice(fromUser,
+                    "\u0002[ERROR]\u0002 You do not have permission to use that command.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         ///     Checks whether sufficient time has elapsed since the user last issued an IRC command.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -113,8 +141,8 @@ namespace SSB.Core.Modules.Irc
             {
                 return true;
             }
-            // 5 seconds between commands
-            return _ircCommandUserTime[user].AddSeconds(5) < DateTime.Now;
+            // 3.5 seconds between commands
+            return _ircCommandUserTime[user].AddSeconds(3.5) < DateTime.Now;
         }
 
         /// <summary>

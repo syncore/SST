@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +19,8 @@ namespace SSB.Core
     public class SynServerBot
     {
         public double InitDelay = 6.5;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CORE]";
         private Timer _initTimer;
         private bool _isMonitoringServer;
         private volatile bool _isReadingConsole;
@@ -193,7 +194,7 @@ namespace SSB.Core
         /// The user interface.
         /// </value>
         public UserInterface UserInterface { get; set; }
-        
+
         /// <summary>
         ///     Gets the vote manager.
         /// </summary>
@@ -211,8 +212,10 @@ namespace SSB.Core
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
-                Debug.WriteLine(
-                    "Auto server monitoring on start is enabled, but QL window not found. Won't allow.");
+                Log.Write(
+                    "User has enabled 'auto server monitoring on program start', but QL instance not found. Won't allow.",
+                    _logClassType, _logPrefix);
+
                 MessageBox.Show(
                     @"Could not auto-start server monitoring because a running instance of Quake Live was not found!",
                     @"Error",
@@ -283,7 +286,7 @@ namespace SSB.Core
             // Delay some initilization tasks and complete initilization
             StartDelayedInit(InitDelay);
             QlCommands.ClearQlWinConsole();
-            Debug.WriteLine("SSB: Requesting server information.");
+            Log.Write("Requesting server information.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -305,7 +308,7 @@ namespace SSB.Core
         public void StartConsoleReadThread()
         {
             if (IsReadingConsole) return;
-            Debug.WriteLine("SSB: Starting a thread to read QL console.");
+            Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
             var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
@@ -320,7 +323,7 @@ namespace SSB.Core
             _qlProcessDetectionTimer = new Timer(15000);
             _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
             _qlProcessDetectionTimer.Enabled = true;
-            Debug.WriteLine("SSB: Process detection timer did not exist; enabling.");
+            Log.Write("Process detection timer did not exist; enabling.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -329,7 +332,7 @@ namespace SSB.Core
         public void StopConsoleReadThread()
         {
             IsReadingConsole = false;
-            Debug.WriteLine("SSB: Stopping QL console read thread.");
+            Log.Write("Terminating QL console read thread.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -337,7 +340,7 @@ namespace SSB.Core
         /// </summary>
         public void StopMonitoring()
         {
-            Debug.WriteLine("Got request to stop all monitoring and console reading.");
+            Log.Write("Got request to stop all monitoring and console reading.", _logClassType, _logPrefix);
             IsMonitoringServer = false;
             StopConsoleReadThread();
             ServerInfo.IsQlConnectedToServer = false;
@@ -354,7 +357,9 @@ namespace SSB.Core
             var cfgHandler = new ConfigHandler();
             cfgHandler.ReadConfiguration();
             if (!cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
-            Debug.WriteLine("User has auto monitor on start specified. Attempting to start monitoring.");
+
+            Log.Write("User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
+                _logClassType, _logPrefix);
 
             // ReSharper disable once UnusedVariable
             // Synchronous
@@ -369,7 +374,7 @@ namespace SSB.Core
             var cfgHandler = new ConfigHandler();
             cfgHandler.VerifyConfigLocation();
             cfgHandler.ReadConfiguration();
-            
+
             return cfgHandler.Config.CoreOptions.accountName;
         }
 
@@ -388,7 +393,7 @@ namespace SSB.Core
             // been initially missed by the 'players' command.
             var c = QlCommands.QlCmdConfigStrings();
 
-            Debug.WriteLine("Requesting configstrings in delayed initilization step.");
+            Log.Write("Performing delayed initilization tasks.", _logClassType, _logPrefix);
 
             // Initiate modules such as MOTD and others that can't be started until after we're live
             Mod.Motd.Init();
@@ -414,7 +419,9 @@ namespace SSB.Core
             // Quake Live not found
             if (!qlWindExists)
             {
-                Debug.WriteLine("SSB: Quake Live not found...Stopping all monitoring and process detection.");
+                Log.Write("Instance of Quake Live no longer found. Will terminate all server monitoring and process detection.",
+                    _logClassType, _logPrefix);
+
                 StopMonitoring();
                 _qlProcessDetectionTimer.Enabled = false;
                 _qlProcessDetectionTimer = null;
@@ -479,7 +486,9 @@ namespace SSB.Core
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
                     if ((begin >= 29300) && (end >= 29300))
                     {
-                        Debug.WriteLine("[Console text buffer is almost met. AUTOMATICALLY CLEARING]");
+                        Log.Write("Console buffer is almost full. Automatically clearing.",
+                            _logClassType, _logPrefix);
+
                         // Auto-clear
                         QlCommands.ClearQlWinConsole();
                     }
@@ -488,7 +497,7 @@ namespace SSB.Core
             }
             else
             {
-                Debug.WriteLine("Couldn't find Quake Live console text area");
+                Log.WriteCritical("Unable to get necessary console handle.", _logClassType, _logPrefix);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
 using SSB.Core.Modules.Irc;
 using SSB.Enums;
@@ -13,10 +15,12 @@ namespace SSB.Core.Commands.None
     /// </summary>
     public class PickupSubCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PICKUPSUB]";
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
-        private bool _isIrcAccessAllowed = false;
-        private int _qlMinArgs = 2;
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
+        private readonly bool _isIrcAccessAllowed = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupSubCmd" /> class.
@@ -28,12 +32,15 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -41,10 +48,7 @@ namespace SSB.Core.Commands.None
         /// <value>
         ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
         /// </value>
-        public bool IsIrcAccessAllowed
-        {
-            get { return _isIrcAccessAllowed; }
-        }
+        public bool IsIrcAccessAllowed { get { return _isIrcAccessAllowed; } }
 
         /// <summary>
         ///     Gets the minimum arguments for the QL command.
@@ -87,26 +91,33 @@ namespace SSB.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_ssb.Mod.Pickup.Active)
             {
                 StatusMessage = string.Format(
-                            "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
-                            CommandList.GameCommandPrefix,
+                    "^1[ERROR]^3 Pickup module is not active. An admin must first load it with:^7 {0}{1} {2}",
+                    CommandList.GameCommandPrefix,
                     ((c.FromIrc)
                         ? (string.Format("{0} {1}",
                             IrcCommandList.IrcCmdQl, CommandList.CmdModule))
                         : CommandList.CmdModule),
                     ModuleCmd.PickupArg);
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.PickupArg), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -126,8 +137,10 @@ namespace SSB.Core.Commands.None
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <name> ^7- name is without the clan tag.",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}",
-                c.CmdName, c.Args[1])) : c.CmdName));
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>

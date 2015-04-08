@@ -38,10 +38,10 @@ namespace SSB.Core
         }
 
         /// <summary>
-        /// Gets the commands.
+        ///     Gets the commands.
         /// </summary>
         /// <value>
-        /// The commands.
+        ///     The commands.
         /// </value>
         public Dictionary<string, IBotCommand> Commands
         {
@@ -55,70 +55,14 @@ namespace SSB.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = { ' ' };
-            string[] args = msg.Split(sep);
-            string cmdName = args[0].Substring(1);
-            if (!_ssb.IsInitComplete)
-            {
-                await
-                    _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Initilization has not completed yet. Command ignored.");
+            char[] sep = {' '};
+            var args = msg.Split(sep);
+            var cmdName = args[0].Substring(1);
 
-                Log.Write(
-                    string.Format("Initilization not yet completed; ignoring command from player {0}.",
-                    fromUser), _logClassType, _logPrefix);
+            // Verify command
+            if (!await CheckCommand(fromUser, cmdName, msg)) return;
 
-                return;
-            }
-            if (!SufficientTimeElapsed(fromUser))
-            {
-                Log.Write(string.Format(
-                    "Sufficient time has not elapsed since player {0}'s last command. Ignoring {1}{2} command.",
-                    fromUser, CommandList.GameCommandPrefix, cmdName), _logClassType, _logPrefix);
-                return;
-            }
-            _playerCommandTime[fromUser] = DateTime.Now;
-            if (msg.Equals(CommandList.GameCommandPrefix))
-            {
-                Log.Write(
-                    string.Format("Player {0} entered command prefix {1} without specifying command. Ignoring.",
-                    fromUser, CommandList.GameCommandPrefix), _logClassType, _logPrefix);
-
-                return;
-            }
-            if (!Helpers.KeyExists(cmdName, _cmdList.Commands))
-            {
-                Log.Write(
-                    string.Format("Player {0} entered command ({1}) that does not exist. Ignoring.",
-                    fromUser, cmdName), _logClassType, _logPrefix);
-
-                return;
-            }
-            if (!Helpers.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
-            {
-                await _ssb.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then" +
-                        " retry your {1} request in^1 {2} ^3secs.",
-                        fromUser, cmdName, _ssb.InitDelay));
-
-                Log.Write(
-                    string.Format("Player {0} does not exist in current player list. Ignoring command.",
-                    fromUser), _logClassType, _logPrefix);
-
-                return;
-            }
-            if (!UserHasReqLevel(fromUser, _cmdList.Commands[cmdName].UserLevel))
-            {
-                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
-                Log.Write(
-                    string.Format("Player {0} sent {1}{2} command but has permission less than {3} needed for {2}. Ingoring.",
-                    fromUser, CommandList.GameCommandPrefix, cmdName, Enum.GetName(typeof(UserLevel),
-                    _cmdList.Commands[cmdName].UserLevel)), _logClassType, _logPrefix);
-
-                return;
-            }
-
+            // Verify argument length
             var c = new CmdArgs(args, cmdName, fromUser, msg, false);
             var minArgs = _cmdList.Commands[cmdName].QlMinArgs;
 
@@ -137,17 +81,95 @@ namespace SSB.Core
             if (await _cmdList.Commands[cmdName].ExecAsync(c))
             {
                 Log.Write(string.Format(
-                    "Successfully executed player {0}'s {1}{2} command: {3}", fromUser,
-                    CommandList.GameCommandPrefix, cmdName, msg),
+                    "Successfully executed player {0}'s {1} command: {2}", fromUser, cmdName, msg),
                     _logClassType, _logPrefix);
             }
             else
             {
                 Log.Write(string.Format(
-                    "Unsuccessful execution of player {0}'s {1}{2} command: {3}", fromUser,
-                    CommandList.GameCommandPrefix, cmdName, msg),
-                    _logClassType, _logPrefix);
+                    "Unsuccessful execution of player {0}'s {1} command: {2}", fromUser,
+                    cmdName, msg), _logClassType, _logPrefix);
             }
+        }
+
+        /// <summary>
+        ///     Determines whether the command can be executed without taking into account
+        ///     the required argument length.
+        /// </summary>
+        /// <param name="fromUser">The sender of the command..</param>
+        /// <param name="commandName">Name of the command.</param>
+        /// <param name="fullMessageText">The full message text.</param>
+        /// <returns>
+        ///     <c>true</c> if the command can be executed, without taking into account
+        ///     required argument length of the command, otherwise <c>false</c>.
+        /// </returns>
+        private async Task<bool> CheckCommand(string fromUser, string commandName, string fullMessageText)
+        {
+            if (!_ssb.IsInitComplete)
+            {
+                await
+                    _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^3 Initilization has not completed yet. Command ignored.");
+
+                Log.Write(
+                    string.Format("Initilization not yet completed; ignoring command from player {0}.",
+                        fromUser), _logClassType, _logPrefix);
+
+                return false;
+            }
+            if (!SufficientTimeElapsed(fromUser))
+            {
+                Log.Write(string.Format(
+                    "Sufficient time has not elapsed since player {0}'s last command. Ignoring {1}{2} command.",
+                    fromUser, CommandList.GameCommandPrefix, commandName), _logClassType, _logPrefix);
+
+                return false;
+            }
+            _playerCommandTime[fromUser] = DateTime.Now;
+            if (fullMessageText.Equals(CommandList.GameCommandPrefix))
+            {
+                Log.Write(
+                    string.Format(
+                        "Player {0} entered command prefix {1} without specifying command. Ignoring.",
+                        fromUser, CommandList.GameCommandPrefix), _logClassType, _logPrefix);
+
+                return false;
+            }
+            if (!Helpers.KeyExists(commandName, _cmdList.Commands))
+            {
+                Log.Write(
+                    string.Format("Player {0} entered command ({1}) that does not exist. Ignoring.",
+                        fromUser, commandName), _logClassType, _logPrefix);
+
+                return false;
+            }
+            if (!Helpers.KeyExists(fromUser, _ssb.ServerInfo.CurrentPlayers))
+            {
+                await _ssb.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then" +
+                        " retry your {1} request in^1 {2} ^3secs.",
+                        fromUser, commandName, _ssb.InitDelay));
+
+                Log.Write(
+                    string.Format("Player {0} does not exist in current player list. Ignoring command.",
+                        fromUser), _logClassType, _logPrefix);
+
+                return false;
+            }
+            if (!UserHasReqLevel(fromUser, _cmdList.Commands[commandName].UserLevel))
+            {
+                await _ssb.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
+                Log.Write(
+                    string.Format(
+                        "Player {0} sent {1}{2} command but has permission less than {3} needed for {2}. Ingoring.",
+                        fromUser, CommandList.GameCommandPrefix, commandName, Enum.GetName(typeof (UserLevel),
+                            _cmdList.Commands[commandName].UserLevel)), _logClassType, _logPrefix);
+
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

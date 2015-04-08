@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using SSB.Config;
 using SSB.Database;
@@ -15,6 +16,8 @@ namespace SSB.Core.Commands.Admin
     public class AddUserCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:ADDUSER]";
         private readonly int _qlMinArgs = 3;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.Admin;
@@ -112,6 +115,10 @@ namespace SSB.Core.Commands.Admin
                 {
                     StatusMessage = string.Format("^1[ERROR]^3 Only owners can add admins.");
                     await SendServerTell(c, StatusMessage);
+
+                    Log.Write(string.Format("Non-owner {0} attempted to add an admin from {1} Ignoring.",
+                        c.FromUser, ((c.FromIrc) ? "IRC." : "in-game.")), _logClassType, _logPrefix);
+
                     return false;
                 }
             }
@@ -123,7 +130,7 @@ namespace SSB.Core.Commands.Admin
             {
                 // UI: reflect changes
                 _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
-                
+
                 StatusMessage = string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the ^2[{1}] ^7group.",
                     Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)));
                 await SendServerSay(c, StatusMessage);
@@ -154,17 +161,6 @@ namespace SSB.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -173,6 +169,17 @@ namespace SSB.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _ssb.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _ssb.QlCommands.QlCmdTell(message, c.FromUser);
         }
 
         /// <summary>

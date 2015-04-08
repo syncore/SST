@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Core.Commands.Admin;
@@ -16,6 +17,8 @@ namespace SSB.Core.Commands.None
     public class AccCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:ACC]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerBot _ssb;
         private readonly UserLevel _userLevel = UserLevel.None;
@@ -113,6 +116,13 @@ namespace SSB.Core.Commands.None
                     ModuleCmd.AccuracyArg);
 
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.AccuracyArg), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -121,12 +131,22 @@ namespace SSB.Core.Commands.None
                 StatusMessage = string.Format("^1[ERROR]^3 {0} is not currently on the server!",
                     Helpers.GetArgVal(c, 1));
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(
+                    string.Format(
+                        "{0} attempted {1} command from {2}, but {3} module is not loaded. Ignoring.",
+                        c.FromUser, c.CmdName, ((c.FromIrc) ? "from IRC" : "from in-game"),
+                        ModuleCmd.AccuracyArg), _logClassType, _logPrefix);
+
                 return false;
             }
 
             if (!Helpers.KeyExists(_ssb.AccountName, _ssb.ServerInfo.CurrentPlayers))
             {
-                Debug.WriteLine("Bot does not exist in internal list of players. Ignoring.");
+                Log.Write(
+                    string.Format("Bot does not exist in internal list of players. Ignoring {0} command.",
+                        c.CmdName), _logClassType, _logPrefix);
+
                 return false;
             }
             if (IsBotPlayer())
@@ -134,6 +154,11 @@ namespace SSB.Core.Commands.None
                 StatusMessage = "^1[ERROR]^3 Accuracies are unavailable because bot owner is" +
                                 " currently playing on same account as bot.";
                 await SendServerTell(c, StatusMessage);
+
+                Log.Write(string.Format(
+                    "Accuracy display is unavailable because owner is playing on some account as bot. Ignoring {0} command.",
+                    c.CmdName), _logClassType, _logPrefix);
+
                 return false;
             }
 
@@ -193,7 +218,7 @@ namespace SSB.Core.Commands.None
             await _ssb.QlCommands.SendToQlAsync("-acc;team s", true);
             // Reset internal tracking
             _ssb.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
-            Debug.WriteLine("Ended accuracy read.");
+            Log.Write("Ended accuracy scan.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -210,11 +235,8 @@ namespace SSB.Core.Commands.None
             var playerAcc = _ssb.ServerInfo.CurrentPlayers[player].Acc;
             if (playerAcc == null || !playerAcc.HasAcc())
             {
-                Debug.WriteLine(
-                    string.Format(
-                        "Accuracy object is null or no accuracies other than defaults detected for {0}." +
-                        " Skipping acc string formation.",
-                        player));
+                Log.Write(string.Format("No accuracy or all zero values detected for {0}. Skipping.",
+                    player), _logClassType, _logPrefix);
                 return string.Empty;
             }
 
@@ -290,8 +312,10 @@ namespace SSB.Core.Commands.None
                 // Silently disable, but don't update the config on disk so as to save the owner
                 // the trouble of not having to re-enable the accuracy scanner the next time bot is launched
                 _ssb.Mod.Accuracy.Active = false;
-                Debug.WriteLine(
-                    "Owner has left spectator mode and is playing on bot account. Silently disabling accuracy scanning.");
+
+                Log.Write("Bot owner has left spectator mode and is playing on bot account. Silently" +
+                          " disabling accuracy display module.", _logClassType, _logPrefix);
+
                 return true;
             }
             return false;
@@ -312,7 +336,10 @@ namespace SSB.Core.Commands.None
             }
 
             _ssb.ServerInfo.PlayerCurrentlyFollowing = player;
-            Debug.WriteLine("Attempting to follow player: " + player);
+
+            Log.Write(string.Format("Attempting to follow player {0} to determine accuracy",
+                player), _logClassType, _logPrefix);
+
             await StartAccuracyRead();
             await EndAccuracyRead();
         }
@@ -329,6 +356,10 @@ namespace SSB.Core.Commands.None
             StatusMessage = string.Format("^3{0}'s^7 accuracy: {1}",
                 player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr));
             await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Displaying {0}'s accuracy, which is: {1}",
+                player, (string.IsNullOrEmpty(accStr) ? "not available" : accStr)),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -337,7 +368,7 @@ namespace SSB.Core.Commands.None
         private async Task StartAccuracyRead()
         {
             await _ssb.QlCommands.SendToQlAsync("+acc", true);
-            Debug.WriteLine("Starting accuracy read.");
+            Log.Write("Started accuracy scan.", _logClassType, _logPrefix);
         }
     }
 }
