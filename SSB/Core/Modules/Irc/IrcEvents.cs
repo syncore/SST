@@ -36,7 +36,7 @@ namespace SSB.Core.Modules.Irc
         {
             if (e.Source is IrcUser)
             {
-                Log.Write(string.Format("[{0}]({1}): {2}", channel.Name, e.Source.Name, e.Text),
+                Log.Write(string.Format("[{0}] {1}: {2}", channel.Name, e.Source.Name, e.Text),
                     _logClassType, _logPrefix);
 
                 // If it's a command, then process it
@@ -50,7 +50,7 @@ namespace SSB.Core.Modules.Irc
             }
             else
             {
-                Log.Write(string.Format("[{0}]({1}) Message: {2}", channel.Name, e.Source.Name, e.Text),
+                Log.Write(string.Format("[{0}] {1}: {2}", channel.Name, e.Source.Name, e.Text),
                     _logClassType, _logPrefix);
             }
         }
@@ -171,16 +171,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
         protected override void OnLocalUserMessageReceived(IrcLocalUser localUser, IrcMessageEventArgs e)
         {
-            if (e.Source is IrcUser)
-            {
-                Log.Write(string.Format("We received message from nickname {0}: {1}", e.Source.Name, e.Text),
-                    _logClassType, _logPrefix);
-            }
-            else
-            {
-                Log.Write(string.Format("We received message from {0}: {1}", e.Source.Name, e.Text),
-                    _logClassType, _logPrefix);
-            }
+            Log.Write(string.Format("We received message from {0}: {1}", e.Source.Name, e.Text),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -190,16 +182,8 @@ namespace SSB.Core.Modules.Irc
         /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
         protected override void OnLocalUserNoticeReceived(IrcLocalUser localUser, IrcMessageEventArgs e)
         {
-            if (e.Source is IrcUser)
-            {
-                Log.Write(string.Format("We received notice from nickname {0}: {1}", e.Source.Name, e.Text),
-                    _logClassType, _logPrefix);
-            }
-            else
-            {
-                Log.Write(string.Format("We received notice from {0}: {1}", e.Source.Name, e.Text),
-                    _logClassType, _logPrefix);
-            }
+            Log.Write(string.Format("We received notice from {0}: {1}", e.Source.Name, e.Text),
+                _logClassType, _logPrefix);
 
             // Services (Quakenet) auto authentication
             if (_ircSettings.hideHostnameOnQuakeNet)

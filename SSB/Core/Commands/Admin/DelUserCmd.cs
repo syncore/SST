@@ -102,12 +102,13 @@ namespace SSB.Core.Commands.Admin
                 _users.GetUserLevel(c.FromUser));
             if (result == UserDbResult.Success)
             {
-                // UI: reflect changes
-                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
-                
                 StatusMessage = string.Format("^2[SUCCESS]^7 Removed user^2 {0}^7 from the^2 [{1}] ^7group.",
                     Helpers.GetArgVal(c, 1), todelUserLevel);
                 await SendServerSay(c, StatusMessage);
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
+
                 return true;
             }
 

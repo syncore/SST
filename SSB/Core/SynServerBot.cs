@@ -18,7 +18,6 @@ namespace SSB.Core
     /// </summary>
     public class SynServerBot
     {
-        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _initTimer;
@@ -26,6 +25,7 @@ namespace SSB.Core
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
+        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
@@ -33,7 +33,6 @@ namespace SSB.Core
         public SynServerBot()
         {
             GuiOptions = new GuiOptions();
-            AppWideUiControls = new AppWideUiControls();
             ServerInfo = new ServerInfo();
             QlCommands = new QlCommands(this);
             Parser = new Parser();
@@ -60,14 +59,6 @@ namespace SSB.Core
         ///     The name of the account that is running the bot.
         /// </value>
         public string AccountName { get; set; }
-
-        /// <summary>
-        ///     Gets the app-wide UI controls.
-        /// </summary>
-        /// <value>
-        ///     The app-wide UI controls.
-        /// </value>
-        public AppWideUiControls AppWideUiControls { get; private set; }
 
         /// <summary>
         ///     Gets the command processor.
@@ -122,7 +113,7 @@ namespace SSB.Core
             {
                 _isMonitoringServer = value;
                 // UI
-                AppWideUiControls.UpdateAppWideControls(value,
+                UserInterface.UpdateMonitoringStatusUi(value,
                     ServerInfo.CurrentServerId);
             }
         }
@@ -188,10 +179,10 @@ namespace SSB.Core
         public ServerInfo ServerInfo { get; private set; }
 
         /// <summary>
-        /// Gets or sets the user interface.
+        ///     Gets or sets the user interface.
         /// </summary>
         /// <value>
-        /// The user interface.
+        ///     The user interface.
         /// </value>
         public UserInterface UserInterface { get; set; }
 
@@ -310,7 +301,7 @@ namespace SSB.Core
             if (IsReadingConsole) return;
             Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
         }
 
@@ -358,7 +349,8 @@ namespace SSB.Core
             cfgHandler.ReadConfiguration();
             if (!cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
 
-            Log.Write("User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
+            Log.Write(
+                "User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
                 _logClassType, _logPrefix);
 
             // ReSharper disable once UnusedVariable
@@ -399,7 +391,7 @@ namespace SSB.Core
             Mod.Motd.Init();
 
             // Wait 2 sec then clear the internal console
-            await Task.Delay(2 * 1000);
+            await Task.Delay(2*1000);
             QlCommands.ClearQlWinConsole();
 
             // Initialization is fully complete, we can accept user commands now.
@@ -419,7 +411,8 @@ namespace SSB.Core
             // Quake Live not found
             if (!qlWindExists)
             {
-                Log.Write("Instance of Quake Live no longer found. Will terminate all server monitoring and process detection.",
+                Log.Write(
+                    "Instance of Quake Live no longer found. Will terminate all server monitoring and process detection.",
                     _logClassType, _logPrefix);
 
                 StopMonitoring();
@@ -507,7 +500,7 @@ namespace SSB.Core
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInit(double seconds)
         {
-            _initTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
+            _initTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
             _initTimer.Elapsed += InitTimerOnElapsed;
         }
     }

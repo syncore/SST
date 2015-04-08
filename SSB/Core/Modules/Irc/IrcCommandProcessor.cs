@@ -69,22 +69,56 @@ namespace SSB.Core.Modules.Irc
                 _irc.SendIrcNotice(fromUser,
                     "\u0002[ERROR]\u0002 This command requires that a server be monitored; your server" +
                     " is not currently being monitored.");
+                
+                Log.Write(string.Format(
+                    "Could not execute IRC user {0}'s IRC command ({1}) because command requires active server" +
+                    " monitoring and no server is being monitored at this time.",
+                    c.FromUser, cmdName), _logClassType, _logPrefix);
+                
                 return;
             }
             // Check argument length
-            if (args.Length < _ircCmds.Commands[cmdName].IrcMinArgs)
+            var minArgs = _ircCmds.Commands[cmdName].IrcMinArgs;
+            if (args.Length < minArgs)
             {
                 _ircCmds.Commands[cmdName].DisplayArgLengthError(c);
+
+                Log.Write(string.Format(
+                    "IRC user {0} specified invalid # of args for {1}{2} command. Required: {3}," +
+                    " specified: {4}, received: {5}. Ignoring.",
+                    fromUser, IrcCommandList.IrcCommandPrefix, cmdName, minArgs, args.Length, msg),
+                    _logClassType, _logPrefix);
+                
                 return;
             }
             // Execute
             if (_ircCmds.Commands[cmdName].IsAsync)
             {
-                await _ircCmds.Commands[cmdName].ExecAsync(c);
+                if (await _ircCmds.Commands[cmdName].ExecAsync(c))
+                {
+                    Log.Write(string.Format("Successfully executed IRC user {0}'s IRC command ({1}): {2}",
+                        fromUser, cmdName, msg), _logClassType, _logPrefix);
+                }
+                else
+                {
+                    Log.Write(string.Format(
+                    "Unsuccessful execution of IRC user {0}'s IRC command ({1}): {2}", fromUser,
+                    cmdName, msg), _logClassType, _logPrefix);
+                }
             }
             else
             {
-                _ircCmds.Commands[cmdName].Exec(c);
+                if (_ircCmds.Commands[cmdName].Exec(c))
+                {
+                    Log.Write(string.Format("Successfully executed IRC user {0}'s IRC command ({1}): {2}",
+                        fromUser, cmdName, msg), _logClassType, _logPrefix);
+                }
+                else
+                {
+                    Log.Write(string.Format(
+                    "Unsuccessful execution of IRC user {0}'s IRC command ({1}): {2}", fromUser,
+                    cmdName, msg), _logClassType, _logPrefix);
+                }
             }
         }
 
@@ -117,12 +151,24 @@ namespace SSB.Core.Modules.Irc
             _ircCommandUserTime[fromUser] = DateTime.Now;
             if (fullMessageText.Equals(IrcCommandList.IrcCommandPrefix))
             {
+                Log.Write(
+                    string.Format(
+                        "IRC user {0} entered command prefix {1} without specifying command. Ignoring.",
+                        fromUser, IrcCommandList.IrcCommandPrefix), _logClassType, _logPrefix);
+                
                 return false;
             }
             if (!UserHasReqLevel(fromUser, _ircCmds.Commands[commandName].UserLevel))
             {
                 _irc.SendIrcNotice(fromUser,
                     "\u0002[ERROR]\u0002 You do not have permission to use that command.");
+
+                Log.Write(
+                    string.Format(
+                        "IRC user {0} sent {1}{2} command but has permission less than {3} needed for {2}. Ingoring.",
+                        fromUser, IrcCommandList.IrcCommandPrefix, commandName, Enum.GetName(typeof(IrcUserLevel),
+                            _ircCmds.Commands[commandName].UserLevel)), _logClassType, _logPrefix);
+                
                 return false;
             }
 

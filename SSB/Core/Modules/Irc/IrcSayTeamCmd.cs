@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
+using SSB.Util;
 
 namespace SSB.Core.Modules.Irc
 {
@@ -11,8 +14,10 @@ namespace SSB.Core.Modules.Irc
     public class IrcSayTeamCmd : IIrcCommand
     {
         private readonly IrcManager _irc;
-        private readonly bool _isAsync = true;
         private readonly int _ircMinArgs = 2;
+        private readonly bool _isAsync = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[IRCCMD:SAYTEAM]";
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private bool _requiresMonitoring = true;
@@ -26,6 +31,17 @@ namespace SSB.Core.Modules.Irc
         {
             _ssb = ssb;
             _irc = irc;
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs
+        {
+            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -47,17 +63,6 @@ namespace SSB.Core.Modules.Irc
         public bool RequiresMonitoring
         {
             get { return _requiresMonitoring; }
-        }
-
-        /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
-        public int IrcMinArgs
-        {
-            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -83,25 +88,38 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
         /// <remarks>
-        ///     Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync" />
+        /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync" />
         /// </remarks>
-        public void Exec(CmdArgs c)
+        public bool Exec(CmdArgs c)
         {
+            return true;
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
-            await _ssb.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}",
-                c.FromUser,
-                c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1)));
+            var msg = c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1);
+            await _ssb.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}", c.FromUser, msg));
+
+            Log.Write(string.Format("Sent {0}'s message ({1}) to QL client's team chat from IRC.",
+                c.FromUser, msg), _logClassType, _logPrefix);
+
+            return true;
         }
     }
 }

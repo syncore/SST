@@ -53,15 +53,16 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Gets the array index of a given scale from the time scale array.
+        ///     Gets the array index of a given scale from the time scale array.
         /// </summary>
         /// <param name="scale">The scale.</param>
-        /// <returns>The array index of a given scale from the time scale array.
+        /// <returns>
+        ///     The array index of a given scale from the time scale array.
         /// </returns>
         public static int GetTimeScaleIndex(string scale)
         {
-            int index = 0;
-            for (int i = 0; i < ValidTimeScales.Length; i++)
+            var index = 0;
+            for (var i = 0; i < ValidTimeScales.Length; i++)
             {
                 if (scale.Equals(ValidTimeScales[i],
                     StringComparison.InvariantCultureIgnoreCase))
@@ -73,17 +74,17 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Gets the version of SSB currently running.
+        ///     Gets the version of SSB currently running.
         /// </summary>
         /// <returns>The version number as a string.</returns>
         public static string GetVersion()
         {
-            return typeof(EntryPoint).Assembly.GetName().Version.ToString();
+            return typeof (EntryPoint).Assembly.GetName().Version.ToString();
         }
 
         /// <summary>
-        /// Invokes a method when making calls, if necessary, to a control because the caller is on a different
-        ///  thread than the one on which the control was created.
+        ///     Invokes a method when making calls, if necessary, to a control because the caller is on a different
+        ///     thread than the one on which the control was created.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="c">The control.</param>
@@ -195,6 +196,16 @@ namespace SSB.Util
                 return m.Groups[2].Captures[n - 1].Index;
             }
             return -1;
+        }
+
+        /// <summary>
+        ///     Removes the QL color characters from the input string.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A string with the QL color characters removed.</returns>
+        public static string RemoveQlColorChars(string input)
+        {
+            return Regex.Replace(input, "\\^\\d+", string.Empty);
         }
     }
 }

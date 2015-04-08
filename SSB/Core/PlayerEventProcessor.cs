@@ -219,8 +219,11 @@ namespace SSB.Core
 
             string msgFrom = Helpers.GetStrippedName(name);
 
+            if (!_ssb.AccountName.Equals(msgFrom, StringComparison.InvariantCultureIgnoreCase))
+            {
             Log.Write(string.Format("Detected chat message {0} from {1}",
-                msgContent, msgFrom), _logClassType, _logPrefix);
+                msgContent, msgFrom), _logClassType, _logPrefix);    
+            }
 
             // If IRC module is active, send the message to the IRC channel
             if (_ssb.Mod.Irc.Active && _ssb.Mod.Irc.IsConnectedToIrc)

@@ -358,7 +358,7 @@ namespace SSB.Core.Commands.None
             await SendServerSay(c, StatusMessage);
 
             Log.Write(string.Format("Displaying {0}'s accuracy, which is: {1}",
-                player, (string.IsNullOrEmpty(accStr) ? "not available" : accStr)),
+                player, (string.IsNullOrEmpty(accStr) ? "not available" : Helpers.RemoveQlColorChars(accStr))),
                 _logClassType, _logPrefix);
         }
 

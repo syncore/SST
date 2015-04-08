@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows.Forms;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
@@ -16,6 +17,7 @@ namespace SSB.Util
     {
         private static readonly string _logPrefix = "[CORE]";
         private static bool _logToDisk;
+        private static bool _logToSsbConsole;
 
         /// <summary>
         ///     Initializes the <see cref="Log" /> class.
@@ -23,6 +25,33 @@ namespace SSB.Util
         static Log()
         {
             Configure();
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether log events should be written to
+        ///     the activity log in the UI.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if log events should be written to the activity log in the UI,
+        ///     otherwise <c>false</c>.
+        /// </value>
+        public static bool LogToSsbConsole
+        {
+            get { return _logToSsbConsole; }
+            set
+            {
+                if (_logToSsbConsole && !value)
+                {
+                    WriteCritical("Disabled logging of SSB debug events to activity log.",
+                        LogClassType, _logPrefix);
+                }
+                else if (!_logToSsbConsole && value)
+                {
+                    WriteCritical("Enabled logging of SSB debug events to activity log.",
+                        LogClassType, _logPrefix);
+                }
+                _logToSsbConsole = value;
+            }
         }
 
         /// <summary>
@@ -51,6 +80,14 @@ namespace SSB.Util
         }
 
         /// <summary>
+        /// Gets or sets the UI console activity log.
+        /// </summary>
+        /// <value>
+        /// The UI console activityl og.
+        /// </value>
+        public static TextBox LogUiConsole { get; set; }
+
+        /// <summary>
         ///     Writes the specified message to various loggers.
         /// </summary>
         /// <param name="msg">The message to log.</param>
@@ -68,6 +105,11 @@ namespace SSB.Util
             {
                 // disk file
                 logger.Info(string.Format("{0} {1}", prefix, msg));
+            }
+            if (LogToSsbConsole)
+            {
+                LogUiConsole.InvokeIfRequired(c =>
+                { c.AppendText(string.Format("{0} {1} {2}", Environment.NewLine, prefix, msg)); });
             }
         }
 
@@ -98,7 +140,7 @@ namespace SSB.Util
         {
             var dirCreated = Filepaths.CreateLogDirectory();
 
-            var hierarchy = (Hierarchy) LogManager.GetRepository();
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
 
             var rollingPatternLayout = new PatternLayout
             {
@@ -142,7 +184,7 @@ namespace SSB.Util
                 LevelMax = Level.Debug
             };
 
-            var debugAppender = new DebugAppender {Layout = debugPatternLayout};
+            var debugAppender = new DebugAppender { Layout = debugPatternLayout };
             debugAppender.AddFilter(debugLevelRangeFilter);
             debugAppender.ActivateOptions();
             hierarchy.Root.AddAppender(debugAppender);

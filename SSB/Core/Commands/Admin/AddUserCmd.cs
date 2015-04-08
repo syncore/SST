@@ -128,12 +128,13 @@ namespace SSB.Core.Commands.Admin
                 date);
             if (result == UserDbResult.Success)
             {
-                // UI: reflect changes
-                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
-
                 StatusMessage = string.Format("^2[SUCCESS]^7 Added user^2 {0} ^7to the ^2[{1}] ^7group.",
                     Helpers.GetArgVal(c, 1), (UserLevel)Convert.ToInt32(Helpers.GetArgVal(c, 2)));
                 await SendServerSay(c, StatusMessage);
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentSsbUsersDataSource();
+
                 return true;
             }
 

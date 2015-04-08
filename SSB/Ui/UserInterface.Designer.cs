@@ -34,6 +34,7 @@
             this.UiTabCtl = new System.Windows.Forms.TabControl();
             this.logTab = new System.Windows.Forms.TabPage();
             this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
+            this.copyLogEventsClipboardButton = new System.Windows.Forms.Button();
             this.clearLogEventsButton = new System.Windows.Forms.Button();
             this.logEventsGroupBox = new System.Windows.Forms.GroupBox();
             this.logConsoleTextBox = new System.Windows.Forms.TextBox();
@@ -321,7 +322,6 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.copyLogEventsClipboardButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ssbLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -514,6 +514,22 @@
             this.logContainerGroupBox.TabStop = false;
             this.logContainerGroupBox.Text = "Activity Log";
             // 
+            // copyLogEventsClipboardButton
+            // 
+            this.copyLogEventsClipboardButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.copyLogEventsClipboardButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.copyLogEventsClipboardButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.copyLogEventsClipboardButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.copyLogEventsClipboardButton.ForeColor = System.Drawing.Color.White;
+            this.copyLogEventsClipboardButton.Location = new System.Drawing.Point(445, 441);
+            this.copyLogEventsClipboardButton.Name = "copyLogEventsClipboardButton";
+            this.copyLogEventsClipboardButton.Size = new System.Drawing.Size(127, 28);
+            this.copyLogEventsClipboardButton.TabIndex = 11;
+            this.copyLogEventsClipboardButton.Text = "Copy To Clipboard";
+            this.coreToolTip.SetToolTip(this.copyLogEventsClipboardButton, "Click this button to copy the activity log to the system clipboard.");
+            this.copyLogEventsClipboardButton.UseVisualStyleBackColor = false;
+            this.copyLogEventsClipboardButton.Click += new System.EventHandler(this.copyLogEventsClipboardButton_Click);
+            // 
             // clearLogEventsButton
             // 
             this.clearLogEventsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
@@ -528,6 +544,7 @@
             this.clearLogEventsButton.Text = "Clear Events";
             this.coreToolTip.SetToolTip(this.clearLogEventsButton, "Click this button to clear the activity log.");
             this.clearLogEventsButton.UseVisualStyleBackColor = false;
+            this.clearLogEventsButton.Click += new System.EventHandler(this.clearLogEventsButton_Click);
             // 
             // logEventsGroupBox
             // 
@@ -556,6 +573,7 @@
             this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.logConsoleTextBox.Size = new System.Drawing.Size(693, 314);
             this.logConsoleTextBox.TabIndex = 0;
+            this.logConsoleTextBox.VisibleChanged += new System.EventHandler(this.logConsoleTextBox_VisibleChanged);
             // 
             // logHeaderDescLabel
             // 
@@ -4037,22 +4055,6 @@
             this.statusPanel.Size = new System.Drawing.Size(738, 44);
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
-            // 
-            // copyLogEventsClipboardButton
-            // 
-            this.copyLogEventsClipboardButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.copyLogEventsClipboardButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.copyLogEventsClipboardButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.copyLogEventsClipboardButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.copyLogEventsClipboardButton.ForeColor = System.Drawing.Color.White;
-            this.copyLogEventsClipboardButton.Location = new System.Drawing.Point(445, 441);
-            this.copyLogEventsClipboardButton.Name = "copyLogEventsClipboardButton";
-            this.copyLogEventsClipboardButton.Size = new System.Drawing.Size(127, 28);
-            this.copyLogEventsClipboardButton.TabIndex = 11;
-            this.copyLogEventsClipboardButton.Text = "Copy To Clipboard";
-            this.coreToolTip.SetToolTip(this.copyLogEventsClipboardButton, "Click this button to copy the activity log to the system clipboard.");
-            this.copyLogEventsClipboardButton.UseVisualStyleBackColor = false;
-            this.copyLogEventsClipboardButton.Click += new System.EventHandler(this.copyLogEventsClipboardButton_Click);
             // 
             // UserInterface
             // 

@@ -143,16 +143,16 @@ namespace SSB.Core
             // can be removed using the UI.
             _banDb.DeleteUserFromDb(banInfo.PlayerName);
 
-            // UI: reflect changes
-            if (updateUi)
-            {
-                _ssb.UserInterface.RefreshCurrentBansDataSource();
-            }
-
             // remove from QL's external temp kickban system as well
             if (_ssb.IsMonitoringServer)
             {
                 await _ssb.QlCommands.CmdUnban(banInfo.PlayerName);
+            }
+
+            // UI: reflect changes
+            if (updateUi)
+            {
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
             }
 
             return true;

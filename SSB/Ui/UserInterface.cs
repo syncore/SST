@@ -37,9 +37,6 @@ namespace SSB.Ui
         private readonly PickupValidator _pickupValidator;
         private readonly ServerListValidator _serverListValidator;
         private readonly SynServerBot _ssb;
-        private List<BanInfo> _bansFromDb;
-        private List<EarlyQuitter> _earlyQuittersFromDb;
-        private List<User> _usersFromDb;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserInterface" /> class.
@@ -48,13 +45,19 @@ namespace SSB.Ui
         public UserInterface(SynServerBot ssb)
         {
             InitializeComponent();
+
+            _cfgHandler = new ConfigHandler();
+            _cfgHandler.ReadConfiguration();
+            Log.LogToSsbConsole = _cfgHandler.Config.CoreOptions.appendToActivityLog;
+            Log.LogUiConsole = logConsoleTextBox;
+
             titleBarVersionLabel.Text = string.Format("version {0}",
                 Helpers.GetVersion());
             sysTrayIcon.Text = string.Format("SSB v{0}",
                 Helpers.GetVersion());
             abtVersLabel.Text = Helpers.GetVersion();
             sysTrayIcon.Visible = false;
-            _cfgHandler = new ConfigHandler();
+
             _ssb = ssb;
             _coreOptionsValidator = new CoreOptionsValidator();
             _accountDateLimitValidator = new AccountDateLimitValidator();
@@ -64,7 +67,6 @@ namespace SSB.Ui
             _serverListValidator = new ServerListValidator();
             _pickupValidator = new PickupValidator();
             _ircValidator = new IrcValidator(_ssb.Mod.Irc.IrcManager.ValidIrcNickRegex);
-            SetAppWideUiControls();
             PopulateAllUiTabs();
             _ssb.UserInterface = this;
         }
@@ -315,9 +317,8 @@ namespace SSB.Ui
             });
             var bansDb = new DbBans();
             bansDb.RemoveExpiredBans();
-            _bansFromDb = bansDb.GetAllBans();
             banMCurrentBanBindingSource.DataSource =
-                new BindingList<BanInfo>(_bansFromDb);
+                new BindingList<BanInfo>(bansDb.GetAllBans());
             if (banMCurrentBanBindingSource.Count != 0)
             {
                 banMCurBansListBox.InvokeIfRequired(
@@ -338,9 +339,8 @@ namespace SSB.Ui
             });
 
             var earlyQuitDb = new DbQuits();
-            _earlyQuittersFromDb = earlyQuitDb.GetAllQuitters();
             modEarlyQuitCurrentQuitBindingSource.DataSource =
-                new BindingList<EarlyQuitter>(_earlyQuittersFromDb);
+                new BindingList<EarlyQuitter>(earlyQuitDb.GetAllQuitters());
             if (modEarlyQuitCurrentQuitBindingSource.Count != 0)
             {
                 modEarlyQuitCurQuitsListBox.InvokeIfRequired(
@@ -360,9 +360,9 @@ namespace SSB.Ui
                 c.ValueMember = "Name";
             });
             var userDb = new DbUsers();
-            _usersFromDb = userDb.GetAllUsers();
             usrMCurrentUserBindingSource.DataSource =
-                new BindingList<User>(_usersFromDb);
+                new BindingList<User>(userDb.GetAllUsers());
+
             if (usrMCurrentUserBindingSource.Count != 0)
             {
                 usrMCurUsersListBox.InvokeIfRequired(
@@ -392,6 +392,29 @@ namespace SSB.Ui
                 modAutoVoterCurVotesListBox.InvokeIfRequired(
                     c => { c.DataSource = modAutoVoterCurrentVotesBindingSource.DataSource; });
             }
+        }
+
+        /// <summary>
+        /// Updates the monitoring status UI elements.
+        /// </summary>
+        /// <param name="isMonitoring">if set to <c>true</c>
+        ///  then server monitoring is active.</param>
+        /// <param name="serverId">The server identifier.</param>
+        public void UpdateMonitoringStatusUi(bool isMonitoring, string serverId)
+        {
+            ssbStartButton.InvokeIfRequired(c => { c.Enabled = !isMonitoring; });
+            ssbStopButton.InvokeIfRequired(c => { c.Enabled = isMonitoring; });
+
+            monitorStatusLabel.InvokeIfRequired(c =>
+            {
+                c.Text = string.Format("{0}", (isMonitoring)
+                    ? string.Format(
+                        "Monitoring server at http://www.quakelive.com/#!join/{0}",
+                        (string.IsNullOrEmpty(serverId)
+                            ? "..."
+                            : serverId))
+                    : "Not monitoring a server");
+            });
         }
 
         /// <summary>
@@ -489,8 +512,9 @@ namespace SSB.Ui
             if (allBans.Count == 0)
             {
                 Log.Write(
-                    string.Format("Owner {0} attempted to clear all bans from ban database, but no bans exist.",
-                    owner), _logClassType, _logPrefix);
+                    string.Format(
+                        "Owner {0} attempted to clear all bans from ban database, but no bans exist.",
+                        owner), _logClassType, _logPrefix);
 
                 ShowErrorMessage("There are no expired bans to remove.",
                     "No expired bans");
@@ -550,11 +574,11 @@ namespace SSB.Ui
 
             Log.Write(
                 string.Format(
-                "Owner {0} removed ban for user: {1} from ban database. Ban originally added: {2}" +
-                " was set to expire on {3}",
-                owner, selectedUser.PlayerName,
-                selectedUser.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
-                selectedUser.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                    "Owner {0} removed ban for user: {1} from ban database. Ban originally added: {2}" +
+                    " was set to expire on {3}",
+                    owner, selectedUser.PlayerName,
+                    selectedUser.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
+                    selectedUser.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
                 _logClassType, _logPrefix);
         }
 
@@ -578,7 +602,7 @@ namespace SSB.Ui
                 Log.Write(
                     string.Format("Owner {0} attempted to remove all expired bans from ban" +
                                   " database, but no expired bans exist.", owner),
-                                  _logClassType, _logPrefix);
+                    _logClassType, _logPrefix);
                 ShowErrorMessage("There are no expired bans to remove.",
                     "No expired bans");
                 return;
@@ -612,10 +636,10 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Handles the Click event of the copyLogEventsClipboardButton control.
+        ///     Handles the Click event of the copyLogEventsClipboardButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void copyLogEventsClipboardButton_Click(object sender, EventArgs e)
         {
             if (logConsoleTextBox.TextLength != 0)
@@ -749,7 +773,7 @@ namespace SSB.Ui
             PopulateAllUiTabs();
 
             Log.Write(
-                "ALL SSB settings (including modules) were reset to their default values",
+                "ALL SSB settings (including modules) were reset to their default values.",
                 _logClassType, _logPrefix);
             ShowInfoMessage("All SSB settings (including modules) were reset to their default values.",
                 "Defaults Loaded");
@@ -806,20 +830,20 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Handles the Validated event of the coreTimeCommandTextBox control.
+        ///     Handles the Validated event of the coreTimeCommandTextBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreTimeCommandTextBox_Validated(object sender, EventArgs e)
         {
             errorProvider.SetError(coreTimeCommandTextBox, string.Empty);
         }
 
         /// <summary>
-        /// Handles the Validating event of the coreTimeCommandTextBox control.
+        ///     Handles the Validating event of the coreTimeCommandTextBox control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
         private void coreTimeCommandTextBox_Validating(object sender, CancelEventArgs e)
         {
             string errorMsg;
@@ -860,6 +884,7 @@ namespace SSB.Ui
             // Go into effect now
             _ssb.AccountName = coreOptions.accountName;
             Log.LogToDisk = coreOptions.logSsbEventsToDisk;
+            Log.LogToSsbConsole = coreOptions.appendToActivityLog;
             // ReSharper disable once UnusedVariable
             // Add the owner (via constructor)
             var userDb = new DbUsers();
@@ -1919,8 +1944,8 @@ namespace SSB.Ui
                         modIRCQNetPassTextBox.Text.Length == 0)
                     {
                         Log.Write("Auto-Q auth or auto hide hostname was specified in IRC" +
-                                            " settings, but Q user/pass not specified. Cannot save.",
-                                            _logClassType, _logPrefix);
+                                  " settings, but Q user/pass not specified. Cannot save.",
+                            _logClassType, _logPrefix);
                         ShowErrorMessage(
                             "You must specify a QuakeNet Q username & password to auto-auth with Q.",
                             "Error");
@@ -2585,18 +2610,6 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        ///     Sets references to various UI controls that need to be accessed
-        ///     from other classes.
-        /// </summary>
-        private void SetAppWideUiControls()
-        {
-            _ssb.AppWideUiControls.LogConsoleTextBox = logConsoleTextBox;
-            _ssb.AppWideUiControls.MonitoringLabel = monitorStatusLabel;
-            _ssb.AppWideUiControls.StartMonitoringButton = ssbStartButton;
-            _ssb.AppWideUiControls.StopMonitoringButton = ssbStopButton;
-        }
-
-        /// <summary>
         ///     Sets the automatic vote optional text.
         /// </summary>
         private void SetAutoVoteOptionalText()
@@ -2800,9 +2813,12 @@ namespace SSB.Ui
         /// </summary>
         private void UpdateActiveModulesStatusText()
         {
-            activeModulesLabel.Text = _ssb.Mod.ActiveModuleCount == 0
-                ? @"No active modules"
-                : string.Format("Active modules: {0}", _ssb.Mod.GetActiveModules());
+            activeModulesLabel.InvokeIfRequired(c =>
+            {
+                c.Text = _ssb.Mod.ActiveModuleCount == 0
+                    ? @"No active modules"
+                    : string.Format("Active modules: {0}", _ssb.Mod.GetActiveModules());
+            });
         }
 
         /// <summary>
@@ -2862,7 +2878,7 @@ namespace SSB.Ui
 
             Log.Write(
                 string.Format("Owner {0} added user {1} with access level {2} to user database.",
-                owner, user, accessLevel), _logClassType, _logPrefix);
+                    owner, user, accessLevel), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2881,8 +2897,8 @@ namespace SSB.Ui
             if (allUsers.Count == 0)
             {
                 Log.Write(string.Format("Owner {0} attempted to remove all users from user" +
-                                              " database, but no users exist.", owner),
-                                              _logClassType, _logPrefix);
+                                        " database, but no users exist.", owner),
+                    _logClassType, _logPrefix);
 
                 ShowErrorMessage("There are no users to remove.",
                     "No users");
@@ -2929,7 +2945,31 @@ namespace SSB.Ui
 
             Log.Write(
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
-                owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
+                    owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Handles the Click event of the clearLogEventsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void clearLogEventsButton_Click(object sender, EventArgs e)
+        {
+            logConsoleTextBox.Clear();
+        }
+
+        private void logConsoleTextBox_VisibleChanged(object sender, EventArgs e)
+        {
+            // Auto scroll to bottom, even when 'Log' tab loses focus.
+            if (logConsoleTextBox.Visible)
+            {
+                logConsoleTextBox.InvokeIfRequired(c =>
+                {
+                    c.SelectionStart = logConsoleTextBox.TextLength;
+                    c.ScrollToCaret();
+
+                });
+            }
         }
     }
 }

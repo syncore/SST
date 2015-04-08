@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using SSB.Enums;
 using SSB.Interfaces;
 using SSB.Model;
@@ -14,6 +16,8 @@ namespace SSB.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly int _ircMinArgs = 2;
         private readonly bool _isAsync = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[IRCCMD:MONITOR]";
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.Operator;
 
@@ -82,35 +86,46 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
         /// <remarks>
-        ///     Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync" />
+        ///     Not implemented for this command since it is to be run asynchronously
+        ///  via <see cref="ExecAsync" />
         /// </remarks>
-        public void Exec(CmdArgs c)
+        public bool Exec(CmdArgs c)
         {
+            return true;
         }
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public async Task ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!c.Args[1].Equals("start") &&
                 !c.Args[1].Equals("stop") && !c.Args[1].Equals("reset")
                 && !c.Args[1].Equals("status"))
             {
                 DisplayArgLengthError(c);
-                return;
+                return false;
             }
             var qlw = new QlWindowUtils();
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
                 _irc.SendIrcNotice(c.FromUser,
                     string.Format("\u0002[ERROR]\u0002 A running instance of Quake Live could not be found."));
-                return;
+
+                Log.Write(string.Format(
+                    "{0} attempted to use {1} command but a running instance of Quake Live could not be found. Ignoring.",
+                    c.FromUser, c.CmdName), _logClassType, _logPrefix);
+
+                return false;
             }
             if (c.Args[1].Equals("start"))
             {
@@ -118,7 +133,12 @@ namespace SSB.Core.Modules.Irc
                 {
                     _irc.SendIrcNotice(c.FromUser,
                         string.Format("\u0002[ERROR]\u0002 Your QL server is already being monitored."));
-                    return;
+
+                    Log.Write(string.Format(
+                    "{0} attempted to start server monitoring but server is already being monitored. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
+                    return false;
                 }
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     "\u0002[SUCCESS]\u0002 Attempting to start QL server monitoring.");
@@ -133,6 +153,12 @@ namespace SSB.Core.Modules.Irc
                 {
                     _irc.SendIrcNotice(c.FromUser,
                         string.Format("\u0002[ERROR]\u0002 No QL server is currently being monitored."));
+
+                    Log.Write(string.Format(
+                    "{0} attempted to stop server monitoring but server is not currently being monitored. Ignoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
+                    return false;
                 }
 
                 _ssb.StopMonitoring();
@@ -143,14 +169,24 @@ namespace SSB.Core.Modules.Irc
             {
                 if (_ssb.IsMonitoringServer)
                 {
+                    Log.Write(string.Format(
+                    "{0} reset server monitoring for actively monitored server; now stopping server monitoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                     _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                         "\u0002[SUCCESS]\u0002 Your QL server was being monitored; now stopping this monitoring.");
+
                     _ssb.StopMonitoring();
                 }
                 else
                 {
+                    Log.Write(string.Format(
+                    "{0} reset server monitoring for non-actively monitored server; now starting server monitoring.",
+                    c.FromUser), _logClassType, _logPrefix);
+
                     _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                         "\u0002[SUCCESS]\u0002 Your QL server was not being monitored; now starting monitoring.");
+
                     await _ssb.BeginMonitoring();
                 }
             }
@@ -158,6 +194,8 @@ namespace SSB.Core.Modules.Irc
             {
                 ShowMonitorStatus();
             }
+
+            return true;
         }
 
         /// <summary>

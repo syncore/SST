@@ -78,10 +78,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public void Exec(CmdArgs c)
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
+        public bool Exec(CmdArgs c)
         {
             var sb = new StringBuilder();
 
@@ -107,16 +111,22 @@ namespace SSB.Core.Modules.Irc
 
             _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("\u0003[\u0002{0}\u0002 players currently on server] {1}",
                 _ssb.ServerInfo.CurrentPlayers.Count, sb.ToString().TrimEnd(',', ' ')));
+
+            return true;
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
         /// <remarks>
-        ///     Not implemented, as this is not an async command.
+        /// Not implemented, as this is not an async command.
         /// </remarks>
-        public Task ExecAsync(CmdArgs c)
+        public Task<bool> ExecAsync(CmdArgs c)
         {
             return null;
         }

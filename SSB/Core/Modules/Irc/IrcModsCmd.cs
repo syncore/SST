@@ -83,10 +83,14 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public void Exec(CmdArgs c)
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
+        public bool Exec(CmdArgs c)
         {
             var activeCount = _ssb.Mod.ActiveModuleCount;
 
@@ -94,23 +98,30 @@ namespace SSB.Core.Modules.Irc
             {
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     string.Format("\u0003My server has no active modules loaded at this time"));
-                return;
+            }
+            else
+            {
+                var activeMods = _ssb.Mod.GetActiveModules();
+                _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
+                    string.Format("\u0003My server has \u0002{0}\u0002 active {1} loaded: {2}",
+                        activeCount, (activeCount > 1 ? "modules" : "module"), activeMods));
             }
 
-            var activeMods = _ssb.Mod.GetActiveModules();
-            _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
-                string.Format("\u0003My server has \u0002{0}\u0002 active {1} loaded: {2}",
-                activeCount, (activeCount > 1 ? "modules" : "module"), activeMods));
+            return true;
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
         /// <remarks>
         ///     Not implemented, as this is not an async command.
         /// </remarks>
-        public Task ExecAsync(CmdArgs c)
+        public Task<bool> ExecAsync(CmdArgs c)
         {
             return null;
         }

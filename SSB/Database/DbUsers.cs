@@ -260,10 +260,6 @@ namespace SSB.Database
                                 while (reader.Read())
                                 {
                                     level = (UserLevel)reader["accesslevel"];
-                                    Log.Write(string.Format(
-                                        "Got user level for player {0} from user database; level: {1}", user,
-                                        Enum.GetName(typeof(UserLevel), level)), _logClassType, _logPrefix);
-
                                     return level;
                                 }
                             }

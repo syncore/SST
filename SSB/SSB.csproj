@@ -206,7 +206,6 @@
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Vote.cs" />
-    <Compile Include="Ui\AppWideUiControls.cs" />
     <Compile Include="Ui\UserInterface.cs">
       <SubType>Form</SubType>
     </Compile>

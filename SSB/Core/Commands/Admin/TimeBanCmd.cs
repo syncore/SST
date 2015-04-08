@@ -235,14 +235,15 @@ namespace SSB.Core.Commands.Admin
                     BanType.AddedByAdmin) ==
                 UserDbResult.Success)
             {
-                // UI: reflect changes
-                _ssb.UserInterface.RefreshCurrentBansDataSource();
-
                 StatusMessage = string.Format(
                     "^2[SUCCESS]^7 Added time-ban for player: {0}. Ban will expire in {1} {2} on {3}",
                     Helpers.GetArgVal(c, 2), Math.Truncate(length), scale,
                     expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo));
                 await SendServerSay(c, StatusMessage);
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                 return true;
             }
 
@@ -296,9 +297,6 @@ namespace SSB.Core.Commands.Admin
             {
                 _banDb.DeleteUserFromDb(Helpers.GetArgVal(c, 2));
 
-                // UI: reflect changes
-                _ssb.UserInterface.RefreshCurrentBansDataSource();
-
                 // Unban immediately from QL's internal ban system
                 await _ssb.QlCommands.CmdUnban(Helpers.GetArgVal(c, 2));
 
@@ -306,6 +304,10 @@ namespace SSB.Core.Commands.Admin
                     Helpers.GetArgVal(c, 2));
 
                 await SendServerSay(c, StatusMessage);
+
+                // UI: reflect changes
+                _ssb.UserInterface.RefreshCurrentBansDataSource();
+
                 return true;
             }
             catch (Exception e)

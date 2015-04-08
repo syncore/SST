@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using SSB.Enums;
@@ -16,6 +18,8 @@ namespace SSB.Core.Modules.Irc
     {
         private readonly IrcManager _irc;
         private readonly bool _isAsync = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[IRCCMD:STATUS]";
         private readonly SynServerBot _ssb;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
         private int _ircMinArgs = 0;
@@ -31,6 +35,14 @@ namespace SSB.Core.Modules.Irc
             _ssb = ssb;
             _irc = irc;
         }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets a value that determines whether this command is to be executed asynchronously.
@@ -52,14 +64,6 @@ namespace SSB.Core.Modules.Irc
         {
             get { return _requiresMonitoring; }
         }
-
-        /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
-        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets the user level.
@@ -84,35 +88,51 @@ namespace SSB.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
         /// <remarks>
-        ///     Not implemented, as this is an async command.
+        /// Not implemented, as this is an async command.
         /// </remarks>
-        public void Exec(CmdArgs c)
+        public bool Exec(CmdArgs c)
         {
+            return true;
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public async Task ExecAsync(CmdArgs c)
+        /// <returns>
+        /// <c>true</c> if the command was successfully executed,
+        /// otherwise returns <c>false</c>.
+        /// </returns>
+        public async Task<bool> ExecAsync(CmdArgs c)
         {
             var serverDetails = await GetServerDetails(_ssb.ServerInfo.CurrentServerId);
             if (serverDetails == null)
             {
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                     "\u0003\u0002[ERROR]\u0002 Unable to retrieve server information.");
-                return;
+
+                Log.Write(string.Format(
+                    "Could not retrieve server information when trying to process QL server status requested by IRC user {0}.",
+                    c.FromUser), _logClassType, _logPrefix);
+
+                return false;
             }
-            var gametype = (QlGameTypes) serverDetails.game_type;
+            var gametype = (QlGameTypes)serverDetails.game_type;
 
             _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
                 Helpers.IsQuakeLiveTeamGame(gametype)
                     ? FormatTeamGameStatusMessage(serverDetails)
                     : FormatNonTeamGameStatusMessage(serverDetails));
+
+            return true;
         }
 
         /// <summary>

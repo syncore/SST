@@ -1348,15 +1348,15 @@ namespace SSB.Core.Modules
                     _banDb.AddUserToDb(player, "pickupMod", DateTime.Now, expirationDate,
                         BanType.AddedByPickupSubs);
 
-                    // UI: reflect changes
-                    _ssb.UserInterface.RefreshCurrentBansDataSource();
-
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
                                 "^5[PICKUP]^3 {0}^7 has requested too many subs, banning until ^1{1}",
                                 player,
                                 expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+
+                    // UI: reflect changes
+                    _ssb.UserInterface.RefreshCurrentBansDataSource();
                 }
             }
             else
@@ -1379,15 +1379,15 @@ namespace SSB.Core.Modules
                     _banDb.AddUserToDb(player, "pickupMod", DateTime.Now, expirationDate,
                         BanType.AddedByPickupNoShows);
 
-                    // UI: reflect changes
-                    _ssb.UserInterface.RefreshCurrentBansDataSource();
-
                     await
                         _ssb.QlCommands.QlCmdSay(
                             string.Format(
                                 "^5[PICKUP]^3 {0}^7 has no-showed too many games, banning until ^1{1}",
                                 player,
                                 expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+
+                    // UI: reflect changes
+                    _ssb.UserInterface.RefreshCurrentBansDataSource();
                 }
             }
         }

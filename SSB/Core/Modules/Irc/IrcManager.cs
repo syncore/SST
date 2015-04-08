@@ -25,7 +25,7 @@ namespace SSB.Core.Modules.Irc
 
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
 
-        private readonly string _logPrefix = "[IRC]";
+        private readonly string _logPrefix = "[MOD:IRC]";
 
         // Regex for testing validity of IRC nick according to IRC RFC specification;
         // currently set from 2-15 max length

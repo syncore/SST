@@ -213,7 +213,7 @@ namespace SSB.Core.Commands.Modules
             {
                 Log.WriteCritical("Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
                     _logClassType, _logPrefix);
-                
+
                 Active = false;
                 _configHandler.Config.EarlyQuitOptions.SetDefaults();
                 return;
@@ -285,9 +285,6 @@ namespace SSB.Core.Commands.Modules
         {
             qdb.DeleteUserFromDb(Helpers.GetArgVal(c, 3));
 
-            // UI: reflect changes
-            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
-
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Cleared all early quit records for: ^3{0}",
                 Helpers.GetArgVal(c, 3));
             await SendServerSay(c, StatusMessage);
@@ -296,6 +293,7 @@ namespace SSB.Core.Commands.Modules
             await qdb.RemoveQuitRelatedBan(_ssb, Helpers.GetArgVal(c, 3));
 
             // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
             _ssb.UserInterface.RefreshCurrentBansDataSource();
         }
 
@@ -310,7 +308,7 @@ namespace SSB.Core.Commands.Modules
             StatusMessage = "^2[SUCCESS]^7 Early quit tracker ^1disabled^7. Players may quit" +
                             " early without incurring a ban penalty.";
             await SendServerSay(c, StatusMessage);
-            
+
             Log.Write(string.Format("Received {0} request from {1} to disable early quit banner module. Disabling.",
                 (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
@@ -335,7 +333,7 @@ namespace SSB.Core.Commands.Modules
                 "more than^2 {0} ^7times before the game is over will be banned for^1 {1} ^7{2}.",
                 maxQuits, time, scale);
             await SendServerSay(c, StatusMessage);
-            
+
             Log.Write(string.Format("Received {0} request from {1} to enable early quit banner module. Enabling.",
                 (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
@@ -510,12 +508,12 @@ namespace SSB.Core.Commands.Modules
         {
             qdb.DecrementUserQuitCount(player, num);
 
-            // UI: reflect changes
-            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
-
             StatusMessage = string.Format("^5[EARLYQUIT]^7 Forgave^3 {0} ^7of ^3{1}^7's early quits.",
                 num, player);
             await SendServerSay(c, StatusMessage);
+
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentQuittersDataSource();
         }
     }
 }

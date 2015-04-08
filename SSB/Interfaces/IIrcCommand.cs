@@ -51,15 +51,19 @@ namespace SSB.Interfaces
         void DisplayArgLengthError(CmdArgs c);
 
         /// <summary>
-        ///     Executes the specified command.
+        /// Executes the specified command.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        void Exec(CmdArgs c);
+        /// <returns><c>true</c> if the command was successfully executed,
+        ///  otherwise returns <c>false</c>.</returns>
+        bool Exec(CmdArgs c);
 
         /// <summary>
         ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        Task ExecAsync(CmdArgs c);
+        /// <returns><c>true</c> if the command was successfully executed,
+        ///  otherwise returns <c>false</c>.</returns>
+        Task<bool> ExecAsync(CmdArgs c);
     }
 }

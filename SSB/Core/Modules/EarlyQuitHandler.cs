@@ -83,9 +83,6 @@ namespace SSB.Core.Modules
             var expirationDate = ExpirationDateGenerator.GenerateExpirationDate(_banTime, _banTimeScale);
             _bansDb.AddUserToDb(player, "earlyQuitMod", DateTime.Now, expirationDate, BanType.AddedByEarlyQuit);
 
-            // UI: reflect changes
-            _ssb.UserInterface.RefreshCurrentBansDataSource();
-
             await
                 _ssb.QlCommands.QlCmdSay(
                     string.Format(
@@ -94,6 +91,9 @@ namespace SSB.Core.Modules
 
             // The player might have not actually disconnected but spectated instead, so kickban(QL) immediately
             await _ssb.QlCommands.CustCmdKickban(player);
+
+            // UI: reflect changes
+            _ssb.UserInterface.RefreshCurrentBansDataSource();
         }
 
         /// <summary>
