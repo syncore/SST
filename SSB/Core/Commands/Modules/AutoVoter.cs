@@ -35,29 +35,21 @@ namespace SSB.Core.Commands.Modules
             _configHandler = new ConfigHandler();
             ValidCallVotes = new List<Vote>
             {
-                new Vote { Name = "clientkick", Type = VoteType.Clientkick },
-                new Vote { Name = "fraglimit", Type = VoteType.Fraglimit },
-                new Vote { Name = "g_gametype", Type = VoteType.GGametype },
-                new Vote { Name = "kick", Type = VoteType.Kick },
-                new Vote { Name = "map", Type = VoteType.Map },
-                new Vote { Name = "map_restart", Type = VoteType.MapRestart },
-                new Vote { Name = "nextmap", Type = VoteType.Nextmap },
-                new Vote { Name = "ruleset", Type = VoteType.Ruleset },
-                new Vote { Name = "shuffle", Type = VoteType.Shuffle },
-                new Vote { Name = "teamsize", Type = VoteType.Teamsize },
-                new Vote { Name = "timelimit", Type = VoteType.Timelimit}
+                new Vote {Name = "clientkick", Type = VoteType.Clientkick},
+                new Vote {Name = "fraglimit", Type = VoteType.Fraglimit},
+                new Vote {Name = "g_gametype", Type = VoteType.GGametype},
+                new Vote {Name = "kick", Type = VoteType.Kick},
+                new Vote {Name = "map", Type = VoteType.Map},
+                new Vote {Name = "map_restart", Type = VoteType.MapRestart},
+                new Vote {Name = "nextmap", Type = VoteType.Nextmap},
+                new Vote {Name = "ruleset", Type = VoteType.Ruleset},
+                new Vote {Name = "shuffle", Type = VoteType.Shuffle},
+                new Vote {Name = "teamsize", Type = VoteType.Teamsize},
+                new Vote {Name = "timelimit", Type = VoteType.Timelimit}
             };
 
             LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the automatic votes.
@@ -66,6 +58,22 @@ namespace SSB.Core.Commands.Modules
         ///     The automatic votes.
         /// </value>
         public List<AutoVote> AutoVotes { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the valid callvotes.
+        /// </summary>
+        /// <value>
+        ///     The valid callvotes.
+        /// </value>
+        public List<Vote> ValidCallVotes { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -120,14 +128,6 @@ namespace SSB.Core.Commands.Modules
         public string StatusMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the valid callvotes.
-        /// </summary>
-        /// <value>
-        /// The valid callvotes.
-        /// </value>
-        public List<Vote> ValidCallVotes { get; set; }
-
-        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -162,13 +162,14 @@ namespace SSB.Core.Commands.Modules
                 if (Helpers.GetArgVal(c, 2).Equals("clear"))
                 {
                     AutoVotes.Clear();
-                    StatusMessage = "^2[SUCCESS]^7 Cleared list of votes to automatically pass or reject. Disabling auto voter.";
+                    StatusMessage =
+                        "^2[SUCCESS]^7 Cleared list of votes to automatically pass or reject. Disabling auto voter.";
                     await SendServerSay(c, StatusMessage);
                     UpdateConfig(false);
 
                     Log.Write(string.Format(
-                    "{0} cleared the auto-voter list from {1}. Auto voter module will now be disabled..",
-                c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
+                        "{0} cleared the auto-voter list from {1}. Auto voter module will now be disabled..",
+                        c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
 
                     return true;
                 }
@@ -231,9 +232,8 @@ namespace SSB.Core.Commands.Modules
                 sb.Append(string.Format("{0}, ", a.VoteFormatDisplay));
             }
 
-            Log.WriteCritical(string.Format(
-                "Initial load of auto voter module configuration - active: {0}, auto-votes: {1}",
-                (Active ? "YES": "NO"), ((AutoVotes.Count > 0) ? sb.ToString().TrimEnd(',', ' ') : "none")),
+            Log.Write(string.Format("Active: {0}, auto-votes: {1}",
+                (Active ? "YES" : "NO"), ((AutoVotes.Count > 0) ? sb.ToString().TrimEnd(',', ' ') : "none")),
                 _logClassType, _logPrefix);
         }
 
@@ -305,8 +305,8 @@ namespace SSB.Core.Commands.Modules
 
                 Log.Write(string.Format(
                     "{0} attempted to add auto-{1} vote: {2} from {3} but auto-{1} vote was already added by {4}. Ignoring.",
-                c.FromUser, Helpers.GetArgVal(c, 2).ToUpper(),
-                fullVote, (c.FromIrc ? "IRC." : "in-game."), av.AddedBy), _logClassType, _logPrefix);
+                    c.FromUser, Helpers.GetArgVal(c, 2).ToUpper(),
+                    fullVote, (c.FromIrc ? "IRC." : "in-game."), av.AddedBy), _logClassType, _logPrefix);
 
                 return false;
             }
@@ -352,8 +352,9 @@ namespace SSB.Core.Commands.Modules
 
                 Log.Write(string.Format(
                     "{0} attempted to add auto-{1} vote: {2} from {3} but auto-{1} vote was already added by {4}. Ignoring.",
-                c.FromUser, Helpers.GetArgVal(c, 2).ToUpper(),
-                Helpers.GetArgVal(c, 3), (c.FromIrc ? "IRC." : "in-game."), av.AddedBy), _logClassType, _logPrefix);
+                    c.FromUser, Helpers.GetArgVal(c, 2).ToUpper(),
+                    Helpers.GetArgVal(c, 3), (c.FromIrc ? "IRC." : "in-game."), av.AddedBy), _logClassType,
+                    _logPrefix);
 
                 return false;
             }
@@ -442,7 +443,7 @@ namespace SSB.Core.Commands.Modules
 
                 Log.Write(string.Format(
                     "{0} attempted to add a vote but specified an invalid vote type from {1}. Ignoring.",
-                c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
+                    c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
 
                 return false;
             }
@@ -479,7 +480,7 @@ namespace SSB.Core.Commands.Modules
 
                 Log.Write(string.Format(
                     "{0} attempted to delete a vote but specified a non-numeric vote value from {1}. Ignoring.",
-                c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
+                    c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
 
                 return false;
             }
@@ -489,7 +490,7 @@ namespace SSB.Core.Commands.Modules
 
                 Log.Write(string.Format(
                     "{0} attempted to delete a vote that does not exist from {1}. Ignoring.",
-                c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
+                    c.FromUser, (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
 
                 return false;
             }
@@ -554,8 +555,9 @@ namespace SSB.Core.Commands.Modules
         private async Task RemoveAutoVote(CmdArgs c, int voteNum)
         {
             Log.Write(string.Format("{0} removed auto-{1} vote: {2} from {3}",
-                c.FromUser, (AutoVotes[voteNum].IntendedResult == IntendedVoteResult.Yes ?
-                "YES" : "NO"), AutoVotes[voteNum].VoteText,
+                c.FromUser, (AutoVotes[voteNum].IntendedResult == IntendedVoteResult.Yes
+                    ? "YES"
+                    : "NO"), AutoVotes[voteNum].VoteText,
                 (c.FromIrc ? "IRC." : "in-game.")), _logClassType, _logPrefix);
 
             StatusMessage = string.Format("^2[SUCCESS]^7 AUTO {0} vote (^3{1}^7) was removed.",

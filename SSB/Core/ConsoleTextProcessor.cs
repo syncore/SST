@@ -159,6 +159,12 @@ namespace SSB.Core
             {
                 _ssb.ServerEventProcessor.QlServerConnectionExists(m.Groups["cvarvalue"].Value);
             }
+            // cl_currentServerAddress
+            if (m.Groups["cvarname"].Value.Equals("cl_currentServerAddress",
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ssb.ServerEventProcessor.SetCurrentServerAddress(m.Groups["cvarvalue"].Value);
+            }
             return true;
         }
 

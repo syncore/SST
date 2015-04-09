@@ -391,8 +391,8 @@ namespace SSB.Core
 
             Log.Write(
                 string.Format(
-                    "Detected player from cstr: {0} - Country: {1} - Tag: {2} - (Clan: {3}) - Pro: {4} - \n",
-                    playername, country, clantag, fullclanname, subscriber), _logClassType, _logPrefix);
+                    "Detected player from cstr: {0} - Country: {1} - Tag: {2} - Clan Name: {3} - Pro Acct: {4}",
+                    playername, country, clantag, fullclanname, (subscriber.Equals("1") ? "yes" : "no")), _logClassType, _logPrefix);
 
             // Keep team information up to date
             UpdatePlayerTeam(playername, (Team)tm);

@@ -114,6 +114,20 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Enables the account date limiter.
+        /// </summary>
+        /// <param name="days">The days.</param>
+        /// <remarks>
+        ///     This is for use with the auto Init() method and the UI and does not produce a message.
+        /// </remarks>
+        public async Task EnableAccountDateLimiter(uint days)
+        {
+            MinimumDaysRequired = days;
+            UpdateConfig(true);
+            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
         ///     Evaluates the account date limit command.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -176,10 +190,34 @@ namespace SSB.Core.Commands.Modules
                      _configHandler.Config.AccountDateOptions.isActive;
             MinimumDaysRequired =
                 _configHandler.Config.AccountDateOptions.minimumDaysRequired;
-            
-            Log.WriteCritical(string.Format(
-                "Initial load of account date limiter module configuration - active: {0}, minimum days" +
-                " required: {1}", (Active ? "YES": "NO"), MinimumDaysRequired), _logClassType, _logPrefix);
+
+            Log.Write(string.Format("Active: {0}, minimum days required: {1}",
+                (Active ? "YES" : "NO"), MinimumDaysRequired), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        ///     Runs the user date check on all current players.
+        /// </summary>
+        /// <param name="players">The players.</param>
+        public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
+        {
+            var qlDateChecker = new QlAccountDateChecker();
+            foreach (var player in players.ToList())
+            {
+                var date = await qlDateChecker.GetUserRegistrationDate(player.Key);
+                await VerifyUserDate(player.Key, date);
+            }
+        }
+
+        /// <summary>
+        ///     Runs the user date check on a given player.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public async Task RunUserDateCheck(string user)
+        {
+            var qlDateChecker = new QlAccountDateChecker();
+            var date = await qlDateChecker.GetUserRegistrationDate(user);
+            await VerifyUserDate(user, date);
         }
 
         /// <summary>
@@ -221,45 +259,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the account date limiter.
-        /// </summary>
-        /// <param name="days">The days.</param>
-        /// <remarks>
-        ///     This is for use with the auto Init() method and the UI and does not produce a message.
-        /// </remarks>
-        public async Task EnableAccountDateLimiter(uint days)
-        {
-            MinimumDaysRequired = days;
-            UpdateConfig(true);
-            await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
-        }
-
-        /// <summary>
-        ///     Runs the user date check on all current players.
-        /// </summary>
-        /// <param name="players">The players.</param>
-        public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
-        {
-            var qlDateChecker = new QlAccountDateChecker();
-            foreach (var player in players.ToList())
-            {
-                var date = await qlDateChecker.GetUserRegistrationDate(player.Key);
-                await VerifyUserDate(player.Key, date);
-            }
-        }
-
-        /// <summary>
-        ///     Runs the user date check on a given player.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        public async Task RunUserDateCheck(string user)
-        {
-            var qlDateChecker = new QlAccountDateChecker();
-            var date = await qlDateChecker.GetUserRegistrationDate(user);
-            await VerifyUserDate(user, date);
-        }
-
-        /// <summary>
         ///     Disables the account date limiter.
         /// </summary>
         private async Task DisableAccountDateLimiter(CmdArgs c)
@@ -285,10 +284,10 @@ namespace SSB.Core.Commands.Modules
                 "^2[SUCCESS]^7 Account date limit ^2ON^7. Players with accounts registered in the last^1 {0} ^7days ^1CANNOT^7 play.",
                 days);
             await SendServerSay(c, StatusMessage);
-            
+
             Log.Write(string.Format("Received {0} request from {1} to enable account date limiter module. Enabling.",
                 (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
-            
+
             await RunUserDateCheck(_ssb.ServerInfo.CurrentPlayers);
         }
 

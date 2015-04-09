@@ -225,7 +225,6 @@
     <Compile Include="Interfaces\IConfiguration.cs" />
     <Compile Include="Enums\QlCommandType.cs" />
     <Compile Include="Core\ConsoleTextProcessor.cs" />
-    <Compile Include="Ui\GuiOptions.cs" />
     <Compile Include="Util\Log.cs" />
     <Compile Include="Util\Parser.cs" />
     <Compile Include="Core\PlayerEventProcessor.cs" />

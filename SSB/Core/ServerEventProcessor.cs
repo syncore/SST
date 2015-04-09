@@ -79,7 +79,7 @@ namespace SSB.Core
         {
             if (_ssb.IsDisconnectionScanPending) return;
             if (!_ssb.IsInitComplete) return;
-            _disconnectScanTimer = new Timer(10000) { AutoReset = false, Enabled = true };
+            _disconnectScanTimer = new Timer(10000) {AutoReset = false, Enabled = true};
             _disconnectScanTimer.Elapsed += DisconnectScanElapsed;
             _ssb.IsDisconnectionScanPending = true;
             Log.Write("Will check if server connection still exists in 10 seconds.",
@@ -102,8 +102,8 @@ namespace SSB.Core
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
         /// <remarks>
-        /// playersText is sent as an IEnumerable, with each element representing a line of
-        /// the text containing the player information from the /players command.
+        ///     playersText is sent as an IEnumerable, with each element representing a line of
+        ///     the text containing the player information from the /players command.
         /// </remarks>
         public async Task HandlePlayersFromPlayersCmd<T>(
             IEnumerable<T> playersText)
@@ -167,6 +167,18 @@ namespace SSB.Core
             Log.Write("Detected Quake Live server connection.", _logClassType, _logPrefix);
 
             return true;
+        }
+
+        /// <summary>
+        ///     Sets the current server address.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public void SetCurrentServerAddress(string text)
+        {
+            _ssb.ServerInfo.CurrentServerAddress = text;
+
+            Log.Write(string.Format("Set address of current monitored server to: {0}",
+                text), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -264,13 +276,14 @@ namespace SSB.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
-                gameType = (QlGameTypes)gt;
+                _ssb.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
+                gameType = (QlGameTypes) gt;
                 Log.Write("Found server gametype: " + gameType, _logClassType, _logPrefix);
             }
             else
             {
-                Log.Write("Received a SetServerGameType event but was unable to convert to QlGameTypes value.",
+                Log.Write(
+                    "Received a SetServerGameType event but was unable to convert to QlGameTypes value.",
                     _logClassType, _logPrefix);
             }
 

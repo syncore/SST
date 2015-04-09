@@ -23,6 +23,11 @@ namespace SSB.Ui
     /// <summary>
     ///     The user interface class.
     /// </summary>
+    /// <remarks>
+    ///     This class is large because the UI is essentially a single form with a tab control (two,
+    ///     when counting the modules tab). In Winforms, each tab does not receive its own separate class
+    ///     unless a user control is used, which did not make sense for this project as it is a one-off tool.
+    /// </remarks>
     public partial class UserInterface : Form
     {
         private readonly AccountDateLimitValidator _accountDateLimitValidator;
@@ -50,6 +55,7 @@ namespace SSB.Ui
             _cfgHandler.ReadConfiguration();
             Log.LogToSsbConsole = _cfgHandler.Config.CoreOptions.appendToActivityLog;
             Log.LogUiConsole = logConsoleTextBox;
+            Log.ShowDeferredMessages();
 
             titleBarVersionLabel.Text = string.Format("version {0}",
                 Helpers.GetVersion());
@@ -83,8 +89,6 @@ namespace SSB.Ui
             });
             // Current bans listbox
             RefreshCurrentBansDataSource();
-            Log.Write("Populated ban management user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -98,8 +102,6 @@ namespace SSB.Ui
             modAccDateAccAgeTextBox.InvokeIfRequired(
                 c => { c.Text = acctDateOptions.minimumDaysRequired.ToString(); });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated account date limiter module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -111,8 +113,6 @@ namespace SSB.Ui
             modAccuracyEnableCheckBox.InvokeIfRequired(
                 c => { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated accuracy display module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -137,8 +137,6 @@ namespace SSB.Ui
             // Current votes listbox
             RefreshCurrentVotesDataSource();
             UpdateActiveModulesStatusText();
-            Log.Write("Populated auto voter module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -162,8 +160,6 @@ namespace SSB.Ui
             // Current early quitters listbox
             RefreshCurrentQuittersDataSource();
             UpdateActiveModulesStatusText();
-            Log.Write("Populated early quit banner module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -183,8 +179,6 @@ namespace SSB.Ui
                     : eloLimitOptions.maximumRequiredElo.ToString());
             });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated Elo limiter module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -210,8 +204,6 @@ namespace SSB.Ui
             modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
             modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated IRC module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -225,8 +217,6 @@ namespace SSB.Ui
             modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
             modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated MOTD module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -265,8 +255,6 @@ namespace SSB.Ui
                     pickupOptions.excessiveNoShowBanTimeScaleIndex;
             });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated pickup module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -285,8 +273,6 @@ namespace SSB.Ui
                     CultureInfo.InvariantCulture);
             });
             UpdateActiveModulesStatusText();
-            Log.Write("Populated server list module user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -295,13 +281,11 @@ namespace SSB.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
+            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SSB users listbox
             RefreshCurrentSsbUsersDataSource();
-            Log.Write("Populated user management user interface.",
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -366,7 +350,12 @@ namespace SSB.Ui
             if (usrMCurrentUserBindingSource.Count != 0)
             {
                 usrMCurUsersListBox.InvokeIfRequired(
-                    c => { c.DataSource = usrMCurrentUserBindingSource.DataSource; });
+                    c =>
+                    {
+                        // necessary to prevent ArgumentOutOfRangeException with !adduser from in-game
+                        c.SelectedIndex = c.Items.Count != 0 ? 0 : -1;
+                        c.DataSource = usrMCurrentUserBindingSource.DataSource;
+                    });
             }
         }
 
@@ -395,12 +384,14 @@ namespace SSB.Ui
         }
 
         /// <summary>
-        /// Updates the monitoring status UI elements.
+        ///     Updates the monitoring status UI elements.
         /// </summary>
-        /// <param name="isMonitoring">if set to <c>true</c>
-        ///  then server monitoring is active.</param>
-        /// <param name="serverId">The server identifier.</param>
-        public void UpdateMonitoringStatusUi(bool isMonitoring, string serverId)
+        /// <param name="isMonitoring">
+        ///     if set to <c>true</c>
+        ///     then server monitoring is active.
+        /// </param>
+        /// <param name="address">The server address.</param>
+        public void UpdateMonitoringStatusUi(bool isMonitoring, string address)
         {
             ssbStartButton.InvokeIfRequired(c => { c.Enabled = !isMonitoring; });
             ssbStopButton.InvokeIfRequired(c => { c.Enabled = isMonitoring; });
@@ -409,10 +400,10 @@ namespace SSB.Ui
             {
                 c.Text = string.Format("{0}", (isMonitoring)
                     ? string.Format(
-                        "Monitoring server at http://www.quakelive.com/#!join/{0}",
-                        (string.IsNullOrEmpty(serverId)
+                        "Monitoring server at {0}",
+                        (string.IsNullOrEmpty(address)
                             ? "..."
-                            : serverId))
+                            : address))
                     : "Not monitoring a server");
             });
         }
@@ -472,7 +463,7 @@ namespace SSB.Ui
                 return;
             }
 
-            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
+            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
             banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
@@ -556,7 +547,7 @@ namespace SSB.Ui
 
             var banDb = new DbBans();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -623,6 +614,16 @@ namespace SSB.Ui
             Log.Write(string.Format(
                 "Owner {0} cleared all {1} expired bans from the ban database.",
                 owner, expiredBans.Count), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        ///     Handles the Click event of the clearLogEventsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        private void clearLogEventsButton_Click(object sender, EventArgs e)
+        {
+            logConsoleTextBox.Clear();
         }
 
         /// <summary>
@@ -885,6 +886,14 @@ namespace SSB.Ui
             _ssb.AccountName = coreOptions.accountName;
             Log.LogToDisk = coreOptions.logSsbEventsToDisk;
             Log.LogToSsbConsole = coreOptions.appendToActivityLog;
+            if (coreOptions.hideAllQlConsoleText)
+            {
+                _ssb.QlCommands.DisableConsolePrinting();
+            }
+            else
+            {
+                _ssb.QlCommands.EnableConsolePrinting();
+            }
             // ReSharper disable once UnusedVariable
             // Add the owner (via constructor)
             var userDb = new DbUsers();
@@ -1008,6 +1017,19 @@ namespace SSB.Ui
                     module.ModuleName)
                 : string.Format("Deactivating {0} module from UI if active.",
                     module.ModuleName)), _logClassType, _logPrefix);
+        }
+
+        private void logConsoleTextBox_VisibleChanged(object sender, EventArgs e)
+        {
+            // Auto scroll to bottom, even when 'Log' tab loses focus.
+            if (logConsoleTextBox.Visible)
+            {
+                logConsoleTextBox.InvokeIfRequired(c =>
+                {
+                    c.SelectionStart = logConsoleTextBox.TextLength;
+                    c.ScrollToCaret();
+                });
+            }
         }
 
         /// <summary>
@@ -1256,7 +1278,7 @@ namespace SSB.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Log.Write(string.Format("Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -1372,7 +1394,7 @@ namespace SSB.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter)p;
+                var player = (EarlyQuitter) p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_ssb, player.Name);
             }
@@ -1394,7 +1416,7 @@ namespace SSB.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1423,7 +1445,7 @@ namespace SSB.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1516,7 +1538,7 @@ namespace SSB.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
 
@@ -2351,9 +2373,9 @@ namespace SSB.Ui
                 pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
                 pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
                 pickupOptions.excessiveSubUseBanTimeScale =
-                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveNoShowBanTimeScale =
-                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
                 pickupOptions.excessiveNoShowBanTimeScaleIndex =
@@ -2606,7 +2628,6 @@ namespace SSB.Ui
             Log.LogToDisk = coreLogEventsDiskCheckBox.Checked;
             coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
             coreOwnerNameTextBox.Text = coreOptions.owner;
-            Log.Write("Populated core options user interface.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -2865,7 +2886,7 @@ namespace SSB.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
+            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -2933,7 +2954,7 @@ namespace SSB.Ui
 
             var userDb = new DbUsers();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
@@ -2946,30 +2967,6 @@ namespace SSB.Ui
             Log.Write(
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
                     owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
-        }
-
-        /// <summary>
-        /// Handles the Click event of the clearLogEventsButton control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void clearLogEventsButton_Click(object sender, EventArgs e)
-        {
-            logConsoleTextBox.Clear();
-        }
-
-        private void logConsoleTextBox_VisibleChanged(object sender, EventArgs e)
-        {
-            // Auto scroll to bottom, even when 'Log' tab loses focus.
-            if (logConsoleTextBox.Visible)
-            {
-                logConsoleTextBox.InvokeIfRequired(c =>
-                {
-                    c.SelectionStart = logConsoleTextBox.TextLength;
-                    c.ScrollToCaret();
-
-                });
-            }
         }
     }
 }

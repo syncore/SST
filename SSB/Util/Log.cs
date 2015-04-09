@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
@@ -18,12 +19,14 @@ namespace SSB.Util
         private static readonly string _logPrefix = "[CORE]";
         private static bool _logToDisk;
         private static bool _logToSsbConsole;
+        private static readonly List<string> DeferredMessages;
 
         /// <summary>
         ///     Initializes the <see cref="Log" /> class.
         /// </summary>
         static Log()
         {
+            DeferredMessages = new List<string>();
             Configure();
         }
 
@@ -80,10 +83,10 @@ namespace SSB.Util
         }
 
         /// <summary>
-        /// Gets or sets the UI console activity log.
+        ///     Gets or sets the UI console activity log.
         /// </summary>
         /// <value>
-        /// The UI console activityl og.
+        ///     The UI console activityl og.
         /// </value>
         public static TextBox LogUiConsole { get; set; }
 
@@ -106,10 +109,17 @@ namespace SSB.Util
                 // disk file
                 logger.Info(string.Format("{0} {1}", prefix, msg));
             }
+
+            if (LogUiConsole == null)
+            {
+                DeferredMessages.Add(string.Format("{0} {1} {2}",
+                    Environment.NewLine, prefix, msg));
+            }
+
             if (LogToSsbConsole)
             {
-                LogUiConsole.InvokeIfRequired(c =>
-                { c.AppendText(string.Format("{0} {1} {2}", Environment.NewLine, prefix, msg)); });
+                LogUiConsole.InvokeIfRequired(
+                    c => { c.AppendText(string.Format("{0} {1} {2}", Environment.NewLine, prefix, msg)); });
             }
         }
 
@@ -131,6 +141,32 @@ namespace SSB.Util
 #endif
 
             logger.Info(string.Format("{0} {1}", prefix, msg));
+
+            if (LogUiConsole == null)
+            {
+                DeferredMessages.Add(string.Format("{0} {1} {2}",
+                    Environment.NewLine, prefix, msg));
+            }
+        }
+
+        /// <summary>
+        ///     Shows the deferred messages that accrued prior
+        ///     to initilization of the UI log console.
+        /// </summary>
+        public static void ShowDeferredMessages()
+        {
+            if (LogToSsbConsole)
+            {
+                foreach (var msg in DeferredMessages)
+                {
+                    // Closure: complier compliance
+                    var msg1 = msg;
+
+                    LogUiConsole.InvokeIfRequired(c => { c.AppendText(msg1); });
+                }
+            }
+
+            DeferredMessages.Clear();
         }
 
         /// <summary>
@@ -140,7 +176,7 @@ namespace SSB.Util
         {
             var dirCreated = Filepaths.CreateLogDirectory();
 
-            var hierarchy = (Hierarchy)LogManager.GetRepository();
+            var hierarchy = (Hierarchy) LogManager.GetRepository();
 
             var rollingPatternLayout = new PatternLayout
             {
@@ -184,7 +220,7 @@ namespace SSB.Util
                 LevelMax = Level.Debug
             };
 
-            var debugAppender = new DebugAppender { Layout = debugPatternLayout };
+            var debugAppender = new DebugAppender {Layout = debugPatternLayout};
             debugAppender.AddFilter(debugLevelRangeFilter);
             debugAppender.ActivateOptions();
             hierarchy.Root.AddAppender(debugAppender);

@@ -31,17 +31,17 @@ namespace SSB.Core
         {
             await SendToQlAsync("cmd", false);
             //QlCmdClear();
-            Log.Write("Checking status of server connection (cmd)", _logClassType, _logPrefix);
+            Log.Write("Checking status of server connection (cmd).", _logClassType, _logPrefix);
         }
 
         /// <summary>
-        /// Checks the main menu (ui_mainmenu) status.
+        ///     Checks the main menu (ui_mainmenu) status.
         /// </summary>
         public async Task CheckMainMenuStatus()
         {
             await SendToQlAsync("ui_mainmenu", false);
             //QlCmdClear();
-            Log.Write("Checking QL main menu status", _logClassType, _logPrefix);
+            Log.Write("Checking QL main menu status.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -71,8 +71,20 @@ namespace SSB.Core
             }
             else
             {
-                Log.WriteCritical("Unable to get necessary console handle", _logClassType, _logPrefix);
+                Log.WriteCritical("Unable to get necessary console handle.", _logClassType, _logPrefix);
             }
+        }
+
+        /// <summary>
+        ///     Sends the 'unban' command to QL.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task CmdUnban(string player)
+        {
+            await SendToQlAsync(string.Format("unban {0}", player), false);
+
+            Log.Write(string.Format("Attempted to unban player {0} using QL's ban system.",
+                player), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -99,18 +111,6 @@ namespace SSB.Core
                     "Unable to send kickban for player {0} because player ID could not be retrieved.",
                     player), _logClassType, _logPrefix);
             }
-        }
-
-        /// <summary>
-        /// Sends the 'unban' command to QL.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        public async Task CmdUnban(string player)
-        {
-            await SendToQlAsync(string.Format("unban {0}", player), false);
-            
-            Log.Write(string.Format("Attempted to unban player {0} using QL's ban system.",
-                player), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -143,13 +143,13 @@ namespace SSB.Core
                 }
 
                 Log.Write(string.Format("Attempted to move player {0} to team {1}",
-                    player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
+                    player, Enum.GetName(typeof (Team), team)), _logClassType, _logPrefix);
             }
             else
             {
                 Log.Write(string.Format(
                     "Unable to move player {0} to team {1} because player ID could not be retrieved",
-                     player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
+                    player, Enum.GetName(typeof (Team), team)), _logClassType, _logPrefix);
             }
         }
 
@@ -162,7 +162,7 @@ namespace SSB.Core
         /// <returns></returns>
         public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await CustCmdPutPlayer(player, team);
         }
 
@@ -240,7 +240,7 @@ namespace SSB.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await QlCmdSay(text);
         }
 
@@ -252,7 +252,7 @@ namespace SSB.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
         public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             await QlCmdTell(text, player);
         }
 
@@ -280,7 +280,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length / MaxChatlineLength) + .5);
+                var l = ((text.Length/MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -289,7 +289,7 @@ namespace SSB.Core
                     var startPos = 0;
                     var lastColor = string.Empty;
                     Log.Write(string.Format(
-                        "Received very large text of length {0} for chat message. Will send to QL over {1} lines.",
+                        "Must process very large text of length {0} characters for chat message. Will send to QL over {1} lines.",
                         text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
@@ -318,7 +318,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        await Task.Delay(DefaultCommandDelayMsec*2);
                         Action<string> say = DoSay;
                         say(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -354,7 +354,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length / MaxChatlineLength) + .5);
+                var l = ((text.Length/MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -363,7 +363,7 @@ namespace SSB.Core
                     var startPos = 0;
                     var lastColor = string.Empty;
                     Log.Write(string.Format(
-                        "Received very large text of length {0} for team chat message. Will send to QL over {1} lines.",
+                        "Must process very large text of length {0} characters for team chat message. Will send to QL over {1} lines.",
                         text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
@@ -392,7 +392,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        await Task.Delay(DefaultCommandDelayMsec*2);
                         Action<string> sayTeam = DoSayTeam;
                         sayTeam(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -401,7 +401,7 @@ namespace SSB.Core
                 catch (Exception ex)
                 {
                     Log.WriteCritical("Unable send team chat message text to QL: " + ex.Message,
-                         _logClassType, _logPrefix);
+                        _logClassType, _logPrefix);
                 }
             }
             else
@@ -442,7 +442,7 @@ namespace SSB.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length / MaxChatlineLength) + .5);
+                var l = ((text.Length/MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -451,7 +451,7 @@ namespace SSB.Core
                     var startPos = 0;
                     var lastColor = string.Empty;
                     Log.Write(string.Format(
-                        "Received very large text of length {0} for tell message. Will send to QL over {1} lines.",
+                        "Must process very large text of length {0} characters for tell message. Will send to QL over {1} lines.",
                         text.Length, numLines), _logClassType, _logPrefix);
                     for (var i = 0; i <= multiLine.Length - 1; i++)
                     {
@@ -480,7 +480,7 @@ namespace SSB.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
+                        await Task.Delay(DefaultCommandDelayMsec*2);
                         Action<int, string> tell = DoTell;
                         tell(playerId, multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -489,7 +489,7 @@ namespace SSB.Core
                 catch (Exception ex)
                 {
                     Log.WriteCritical("Unable to send tell message text to QL: " + ex.Message,
-                         _logClassType, _logPrefix);
+                        _logClassType, _logPrefix);
                 }
             }
             else
@@ -498,6 +498,15 @@ namespace SSB.Core
                 Action<int, string> tell = DoTell;
                 tell(playerId, text);
             }
+        }
+
+        /// <summary>
+        ///     Requests the server address.
+        /// </summary>
+        public void RequestServerAddress()
+        {
+            SendToQl("cl_currentserveraddress", false);
+            Log.Write("Requesting monitored server's address.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -538,7 +547,7 @@ namespace SSB.Core
         /// </remarks>
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds * 1000);
+            await Task.Delay(runCmdInSeconds*1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }

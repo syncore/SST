@@ -97,8 +97,8 @@ namespace SSB.Core.Commands.None
             var userDb = new DbUsers();
             var senderLevel = userDb.GetUserLevel(c.FromUser);
             var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
-            var cmds = new StringBuilder();
-            foreach (var cmd in _ssb.CommandProcessor.Commands.Where(cmd => senderLevel <= cmd.Value.UserLevel))
+            var cmds = new StringBuilder(); 
+            foreach (var cmd in _ssb.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
             {
                 cmds.Append(string.Format("{0}, ", cmd.Key));
             }
@@ -106,10 +106,10 @@ namespace SSB.Core.Commands.None
                     "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
                     (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
 
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
 
             StatusMessage = "^7For detailed help visit the website at ^3ssb.syncore.org^7, or ^3#ssb_ql^7 on QuakeNet.";
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             return true;
         }
 

@@ -38,14 +38,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets or sets the type of the game for the server.
         /// </summary>
         /// <value>
@@ -55,6 +47,30 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _ssb.ServerInfo.CurrentServerGameType; }
         }
+
+        /// <summary>
+        ///     Gets or sets the maximum required Elo.
+        /// </summary>
+        /// <value>
+        ///     The maximum required Elo.
+        /// </value>
+        public int MaximumRequiredElo { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the minimum required Elo.
+        /// </summary>
+        /// <value>
+        ///     The minimum required Elo.
+        /// </value>
+        public int MinimumRequiredElo { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -77,22 +93,6 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
-
-        /// <summary>
-        ///     Gets or sets the maximum required Elo.
-        /// </summary>
-        /// <value>
-        ///     The maximum required Elo.
-        /// </value>
-        public int MaximumRequiredElo { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the minimum required Elo.
-        /// </summary>
-        /// <value>
-        ///     The minimum required Elo.
-        /// </value>
-        public int MinimumRequiredElo { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -123,60 +123,6 @@ namespace SSB.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        ///     Removes players from server who do not meet the specified Elo
-        ///     requirements immediately after enabling the elo
-        ///     limiter.
-        /// </summary>
-        public async Task BatchRemoveEloPlayers()
-        {
-            // disable
-
-            var qlrHelper = new QlRanksHelper();
-            // First make sure that the elo is correct and fetch if not
-            var playersToUpdate = (from player in _ssb.ServerInfo.CurrentPlayers
-                                   where qlrHelper.PlayerHasInvalidEloData(player.Value)
-                                   select player.Key).ToList();
-            if (playersToUpdate.Any())
-            {
-                var qlr =
-                    await
-                        qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, playersToUpdate);
-                if (qlr == null)
-                {
-                    await _ssb.QlCommands.QlCmdSay(
-                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.");
-
-                    Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
-                        _logClassType, _logPrefix);
-                }
-            }
-            // Kick the players from the server...
-            foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList())
-            {
-                // Still have invalid elo data...skip.
-                if (qlrHelper.PlayerHasInvalidEloData(player.Value))
-                {
-                    Log.Write(string.Format("Still have invalid Elo data for player {0}; player won't be evaluated for kicking.",
-                        player.Key), _logClassType, _logPrefix);
-                    break;
-                }
-                await KickPlayerIfEloNotMet(player.Key);
-            }
-        }
-
-        /// <summary>
-        ///     Checks to see if the player meets the elo requirement on connect.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        public async Task CheckPlayerEloRequirement(string player)
-        {
-            var playerElo = GetEloTypeToCompare(player);
-            // Likely invalid, skip.
-            if (playerElo == 0) return;
-            await KickPlayerIfEloNotMet(player);
-        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -281,8 +227,9 @@ namespace SSB.Core.Commands.Modules
                 (_configHandler.Config.EloLimitOptions.minimumRequiredElo >
                  _configHandler.Config.EloLimitOptions.maximumRequiredElo))
             {
-                Log.WriteCritical("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
-                          " module configuration. Will not enable & will set defaults.", _logClassType, _logPrefix);
+                Log.Write("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
+                          " module configuration. Will not enable & will set defaults.", _logClassType,
+                    _logPrefix);
                 Active = false;
                 _configHandler.Config.EloLimitOptions.SetDefaults();
                 return;
@@ -291,11 +238,11 @@ namespace SSB.Core.Commands.Modules
             MaximumRequiredElo = _configHandler.Config.EloLimitOptions.maximumRequiredElo;
             MinimumRequiredElo = _configHandler.Config.EloLimitOptions.minimumRequiredElo;
 
-            Log.WriteCritical(string.Format(
-                "Initial load of Elo limiter module configuration - active: {0}, minimum Elo" +
-                " required: {1}, maxmium Elo: {2}", (Active ? "YES" : "NO"), MinimumRequiredElo,
+            Log.Write(string.Format(
+                "Active: {0}, minimum Elo required: {1}, maxmium Elo: {2}",
+                (Active ? "YES" : "NO"), ((MinimumRequiredElo == 0) ? "none" : MinimumRequiredElo.ToString()),
                 ((MaximumRequiredElo == 0) ? "none" : MaximumRequiredElo.ToString())),
-            _logClassType, _logPrefix);
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -340,6 +287,62 @@ namespace SSB.Core.Commands.Modules
 
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModEloLimiterUi();
+        }
+
+        /// <summary>
+        ///     Removes players from server who do not meet the specified Elo
+        ///     requirements immediately after enabling the elo
+        ///     limiter.
+        /// </summary>
+        public async Task BatchRemoveEloPlayers()
+        {
+            // disable
+
+            var qlrHelper = new QlRanksHelper();
+            // First make sure that the elo is correct and fetch if not
+            var playersToUpdate = (from player in _ssb.ServerInfo.CurrentPlayers
+                where qlrHelper.PlayerHasInvalidEloData(player.Value)
+                select player.Key).ToList();
+            if (playersToUpdate.Any())
+            {
+                var qlr =
+                    await
+                        qlrHelper.RetrieveEloDataFromApiAsync(_ssb.ServerInfo.CurrentPlayers, playersToUpdate);
+                if (qlr == null)
+                {
+                    await _ssb.QlCommands.QlCmdSay(
+                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.");
+
+                    Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
+                        _logClassType, _logPrefix);
+                }
+            }
+            // Kick the players from the server...
+            foreach (var player in _ssb.ServerInfo.CurrentPlayers.ToList())
+            {
+                // Still have invalid elo data...skip.
+                if (qlrHelper.PlayerHasInvalidEloData(player.Value))
+                {
+                    Log.Write(
+                        string.Format(
+                            "Still have invalid Elo data for player {0}; player won't be evaluated for kicking.",
+                            player.Key), _logClassType, _logPrefix);
+                    break;
+                }
+                await KickPlayerIfEloNotMet(player.Key);
+            }
+        }
+
+        /// <summary>
+        ///     Checks to see if the player meets the elo requirement on connect.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task CheckPlayerEloRequirement(string player)
+        {
+            var playerElo = GetEloTypeToCompare(player);
+            // Likely invalid, skip.
+            if (playerElo == 0) return;
+            await KickPlayerIfEloNotMet(player);
         }
 
         /// <summary>
@@ -491,8 +494,10 @@ namespace SSB.Core.Commands.Modules
             // Handle minimum
             if (playerElo < MinimumRequiredElo)
             {
-                Log.Write(string.Format("{0}'s {1} Elo is less than minimum required ({2})...Kicking player.", player,
-                    GameType.ToString().ToUpper(), MinimumRequiredElo), _logClassType, _logPrefix);
+                Log.Write(
+                    string.Format("{0}'s {1} Elo is less than minimum required ({2})...Kicking player.",
+                        player,
+                        GameType.ToString().ToUpper(), MinimumRequiredElo), _logClassType, _logPrefix);
 
                 await _ssb.QlCommands.CustCmdKickban(player);
                 await _ssb.QlCommands.QlCmdSay(
@@ -507,7 +512,8 @@ namespace SSB.Core.Commands.Modules
             if (!hasMaxEloSpecified) return;
             if (playerElo <= MaximumRequiredElo) return;
 
-            Log.Write(string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Kicking player.", player,
+            Log.Write(
+                string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Kicking player.", player,
                     GameType.ToString().ToUpper(), MaximumRequiredElo), _logClassType, _logPrefix);
 
             await _ssb.QlCommands.CustCmdKickban(player);

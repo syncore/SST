@@ -282,7 +282,6 @@ namespace SSB.Database
         public void LoadCfg()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.VerifyConfigLocation();
             cfgHandler.ReadConfiguration();
             _owner = cfgHandler.Config.CoreOptions.owner;
         }
@@ -302,7 +301,6 @@ namespace SSB.Database
         public void SaveCfg()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.VerifyConfigLocation();
             cfgHandler.ReadConfiguration();
             cfgHandler.Config.CoreOptions.owner = _owner;
             cfgHandler.WriteConfiguration();

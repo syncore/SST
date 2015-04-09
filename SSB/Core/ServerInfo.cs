@@ -35,6 +35,14 @@ namespace SSB.Core
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
+        /// Gets or sets the current server address.
+        /// </summary>
+        /// <value>
+        /// The current server address.
+        /// </value>
+        public string CurrentServerAddress { get; set; }
+
+        /// <summary>
         ///     Gets or sets the server's current game state.
         /// </summary>
         /// <value>
@@ -151,6 +159,7 @@ namespace SSB.Core
             CurrentServerGameState = QlGameStates.Unspecified;
             CurrentServerGameType = QlGameTypes.Unspecified;
             CurrentServerId = string.Empty;
+            CurrentServerAddress = string.Empty;
             IsQlConnectedToServer = false;
             PlayerCurrentlyFollowing = string.Empty;
             ScoreBlueTeam = 0;

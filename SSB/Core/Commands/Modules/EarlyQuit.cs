@@ -16,10 +16,10 @@ namespace SSB.Core.Commands.Modules
     public class EarlyQuit : IModule
     {
         public const string NameModule = "earlyquit";
-        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[MOD:EARLYQUIT]";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[MOD:EARLYQUIT]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerBot _ssb;
 
@@ -33,14 +33,6 @@ namespace SSB.Core.Commands.Modules
             _configHandler = new ConfigHandler();
             LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets or sets a numeric value representing the time to ban early quitters.
@@ -62,12 +54,28 @@ namespace SSB.Core.Commands.Modules
         public string BanTimeScale { get; set; }
 
         /// <summary>
-        /// Gets or sets the array index of the ban time scale.
+        ///     Gets or sets the array index of the ban time scale.
         /// </summary>
         /// <value>
-        /// The array index of the ban time scale.
+        ///     The array index of the ban time scale.
         /// </value>
         public int BanTimeScaleIndex { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the maximum quits allowed before a user is banned.
+        /// </summary>
+        /// <value>
+        ///     The maximum quits allowed before a user is banned.
+        /// </value>
+        public uint MaxQuitsAllowed { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -90,14 +98,6 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
-
-        /// <summary>
-        ///     Gets or sets the maximum quits allowed before a user is banned.
-        /// </summary>
-        /// <value>
-        ///     The maximum quits allowed before a user is banned.
-        /// </value>
-        public uint MaxQuitsAllowed { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -211,7 +211,8 @@ namespace SSB.Core.Commands.Modules
             // See if it's a valid scale
             if (!Helpers.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
             {
-                Log.WriteCritical("Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
+                Log.WriteCritical(
+                    "Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
                     _logClassType, _logPrefix);
 
                 Active = false;
@@ -224,9 +225,8 @@ namespace SSB.Core.Commands.Modules
             BanTimeScale = _configHandler.Config.EarlyQuitOptions.banTimeScale;
             MaxQuitsAllowed = _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed;
 
-            Log.WriteCritical(string.Format(
-                "Initial load of early quit banner module configuration - active: {0}," +
-                " ban time: {1} {2}, max early quits allowed: {3}",
+            Log.Write(string.Format(
+                "Active: {0}, ban time: {1} {2}, max early quits allowed: {3}",
                 (Active ? "YES" : "NO"), BanTime, BanTimeScale, MaxQuitsAllowed), _logClassType, _logPrefix);
         }
 
@@ -309,8 +309,9 @@ namespace SSB.Core.Commands.Modules
                             " early without incurring a ban penalty.";
             await SendServerSay(c, StatusMessage);
 
-            Log.Write(string.Format("Received {0} request from {1} to disable early quit banner module. Disabling.",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+            Log.Write(
+                string.Format("Received {0} request from {1} to disable early quit banner module. Disabling.",
+                    (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -334,8 +335,9 @@ namespace SSB.Core.Commands.Modules
                 maxQuits, time, scale);
             await SendServerSay(c, StatusMessage);
 
-            Log.Write(string.Format("Received {0} request from {1} to enable early quit banner module. Enabling.",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+            Log.Write(
+                string.Format("Received {0} request from {1} to enable early quit banner module. Enabling.",
+                    (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>

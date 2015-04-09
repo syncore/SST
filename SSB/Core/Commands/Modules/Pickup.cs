@@ -39,14 +39,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets or sets a numeric value representing the time to ban excessive substitutes.
         /// </summary>
         /// <value>
@@ -67,10 +59,10 @@ namespace SSB.Core.Commands.Modules
         public string ExcessiveNoShowBanTimeScale { get; set; }
 
         /// <summary>
-        /// Gets or sets the index of the excessive no show ban time scale.
+        ///     Gets or sets the index of the excessive no show ban time scale.
         /// </summary>
         /// <value>
-        /// The index of the excessive no show ban time scale.
+        ///     The index of the excessive no show ban time scale.
         /// </value>
         public int ExcessiveNoShowBanTimeScaleIndex { get; set; }
 
@@ -95,34 +87,12 @@ namespace SSB.Core.Commands.Modules
         public string ExcessiveSubUseBanTimeScale { get; set; }
 
         /// <summary>
-        /// Gets or sets the index of the excessive sub use ban time scale.
+        ///     Gets or sets the index of the excessive sub use ban time scale.
         /// </summary>
         /// <value>
-        /// The index of the excessive sub use ban time scale.
+        ///     The index of the excessive sub use ban time scale.
         /// </value>
         public int ExcessiveSubUseBanTimeScaleIndex { get; set; }
-
-        /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
-        public int IrcMinModuleArgs
-        {
-            get { return _qlMinModuleArgs + 1; }
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsIrcAccessAllowed
-        {
-            get { return _isIrcAccessAllowed; }
-        }
 
         /// <summary>
         ///     Gets the pickup manager.
@@ -159,6 +129,44 @@ namespace SSB.Core.Commands.Modules
         public int MaxSubsPerPlayer { get; set; }
 
         /// <summary>
+        ///     Gets or sets the teamsize.
+        /// </summary>
+        /// <value>
+        ///     The teamsize.
+        /// </value>
+        public int Teamsize { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
+
+        /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
+
+        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -187,14 +195,6 @@ namespace SSB.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the teamsize.
-        /// </summary>
-        /// <value>
-        ///     The teamsize.
-        /// </value>
-        public int Teamsize { get; set; }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -231,7 +231,8 @@ namespace SSB.Core.Commands.Modules
                 return await EvalSetBanSettings(c);
             }
             int teamsize;
-            if (!int.TryParse(Helpers.GetArgVal(c, 2), out teamsize) || teamsize < TeamMinSize || teamsize > TeamMaxSize)
+            if (!int.TryParse(Helpers.GetArgVal(c, 2), out teamsize) || teamsize < TeamMinSize ||
+                teamsize > TeamMaxSize)
             {
                 StatusMessage =
                     string.Format("^1[ERROR]^3 Minimum team size is {0}, maximum team size is {1}.",
@@ -283,7 +284,7 @@ namespace SSB.Core.Commands.Modules
             if (_configHandler.Config.PickupOptions.teamSize < TeamMinSize ||
                 _configHandler.Config.PickupOptions.teamSize > TeamMaxSize)
             {
-                Log.WriteCritical("Invalid team size detected on initial load of pickup module configuration." +
+                Log.Write("Invalid team size detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
@@ -299,7 +300,7 @@ namespace SSB.Core.Commands.Modules
                 ((!Helpers.ValidTimeScales.Contains(
                     _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale))))
             {
-                Log.WriteCritical("Invalid time scales detected on initial load of pickup module configuration." +
+                Log.Write("Invalid time scales detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
@@ -313,17 +314,20 @@ namespace SSB.Core.Commands.Modules
             MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
             ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
             ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
-            ExcessiveNoShowBanTimeScaleIndex = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
+            ExcessiveNoShowBanTimeScaleIndex =
+                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
             ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
             ExcessiveSubUseBanTimeScale = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
-            ExcessiveSubUseBanTimeScaleIndex = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
+            ExcessiveSubUseBanTimeScaleIndex =
+                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
             Teamsize = _configHandler.Config.PickupOptions.teamSize;
 
-            Log.WriteCritical(string.Format(
-                "Initial load of pickup module configuration - active: {0}, max no shows per player: {1}," +
-                " max subs per player: {2}, no-show ban time: {3} {4}, sub abuse ban time: {5} {6}, team size: {7}v{7}",
-                (Active ? "YES" : "NO"), MaxNoShowsPerPlayer, MaxSubsPerPlayer, ExcessiveNoShowBanTime, ExcessiveNoShowBanTimeScale,
-                ExcessiveSubUseBanTime, ExcessiveSubUseBanTimeScale, Teamsize), _logClassType, _logPrefix);
+            Log.Write(string.Format(
+                "Active: {0}, max no shows per player: {1}, max subs per player: {2}, no-show ban time: {3} {4}," +
+                " sub abuse ban time: {5} {6}, team size: {7}v{7}",
+                (Active ? "YES" : "NO"), MaxNoShowsPerPlayer, MaxSubsPerPlayer, ExcessiveNoShowBanTime,
+                ExcessiveNoShowBanTimeScale, ExcessiveSubUseBanTime, ExcessiveSubUseBanTimeScale, Teamsize),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -366,10 +370,12 @@ namespace SSB.Core.Commands.Modules
             _configHandler.Config.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
             _configHandler.Config.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
             _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
-            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex = ExcessiveNoShowBanTimeScaleIndex;
+            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex =
+                ExcessiveNoShowBanTimeScaleIndex;
             _configHandler.Config.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
             _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
-            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex = ExcessiveSubUseBanTimeScaleIndex;
+            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex =
+                ExcessiveSubUseBanTimeScaleIndex;
 
             _configHandler.WriteConfiguration();
 
@@ -390,8 +396,9 @@ namespace SSB.Core.Commands.Modules
             StatusMessage = "^2[SUCCESS]^7 Pickup game module has been disabled.";
             await SendServerSay(c, StatusMessage);
 
-            Log.Write(string.Format("Received {0} request from {1} to disable pickup; banner module. Disabling.",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+            Log.Write(
+                string.Format("Received {0} request from {1} to disable pickup; banner module. Disabling.",
+                    (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -503,10 +510,12 @@ namespace SSB.Core.Commands.Modules
                     maxNum, timeToBan, scaleToBan);
                 await SendServerSay(c, StatusMessage);
 
-                Log.Write(string.Format("Received {0} request from {1} to override default no-show ban settings. Overriding with new values:" +
-                                        "max no-shows per player: {2}, no-show ban time: {3} {4}",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser, MaxNoShowsPerPlayer,
-                ExcessiveNoShowBanTime, ExcessiveNoShowBanTimeScale), _logClassType, _logPrefix);
+                Log.Write(
+                    string.Format(
+                        "Received {0} request from {1} to override default no-show ban settings. Overriding with new values:" +
+                        "max no-shows per player: {2}, no-show ban time: {3} {4}",
+                        (c.FromIrc ? "IRC" : "in-game"), c.FromUser, MaxNoShowsPerPlayer,
+                        ExcessiveNoShowBanTime, ExcessiveNoShowBanTimeScale), _logClassType, _logPrefix);
             }
             else if (bType.Equals("subs"))
             {
@@ -519,10 +528,12 @@ namespace SSB.Core.Commands.Modules
                     maxNum, timeToBan, scaleToBan);
                 await SendServerSay(c, StatusMessage);
 
-                Log.Write(string.Format("Received {0} request from {1} to override default sub ban settings. Overriding with new values:" +
-                                        "max no-subs per player: {2}, sub abuse ban time: {3} {4}",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser, MaxSubsPerPlayer,
-                ExcessiveSubUseBanTime, ExcessiveSubUseBanTimeScale), _logClassType, _logPrefix);
+                Log.Write(
+                    string.Format(
+                        "Received {0} request from {1} to override default sub ban settings. Overriding with new values:" +
+                        "max no-subs per player: {2}, sub abuse ban time: {3} {4}",
+                        (c.FromIrc ? "IRC" : "in-game"), c.FromUser, MaxSubsPerPlayer,
+                        ExcessiveSubUseBanTime, ExcessiveSubUseBanTimeScale), _logClassType, _logPrefix);
             }
             UpdateConfig(true);
         }

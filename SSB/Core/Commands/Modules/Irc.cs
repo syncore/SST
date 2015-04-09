@@ -37,20 +37,34 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets the IRC manager.
+        /// </summary>
+        /// <value>
+        ///     The IRC manager.
+        /// </value>
+        public IrcManager IrcManager
+        {
+            get { return _irc; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the bot is connected to IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnectedToIrc
+        {
+            get { return _irc.IsConnectedToIrc; }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
         ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
         public bool Active { get; set; }
-
-        /// <summary>
-        /// Gets the IRC manager.
-        /// </summary>
-        /// <value>
-        /// The IRC manager.
-        /// </value>
-        public IrcManager IrcManager { get { return _irc; } }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -62,14 +76,6 @@ namespace SSB.Core.Commands.Modules
         {
             get { return _qlMinModuleArgs + 1; }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the bot is connected to IRC.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsConnectedToIrc { get { return _irc.IsConnectedToIrc; } }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -108,14 +114,6 @@ namespace SSB.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        /// Deactivates this module.
-        /// </summary>
-        public void Deactivate()
-        {
-            _irc.Disconnect();
-        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -197,24 +195,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        /// <remarks>
-        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
-        ///     server on load, if applicable.
-        /// </remarks>
-        public void Init()
-        {
-            if (IsConnectedToIrc)
-            {
-                Deactivate();
-            }
-
-            Log.Write("Initializing IRC module.", _logClassType, _logPrefix);
-            _irc.StartIrcThread();
-        }
-
-        /// <summary>
         ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
@@ -232,9 +212,9 @@ namespace SSB.Core.Commands.Modules
 
             if (Active && _configHandler.Config.IrcOptions.autoConnectOnStart)
             {
-                Log.WriteCritical("Initial load of IRC module configuration detected that module is to be" +
-                          " activated and that auto connect on start is enabled.",
-                    _logClassType, _logPrefix);
+                Log.Write("IRC is set to auto-connect on start. Will attempt."
+                    , _logClassType, _logPrefix);
+
                 Init();
             }
         }
@@ -274,6 +254,32 @@ namespace SSB.Core.Commands.Modules
 
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModIrcUi();
+        }
+
+        /// <summary>
+        ///     Deactivates this module.
+        /// </summary>
+        public void Deactivate()
+        {
+            _irc.Disconnect();
+        }
+
+        /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        /// <remarks>
+        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
+        ///     server on load, if applicable.
+        /// </remarks>
+        public void Init()
+        {
+            if (IsConnectedToIrc)
+            {
+                Deactivate();
+            }
+
+            Log.Write("Initializing IRC module.", _logClassType, _logPrefix);
+            _irc.StartIrcThread();
         }
 
         /// <summary>

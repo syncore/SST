@@ -206,10 +206,10 @@ namespace SSB.Core.Modules.Irc
             _irc.SendIrcMessage(_irc.IrcSettings.ircChannel, string.Format("SSB {0}",
                 ((_ssb.IsMonitoringServer)
                     ? string.Format(
-                        "is monitoring your QL server at \u0002http://www.quakelive.com/#!join/{0}",
-                        (string.IsNullOrEmpty(_ssb.ServerInfo.CurrentServerId)
+                        "is monitoring your QL server at \u0002{0}",
+                        (string.IsNullOrEmpty(_ssb.ServerInfo.CurrentServerAddress)
                             ? "..."
-                            : _ssb.ServerInfo.CurrentServerId))
+                            : _ssb.ServerInfo.CurrentServerAddress))
                     : "is \u0002not\u0002 currently monitoring your QL server.")));
         }
     }

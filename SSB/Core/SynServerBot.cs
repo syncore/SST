@@ -20,7 +20,7 @@ namespace SSB.Core
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
-        private Timer _initTimer;
+        private Timer _delayedInitTaskTimer;
         private bool _isMonitoringServer;
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
@@ -30,9 +30,26 @@ namespace SSB.Core
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerBot" /> main class.
         /// </summary>
+        /// <remarks>
+        ///     Some notes:
+        ///     All of the core functions of the bot including console text processing, player/server
+        ///     event processing, modules, command processing, vote management, parsing, etc. are initialized in
+        ///     this constructor and set as properties in this main class. The bot only allows one instance of itself
+        ///     for the explicit reason that Quake Live can only have one running copy open at a time.
+        ///     For this reason, the initilizated <see cref="SynServerBot" /> object is frequently passed around
+        ///     the rest of the code almost entirely through constructor dependency injection and the properties are
+        ///     directly accessed rather than constantly instantiating new classes, which also explains many of the public
+        ///     methods. Once intilizated, the bot will then call the <see cref="CheckForAutoMonitoring" /> method which
+        ///     reads the configuration to see if the user has specified whether server monitoring should begin on application
+        ///     start. If Quake Live is running, we will check to see if the client is connected to a server. If connected, we will
+        ///     retrieve the server information and players using built in QL commands. After that, we will start a timer that
+        ///     waits for ~6.5s to perform any final initlization tasks to make sure all necessary information is present. 
+        ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so refactoring
+        ///     in various places is almost certainly in order.
+        /// </remarks>
         public SynServerBot()
         {
-            GuiOptions = new GuiOptions();
+            // Core
             ServerInfo = new ServerInfo();
             QlCommands = new QlCommands(this);
             Parser = new Parser();
@@ -77,14 +94,6 @@ namespace SSB.Core
         public ConsoleTextProcessor ConsoleTextProcessor { get; private set; }
 
         /// <summary>
-        ///     Gets the GUI options.
-        /// </summary>
-        /// <value>
-        ///     The GUI options.
-        /// </value>
-        public GuiOptions GuiOptions { get; private set; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether a server disconnection scan is pending.
         /// </summary>
         /// <value>
@@ -114,7 +123,7 @@ namespace SSB.Core
                 _isMonitoringServer = value;
                 // UI
                 UserInterface.UpdateMonitoringStatusUi(value,
-                    ServerInfo.CurrentServerId);
+                    ServerInfo.CurrentServerAddress);
             }
         }
 
@@ -229,6 +238,15 @@ namespace SSB.Core
             StartProcessDetectionTimer();
             // Start reading the console
             StartConsoleReadThread();
+
+            // Hide console text if user has option enabled
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+            if (cfgHandler.Config.CoreOptions.hideAllQlConsoleText)
+            {
+                QlCommands.DisableConsolePrinting();
+            }
+
             // Are we connected?
             await CheckQlServerConnectionExists();
             if (!ServerInfo.IsQlConnectedToServer)
@@ -241,6 +259,7 @@ namespace SSB.Core
             }
             // Get player listing and perform initilization tasks
             GetServerInformation();
+
             // We're live
             IsMonitoringServer = true;
         }
@@ -253,6 +272,15 @@ namespace SSB.Core
             QlCommands.ClearQlWinConsole();
             await QlCommands.CheckMainMenuStatus();
             await QlCommands.CheckCmdStatus();
+            QlCommands.QlCmdClear();
+        }
+
+        /// <summary>
+        ///     Gets the server address.
+        /// </summary>
+        public void CheckServerAddress()
+        {
+            QlCommands.RequestServerAddress();
             QlCommands.QlCmdClear();
         }
 
@@ -275,7 +303,7 @@ namespace SSB.Core
             // Enable developer mode
             QlCommands.EnableDeveloperMode();
             // Delay some initilization tasks and complete initilization
-            StartDelayedInit(InitDelay);
+            StartDelayedInitTasks(InitDelay);
             QlCommands.ClearQlWinConsole();
             Log.Write("Requesting server information.", _logClassType, _logPrefix);
         }
@@ -359,23 +387,11 @@ namespace SSB.Core
         }
 
         /// <summary>
-        ///     Gets the bot's name from the configuration file.
-        /// </summary>
-        private string GetAccountNameFromConfig()
-        {
-            var cfgHandler = new ConfigHandler();
-            cfgHandler.VerifyConfigLocation();
-            cfgHandler.ReadConfiguration();
-
-            return cfgHandler.Config.CoreOptions.accountName;
-        }
-
-        /// <summary>
         ///     Method that is executed to finalize the delayed initilization tasks.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
-        private async void InitTimerOnElapsed(object sender, ElapsedEventArgs e)
+        private async void DelayedInitTaskTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             QlCommands.ClearQlWinConsole();
             // Synchronous
@@ -390,14 +406,31 @@ namespace SSB.Core
             // Initiate modules such as MOTD and others that can't be started until after we're live
             Mod.Motd.Init();
 
+            // Get IP
+            CheckServerAddress();
+
             // Wait 2 sec then clear the internal console
             await Task.Delay(2*1000);
             QlCommands.ClearQlWinConsole();
 
+            // Update UI status bar with IP
+            UserInterface.UpdateMonitoringStatusUi(true, ServerInfo.CurrentServerAddress);
+
             // Initialization is fully complete, we can accept user commands now.
             IsInitComplete = true;
-            _initTimer.Enabled = false;
-            _initTimer = null;
+            _delayedInitTaskTimer.Enabled = false;
+            _delayedInitTaskTimer = null;
+        }
+
+        /// <summary>
+        ///     Gets the bot's name from the configuration file.
+        /// </summary>
+        private string GetAccountNameFromConfig()
+        {
+            var cfgHandler = new ConfigHandler();
+            cfgHandler.ReadConfiguration();
+
+            return cfgHandler.Config.CoreOptions.accountName;
         }
 
         /// <summary>
@@ -498,10 +531,10 @@ namespace SSB.Core
         ///     Starts the delayed initialization steps.
         /// </summary>
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
-        private void StartDelayedInit(double seconds)
+        private void StartDelayedInitTasks(double seconds)
         {
-            _initTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
-            _initTimer.Elapsed += InitTimerOnElapsed;
+            _delayedInitTaskTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
+            _delayedInitTaskTimer.Elapsed += DelayedInitTaskTimerOnElapsed;
         }
     }
 }

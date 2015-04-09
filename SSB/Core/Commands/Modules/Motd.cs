@@ -37,22 +37,6 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the MOTD message to repeat.
-        /// </summary>
-        /// <value>
-        ///     The MOTD message to repeat.
-        /// </value>
-        public string Message { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the message repeat time.
-        /// </summary>
-        /// <value>
-        ///     The message repeat time.
-        /// </value>
-        public int RepeatInterval { get; set; }
-
-        /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
@@ -83,6 +67,14 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets or sets the MOTD message to repeat.
+        /// </summary>
+        /// <value>
+        ///     The MOTD message to repeat.
+        /// </value>
+        public string Message { get; set; }
+
+        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -105,12 +97,29 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets or sets the message repeat time.
+        /// </summary>
+        /// <value>
+        ///     The message repeat time.
+        /// </value>
+        public int RepeatInterval { get; set; }
+
+        /// <summary>
         ///     Gets the command's status message.
         /// </summary>
         /// <value>
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
+
+        /// <summary>
+        ///     Deactivates the module.
+        /// </summary>
+        /// <remarks>This is called from the UI context.</remarks>
+        public void Deactivate()
+        {
+            _motd.StopMotdTimer();
+        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -204,6 +213,24 @@ namespace SSB.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to set the motd on load.</remarks>
+        /// <remarks>This is called from the UI context.</remarks>
+        public void Init()
+        {
+            // Loaded from UI context
+            _configHandler.ReadConfiguration();
+            var interval = _configHandler.Config.MotdOptions.repeatInterval;
+            var message = _configHandler.Config.MotdOptions.message;
+            var active = _configHandler.Config.MotdOptions.isActive;
+            if ((!active) || (string.IsNullOrEmpty(message)) || (interval <= MinRepeatThresholdStart)) return;
+            _motd.Message = message;
+            _motd.RepeatInterval = interval;
+            _motd.RestartMotdTimer();
+        }
+
+        /// <summary>
         ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
@@ -221,10 +248,10 @@ namespace SSB.Core.Commands.Modules
             Message = _configHandler.Config.MotdOptions.message;
             RepeatInterval = _configHandler.Config.MotdOptions.repeatInterval;
 
-            Log.WriteCritical(string.Format(
-                "Initial load of MOTD module configuration - active: {0}, message: {1}," +
-                " will repeat every: {2} seconds",
-                (Active ? "YES" : "NO"), Message, RepeatInterval), _logClassType, _logPrefix);
+            Log.Write(string.Format(
+                "Active: {0}, message is: \"{1}\". Will repeat every: {2} {3}",
+                (Active ? "YES" : "NO"), Message, RepeatInterval,
+                (RepeatInterval != 1) ? "minutes" : "minute"), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -265,33 +292,6 @@ namespace SSB.Core.Commands.Modules
 
             // Reflect changes in UI
             _ssb.UserInterface.PopulateModMotdUi();
-        }
-
-        /// <summary>
-        ///     Deactivates the module.
-        /// </summary>
-        /// <remarks>This is called from the UI context.</remarks>
-        public void Deactivate()
-        {
-            _motd.StopMotdTimer();
-        }
-
-        /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to set the motd on load.</remarks>
-        /// <remarks>This is called from the UI context.</remarks>
-        public void Init()
-        {
-            // Loaded from UI context
-            _configHandler.ReadConfiguration();
-            var interval = _configHandler.Config.MotdOptions.repeatInterval;
-            var message = _configHandler.Config.MotdOptions.message;
-            var active = _configHandler.Config.MotdOptions.isActive;
-            if ((!active) || (string.IsNullOrEmpty(message)) || (interval <= MinRepeatThresholdStart)) return;
-            _motd.Message = message;
-            _motd.RepeatInterval = interval;
-            _motd.RestartMotdTimer();
         }
 
         /// <summary>

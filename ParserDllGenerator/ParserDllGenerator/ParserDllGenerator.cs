@@ -4,6 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace ParserDllGenerator
 {
+    /// <summary>
+    /// This class generates an assembly (.dll file) that contains the regular expressions
+    /// that SSB uses to interpret QL events. The separate assembly method is preferred according to
+    /// MSDN's "Best Practices for Regular Expressions in the .NET Framework", particularly the section titled:
+    /// "Regular Expressions: Compiled to an Assembly"
+    /// (https://msdn.microsoft.com/en-us/library/gg578045%28v=vs.110%29.aspx)
+    /// </summary>
     public class ParserDllGenerator
     {
         /// <summary>
@@ -13,7 +20,7 @@ namespace ParserDllGenerator
         ///     When this runs, it generates an assembly (.dll) containing the regexes that SSB will use.
         ///     The SSB Visual Studio solution is currently set to silently execute ParserDllGenerator.exe 
         ///     to generate the .dll every time the ParserDllGenerator solution successfully builds
-        ///     (before SSB itself builds) to keep the referenced assembly up to date.
+        ///     (which is set to build before SSB itself builds) to keep the referenced assembly up to date.
         /// </remarks>
         public static void Main()
         {
