@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B348BB59-E933-41AD-8ADF-E0DBFA3B8F07}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SST</RootNamespace>
+    <AssemblyName>SST</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>d87647ec</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="IrcDotNet">
+      <HintPath>..\ExternalProjects\IrcDotNet\source\IrcDotNet\bin\Release\IrcDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Parser">
+      <HintPath>..\ParserDllGenerator\ParserDllGenerator\bin\Release\Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Config\ConfigHandler.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Core\CoreOptions.cs" />
+    <Compile Include="Config\Modules\AccountDateOptions.cs" />
+    <Compile Include="Config\Modules\AccuracyOptions.cs" />
+    <Compile Include="Config\Modules\AutoVoterOptions.cs" />
+    <Compile Include="Config\Modules\EarlyQuitOptions.cs" />
+    <Compile Include="Config\Modules\EloLimitOptions.cs" />
+    <Compile Include="Config\Modules\IrcOptions.cs" />
+    <Compile Include="Config\Modules\MotdOptions.cs" />
+    <Compile Include="Config\Modules\PickupOptions.cs" />
+    <Compile Include="Config\Modules\ServersOptions.cs" />
+    <Compile Include="Core\CommandList.cs" />
+    <Compile Include="Core\CommandProcessor.cs" />
+    <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
+    <Compile Include="Core\Commands\Admin\MapCmd.cs" />
+    <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
+    <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
+    <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
+    <Compile Include="Core\Commands\Modules\Accuracy.cs" />
+    <Compile Include="Core\Commands\Modules\AutoVoter.cs" />
+    <Compile Include="Core\Commands\Modules\EarlyQuit.cs" />
+    <Compile Include="Core\Commands\Modules\Irc.cs" />
+    <Compile Include="Core\Commands\Modules\Motd.cs" />
+    <Compile Include="Core\Commands\Modules\Pickup.cs" />
+    <Compile Include="Core\Commands\Modules\Servers.cs" />
+    <Compile Include="Core\Commands\None\AcceptTeamSuggestCmd.cs" />
+    <Compile Include="Core\Commands\None\AccessCmd.cs" />
+    <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
+    <Compile Include="Core\Commands\None\EarlyQuitCmd.cs" />
+    <Compile Include="Core\Commands\None\EloCmd.cs" />
+    <Compile Include="Core\Commands\None\FindPlayerCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupAddCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupCapCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupPickCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupRemoveCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupSubCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupWhoCmd.cs" />
+    <Compile Include="Core\Commands\None\RejectTeamSuggestCmd.cs" />
+    <Compile Include="Core\Commands\None\SeenCmd.cs" />
+    <Compile Include="Core\Commands\None\AccCmd.cs" />
+    <Compile Include="Core\Commands\None\ServersCmd.cs" />
+    <Compile Include="Core\Commands\None\SuggestTeamsCmd.cs" />
+    <Compile Include="Core\Commands\None\VersionCmd.cs" />
+    <Compile Include="Core\Commands\Owner\ShutdownCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\AllReadyCmd.cs" />
+    <Compile Include="Core\Commands\Owner\DeOpCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\ForceJoinBlueCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\ForceJoinRedCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\ForceJoinSpecCmd.cs" />
+    <Compile Include="Core\Commands\Admin\KickBanCmd.cs" />
+    <Compile Include="Core\Commands\Modules\AccountDateLimit.cs" />
+    <Compile Include="Core\Commands\Admin\AddUserCmd.cs" />
+    <Compile Include="Core\Commands\Admin\DelUserCmd.cs" />
+    <Compile Include="Core\Commands\Modules\EloLimit.cs" />
+    <Compile Include="Core\Commands\None\HelpCmd.cs" />
+    <Compile Include="Core\Commands\Admin\ModuleCmd.cs" />
+    <Compile Include="Core\Commands\Modules\ModuleManager.cs" />
+    <Compile Include="Core\Commands\SuperUser\InviteCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\LockCmd.cs" />
+    <Compile Include="Core\Commands\Admin\MuteCmd.cs" />
+    <Compile Include="Core\Commands\Owner\OpCmd.cs" />
+    <Compile Include="Core\Commands\Admin\PauseCmd.cs" />
+    <Compile Include="Core\Commands\Owner\StopServerCmd.cs" />
+    <Compile Include="Core\Commands\Admin\UnbanCmd.cs" />
+    <Compile Include="Core\Commands\None\PickupCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\ReloadCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\UnlockCmd.cs" />
+    <Compile Include="Core\Commands\Admin\UnmuteCmd.cs" />
+    <Compile Include="Core\Commands\Admin\UnpauseCmd.cs" />
+    <Compile Include="Core\Modules\EarlyQuitHandler.cs" />
+    <Compile Include="Core\Modules\Irc\IrcCommandList.cs" />
+    <Compile Include="Core\Modules\Irc\IrcEventHandlers.cs" />
+    <Compile Include="Core\Modules\Irc\IrcHelpCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcModsCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcMonitorCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcOpMeCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcQlCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcSayCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcCommandProcessor.cs" />
+    <Compile Include="Core\Modules\Irc\IrcEvents.cs" />
+    <Compile Include="Core\Modules\Irc\IrcManager.cs" />
+    <Compile Include="Core\Modules\Irc\IrcSayTeamCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcStatusCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcUsersCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcVersionCmd.cs" />
+    <Compile Include="Core\Modules\Irc\IrcWhoCmd.cs" />
+    <Compile Include="Core\Modules\MotdHandler.cs" />
+    <Compile Include="Core\Modules\PickupCaptains.cs" />
+    <Compile Include="Core\Modules\PickupManager.cs" />
+    <Compile Include="Core\Modules\PickupPlayers.cs" />
+    <Compile Include="Core\BanManager.cs" />
+    <Compile Include="Core\ServerInfo.cs" />
+    <Compile Include="Core\TeamBalancer.cs" />
+    <Compile Include="Core\VoteHandler.cs" />
+    <Compile Include="Core\VoteManager.cs" />
+    <Compile Include="Database\DbBans.cs" />
+    <Compile Include="Database\DbElo.cs" />
+    <Compile Include="Database\DbPickups.cs" />
+    <Compile Include="Database\DbQuits.cs" />
+    <Compile Include="Database\DbRegistrationDates.cs" />
+    <Compile Include="Database\DbSeenDates.cs" />
+    <Compile Include="Enums\BanType.cs" />
+    <Compile Include="Enums\IntendedVoteResult.cs" />
+    <Compile Include="Enums\IrcUserLevel.cs" />
+    <Compile Include="Enums\ReadyStatus.cs" />
+    <Compile Include="Enums\TeamBalanceVote.cs" />
+    <Compile Include="Enums\UserDbResult.cs" />
+    <Compile Include="Enums\QlGameStates.cs" />
+    <Compile Include="Enums\QlGameTypes.cs" />
+    <Compile Include="Enums\VoteType.cs" />
+    <Compile Include="Interfaces\IBotCommand.cs" />
+    <Compile Include="Interfaces\IIrcCommand.cs" />
+    <Compile Include="Interfaces\IModule.cs" />
+    <Compile Include="Model\AccuracyInfo.cs" />
+    <Compile Include="Model\AutoVote.cs" />
+    <Compile Include="Model\BanInfo.cs" />
+    <Compile Include="Model\CmdArgs.cs" />
+    <Compile Include="Model\CommonSqliteDb.cs" />
+    <Compile Include="Model\EarlyQuitter.cs" />
+    <Compile Include="Model\PickupInfo.cs" />
+    <Compile Include="Model\QlRanks\Ca.cs" />
+    <Compile Include="Model\QlRanks\Ctf.cs" />
+    <Compile Include="Model\QlRanks\Duel.cs" />
+    <Compile Include="Model\QlRanks\EloData.cs" />
+    <Compile Include="Model\QlRanks\Ffa.cs" />
+    <Compile Include="Model\QlRanks\QlRanks.cs" />
+    <Compile Include="Model\QlRanks\QlRanksPlayer.cs" />
+    <Compile Include="Model\QlRanks\Tdm.cs" />
+    <Compile Include="Model\QuakeLiveApi\FilterObject.cs" />
+    <Compile Include="Model\QuakeLiveApi\Player.cs" />
+    <Compile Include="Model\QuakeLiveApi\Server.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\Vote.cs" />
+    <Compile Include="Ui\CustGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ui\UserInterface.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\UserInterface.Designer.cs">
+      <DependentUpon>UserInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Validation\CoreOptionsValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\EarlyQuitValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\AccountDateLimitValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\EloLimitValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\IrcValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\MotdValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\PickupValidator.cs" />
+    <Compile Include="Ui\Validation\Modules\ServerListValidator.cs" />
+    <Compile Include="Util\ExpirationDateGenerator.cs" />
+    <Compile Include="Util\Filepaths.cs" />
+    <Compile Include="Interfaces\IConfiguration.cs" />
+    <Compile Include="Enums\QlCommandType.cs" />
+    <Compile Include="Core\ConsoleTextProcessor.cs" />
+    <Compile Include="Util\Log.cs" />
+    <Compile Include="Util\Parser.cs" />
+    <Compile Include="Core\PlayerEventProcessor.cs" />
+    <Compile Include="Model\PlayerInfo.cs" />
+    <Compile Include="EntryPoint.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\QlCommands.cs" />
+    <Compile Include="Util\QlAccountDateChecker.cs" />
+    <Compile Include="Util\QlLocations.cs" />
+    <Compile Include="Util\QlRanksHelper.cs" />
+    <Compile Include="Util\QlRemoteInfoRetriever.cs" />
+    <Compile Include="Util\QLWindowUtils.cs" />
+    <Compile Include="Core\ServerEventProcessor.cs" />
+    <Compile Include="Core\SynServerTool.cs" />
+    <Compile Include="Enums\Team.cs" />
+    <Compile Include="Enums\UserLevel.cs" />
+    <Compile Include="Database\DbUsers.cs" />
+    <Compile Include="Util\RestApiQuery.cs" />
+    <Compile Include="Util\Helpers.cs" />
+    <Compile Include="Util\TextColor.cs" />
+    <Compile Include="Util\Win32Api.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Ui\UserInterface.resx">
+      <DependentUpon>UserInterface.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logHeaderPictureBox.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
