@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -103,7 +102,10 @@ namespace SST.Core
             _oldLastLineText = msg;
 
             // See if it's something we've issued
-            if (msg.StartsWith("]/")) return;
+            if (msg.StartsWith("]/"))
+            {
+                HandleOwnCommand(msg);
+            }
 
             //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
@@ -171,7 +173,7 @@ namespace SST.Core
 
         /// <summary>
         ///     Detects various events (such as connections, disconnections, chat messages, etc.)
-        ///     that occur as short lines of text within the console.
+        ///     that occur as a single line of text within the console.
         /// </summary>
         /// <param name="events">The events.</param>
         private void DetectConsoleEvent(string[] events)
@@ -189,6 +191,8 @@ namespace SST.Core
                 if (NotConnectedMsgDetected(text)) continue;
                 // render init start or init finished message detected
                 if (RenderInitDetected(text)) continue;
+                // QL Z_Malloc crash detected
+                if (ZmallocCrashDetected(text)) continue;
                 // -----------------------------------------------------------------
                 // Avoid event detection below if there's no connection to a server
                 if (!_sst.IsMonitoringServer) return;
@@ -357,6 +361,25 @@ namespace SST.Core
 
             _sst.ServerEventProcessor.SetServerGameType(m.Groups["gametype"].Value);
             return true;
+        }
+
+        /// <summary>
+        /// Handles the user's own console commands.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <remarks>
+        /// This is used in rare circumstances when we want to actually
+        /// analyze what the user is sending to the game.
+        /// </remarks>
+        private void HandleOwnCommand(string text)
+        {
+            if (text.StartsWith("]/developer 0", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (!_sst.IsMonitoringServer) return;
+                Log.Write("Detected that user attempted to disable developer mode while server monitoring was active.",
+                    _logClassType, _logPrefix);
+                _sst.HandleDevModeDisabled();
+            }
         }
 
         /// <summary>
@@ -704,6 +727,23 @@ namespace SST.Core
             _voteHandler.HandleVoteStart(text);
             var match = _sst.Parser.ScmdVoteCalledTagAndPlayer.Match(text);
             _voteHandler.VoteCaller = Helpers.GetStrippedName(match.Groups["clanandplayer"].Value);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of a message that indicates that QL has
+        /// crashed due to the infamous (and yet unfixed 15+ year old memory allocation problem).
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>
+        /// <c>true</c> if the ZMalloc crash text was detected, otherwise <c>false</c>.
+        /// </returns>
+        private bool ZmallocCrashDetected(string text)
+        {
+            if (!_sst.Parser.MsgZmallocCrash.IsMatch(text)) return false;
+            Log.Write("Detected a Z_Malloc crash. Will prompt and terminate.",
+                _logClassType, _logPrefix);
+            _sst.TerminateOnZmallocCrash();
             return true;
         }
     }

@@ -38,11 +38,11 @@ namespace SST.Util
 
         // Get text of console window
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, StringBuilder lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, StringBuilder lParam);
 
         // Get length of console window text
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         // Send text to console edit control; note don't set CharSet.Auto since using MarshalAs
         // http://www.pinvoke.net/default.aspx/user32.sendmessage
@@ -51,7 +51,7 @@ namespace SST.Util
 
         // Get total selection length (for calculating when an auto-clear needs to be sent so buffer isn't full)
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr hWnd, uint Msg, out int wParam, out int lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint msg, out int wParam, out int lParam);
 
         // Focus window (also, in testing environment, if viewlog "1" then you will have annoying
         //loss of window focus while playing -- doesn't apply to real game environment where viewlog is cheat protected)
@@ -66,6 +66,6 @@ namespace SST.Util
         // Moving the GUI window, which is a borderless form (FormBorderStyle 'None')
         // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
     }
 }

@@ -36,100 +36,14 @@
             this.logContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.copyLogEventsClipboardButton = new System.Windows.Forms.Button();
             this.clearLogEventsButton = new System.Windows.Forms.Button();
+            this.logEventsGroupBox = new SST.Ui.CustGroupBox();
+            this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.logHeaderDescLabel = new System.Windows.Forms.Label();
             this.logHeaderLabel = new System.Windows.Forms.Label();
             this.logHeaderPictureBox = new System.Windows.Forms.PictureBox();
             this.coreOptionsTab = new System.Windows.Forms.TabPage();
             this.coreContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.coreResetAllButton = new System.Windows.Forms.Button();
-            this.coreHeaderDescLabel = new System.Windows.Forms.Label();
-            this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.coreHeaderLabel = new System.Windows.Forms.Label();
-            this.modulesTab = new System.Windows.Forms.TabPage();
-            this.moduleTabControl = new System.Windows.Forms.TabControl();
-            this.accountDateTab = new System.Windows.Forms.TabPage();
-            this.modAccDateContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAccDateHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modAccDateHeaderLabel = new System.Windows.Forms.Label();
-            this.modAccDateHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.accuracyTab = new System.Windows.Forms.TabPage();
-            this.modAccuracyContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAccuracyHeaderLabelDesc = new System.Windows.Forms.Label();
-            this.modAccuracyHeaderLabel = new System.Windows.Forms.Label();
-            this.modAccuracyHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.autoVoterTab = new System.Windows.Forms.TabPage();
-            this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modAutoVoterHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modAutoVoterHeaderLabel = new System.Windows.Forms.Label();
-            this.modAutoVoterHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.earlyQuitTab = new System.Windows.Forms.TabPage();
-            this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modEarlyQuitHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modEarlyQuitHeaderLabel = new System.Windows.Forms.Label();
-            this.modEarlyQuitHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.eloLimitTab = new System.Windows.Forms.TabPage();
-            this.modEloLimiterContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modEloLimiterHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modEloLimiterHeaderLabel = new System.Windows.Forms.Label();
-            this.modEloLimiterHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.ircTab = new System.Windows.Forms.TabPage();
-            this.modIRCContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modIRCHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modIRCHeaderLabel = new System.Windows.Forms.Label();
-            this.modIRCHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.motdTab = new System.Windows.Forms.TabPage();
-            this.modMOTDContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modMOTDHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modMOTDHeaderLabel = new System.Windows.Forms.Label();
-            this.modMOTDHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.pickupTab = new System.Windows.Forms.TabPage();
-            this.modPickupContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modPickupHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modPickupHeaderLabel = new System.Windows.Forms.Label();
-            this.modPickupHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.serversTab = new System.Windows.Forms.TabPage();
-            this.modServerListContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.modServerListHeaderDescLabel = new System.Windows.Forms.Label();
-            this.modServerListHeaderLabel = new System.Windows.Forms.Label();
-            this.modServerListHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.usersTab = new System.Windows.Forms.TabPage();
-            this.usrMContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.usrMHeaderDescLabel = new System.Windows.Forms.Label();
-            this.usrMHeaderLabel = new System.Windows.Forms.Label();
-            this.usrMHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.banTab = new System.Windows.Forms.TabPage();
-            this.banMContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.banMHeaderDescLabel = new System.Windows.Forms.Label();
-            this.banMHeaderLabel = new System.Windows.Forms.Label();
-            this.banMHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.aboutTab = new System.Windows.Forms.TabPage();
-            this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
-            this.abtHeaderDescLabel = new System.Windows.Forms.Label();
-            this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
-            this.abtHeaderLabel = new System.Windows.Forms.Label();
-            this.uiTabImageList = new System.Windows.Forms.ImageList(this.components);
-            this.sstStartButton = new System.Windows.Forms.Button();
-            this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.sstStopButton = new System.Windows.Forms.Button();
-            this.sstResetButton = new System.Windows.Forms.Button();
-            this.minimizeButton = new System.Windows.Forms.PictureBox();
-            this.closeButton = new System.Windows.Forms.PictureBox();
-            this.titleBarVersionLabel = new System.Windows.Forms.Label();
-            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.usrMCurrentUserBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.banMCurrentBanBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.sysTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.sysTrayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.sysTrayExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.monitorIconPictureBox = new System.Windows.Forms.PictureBox();
-            this.activeModulesLabel = new System.Windows.Forms.Label();
-            this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
-            this.monitorStatusLabel = new System.Windows.Forms.Label();
-            this.statusPanel = new System.Windows.Forms.Panel();
-            this.logEventsGroupBox = new SST.Ui.CustGroupBox();
-            this.logConsoleTextBox = new System.Windows.Forms.TextBox();
             this.coreSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.coreResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.coreLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -150,6 +64,13 @@
             this.coreAppendEventsCheckBox = new System.Windows.Forms.CheckBox();
             this.coreAutoMonitorStartCheckBox = new System.Windows.Forms.CheckBox();
             this.coreLogEventsDiskCheckBox = new System.Windows.Forms.CheckBox();
+            this.coreHeaderDescLabel = new System.Windows.Forms.Label();
+            this.coreHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.coreHeaderLabel = new System.Windows.Forms.Label();
+            this.modulesTab = new System.Windows.Forms.TabPage();
+            this.moduleTabControl = new System.Windows.Forms.TabControl();
+            this.accountDateTab = new System.Windows.Forms.TabPage();
+            this.modAccDateContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modAccDateSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modAccDateResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccDateLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -159,12 +80,22 @@
             this.modAccDateAccAgeTextBox = new System.Windows.Forms.TextBox();
             this.modAccDateAccAgeLabel = new System.Windows.Forms.Label();
             this.modAccDateEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modAccDateHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modAccDateHeaderLabel = new System.Windows.Forms.Label();
+            this.modAccDateHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.accuracyTab = new System.Windows.Forms.TabPage();
+            this.modAccuracyContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modAccuracySettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modAccuracyResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccuracyLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccuracySaveSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAccuracyOptGroupBox = new SST.Ui.CustGroupBox();
             this.modAccuracyEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modAccuracyHeaderLabelDesc = new System.Windows.Forms.Label();
+            this.modAccuracyHeaderLabel = new System.Windows.Forms.Label();
+            this.modAccuracyHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.autoVoterTab = new System.Windows.Forms.TabPage();
+            this.modAutoVoterContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modAutoVoterSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modAutoVoterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modAutoVoterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -184,6 +115,11 @@
             this.modAutoVoterRejectRadioButton = new System.Windows.Forms.RadioButton();
             this.modAutoVoterPassRadioButton = new System.Windows.Forms.RadioButton();
             this.modAutoVoterActionLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterHeaderLabel = new System.Windows.Forms.Label();
+            this.modAutoVoterHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.earlyQuitTab = new System.Windows.Forms.TabPage();
+            this.modEarlyQuitContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modEarlyQuitSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modEarlyQuitResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modEarlyQuitLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -200,6 +136,11 @@
             this.modEarlyQuitTimeLabel = new System.Windows.Forms.Label();
             this.modEarlyQuitTimeScaleComboxBox = new System.Windows.Forms.ComboBox();
             this.modEarlyQuitMaxQuitsLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitHeaderLabel = new System.Windows.Forms.Label();
+            this.modEarlyQuitHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.eloLimitTab = new System.Windows.Forms.TabPage();
+            this.modEloLimiterContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modEloLimiterSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modEloLimiterResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modEloLimiterLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -211,6 +152,11 @@
             this.modEloLimiterMinEloTextBox = new System.Windows.Forms.TextBox();
             this.modEloLimiterMaxEloLabel = new System.Windows.Forms.Label();
             this.modEloLimiterEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modEloLimiterHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterHeaderLabel = new System.Windows.Forms.Label();
+            this.modEloLimiterHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.ircTab = new System.Windows.Forms.TabPage();
+            this.modIRCContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modIRCSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modIRCResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modIRCLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -245,6 +191,11 @@
             this.modIRCQNetUserNameTextBox = new System.Windows.Forms.TextBox();
             this.modIRCQNetUserNameLabel = new System.Windows.Forms.Label();
             this.modIRCEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modIRCHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modIRCHeaderLabel = new System.Windows.Forms.Label();
+            this.modIRCHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.motdTab = new System.Windows.Forms.TabPage();
+            this.modMOTDContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modMOTDSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modMOTDResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modMOTDLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -256,6 +207,11 @@
             this.modMOTDRepeatMsgTextBox = new System.Windows.Forms.TextBox();
             this.modMOTDRepeatTimeTextBox = new System.Windows.Forms.TextBox();
             this.modMOTDEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modMOTDHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modMOTDHeaderLabel = new System.Windows.Forms.Label();
+            this.modMOTDHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.pickupTab = new System.Windows.Forms.TabPage();
+            this.modPickupContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modPickupSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modPickupResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modPickupLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -277,6 +233,11 @@
             this.modPickupMaxSubsLabel = new System.Windows.Forms.Label();
             this.modPickupMaxSubsTextBox = new System.Windows.Forms.TextBox();
             this.modPickupEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modPickupHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modPickupHeaderLabel = new System.Windows.Forms.Label();
+            this.modPickupHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.serversTab = new System.Windows.Forms.TabPage();
+            this.modServerListContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.modServerListSettingsGroupBox = new SST.Ui.CustGroupBox();
             this.modServerListResetSettingsPictureBox = new System.Windows.Forms.PictureBox();
             this.modServerListLoadSettingsPictureBox = new System.Windows.Forms.PictureBox();
@@ -288,6 +249,11 @@
             this.modServerListMaxServersTextBox = new System.Windows.Forms.TextBox();
             this.modServerListTimeBetweenLabel = new System.Windows.Forms.Label();
             this.modServerListEnableCheckBox = new System.Windows.Forms.CheckBox();
+            this.modServerListHeaderDescLabel = new System.Windows.Forms.Label();
+            this.modServerListHeaderLabel = new System.Windows.Forms.Label();
+            this.modServerListHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.usersTab = new System.Windows.Forms.TabPage();
+            this.usrMContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.usrMCurUsersGroupBox = new SST.Ui.CustGroupBox();
             this.usrMDelAllUsersButton = new System.Windows.Forms.Button();
             this.usrMDelUserButton = new System.Windows.Forms.Button();
@@ -298,6 +264,11 @@
             this.usrMAddUserButton = new System.Windows.Forms.Button();
             this.usrMUserAccessLabel = new System.Windows.Forms.Label();
             this.usrMUserAccessComboBox = new System.Windows.Forms.ComboBox();
+            this.usrMHeaderDescLabel = new System.Windows.Forms.Label();
+            this.usrMHeaderLabel = new System.Windows.Forms.Label();
+            this.usrMHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.banTab = new System.Windows.Forms.TabPage();
+            this.banMContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.banMCurBansGroupBox = new SST.Ui.CustGroupBox();
             this.banMDelExpiredBansButton = new System.Windows.Forms.Button();
             this.banMDelAllBansButton = new System.Windows.Forms.Button();
@@ -311,7 +282,13 @@
             this.banMUserQlNameTextBox = new System.Windows.Forms.TextBox();
             this.banMAddBanButton = new System.Windows.Forms.Button();
             this.banMBanDurationLabel = new System.Windows.Forms.Label();
+            this.banMHeaderDescLabel = new System.Windows.Forms.Label();
+            this.banMHeaderLabel = new System.Windows.Forms.Label();
+            this.banMHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.aboutTab = new System.Windows.Forms.TabPage();
+            this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.aboutGroupBox = new SST.Ui.CustGroupBox();
+            this.abtCheckUpdateButton = new System.Windows.Forms.Button();
             this.abtWebsiteButton = new System.Windows.Forms.Button();
             this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
             this.abtAuthorLabel = new System.Windows.Forms.Label();
@@ -322,51 +299,149 @@
             this.abtDescLabel = new System.Windows.Forms.Label();
             this.abtSSTColorLabel = new System.Windows.Forms.Label();
             this.abtIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.abtHeaderDescLabel = new System.Windows.Forms.Label();
+            this.abtHeaderPictureBox = new System.Windows.Forms.PictureBox();
+            this.abtHeaderLabel = new System.Windows.Forms.Label();
+            this.uiTabImageList = new System.Windows.Forms.ImageList(this.components);
+            this.sstStartButton = new System.Windows.Forms.Button();
+            this.coreToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.sstStopButton = new System.Windows.Forms.Button();
+            this.sstResetButton = new System.Windows.Forms.Button();
+            this.minimizeButton = new System.Windows.Forms.PictureBox();
+            this.closeButton = new System.Windows.Forms.PictureBox();
+            this.titleBarVersionLabel = new System.Windows.Forms.Label();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.modAutoVoterCurrentVotesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.modEarlyQuitCurrentQuitBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.usrMCurrentUserBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.banMCurrentBanBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.sysTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.sysTrayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.sysTrayWebsiteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sysTrayUpdateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sysTrayExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.monitorIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.activeModulesLabel = new System.Windows.Forms.Label();
+            this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.monitorStatusLabel = new System.Windows.Forms.Label();
+            this.statusPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.sstLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
             this.logContainerGroupBox.SuspendLayout();
+            this.logEventsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).BeginInit();
             this.coreOptionsTab.SuspendLayout();
             this.coreContainerGroupBox.SuspendLayout();
+            this.coreSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).BeginInit();
+            this.coreCfgGroupBox.SuspendLayout();
+            this.coreAccountGroupBox.SuspendLayout();
+            this.coreInterfaceGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).BeginInit();
             this.modulesTab.SuspendLayout();
             this.moduleTabControl.SuspendLayout();
             this.accountDateTab.SuspendLayout();
             this.modAccDateContainerGroupBox.SuspendLayout();
+            this.modAccDateSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).BeginInit();
+            this.modAccDateOptGroupBox.SuspendLayout();
+            this.modAccDateOptAccAgeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccDateHeaderPictureBox)).BeginInit();
             this.accuracyTab.SuspendLayout();
             this.modAccuracyContainerGroupBox.SuspendLayout();
+            this.modAccuracySettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).BeginInit();
+            this.modAccuracyOptGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).BeginInit();
             this.autoVoterTab.SuspendLayout();
             this.modAutoVoterContainerGroupBox.SuspendLayout();
+            this.modAutoVoterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).BeginInit();
+            this.modAutoVoterOptCurVotesGroupBox.SuspendLayout();
+            this.modAutoVoterOptVoteDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterHeaderPictureBox)).BeginInit();
             this.earlyQuitTab.SuspendLayout();
             this.modEarlyQuitContainerGroupBox.SuspendLayout();
+            this.modEarlyQuitSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).BeginInit();
+            this.modEarlyQuitOptCurQuitsGroupBox.SuspendLayout();
+            this.modEarlyQuitOptDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitHeaderPictureBox)).BeginInit();
             this.eloLimitTab.SuspendLayout();
             this.modEloLimiterContainerGroupBox.SuspendLayout();
+            this.modEloLimiterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).BeginInit();
+            this.modEloLimiterOptGroupBox.SuspendLayout();
+            this.modEloLimiterOptEloGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterHeaderPictureBox)).BeginInit();
             this.ircTab.SuspendLayout();
             this.modIRCContainerGroupBox.SuspendLayout();
+            this.modIRCSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).BeginInit();
+            this.modIRCOptGroupBox.SuspendLayout();
+            this.modIRCOptServerGroupBox.SuspendLayout();
+            this.modIRCOptNamingGroupBox.SuspendLayout();
+            this.modIRCOptQuakeNetGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modIRCHeaderPictureBox)).BeginInit();
             this.motdTab.SuspendLayout();
             this.modMOTDContainerGroupBox.SuspendLayout();
+            this.modMOTDSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).BeginInit();
+            this.modMOTDOptGroupBox.SuspendLayout();
+            this.modMOTDOptMsgRepeatGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modMOTDHeaderPictureBox)).BeginInit();
             this.pickupTab.SuspendLayout();
             this.modPickupContainerGroupBox.SuspendLayout();
+            this.modPickupSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).BeginInit();
+            this.modPickupOptGroupBox.SuspendLayout();
+            this.modPickupOptTeamSizeGroupBox.SuspendLayout();
+            this.modPickupOptNoShowsGroupBox.SuspendLayout();
+            this.modPickupOptSubsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modPickupHeaderPictureBox)).BeginInit();
             this.serversTab.SuspendLayout();
             this.modServerListContainerGroupBox.SuspendLayout();
+            this.modServerListSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).BeginInit();
+            this.modServerListOptGroupBox.SuspendLayout();
+            this.modServerListOptDisplayGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modServerListHeaderPictureBox)).BeginInit();
             this.usersTab.SuspendLayout();
             this.usrMContainerGroupBox.SuspendLayout();
+            this.usrMCurUsersGroupBox.SuspendLayout();
+            this.usrMAddUserGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.usrMHeaderPictureBox)).BeginInit();
             this.banTab.SuspendLayout();
             this.banMContainerGroupBox.SuspendLayout();
+            this.banMCurBansGroupBox.SuspendLayout();
+            this.banMAddBanGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).BeginInit();
             this.aboutTab.SuspendLayout();
             this.abtContainerGroupBox.SuspendLayout();
+            this.aboutGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).BeginInit();
@@ -379,78 +454,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.monitorIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.moduleIconPictureBox)).BeginInit();
             this.statusPanel.SuspendLayout();
-            this.logEventsGroupBox.SuspendLayout();
-            this.coreSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).BeginInit();
-            this.coreCfgGroupBox.SuspendLayout();
-            this.coreAccountGroupBox.SuspendLayout();
-            this.coreInterfaceGroupBox.SuspendLayout();
-            this.modAccDateSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).BeginInit();
-            this.modAccDateOptGroupBox.SuspendLayout();
-            this.modAccDateOptAccAgeGroupBox.SuspendLayout();
-            this.modAccuracySettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).BeginInit();
-            this.modAccuracyOptGroupBox.SuspendLayout();
-            this.modAutoVoterSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).BeginInit();
-            this.modAutoVoterOptCurVotesGroupBox.SuspendLayout();
-            this.modAutoVoterOptVoteDetailsGroupBox.SuspendLayout();
-            this.modEarlyQuitSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).BeginInit();
-            this.modEarlyQuitOptCurQuitsGroupBox.SuspendLayout();
-            this.modEarlyQuitOptDetailsGroupBox.SuspendLayout();
-            this.modEloLimiterSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).BeginInit();
-            this.modEloLimiterOptGroupBox.SuspendLayout();
-            this.modEloLimiterOptEloGroupBox.SuspendLayout();
-            this.modIRCSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).BeginInit();
-            this.modIRCOptGroupBox.SuspendLayout();
-            this.modIRCOptServerGroupBox.SuspendLayout();
-            this.modIRCOptNamingGroupBox.SuspendLayout();
-            this.modIRCOptQuakeNetGroupBox.SuspendLayout();
-            this.modMOTDSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).BeginInit();
-            this.modMOTDOptGroupBox.SuspendLayout();
-            this.modMOTDOptMsgRepeatGroupBox.SuspendLayout();
-            this.modPickupSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).BeginInit();
-            this.modPickupOptGroupBox.SuspendLayout();
-            this.modPickupOptTeamSizeGroupBox.SuspendLayout();
-            this.modPickupOptNoShowsGroupBox.SuspendLayout();
-            this.modPickupOptSubsGroupBox.SuspendLayout();
-            this.modServerListSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).BeginInit();
-            this.modServerListOptGroupBox.SuspendLayout();
-            this.modServerListOptDisplayGroupBox.SuspendLayout();
-            this.usrMCurUsersGroupBox.SuspendLayout();
-            this.usrMAddUserGroupBox.SuspendLayout();
-            this.banMCurBansGroupBox.SuspendLayout();
-            this.banMAddBanGroupBox.SuspendLayout();
-            this.aboutGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // sstLogo
@@ -546,6 +549,37 @@
             this.clearLogEventsButton.UseVisualStyleBackColor = false;
             this.clearLogEventsButton.Click += new System.EventHandler(this.clearLogEventsButton_Click);
             // 
+            // logEventsGroupBox
+            // 
+            this.logEventsGroupBox.BackColor = System.Drawing.Color.Black;
+            this.logEventsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
+            this.logEventsGroupBox.Controls.Add(this.logConsoleTextBox);
+            this.logEventsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logEventsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.logEventsGroupBox.Location = new System.Drawing.Point(3, 91);
+            this.logEventsGroupBox.Margin = new System.Windows.Forms.Padding(0);
+            this.logEventsGroupBox.Name = "logEventsGroupBox";
+            this.logEventsGroupBox.Padding = new System.Windows.Forms.Padding(0);
+            this.logEventsGroupBox.Size = new System.Drawing.Size(703, 342);
+            this.logEventsGroupBox.TabIndex = 9;
+            this.logEventsGroupBox.TabStop = false;
+            this.logEventsGroupBox.Text = "Events";
+            // 
+            // logConsoleTextBox
+            // 
+            this.logConsoleTextBox.BackColor = System.Drawing.Color.Black;
+            this.logConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logConsoleTextBox.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logConsoleTextBox.ForeColor = System.Drawing.Color.White;
+            this.logConsoleTextBox.Location = new System.Drawing.Point(6, 21);
+            this.logConsoleTextBox.Multiline = true;
+            this.logConsoleTextBox.Name = "logConsoleTextBox";
+            this.logConsoleTextBox.ReadOnly = true;
+            this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logConsoleTextBox.Size = new System.Drawing.Size(693, 314);
+            this.logConsoleTextBox.TabIndex = 0;
+            this.logConsoleTextBox.VisibleChanged += new System.EventHandler(this.logConsoleTextBox_VisibleChanged);
+            // 
             // logHeaderDescLabel
             // 
             this.logHeaderDescLabel.AutoSize = true;
@@ -621,993 +655,6 @@
             this.coreToolTip.SetToolTip(this.coreResetAllButton, "Reset all options to their defaults, \r\nincluding module options as well.");
             this.coreResetAllButton.UseVisualStyleBackColor = false;
             this.coreResetAllButton.Click += new System.EventHandler(this.coreResetAllButton_Click);
-            // 
-            // coreHeaderDescLabel
-            // 
-            this.coreHeaderDescLabel.AutoSize = true;
-            this.coreHeaderDescLabel.ForeColor = System.Drawing.Color.White;
-            this.coreHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
-            this.coreHeaderDescLabel.Name = "coreHeaderDescLabel";
-            this.coreHeaderDescLabel.Size = new System.Drawing.Size(130, 14);
-            this.coreHeaderDescLabel.TabIndex = 5;
-            this.coreHeaderDescLabel.Text = "Critical options for SST";
-            // 
-            // coreHeaderPictureBox
-            // 
-            this.coreHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreHeaderPictureBox.Image")));
-            this.coreHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.coreHeaderPictureBox.Name = "coreHeaderPictureBox";
-            this.coreHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.coreHeaderPictureBox.TabIndex = 3;
-            this.coreHeaderPictureBox.TabStop = false;
-            // 
-            // coreHeaderLabel
-            // 
-            this.coreHeaderLabel.AutoSize = true;
-            this.coreHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.coreHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.coreHeaderLabel.Location = new System.Drawing.Point(79, 18);
-            this.coreHeaderLabel.Name = "coreHeaderLabel";
-            this.coreHeaderLabel.Size = new System.Drawing.Size(192, 25);
-            this.coreHeaderLabel.TabIndex = 4;
-            this.coreHeaderLabel.Text = "SST Core Options";
-            // 
-            // modulesTab
-            // 
-            this.modulesTab.BackColor = System.Drawing.Color.Black;
-            this.modulesTab.Controls.Add(this.moduleTabControl);
-            this.modulesTab.ForeColor = System.Drawing.Color.White;
-            this.modulesTab.ImageIndex = 2;
-            this.modulesTab.Location = new System.Drawing.Point(4, 26);
-            this.modulesTab.Name = "modulesTab";
-            this.modulesTab.Size = new System.Drawing.Size(718, 485);
-            this.modulesTab.TabIndex = 2;
-            this.modulesTab.Text = "Modules";
-            // 
-            // moduleTabControl
-            // 
-            this.moduleTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.moduleTabControl.Controls.Add(this.accountDateTab);
-            this.moduleTabControl.Controls.Add(this.accuracyTab);
-            this.moduleTabControl.Controls.Add(this.autoVoterTab);
-            this.moduleTabControl.Controls.Add(this.earlyQuitTab);
-            this.moduleTabControl.Controls.Add(this.eloLimitTab);
-            this.moduleTabControl.Controls.Add(this.ircTab);
-            this.moduleTabControl.Controls.Add(this.motdTab);
-            this.moduleTabControl.Controls.Add(this.pickupTab);
-            this.moduleTabControl.Controls.Add(this.serversTab);
-            this.moduleTabControl.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.moduleTabControl.Location = new System.Drawing.Point(0, 0);
-            this.moduleTabControl.Multiline = true;
-            this.moduleTabControl.Name = "moduleTabControl";
-            this.moduleTabControl.SelectedIndex = 0;
-            this.moduleTabControl.Size = new System.Drawing.Size(722, 489);
-            this.moduleTabControl.TabIndex = 0;
-            this.moduleTabControl.SelectedIndexChanged += new System.EventHandler(this.moduleTabControl_SelectedIndexChanged);
-            // 
-            // accountDateTab
-            // 
-            this.accountDateTab.BackColor = System.Drawing.Color.Black;
-            this.accountDateTab.Controls.Add(this.modAccDateContainerGroupBox);
-            this.accountDateTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.accountDateTab.ForeColor = System.Drawing.Color.White;
-            this.accountDateTab.Location = new System.Drawing.Point(4, 25);
-            this.accountDateTab.Name = "accountDateTab";
-            this.accountDateTab.Padding = new System.Windows.Forms.Padding(3);
-            this.accountDateTab.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.accountDateTab.Size = new System.Drawing.Size(714, 460);
-            this.accountDateTab.TabIndex = 0;
-            this.accountDateTab.Text = "Account Date Limiter";
-            // 
-            // modAccDateContainerGroupBox
-            // 
-            this.modAccDateContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateSettingsGroupBox);
-            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateOptGroupBox);
-            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderDescLabel);
-            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderLabel);
-            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderPictureBox);
-            this.modAccDateContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAccDateContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAccDateContainerGroupBox.Location = new System.Drawing.Point(3, 4);
-            this.modAccDateContainerGroupBox.Name = "modAccDateContainerGroupBox";
-            this.modAccDateContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modAccDateContainerGroupBox.TabIndex = 2;
-            this.modAccDateContainerGroupBox.TabStop = false;
-            this.modAccDateContainerGroupBox.Text = "Account Date Limiter";
-            // 
-            // modAccDateHeaderDescLabel
-            // 
-            this.modAccDateHeaderDescLabel.AutoSize = true;
-            this.modAccDateHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modAccDateHeaderDescLabel.Name = "modAccDateHeaderDescLabel";
-            this.modAccDateHeaderDescLabel.Size = new System.Drawing.Size(299, 28);
-            this.modAccDateHeaderDescLabel.TabIndex = 2;
-            this.modAccDateHeaderDescLabel.Text = "Automatically kicks players who do not meet account\r\nregistration date requiremen" +
-    "ts.";
-            // 
-            // modAccDateHeaderLabel
-            // 
-            this.modAccDateHeaderLabel.AutoSize = true;
-            this.modAccDateHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modAccDateHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modAccDateHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modAccDateHeaderLabel.Name = "modAccDateHeaderLabel";
-            this.modAccDateHeaderLabel.Size = new System.Drawing.Size(314, 25);
-            this.modAccDateHeaderLabel.TabIndex = 1;
-            this.modAccDateHeaderLabel.Text = "Account Date Limiter Module";
-            // 
-            // modAccDateHeaderPictureBox
-            // 
-            this.modAccDateHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateHeaderPictureBox.Image")));
-            this.modAccDateHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modAccDateHeaderPictureBox.Name = "modAccDateHeaderPictureBox";
-            this.modAccDateHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modAccDateHeaderPictureBox.TabIndex = 0;
-            this.modAccDateHeaderPictureBox.TabStop = false;
-            // 
-            // accuracyTab
-            // 
-            this.accuracyTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.accuracyTab.Controls.Add(this.modAccuracyContainerGroupBox);
-            this.accuracyTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.accuracyTab.ForeColor = System.Drawing.Color.White;
-            this.accuracyTab.Location = new System.Drawing.Point(4, 25);
-            this.accuracyTab.Name = "accuracyTab";
-            this.accuracyTab.Padding = new System.Windows.Forms.Padding(3);
-            this.accuracyTab.Size = new System.Drawing.Size(714, 460);
-            this.accuracyTab.TabIndex = 1;
-            this.accuracyTab.Text = "Accuracy Display";
-            // 
-            // modAccuracyContainerGroupBox
-            // 
-            this.modAccuracyContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracySettingsGroupBox);
-            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyOptGroupBox);
-            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabelDesc);
-            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabel);
-            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderPictureBox);
-            this.modAccuracyContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAccuracyContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAccuracyContainerGroupBox.Location = new System.Drawing.Point(3, 4);
-            this.modAccuracyContainerGroupBox.Name = "modAccuracyContainerGroupBox";
-            this.modAccuracyContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modAccuracyContainerGroupBox.TabIndex = 3;
-            this.modAccuracyContainerGroupBox.TabStop = false;
-            this.modAccuracyContainerGroupBox.Text = "Accuracy Display";
-            // 
-            // modAccuracyHeaderLabelDesc
-            // 
-            this.modAccuracyHeaderLabelDesc.AutoSize = true;
-            this.modAccuracyHeaderLabelDesc.Location = new System.Drawing.Point(82, 47);
-            this.modAccuracyHeaderLabelDesc.Name = "modAccuracyHeaderLabelDesc";
-            this.modAccuracyHeaderLabelDesc.Size = new System.Drawing.Size(249, 28);
-            this.modAccuracyHeaderLabelDesc.TabIndex = 2;
-            this.modAccuracyHeaderLabelDesc.Text = "Allow players to check each other\'s weapon\r\naccuracies when SST is in spectator m" +
-    "ode.";
-            // 
-            // modAccuracyHeaderLabel
-            // 
-            this.modAccuracyHeaderLabel.AutoSize = true;
-            this.modAccuracyHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modAccuracyHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modAccuracyHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modAccuracyHeaderLabel.Name = "modAccuracyHeaderLabel";
-            this.modAccuracyHeaderLabel.Size = new System.Drawing.Size(271, 25);
-            this.modAccuracyHeaderLabel.TabIndex = 1;
-            this.modAccuracyHeaderLabel.Text = "Accuracy Display Module";
-            // 
-            // modAccuracyHeaderPictureBox
-            // 
-            this.modAccuracyHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyHeaderPictureBox.Image")));
-            this.modAccuracyHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modAccuracyHeaderPictureBox.Name = "modAccuracyHeaderPictureBox";
-            this.modAccuracyHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modAccuracyHeaderPictureBox.TabIndex = 0;
-            this.modAccuracyHeaderPictureBox.TabStop = false;
-            // 
-            // autoVoterTab
-            // 
-            this.autoVoterTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.autoVoterTab.Controls.Add(this.modAutoVoterContainerGroupBox);
-            this.autoVoterTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.autoVoterTab.ForeColor = System.Drawing.Color.White;
-            this.autoVoterTab.Location = new System.Drawing.Point(4, 25);
-            this.autoVoterTab.Name = "autoVoterTab";
-            this.autoVoterTab.Size = new System.Drawing.Size(714, 460);
-            this.autoVoterTab.TabIndex = 2;
-            this.autoVoterTab.Text = "Auto Voter";
-            // 
-            // modAutoVoterContainerGroupBox
-            // 
-            this.modAutoVoterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterSettingsGroupBox);
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptCurVotesGroupBox);
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptVoteDetailsGroupBox);
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderDescLabel);
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderLabel);
-            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderPictureBox);
-            this.modAutoVoterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modAutoVoterContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modAutoVoterContainerGroupBox.Location = new System.Drawing.Point(3, 4);
-            this.modAutoVoterContainerGroupBox.Name = "modAutoVoterContainerGroupBox";
-            this.modAutoVoterContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modAutoVoterContainerGroupBox.TabIndex = 4;
-            this.modAutoVoterContainerGroupBox.TabStop = false;
-            this.modAutoVoterContainerGroupBox.Text = "Automatic Voter";
-            // 
-            // modAutoVoterHeaderDescLabel
-            // 
-            this.modAutoVoterHeaderDescLabel.AutoSize = true;
-            this.modAutoVoterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modAutoVoterHeaderDescLabel.Name = "modAutoVoterHeaderDescLabel";
-            this.modAutoVoterHeaderDescLabel.Size = new System.Drawing.Size(245, 28);
-            this.modAutoVoterHeaderDescLabel.TabIndex = 2;
-            this.modAutoVoterHeaderDescLabel.Text = "Automatically pass or reject votes based on\r\nspecified criteria.";
-            // 
-            // modAutoVoterHeaderLabel
-            // 
-            this.modAutoVoterHeaderLabel.AutoSize = true;
-            this.modAutoVoterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modAutoVoterHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modAutoVoterHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modAutoVoterHeaderLabel.Name = "modAutoVoterHeaderLabel";
-            this.modAutoVoterHeaderLabel.Size = new System.Drawing.Size(265, 25);
-            this.modAutoVoterHeaderLabel.TabIndex = 1;
-            this.modAutoVoterHeaderLabel.Text = "Automatic Voter Module";
-            // 
-            // modAutoVoterHeaderPictureBox
-            // 
-            this.modAutoVoterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterHeaderPictureBox.Image")));
-            this.modAutoVoterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modAutoVoterHeaderPictureBox.Name = "modAutoVoterHeaderPictureBox";
-            this.modAutoVoterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modAutoVoterHeaderPictureBox.TabIndex = 0;
-            this.modAutoVoterHeaderPictureBox.TabStop = false;
-            // 
-            // earlyQuitTab
-            // 
-            this.earlyQuitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.earlyQuitTab.Controls.Add(this.modEarlyQuitContainerGroupBox);
-            this.earlyQuitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.earlyQuitTab.ForeColor = System.Drawing.Color.White;
-            this.earlyQuitTab.Location = new System.Drawing.Point(4, 25);
-            this.earlyQuitTab.Name = "earlyQuitTab";
-            this.earlyQuitTab.Size = new System.Drawing.Size(714, 460);
-            this.earlyQuitTab.TabIndex = 3;
-            this.earlyQuitTab.Text = "Early Quit Banner";
-            // 
-            // modEarlyQuitContainerGroupBox
-            // 
-            this.modEarlyQuitContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitSettingsGroupBox);
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptCurQuitsGroupBox);
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptDetailsGroupBox);
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderDescLabel);
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderLabel);
-            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderPictureBox);
-            this.modEarlyQuitContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modEarlyQuitContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEarlyQuitContainerGroupBox.Location = new System.Drawing.Point(3, 4);
-            this.modEarlyQuitContainerGroupBox.Name = "modEarlyQuitContainerGroupBox";
-            this.modEarlyQuitContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modEarlyQuitContainerGroupBox.TabIndex = 5;
-            this.modEarlyQuitContainerGroupBox.TabStop = false;
-            this.modEarlyQuitContainerGroupBox.Text = "Early Quit Banner";
-            // 
-            // modEarlyQuitHeaderDescLabel
-            // 
-            this.modEarlyQuitHeaderDescLabel.AutoSize = true;
-            this.modEarlyQuitHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modEarlyQuitHeaderDescLabel.Name = "modEarlyQuitHeaderDescLabel";
-            this.modEarlyQuitHeaderDescLabel.Size = new System.Drawing.Size(324, 28);
-            this.modEarlyQuitHeaderDescLabel.TabIndex = 2;
-            this.modEarlyQuitHeaderDescLabel.Text = "Track players who leave the game early and\r\nautomatically ban them after a maximu" +
-    "m number of quits.";
-            // 
-            // modEarlyQuitHeaderLabel
-            // 
-            this.modEarlyQuitHeaderLabel.AutoSize = true;
-            this.modEarlyQuitHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modEarlyQuitHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modEarlyQuitHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modEarlyQuitHeaderLabel.Name = "modEarlyQuitHeaderLabel";
-            this.modEarlyQuitHeaderLabel.Size = new System.Drawing.Size(277, 25);
-            this.modEarlyQuitHeaderLabel.TabIndex = 1;
-            this.modEarlyQuitHeaderLabel.Text = "Early Quit Banner Module";
-            // 
-            // modEarlyQuitHeaderPictureBox
-            // 
-            this.modEarlyQuitHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitHeaderPictureBox.Image")));
-            this.modEarlyQuitHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modEarlyQuitHeaderPictureBox.Name = "modEarlyQuitHeaderPictureBox";
-            this.modEarlyQuitHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modEarlyQuitHeaderPictureBox.TabIndex = 0;
-            this.modEarlyQuitHeaderPictureBox.TabStop = false;
-            // 
-            // eloLimitTab
-            // 
-            this.eloLimitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.eloLimitTab.Controls.Add(this.modEloLimiterContainerGroupBox);
-            this.eloLimitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eloLimitTab.ForeColor = System.Drawing.Color.White;
-            this.eloLimitTab.Location = new System.Drawing.Point(4, 25);
-            this.eloLimitTab.Name = "eloLimitTab";
-            this.eloLimitTab.Size = new System.Drawing.Size(714, 460);
-            this.eloLimitTab.TabIndex = 4;
-            this.eloLimitTab.Text = "Elo Limiter";
-            // 
-            // modEloLimiterContainerGroupBox
-            // 
-            this.modEloLimiterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterSettingsGroupBox);
-            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterOptGroupBox);
-            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderDescLabel);
-            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderLabel);
-            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderPictureBox);
-            this.modEloLimiterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modEloLimiterContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modEloLimiterContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.modEloLimiterContainerGroupBox.Name = "modEloLimiterContainerGroupBox";
-            this.modEloLimiterContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modEloLimiterContainerGroupBox.TabIndex = 3;
-            this.modEloLimiterContainerGroupBox.TabStop = false;
-            this.modEloLimiterContainerGroupBox.Text = "Elo Limiter";
-            // 
-            // modEloLimiterHeaderDescLabel
-            // 
-            this.modEloLimiterHeaderDescLabel.AutoSize = true;
-            this.modEloLimiterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modEloLimiterHeaderDescLabel.Name = "modEloLimiterHeaderDescLabel";
-            this.modEloLimiterHeaderDescLabel.Size = new System.Drawing.Size(251, 28);
-            this.modEloLimiterHeaderDescLabel.TabIndex = 2;
-            this.modEloLimiterHeaderDescLabel.Text = "Automatically kicks players who do not meet\r\nQLRanks Elo requirements.";
-            // 
-            // modEloLimiterHeaderLabel
-            // 
-            this.modEloLimiterHeaderLabel.AutoSize = true;
-            this.modEloLimiterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modEloLimiterHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modEloLimiterHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modEloLimiterHeaderLabel.Name = "modEloLimiterHeaderLabel";
-            this.modEloLimiterHeaderLabel.Size = new System.Drawing.Size(305, 25);
-            this.modEloLimiterHeaderLabel.TabIndex = 1;
-            this.modEloLimiterHeaderLabel.Text = "QLRanks Elo Limiter Module";
-            // 
-            // modEloLimiterHeaderPictureBox
-            // 
-            this.modEloLimiterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterHeaderPictureBox.Image")));
-            this.modEloLimiterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modEloLimiterHeaderPictureBox.Name = "modEloLimiterHeaderPictureBox";
-            this.modEloLimiterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modEloLimiterHeaderPictureBox.TabIndex = 0;
-            this.modEloLimiterHeaderPictureBox.TabStop = false;
-            // 
-            // ircTab
-            // 
-            this.ircTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.ircTab.Controls.Add(this.modIRCContainerGroupBox);
-            this.ircTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ircTab.ForeColor = System.Drawing.Color.White;
-            this.ircTab.Location = new System.Drawing.Point(4, 25);
-            this.ircTab.Name = "ircTab";
-            this.ircTab.Size = new System.Drawing.Size(714, 460);
-            this.ircTab.TabIndex = 5;
-            this.ircTab.Text = "IRC";
-            // 
-            // modIRCContainerGroupBox
-            // 
-            this.modIRCContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modIRCContainerGroupBox.Controls.Add(this.modIRCSettingsGroupBox);
-            this.modIRCContainerGroupBox.Controls.Add(this.modIRCOptGroupBox);
-            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderDescLabel);
-            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderLabel);
-            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderPictureBox);
-            this.modIRCContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modIRCContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modIRCContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.modIRCContainerGroupBox.Name = "modIRCContainerGroupBox";
-            this.modIRCContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modIRCContainerGroupBox.TabIndex = 4;
-            this.modIRCContainerGroupBox.TabStop = false;
-            this.modIRCContainerGroupBox.Text = "Internet Relay Chat";
-            // 
-            // modIRCHeaderDescLabel
-            // 
-            this.modIRCHeaderDescLabel.AutoSize = true;
-            this.modIRCHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modIRCHeaderDescLabel.Name = "modIRCHeaderDescLabel";
-            this.modIRCHeaderDescLabel.Size = new System.Drawing.Size(285, 28);
-            this.modIRCHeaderDescLabel.TabIndex = 2;
-            this.modIRCHeaderDescLabel.Text = "Provides an interface for accepting SST commands\r\nand for accessing server inform" +
-    "ation over IRC.";
-            // 
-            // modIRCHeaderLabel
-            // 
-            this.modIRCHeaderLabel.AutoSize = true;
-            this.modIRCHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modIRCHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modIRCHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modIRCHeaderLabel.Name = "modIRCHeaderLabel";
-            this.modIRCHeaderLabel.Size = new System.Drawing.Size(300, 25);
-            this.modIRCHeaderLabel.TabIndex = 1;
-            this.modIRCHeaderLabel.Text = "Internet Relay Chat Module";
-            // 
-            // modIRCHeaderPictureBox
-            // 
-            this.modIRCHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCHeaderPictureBox.Image")));
-            this.modIRCHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modIRCHeaderPictureBox.Name = "modIRCHeaderPictureBox";
-            this.modIRCHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modIRCHeaderPictureBox.TabIndex = 0;
-            this.modIRCHeaderPictureBox.TabStop = false;
-            // 
-            // motdTab
-            // 
-            this.motdTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.motdTab.Controls.Add(this.modMOTDContainerGroupBox);
-            this.motdTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.motdTab.ForeColor = System.Drawing.Color.White;
-            this.motdTab.Location = new System.Drawing.Point(4, 25);
-            this.motdTab.Name = "motdTab";
-            this.motdTab.Size = new System.Drawing.Size(714, 460);
-            this.motdTab.TabIndex = 6;
-            this.motdTab.Text = "MOTD";
-            // 
-            // modMOTDContainerGroupBox
-            // 
-            this.modMOTDContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDSettingsGroupBox);
-            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDOptGroupBox);
-            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderDescLabel);
-            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderLabel);
-            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderPictureBox);
-            this.modMOTDContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modMOTDContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modMOTDContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.modMOTDContainerGroupBox.Name = "modMOTDContainerGroupBox";
-            this.modMOTDContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modMOTDContainerGroupBox.TabIndex = 3;
-            this.modMOTDContainerGroupBox.TabStop = false;
-            this.modMOTDContainerGroupBox.Text = "Message of the Day";
-            // 
-            // modMOTDHeaderDescLabel
-            // 
-            this.modMOTDHeaderDescLabel.AutoSize = true;
-            this.modMOTDHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modMOTDHeaderDescLabel.Name = "modMOTDHeaderDescLabel";
-            this.modMOTDHeaderDescLabel.Size = new System.Drawing.Size(264, 28);
-            this.modMOTDHeaderDescLabel.TabIndex = 2;
-            this.modMOTDHeaderDescLabel.Text = "Automatically repeats a specified message over\r\na specified time period.";
-            // 
-            // modMOTDHeaderLabel
-            // 
-            this.modMOTDHeaderLabel.AutoSize = true;
-            this.modMOTDHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modMOTDHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modMOTDHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modMOTDHeaderLabel.Name = "modMOTDHeaderLabel";
-            this.modMOTDHeaderLabel.Size = new System.Drawing.Size(299, 25);
-            this.modMOTDHeaderLabel.TabIndex = 1;
-            this.modMOTDHeaderLabel.Text = "Message of the Day Module";
-            // 
-            // modMOTDHeaderPictureBox
-            // 
-            this.modMOTDHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDHeaderPictureBox.Image")));
-            this.modMOTDHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modMOTDHeaderPictureBox.Name = "modMOTDHeaderPictureBox";
-            this.modMOTDHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modMOTDHeaderPictureBox.TabIndex = 0;
-            this.modMOTDHeaderPictureBox.TabStop = false;
-            // 
-            // pickupTab
-            // 
-            this.pickupTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.pickupTab.Controls.Add(this.modPickupContainerGroupBox);
-            this.pickupTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pickupTab.ForeColor = System.Drawing.Color.White;
-            this.pickupTab.Location = new System.Drawing.Point(4, 25);
-            this.pickupTab.Name = "pickupTab";
-            this.pickupTab.Size = new System.Drawing.Size(714, 460);
-            this.pickupTab.TabIndex = 7;
-            this.pickupTab.Text = "Pickup";
-            // 
-            // modPickupContainerGroupBox
-            // 
-            this.modPickupContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modPickupContainerGroupBox.Controls.Add(this.modPickupSettingsGroupBox);
-            this.modPickupContainerGroupBox.Controls.Add(this.modPickupOptGroupBox);
-            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderDescLabel);
-            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderLabel);
-            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderPictureBox);
-            this.modPickupContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modPickupContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modPickupContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.modPickupContainerGroupBox.Name = "modPickupContainerGroupBox";
-            this.modPickupContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modPickupContainerGroupBox.TabIndex = 5;
-            this.modPickupContainerGroupBox.TabStop = false;
-            this.modPickupContainerGroupBox.Text = "Pickup";
-            // 
-            // modPickupHeaderDescLabel
-            // 
-            this.modPickupHeaderDescLabel.AutoSize = true;
-            this.modPickupHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modPickupHeaderDescLabel.Name = "modPickupHeaderDescLabel";
-            this.modPickupHeaderDescLabel.Size = new System.Drawing.Size(230, 28);
-            this.modPickupHeaderDescLabel.TabIndex = 2;
-            this.modPickupHeaderDescLabel.Text = "Allows the server to be set up in pick-up\r\ngame mode.";
-            // 
-            // modPickupHeaderLabel
-            // 
-            this.modPickupHeaderLabel.AutoSize = true;
-            this.modPickupHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modPickupHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modPickupHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modPickupHeaderLabel.Name = "modPickupHeaderLabel";
-            this.modPickupHeaderLabel.Size = new System.Drawing.Size(231, 25);
-            this.modPickupHeaderLabel.TabIndex = 1;
-            this.modPickupHeaderLabel.Text = "Pickup Game Module";
-            // 
-            // modPickupHeaderPictureBox
-            // 
-            this.modPickupHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupHeaderPictureBox.Image")));
-            this.modPickupHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modPickupHeaderPictureBox.Name = "modPickupHeaderPictureBox";
-            this.modPickupHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modPickupHeaderPictureBox.TabIndex = 0;
-            this.modPickupHeaderPictureBox.TabStop = false;
-            // 
-            // serversTab
-            // 
-            this.serversTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.serversTab.Controls.Add(this.modServerListContainerGroupBox);
-            this.serversTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.serversTab.ForeColor = System.Drawing.Color.White;
-            this.serversTab.Location = new System.Drawing.Point(4, 25);
-            this.serversTab.Name = "serversTab";
-            this.serversTab.Size = new System.Drawing.Size(714, 460);
-            this.serversTab.TabIndex = 8;
-            this.serversTab.Text = "Server List";
-            // 
-            // modServerListContainerGroupBox
-            // 
-            this.modServerListContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.modServerListContainerGroupBox.Controls.Add(this.modServerListSettingsGroupBox);
-            this.modServerListContainerGroupBox.Controls.Add(this.modServerListOptGroupBox);
-            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderDescLabel);
-            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderLabel);
-            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderPictureBox);
-            this.modServerListContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modServerListContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.modServerListContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.modServerListContainerGroupBox.Name = "modServerListContainerGroupBox";
-            this.modServerListContainerGroupBox.Size = new System.Drawing.Size(708, 453);
-            this.modServerListContainerGroupBox.TabIndex = 4;
-            this.modServerListContainerGroupBox.TabStop = false;
-            this.modServerListContainerGroupBox.Text = "Server List";
-            // 
-            // modServerListHeaderDescLabel
-            // 
-            this.modServerListHeaderDescLabel.AutoSize = true;
-            this.modServerListHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.modServerListHeaderDescLabel.Name = "modServerListHeaderDescLabel";
-            this.modServerListHeaderDescLabel.Size = new System.Drawing.Size(337, 28);
-            this.modServerListHeaderDescLabel.TabIndex = 2;
-            this.modServerListHeaderDescLabel.Text = "Allows players to list active servers for a specified game type\r\nand region in-ga" +
-    "me.";
-            // 
-            // modServerListHeaderLabel
-            // 
-            this.modServerListHeaderLabel.AutoSize = true;
-            this.modServerListHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modServerListHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.modServerListHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.modServerListHeaderLabel.Name = "modServerListHeaderLabel";
-            this.modServerListHeaderLabel.Size = new System.Drawing.Size(326, 25);
-            this.modServerListHeaderLabel.TabIndex = 1;
-            this.modServerListHeaderLabel.Text = "Quake Live Server List Module";
-            // 
-            // modServerListHeaderPictureBox
-            // 
-            this.modServerListHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListHeaderPictureBox.Image")));
-            this.modServerListHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.modServerListHeaderPictureBox.Name = "modServerListHeaderPictureBox";
-            this.modServerListHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.modServerListHeaderPictureBox.TabIndex = 0;
-            this.modServerListHeaderPictureBox.TabStop = false;
-            // 
-            // usersTab
-            // 
-            this.usersTab.BackColor = System.Drawing.Color.Black;
-            this.usersTab.Controls.Add(this.usrMContainerGroupBox);
-            this.usersTab.ForeColor = System.Drawing.Color.White;
-            this.usersTab.ImageIndex = 3;
-            this.usersTab.Location = new System.Drawing.Point(4, 26);
-            this.usersTab.Name = "usersTab";
-            this.usersTab.Size = new System.Drawing.Size(718, 485);
-            this.usersTab.TabIndex = 4;
-            this.usersTab.Text = "User Management";
-            // 
-            // usrMContainerGroupBox
-            // 
-            this.usrMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.usrMContainerGroupBox.Controls.Add(this.usrMCurUsersGroupBox);
-            this.usrMContainerGroupBox.Controls.Add(this.usrMAddUserGroupBox);
-            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderDescLabel);
-            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderLabel);
-            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderPictureBox);
-            this.usrMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.usrMContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.usrMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
-            this.usrMContainerGroupBox.Name = "usrMContainerGroupBox";
-            this.usrMContainerGroupBox.Size = new System.Drawing.Size(710, 479);
-            this.usrMContainerGroupBox.TabIndex = 5;
-            this.usrMContainerGroupBox.TabStop = false;
-            this.usrMContainerGroupBox.Text = "User Management";
-            // 
-            // usrMHeaderDescLabel
-            // 
-            this.usrMHeaderDescLabel.AutoSize = true;
-            this.usrMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.usrMHeaderDescLabel.Name = "usrMHeaderDescLabel";
-            this.usrMHeaderDescLabel.Size = new System.Drawing.Size(141, 14);
-            this.usrMHeaderDescLabel.TabIndex = 2;
-            this.usrMHeaderDescLabel.Text = "Add or delete SST users";
-            // 
-            // usrMHeaderLabel
-            // 
-            this.usrMHeaderLabel.AutoSize = true;
-            this.usrMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usrMHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.usrMHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.usrMHeaderLabel.Name = "usrMHeaderLabel";
-            this.usrMHeaderLabel.Size = new System.Drawing.Size(248, 25);
-            this.usrMHeaderLabel.TabIndex = 1;
-            this.usrMHeaderLabel.Text = "SST User Management";
-            // 
-            // usrMHeaderPictureBox
-            // 
-            this.usrMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("usrMHeaderPictureBox.Image")));
-            this.usrMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.usrMHeaderPictureBox.Name = "usrMHeaderPictureBox";
-            this.usrMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.usrMHeaderPictureBox.TabIndex = 0;
-            this.usrMHeaderPictureBox.TabStop = false;
-            // 
-            // banTab
-            // 
-            this.banTab.BackColor = System.Drawing.Color.Black;
-            this.banTab.Controls.Add(this.banMContainerGroupBox);
-            this.banTab.ForeColor = System.Drawing.Color.White;
-            this.banTab.ImageIndex = 4;
-            this.banTab.Location = new System.Drawing.Point(4, 26);
-            this.banTab.Name = "banTab";
-            this.banTab.Size = new System.Drawing.Size(718, 485);
-            this.banTab.TabIndex = 5;
-            this.banTab.Text = "Ban Management";
-            // 
-            // banMContainerGroupBox
-            // 
-            this.banMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.banMContainerGroupBox.Controls.Add(this.banMCurBansGroupBox);
-            this.banMContainerGroupBox.Controls.Add(this.banMAddBanGroupBox);
-            this.banMContainerGroupBox.Controls.Add(this.banMHeaderDescLabel);
-            this.banMContainerGroupBox.Controls.Add(this.banMHeaderLabel);
-            this.banMContainerGroupBox.Controls.Add(this.banMHeaderPictureBox);
-            this.banMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.banMContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.banMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
-            this.banMContainerGroupBox.Name = "banMContainerGroupBox";
-            this.banMContainerGroupBox.Size = new System.Drawing.Size(710, 479);
-            this.banMContainerGroupBox.TabIndex = 6;
-            this.banMContainerGroupBox.TabStop = false;
-            this.banMContainerGroupBox.Text = "Ban Management";
-            // 
-            // banMHeaderDescLabel
-            // 
-            this.banMHeaderDescLabel.AutoSize = true;
-            this.banMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
-            this.banMHeaderDescLabel.Name = "banMHeaderDescLabel";
-            this.banMHeaderDescLabel.Size = new System.Drawing.Size(165, 14);
-            this.banMHeaderDescLabel.TabIndex = 2;
-            this.banMHeaderDescLabel.Text = "Add or delete SST user bans";
-            // 
-            // banMHeaderLabel
-            // 
-            this.banMHeaderLabel.AutoSize = true;
-            this.banMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.banMHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.banMHeaderLabel.Location = new System.Drawing.Point(76, 18);
-            this.banMHeaderLabel.Name = "banMHeaderLabel";
-            this.banMHeaderLabel.Size = new System.Drawing.Size(240, 25);
-            this.banMHeaderLabel.TabIndex = 1;
-            this.banMHeaderLabel.Text = "SST Ban Management";
-            // 
-            // banMHeaderPictureBox
-            // 
-            this.banMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("banMHeaderPictureBox.Image")));
-            this.banMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.banMHeaderPictureBox.Name = "banMHeaderPictureBox";
-            this.banMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.banMHeaderPictureBox.TabIndex = 0;
-            this.banMHeaderPictureBox.TabStop = false;
-            // 
-            // aboutTab
-            // 
-            this.aboutTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.aboutTab.Controls.Add(this.abtContainerGroupBox);
-            this.aboutTab.ForeColor = System.Drawing.Color.White;
-            this.aboutTab.ImageIndex = 5;
-            this.aboutTab.Location = new System.Drawing.Point(4, 26);
-            this.aboutTab.Name = "aboutTab";
-            this.aboutTab.Size = new System.Drawing.Size(718, 485);
-            this.aboutTab.TabIndex = 3;
-            this.aboutTab.Text = "About";
-            // 
-            // abtContainerGroupBox
-            // 
-            this.abtContainerGroupBox.Controls.Add(this.aboutGroupBox);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderDescLabel);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderPictureBox);
-            this.abtContainerGroupBox.Controls.Add(this.abtHeaderLabel);
-            this.abtContainerGroupBox.ForeColor = System.Drawing.Color.White;
-            this.abtContainerGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.abtContainerGroupBox.Name = "abtContainerGroupBox";
-            this.abtContainerGroupBox.Size = new System.Drawing.Size(710, 479);
-            this.abtContainerGroupBox.TabIndex = 9;
-            this.abtContainerGroupBox.TabStop = false;
-            this.abtContainerGroupBox.Text = "About SST";
-            // 
-            // abtHeaderDescLabel
-            // 
-            this.abtHeaderDescLabel.AutoSize = true;
-            this.abtHeaderDescLabel.ForeColor = System.Drawing.Color.White;
-            this.abtHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
-            this.abtHeaderDescLabel.Name = "abtHeaderDescLabel";
-            this.abtHeaderDescLabel.Size = new System.Drawing.Size(207, 14);
-            this.abtHeaderDescLabel.TabIndex = 8;
-            this.abtHeaderDescLabel.Text = "Information about the SST software";
-            // 
-            // abtHeaderPictureBox
-            // 
-            this.abtHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtHeaderPictureBox.Image")));
-            this.abtHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
-            this.abtHeaderPictureBox.Name = "abtHeaderPictureBox";
-            this.abtHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
-            this.abtHeaderPictureBox.TabIndex = 6;
-            this.abtHeaderPictureBox.TabStop = false;
-            // 
-            // abtHeaderLabel
-            // 
-            this.abtHeaderLabel.AutoSize = true;
-            this.abtHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.abtHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
-            this.abtHeaderLabel.Location = new System.Drawing.Point(79, 18);
-            this.abtHeaderLabel.Name = "abtHeaderLabel";
-            this.abtHeaderLabel.Size = new System.Drawing.Size(119, 25);
-            this.abtHeaderLabel.TabIndex = 7;
-            this.abtHeaderLabel.Text = "About SST";
-            // 
-            // uiTabImageList
-            // 
-            this.uiTabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uiTabImageList.ImageStream")));
-            this.uiTabImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.uiTabImageList.Images.SetKeyName(0, "tab_log_icon");
-            this.uiTabImageList.Images.SetKeyName(1, "tab_coreoptions_icon");
-            this.uiTabImageList.Images.SetKeyName(2, "tab_module_icon");
-            this.uiTabImageList.Images.SetKeyName(3, "tab_user_icon");
-            this.uiTabImageList.Images.SetKeyName(4, "tab_bans_icon");
-            this.uiTabImageList.Images.SetKeyName(5, "tab_about_icon");
-            // 
-            // sstStartButton
-            // 
-            this.sstStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.sstStartButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.sstStartButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sstStartButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sstStartButton.ForeColor = System.Drawing.Color.White;
-            this.sstStartButton.Location = new System.Drawing.Point(367, 646);
-            this.sstStartButton.Name = "sstStartButton";
-            this.sstStartButton.Size = new System.Drawing.Size(132, 28);
-            this.sstStartButton.TabIndex = 0;
-            this.sstStartButton.Text = "Start Monitoring";
-            this.coreToolTip.SetToolTip(this.sstStartButton, "Start monitoring your server.");
-            this.sstStartButton.UseVisualStyleBackColor = false;
-            this.sstStartButton.Click += new System.EventHandler(this.sstStartButton_Click);
-            // 
-            // coreToolTip
-            // 
-            this.coreToolTip.AutoPopDelay = 15000;
-            this.coreToolTip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.coreToolTip.ForeColor = System.Drawing.Color.White;
-            this.coreToolTip.InitialDelay = 500;
-            this.coreToolTip.IsBalloon = true;
-            this.coreToolTip.ReshowDelay = 100;
-            // 
-            // sstStopButton
-            // 
-            this.sstStopButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.sstStopButton.Enabled = false;
-            this.sstStopButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.sstStopButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sstStopButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sstStopButton.ForeColor = System.Drawing.Color.White;
-            this.sstStopButton.Location = new System.Drawing.Point(516, 646);
-            this.sstStopButton.Name = "sstStopButton";
-            this.sstStopButton.Size = new System.Drawing.Size(132, 28);
-            this.sstStopButton.TabIndex = 7;
-            this.sstStopButton.Text = "Stop Monitoring";
-            this.coreToolTip.SetToolTip(this.sstStopButton, "Stop monitoring your server.");
-            this.sstStopButton.UseVisualStyleBackColor = false;
-            this.sstStopButton.Click += new System.EventHandler(this.sstStopButton_Click);
-            // 
-            // sstResetButton
-            // 
-            this.sstResetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.sstResetButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.sstResetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sstResetButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sstResetButton.ForeColor = System.Drawing.Color.White;
-            this.sstResetButton.Location = new System.Drawing.Point(665, 646);
-            this.sstResetButton.Name = "sstResetButton";
-            this.sstResetButton.Size = new System.Drawing.Size(68, 28);
-            this.sstResetButton.TabIndex = 8;
-            this.sstResetButton.Text = "Reset";
-            this.coreToolTip.SetToolTip(this.sstResetButton, "Stop monitoring if it\'s active, or start monitoring if it\'s\r\nnot active.");
-            this.sstResetButton.UseVisualStyleBackColor = false;
-            this.sstResetButton.Click += new System.EventHandler(this.sstResetButton_Click);
-            // 
-            // minimizeButton
-            // 
-            this.minimizeButton.Image = ((System.Drawing.Image)(resources.GetObject("minimizeButton.Image")));
-            this.minimizeButton.Location = new System.Drawing.Point(681, 5);
-            this.minimizeButton.Name = "minimizeButton";
-            this.minimizeButton.Size = new System.Drawing.Size(21, 17);
-            this.minimizeButton.TabIndex = 4;
-            this.minimizeButton.TabStop = false;
-            this.minimizeButton.Click += new System.EventHandler(this.minimizeButton_Click);
-            // 
-            // closeButton
-            // 
-            this.closeButton.Image = ((System.Drawing.Image)(resources.GetObject("closeButton.Image")));
-            this.closeButton.Location = new System.Drawing.Point(711, 5);
-            this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(21, 17);
-            this.closeButton.TabIndex = 5;
-            this.closeButton.TabStop = false;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
-            // 
-            // titleBarVersionLabel
-            // 
-            this.titleBarVersionLabel.AutoSize = true;
-            this.titleBarVersionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.titleBarVersionLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleBarVersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
-            this.titleBarVersionLabel.Location = new System.Drawing.Point(39, 7);
-            this.titleBarVersionLabel.Name = "titleBarVersionLabel";
-            this.titleBarVersionLabel.Size = new System.Drawing.Size(61, 13);
-            this.titleBarVersionLabel.TabIndex = 6;
-            this.titleBarVersionLabel.Text = "version 0.0";
-            // 
-            // errorProvider
-            // 
-            this.errorProvider.BlinkRate = 300;
-            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.AlwaysBlink;
-            this.errorProvider.ContainerControl = this;
-            this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
-            // 
-            // sysTrayIcon
-            // 
-            this.sysTrayIcon.ContextMenuStrip = this.sysTrayContextMenuStrip;
-            this.sysTrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("sysTrayIcon.Icon")));
-            this.sysTrayIcon.Text = "SST";
-            this.sysTrayIcon.Visible = true;
-            this.sysTrayIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sysTrayIcon_MouseClick);
-            // 
-            // sysTrayContextMenuStrip
-            // 
-            this.sysTrayContextMenuStrip.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sysTrayContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sysTrayExitMenuItem});
-            this.sysTrayContextMenuStrip.Name = "sysTrayContextMenuStrip";
-            this.sysTrayContextMenuStrip.ShowImageMargin = false;
-            this.sysTrayContextMenuStrip.Size = new System.Drawing.Size(96, 26);
-            // 
-            // sysTrayExitMenuItem
-            // 
-            this.sysTrayExitMenuItem.Name = "sysTrayExitMenuItem";
-            this.sysTrayExitMenuItem.Size = new System.Drawing.Size(95, 22);
-            this.sysTrayExitMenuItem.Text = "Exit SST";
-            this.sysTrayExitMenuItem.Click += new System.EventHandler(this.sysTrayExitMenuItem_Click);
-            // 
-            // monitorIconPictureBox
-            // 
-            this.monitorIconPictureBox.BackColor = System.Drawing.Color.Transparent;
-            this.monitorIconPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("monitorIconPictureBox.Image")));
-            this.monitorIconPictureBox.Location = new System.Drawing.Point(3, 3);
-            this.monitorIconPictureBox.Name = "monitorIconPictureBox";
-            this.monitorIconPictureBox.Size = new System.Drawing.Size(16, 16);
-            this.monitorIconPictureBox.TabIndex = 9;
-            this.monitorIconPictureBox.TabStop = false;
-            // 
-            // activeModulesLabel
-            // 
-            this.activeModulesLabel.AutoSize = true;
-            this.activeModulesLabel.BackColor = System.Drawing.Color.Transparent;
-            this.activeModulesLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.activeModulesLabel.ForeColor = System.Drawing.Color.White;
-            this.activeModulesLabel.Location = new System.Drawing.Point(28, 25);
-            this.activeModulesLabel.Name = "activeModulesLabel";
-            this.activeModulesLabel.Size = new System.Drawing.Size(107, 14);
-            this.activeModulesLabel.TabIndex = 12;
-            this.activeModulesLabel.Text = "No active modules";
-            // 
-            // moduleIconPictureBox
-            // 
-            this.moduleIconPictureBox.BackColor = System.Drawing.Color.Transparent;
-            this.moduleIconPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("moduleIconPictureBox.Image")));
-            this.moduleIconPictureBox.Location = new System.Drawing.Point(3, 25);
-            this.moduleIconPictureBox.Name = "moduleIconPictureBox";
-            this.moduleIconPictureBox.Size = new System.Drawing.Size(16, 16);
-            this.moduleIconPictureBox.TabIndex = 11;
-            this.moduleIconPictureBox.TabStop = false;
-            // 
-            // monitorStatusLabel
-            // 
-            this.monitorStatusLabel.AutoSize = true;
-            this.monitorStatusLabel.BackColor = System.Drawing.Color.Transparent;
-            this.monitorStatusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.monitorStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.monitorStatusLabel.Location = new System.Drawing.Point(28, 3);
-            this.monitorStatusLabel.Name = "monitorStatusLabel";
-            this.monitorStatusLabel.Size = new System.Drawing.Size(136, 14);
-            this.monitorStatusLabel.TabIndex = 10;
-            this.monitorStatusLabel.Text = "Not monitoring a server";
-            // 
-            // statusPanel
-            // 
-            this.statusPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
-            this.statusPanel.Controls.Add(this.monitorIconPictureBox);
-            this.statusPanel.Controls.Add(this.monitorStatusLabel);
-            this.statusPanel.Controls.Add(this.activeModulesLabel);
-            this.statusPanel.Controls.Add(this.moduleIconPictureBox);
-            this.statusPanel.Location = new System.Drawing.Point(1, 683);
-            this.statusPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.statusPanel.Name = "statusPanel";
-            this.statusPanel.Size = new System.Drawing.Size(738, 44);
-            this.statusPanel.TabIndex = 13;
-            this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
-            // 
-            // logEventsGroupBox
-            // 
-            this.logEventsGroupBox.BackColor = System.Drawing.Color.Black;
-            this.logEventsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
-            this.logEventsGroupBox.Controls.Add(this.logConsoleTextBox);
-            this.logEventsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.logEventsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.logEventsGroupBox.Location = new System.Drawing.Point(3, 91);
-            this.logEventsGroupBox.Margin = new System.Windows.Forms.Padding(0);
-            this.logEventsGroupBox.Name = "logEventsGroupBox";
-            this.logEventsGroupBox.Padding = new System.Windows.Forms.Padding(0);
-            this.logEventsGroupBox.Size = new System.Drawing.Size(703, 342);
-            this.logEventsGroupBox.TabIndex = 9;
-            this.logEventsGroupBox.TabStop = false;
-            this.logEventsGroupBox.Text = "Events";
-            // 
-            // logConsoleTextBox
-            // 
-            this.logConsoleTextBox.BackColor = System.Drawing.Color.Black;
-            this.logConsoleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logConsoleTextBox.ForeColor = System.Drawing.Color.White;
-            this.logConsoleTextBox.Location = new System.Drawing.Point(6, 21);
-            this.logConsoleTextBox.Multiline = true;
-            this.logConsoleTextBox.Name = "logConsoleTextBox";
-            this.logConsoleTextBox.ReadOnly = true;
-            this.logConsoleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logConsoleTextBox.Size = new System.Drawing.Size(693, 314);
-            this.logConsoleTextBox.TabIndex = 0;
-            this.logConsoleTextBox.VisibleChanged += new System.EventHandler(this.logConsoleTextBox_VisibleChanged);
             // 
             // coreSettingsGroupBox
             // 
@@ -1872,6 +919,100 @@
         "ainly for debugging purposes).");
             this.coreLogEventsDiskCheckBox.UseVisualStyleBackColor = true;
             // 
+            // coreHeaderDescLabel
+            // 
+            this.coreHeaderDescLabel.AutoSize = true;
+            this.coreHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.coreHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.coreHeaderDescLabel.Name = "coreHeaderDescLabel";
+            this.coreHeaderDescLabel.Size = new System.Drawing.Size(130, 14);
+            this.coreHeaderDescLabel.TabIndex = 5;
+            this.coreHeaderDescLabel.Text = "Critical options for SST";
+            // 
+            // coreHeaderPictureBox
+            // 
+            this.coreHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("coreHeaderPictureBox.Image")));
+            this.coreHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.coreHeaderPictureBox.Name = "coreHeaderPictureBox";
+            this.coreHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.coreHeaderPictureBox.TabIndex = 3;
+            this.coreHeaderPictureBox.TabStop = false;
+            // 
+            // coreHeaderLabel
+            // 
+            this.coreHeaderLabel.AutoSize = true;
+            this.coreHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coreHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.coreHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.coreHeaderLabel.Name = "coreHeaderLabel";
+            this.coreHeaderLabel.Size = new System.Drawing.Size(192, 25);
+            this.coreHeaderLabel.TabIndex = 4;
+            this.coreHeaderLabel.Text = "SST Core Options";
+            // 
+            // modulesTab
+            // 
+            this.modulesTab.BackColor = System.Drawing.Color.Black;
+            this.modulesTab.Controls.Add(this.moduleTabControl);
+            this.modulesTab.ForeColor = System.Drawing.Color.White;
+            this.modulesTab.ImageIndex = 2;
+            this.modulesTab.Location = new System.Drawing.Point(4, 26);
+            this.modulesTab.Name = "modulesTab";
+            this.modulesTab.Size = new System.Drawing.Size(718, 485);
+            this.modulesTab.TabIndex = 2;
+            this.modulesTab.Text = "Modules";
+            // 
+            // moduleTabControl
+            // 
+            this.moduleTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.moduleTabControl.Controls.Add(this.accountDateTab);
+            this.moduleTabControl.Controls.Add(this.accuracyTab);
+            this.moduleTabControl.Controls.Add(this.autoVoterTab);
+            this.moduleTabControl.Controls.Add(this.earlyQuitTab);
+            this.moduleTabControl.Controls.Add(this.eloLimitTab);
+            this.moduleTabControl.Controls.Add(this.ircTab);
+            this.moduleTabControl.Controls.Add(this.motdTab);
+            this.moduleTabControl.Controls.Add(this.pickupTab);
+            this.moduleTabControl.Controls.Add(this.serversTab);
+            this.moduleTabControl.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.moduleTabControl.Location = new System.Drawing.Point(0, 0);
+            this.moduleTabControl.Multiline = true;
+            this.moduleTabControl.Name = "moduleTabControl";
+            this.moduleTabControl.SelectedIndex = 0;
+            this.moduleTabControl.Size = new System.Drawing.Size(722, 489);
+            this.moduleTabControl.TabIndex = 0;
+            this.moduleTabControl.SelectedIndexChanged += new System.EventHandler(this.moduleTabControl_SelectedIndexChanged);
+            // 
+            // accountDateTab
+            // 
+            this.accountDateTab.BackColor = System.Drawing.Color.Black;
+            this.accountDateTab.Controls.Add(this.modAccDateContainerGroupBox);
+            this.accountDateTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accountDateTab.ForeColor = System.Drawing.Color.White;
+            this.accountDateTab.Location = new System.Drawing.Point(4, 25);
+            this.accountDateTab.Name = "accountDateTab";
+            this.accountDateTab.Padding = new System.Windows.Forms.Padding(3);
+            this.accountDateTab.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.accountDateTab.Size = new System.Drawing.Size(714, 460);
+            this.accountDateTab.TabIndex = 0;
+            this.accountDateTab.Text = "Account Date Limiter";
+            // 
+            // modAccDateContainerGroupBox
+            // 
+            this.modAccDateContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateSettingsGroupBox);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateOptGroupBox);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderDescLabel);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderLabel);
+            this.modAccDateContainerGroupBox.Controls.Add(this.modAccDateHeaderPictureBox);
+            this.modAccDateContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccDateContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccDateContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAccDateContainerGroupBox.Name = "modAccDateContainerGroupBox";
+            this.modAccDateContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modAccDateContainerGroupBox.TabIndex = 2;
+            this.modAccDateContainerGroupBox.TabStop = false;
+            this.modAccDateContainerGroupBox.Text = "Account Date Limiter";
+            // 
             // modAccDateSettingsGroupBox
             // 
             this.modAccDateSettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -1988,6 +1129,66 @@
             this.coreToolTip.SetToolTip(this.modAccDateEnableCheckBox, "Select whether this module should be enabled.");
             this.modAccDateEnableCheckBox.UseVisualStyleBackColor = true;
             // 
+            // modAccDateHeaderDescLabel
+            // 
+            this.modAccDateHeaderDescLabel.AutoSize = true;
+            this.modAccDateHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modAccDateHeaderDescLabel.Name = "modAccDateHeaderDescLabel";
+            this.modAccDateHeaderDescLabel.Size = new System.Drawing.Size(299, 28);
+            this.modAccDateHeaderDescLabel.TabIndex = 2;
+            this.modAccDateHeaderDescLabel.Text = "Automatically kicks players who do not meet account\r\nregistration date requiremen" +
+    "ts.";
+            // 
+            // modAccDateHeaderLabel
+            // 
+            this.modAccDateHeaderLabel.AutoSize = true;
+            this.modAccDateHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAccDateHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modAccDateHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAccDateHeaderLabel.Name = "modAccDateHeaderLabel";
+            this.modAccDateHeaderLabel.Size = new System.Drawing.Size(314, 25);
+            this.modAccDateHeaderLabel.TabIndex = 1;
+            this.modAccDateHeaderLabel.Text = "Account Date Limiter Module";
+            // 
+            // modAccDateHeaderPictureBox
+            // 
+            this.modAccDateHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccDateHeaderPictureBox.Image")));
+            this.modAccDateHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAccDateHeaderPictureBox.Name = "modAccDateHeaderPictureBox";
+            this.modAccDateHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAccDateHeaderPictureBox.TabIndex = 0;
+            this.modAccDateHeaderPictureBox.TabStop = false;
+            // 
+            // accuracyTab
+            // 
+            this.accuracyTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.accuracyTab.Controls.Add(this.modAccuracyContainerGroupBox);
+            this.accuracyTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accuracyTab.ForeColor = System.Drawing.Color.White;
+            this.accuracyTab.Location = new System.Drawing.Point(4, 25);
+            this.accuracyTab.Name = "accuracyTab";
+            this.accuracyTab.Padding = new System.Windows.Forms.Padding(3);
+            this.accuracyTab.Size = new System.Drawing.Size(714, 460);
+            this.accuracyTab.TabIndex = 1;
+            this.accuracyTab.Text = "Accuracy Display";
+            // 
+            // modAccuracyContainerGroupBox
+            // 
+            this.modAccuracyContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracySettingsGroupBox);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyOptGroupBox);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabelDesc);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderLabel);
+            this.modAccuracyContainerGroupBox.Controls.Add(this.modAccuracyHeaderPictureBox);
+            this.modAccuracyContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAccuracyContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAccuracyContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAccuracyContainerGroupBox.Name = "modAccuracyContainerGroupBox";
+            this.modAccuracyContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modAccuracyContainerGroupBox.TabIndex = 3;
+            this.modAccuracyContainerGroupBox.TabStop = false;
+            this.modAccuracyContainerGroupBox.Text = "Accuracy Display";
+            // 
             // modAccuracySettingsGroupBox
             // 
             this.modAccuracySettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -2062,6 +1263,66 @@
             this.modAccuracyEnableCheckBox.Text = "Enable Accuracy Display Module";
             this.coreToolTip.SetToolTip(this.modAccuracyEnableCheckBox, "Select whether this module should be enabled.");
             this.modAccuracyEnableCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // modAccuracyHeaderLabelDesc
+            // 
+            this.modAccuracyHeaderLabelDesc.AutoSize = true;
+            this.modAccuracyHeaderLabelDesc.Location = new System.Drawing.Point(82, 47);
+            this.modAccuracyHeaderLabelDesc.Name = "modAccuracyHeaderLabelDesc";
+            this.modAccuracyHeaderLabelDesc.Size = new System.Drawing.Size(249, 28);
+            this.modAccuracyHeaderLabelDesc.TabIndex = 2;
+            this.modAccuracyHeaderLabelDesc.Text = "Allow players to check each other\'s weapon\r\naccuracies when SST is in spectator m" +
+    "ode.";
+            // 
+            // modAccuracyHeaderLabel
+            // 
+            this.modAccuracyHeaderLabel.AutoSize = true;
+            this.modAccuracyHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAccuracyHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modAccuracyHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAccuracyHeaderLabel.Name = "modAccuracyHeaderLabel";
+            this.modAccuracyHeaderLabel.Size = new System.Drawing.Size(271, 25);
+            this.modAccuracyHeaderLabel.TabIndex = 1;
+            this.modAccuracyHeaderLabel.Text = "Accuracy Display Module";
+            // 
+            // modAccuracyHeaderPictureBox
+            // 
+            this.modAccuracyHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAccuracyHeaderPictureBox.Image")));
+            this.modAccuracyHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAccuracyHeaderPictureBox.Name = "modAccuracyHeaderPictureBox";
+            this.modAccuracyHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAccuracyHeaderPictureBox.TabIndex = 0;
+            this.modAccuracyHeaderPictureBox.TabStop = false;
+            // 
+            // autoVoterTab
+            // 
+            this.autoVoterTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.autoVoterTab.Controls.Add(this.modAutoVoterContainerGroupBox);
+            this.autoVoterTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.autoVoterTab.ForeColor = System.Drawing.Color.White;
+            this.autoVoterTab.Location = new System.Drawing.Point(4, 25);
+            this.autoVoterTab.Name = "autoVoterTab";
+            this.autoVoterTab.Size = new System.Drawing.Size(714, 460);
+            this.autoVoterTab.TabIndex = 2;
+            this.autoVoterTab.Text = "Auto Voter";
+            // 
+            // modAutoVoterContainerGroupBox
+            // 
+            this.modAutoVoterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterSettingsGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptCurVotesGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterOptVoteDetailsGroupBox);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderDescLabel);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderLabel);
+            this.modAutoVoterContainerGroupBox.Controls.Add(this.modAutoVoterHeaderPictureBox);
+            this.modAutoVoterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modAutoVoterContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modAutoVoterContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modAutoVoterContainerGroupBox.Name = "modAutoVoterContainerGroupBox";
+            this.modAutoVoterContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modAutoVoterContainerGroupBox.TabIndex = 4;
+            this.modAutoVoterContainerGroupBox.TabStop = false;
+            this.modAutoVoterContainerGroupBox.Text = "Automatic Voter";
             // 
             // modAutoVoterSettingsGroupBox
             // 
@@ -2313,6 +1574,65 @@
             this.modAutoVoterActionLabel.TabIndex = 5;
             this.modAutoVoterActionLabel.Text = "Automatically";
             // 
+            // modAutoVoterHeaderDescLabel
+            // 
+            this.modAutoVoterHeaderDescLabel.AutoSize = true;
+            this.modAutoVoterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modAutoVoterHeaderDescLabel.Name = "modAutoVoterHeaderDescLabel";
+            this.modAutoVoterHeaderDescLabel.Size = new System.Drawing.Size(245, 28);
+            this.modAutoVoterHeaderDescLabel.TabIndex = 2;
+            this.modAutoVoterHeaderDescLabel.Text = "Automatically pass or reject votes based on\r\nspecified criteria.";
+            // 
+            // modAutoVoterHeaderLabel
+            // 
+            this.modAutoVoterHeaderLabel.AutoSize = true;
+            this.modAutoVoterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modAutoVoterHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modAutoVoterHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modAutoVoterHeaderLabel.Name = "modAutoVoterHeaderLabel";
+            this.modAutoVoterHeaderLabel.Size = new System.Drawing.Size(265, 25);
+            this.modAutoVoterHeaderLabel.TabIndex = 1;
+            this.modAutoVoterHeaderLabel.Text = "Automatic Voter Module";
+            // 
+            // modAutoVoterHeaderPictureBox
+            // 
+            this.modAutoVoterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modAutoVoterHeaderPictureBox.Image")));
+            this.modAutoVoterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modAutoVoterHeaderPictureBox.Name = "modAutoVoterHeaderPictureBox";
+            this.modAutoVoterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modAutoVoterHeaderPictureBox.TabIndex = 0;
+            this.modAutoVoterHeaderPictureBox.TabStop = false;
+            // 
+            // earlyQuitTab
+            // 
+            this.earlyQuitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.earlyQuitTab.Controls.Add(this.modEarlyQuitContainerGroupBox);
+            this.earlyQuitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.earlyQuitTab.ForeColor = System.Drawing.Color.White;
+            this.earlyQuitTab.Location = new System.Drawing.Point(4, 25);
+            this.earlyQuitTab.Name = "earlyQuitTab";
+            this.earlyQuitTab.Size = new System.Drawing.Size(714, 460);
+            this.earlyQuitTab.TabIndex = 3;
+            this.earlyQuitTab.Text = "Early Quit Banner";
+            // 
+            // modEarlyQuitContainerGroupBox
+            // 
+            this.modEarlyQuitContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitSettingsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptCurQuitsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitOptDetailsGroupBox);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderDescLabel);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderLabel);
+            this.modEarlyQuitContainerGroupBox.Controls.Add(this.modEarlyQuitHeaderPictureBox);
+            this.modEarlyQuitContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEarlyQuitContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEarlyQuitContainerGroupBox.Location = new System.Drawing.Point(3, 4);
+            this.modEarlyQuitContainerGroupBox.Name = "modEarlyQuitContainerGroupBox";
+            this.modEarlyQuitContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modEarlyQuitContainerGroupBox.TabIndex = 5;
+            this.modEarlyQuitContainerGroupBox.TabStop = false;
+            this.modEarlyQuitContainerGroupBox.Text = "Early Quit Banner";
+            // 
             // modEarlyQuitSettingsGroupBox
             // 
             this.modEarlyQuitSettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -2532,6 +1852,65 @@
             this.modEarlyQuitMaxQuitsLabel.TabIndex = 5;
             this.modEarlyQuitMaxQuitsLabel.Text = "Maximum number of early quits before ban";
             // 
+            // modEarlyQuitHeaderDescLabel
+            // 
+            this.modEarlyQuitHeaderDescLabel.AutoSize = true;
+            this.modEarlyQuitHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modEarlyQuitHeaderDescLabel.Name = "modEarlyQuitHeaderDescLabel";
+            this.modEarlyQuitHeaderDescLabel.Size = new System.Drawing.Size(324, 28);
+            this.modEarlyQuitHeaderDescLabel.TabIndex = 2;
+            this.modEarlyQuitHeaderDescLabel.Text = "Track players who leave the game early and\r\nautomatically ban them after a maximu" +
+    "m number of quits.";
+            // 
+            // modEarlyQuitHeaderLabel
+            // 
+            this.modEarlyQuitHeaderLabel.AutoSize = true;
+            this.modEarlyQuitHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modEarlyQuitHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modEarlyQuitHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modEarlyQuitHeaderLabel.Name = "modEarlyQuitHeaderLabel";
+            this.modEarlyQuitHeaderLabel.Size = new System.Drawing.Size(277, 25);
+            this.modEarlyQuitHeaderLabel.TabIndex = 1;
+            this.modEarlyQuitHeaderLabel.Text = "Early Quit Banner Module";
+            // 
+            // modEarlyQuitHeaderPictureBox
+            // 
+            this.modEarlyQuitHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEarlyQuitHeaderPictureBox.Image")));
+            this.modEarlyQuitHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modEarlyQuitHeaderPictureBox.Name = "modEarlyQuitHeaderPictureBox";
+            this.modEarlyQuitHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modEarlyQuitHeaderPictureBox.TabIndex = 0;
+            this.modEarlyQuitHeaderPictureBox.TabStop = false;
+            // 
+            // eloLimitTab
+            // 
+            this.eloLimitTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.eloLimitTab.Controls.Add(this.modEloLimiterContainerGroupBox);
+            this.eloLimitTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.eloLimitTab.ForeColor = System.Drawing.Color.White;
+            this.eloLimitTab.Location = new System.Drawing.Point(4, 25);
+            this.eloLimitTab.Name = "eloLimitTab";
+            this.eloLimitTab.Size = new System.Drawing.Size(714, 460);
+            this.eloLimitTab.TabIndex = 4;
+            this.eloLimitTab.Text = "Elo Limiter";
+            // 
+            // modEloLimiterContainerGroupBox
+            // 
+            this.modEloLimiterContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterSettingsGroupBox);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterOptGroupBox);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderDescLabel);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderLabel);
+            this.modEloLimiterContainerGroupBox.Controls.Add(this.modEloLimiterHeaderPictureBox);
+            this.modEloLimiterContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modEloLimiterContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modEloLimiterContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modEloLimiterContainerGroupBox.Name = "modEloLimiterContainerGroupBox";
+            this.modEloLimiterContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modEloLimiterContainerGroupBox.TabIndex = 3;
+            this.modEloLimiterContainerGroupBox.TabStop = false;
+            this.modEloLimiterContainerGroupBox.Text = "Elo Limiter";
+            // 
             // modEloLimiterSettingsGroupBox
             // 
             this.modEloLimiterSettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -2671,6 +2050,64 @@
             this.modEloLimiterEnableCheckBox.Text = "Enable QLRanks Elo Limiter Module";
             this.coreToolTip.SetToolTip(this.modEloLimiterEnableCheckBox, "Select whether this module should be enabled.");
             this.modEloLimiterEnableCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // modEloLimiterHeaderDescLabel
+            // 
+            this.modEloLimiterHeaderDescLabel.AutoSize = true;
+            this.modEloLimiterHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modEloLimiterHeaderDescLabel.Name = "modEloLimiterHeaderDescLabel";
+            this.modEloLimiterHeaderDescLabel.Size = new System.Drawing.Size(251, 28);
+            this.modEloLimiterHeaderDescLabel.TabIndex = 2;
+            this.modEloLimiterHeaderDescLabel.Text = "Automatically kicks players who do not meet\r\nQLRanks Elo requirements.";
+            // 
+            // modEloLimiterHeaderLabel
+            // 
+            this.modEloLimiterHeaderLabel.AutoSize = true;
+            this.modEloLimiterHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modEloLimiterHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modEloLimiterHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modEloLimiterHeaderLabel.Name = "modEloLimiterHeaderLabel";
+            this.modEloLimiterHeaderLabel.Size = new System.Drawing.Size(305, 25);
+            this.modEloLimiterHeaderLabel.TabIndex = 1;
+            this.modEloLimiterHeaderLabel.Text = "QLRanks Elo Limiter Module";
+            // 
+            // modEloLimiterHeaderPictureBox
+            // 
+            this.modEloLimiterHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modEloLimiterHeaderPictureBox.Image")));
+            this.modEloLimiterHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modEloLimiterHeaderPictureBox.Name = "modEloLimiterHeaderPictureBox";
+            this.modEloLimiterHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modEloLimiterHeaderPictureBox.TabIndex = 0;
+            this.modEloLimiterHeaderPictureBox.TabStop = false;
+            // 
+            // ircTab
+            // 
+            this.ircTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.ircTab.Controls.Add(this.modIRCContainerGroupBox);
+            this.ircTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ircTab.ForeColor = System.Drawing.Color.White;
+            this.ircTab.Location = new System.Drawing.Point(4, 25);
+            this.ircTab.Name = "ircTab";
+            this.ircTab.Size = new System.Drawing.Size(714, 460);
+            this.ircTab.TabIndex = 5;
+            this.ircTab.Text = "IRC";
+            // 
+            // modIRCContainerGroupBox
+            // 
+            this.modIRCContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCSettingsGroupBox);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCOptGroupBox);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderDescLabel);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderLabel);
+            this.modIRCContainerGroupBox.Controls.Add(this.modIRCHeaderPictureBox);
+            this.modIRCContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modIRCContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modIRCContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modIRCContainerGroupBox.Name = "modIRCContainerGroupBox";
+            this.modIRCContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modIRCContainerGroupBox.TabIndex = 4;
+            this.modIRCContainerGroupBox.TabStop = false;
+            this.modIRCContainerGroupBox.Text = "Internet Relay Chat";
             // 
             // modIRCSettingsGroupBox
             // 
@@ -3109,6 +2546,65 @@
             this.coreToolTip.SetToolTip(this.modIRCEnableCheckBox, "Select whether this module should be enabled.");
             this.modIRCEnableCheckBox.UseVisualStyleBackColor = true;
             // 
+            // modIRCHeaderDescLabel
+            // 
+            this.modIRCHeaderDescLabel.AutoSize = true;
+            this.modIRCHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modIRCHeaderDescLabel.Name = "modIRCHeaderDescLabel";
+            this.modIRCHeaderDescLabel.Size = new System.Drawing.Size(285, 28);
+            this.modIRCHeaderDescLabel.TabIndex = 2;
+            this.modIRCHeaderDescLabel.Text = "Provides an interface for accepting SST commands\r\nand for accessing server inform" +
+    "ation over IRC.";
+            // 
+            // modIRCHeaderLabel
+            // 
+            this.modIRCHeaderLabel.AutoSize = true;
+            this.modIRCHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modIRCHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modIRCHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modIRCHeaderLabel.Name = "modIRCHeaderLabel";
+            this.modIRCHeaderLabel.Size = new System.Drawing.Size(300, 25);
+            this.modIRCHeaderLabel.TabIndex = 1;
+            this.modIRCHeaderLabel.Text = "Internet Relay Chat Module";
+            // 
+            // modIRCHeaderPictureBox
+            // 
+            this.modIRCHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modIRCHeaderPictureBox.Image")));
+            this.modIRCHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modIRCHeaderPictureBox.Name = "modIRCHeaderPictureBox";
+            this.modIRCHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modIRCHeaderPictureBox.TabIndex = 0;
+            this.modIRCHeaderPictureBox.TabStop = false;
+            // 
+            // motdTab
+            // 
+            this.motdTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.motdTab.Controls.Add(this.modMOTDContainerGroupBox);
+            this.motdTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.motdTab.ForeColor = System.Drawing.Color.White;
+            this.motdTab.Location = new System.Drawing.Point(4, 25);
+            this.motdTab.Name = "motdTab";
+            this.motdTab.Size = new System.Drawing.Size(714, 460);
+            this.motdTab.TabIndex = 6;
+            this.motdTab.Text = "MOTD";
+            // 
+            // modMOTDContainerGroupBox
+            // 
+            this.modMOTDContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDSettingsGroupBox);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDOptGroupBox);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderDescLabel);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderLabel);
+            this.modMOTDContainerGroupBox.Controls.Add(this.modMOTDHeaderPictureBox);
+            this.modMOTDContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modMOTDContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modMOTDContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modMOTDContainerGroupBox.Name = "modMOTDContainerGroupBox";
+            this.modMOTDContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modMOTDContainerGroupBox.TabIndex = 3;
+            this.modMOTDContainerGroupBox.TabStop = false;
+            this.modMOTDContainerGroupBox.Text = "Message of the Day";
+            // 
             // modMOTDSettingsGroupBox
             // 
             this.modMOTDSettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -3246,6 +2742,64 @@
             this.modMOTDEnableCheckBox.Text = "Enable Message of the Day Module";
             this.coreToolTip.SetToolTip(this.modMOTDEnableCheckBox, "Select whether this module should be enabled.");
             this.modMOTDEnableCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // modMOTDHeaderDescLabel
+            // 
+            this.modMOTDHeaderDescLabel.AutoSize = true;
+            this.modMOTDHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modMOTDHeaderDescLabel.Name = "modMOTDHeaderDescLabel";
+            this.modMOTDHeaderDescLabel.Size = new System.Drawing.Size(264, 28);
+            this.modMOTDHeaderDescLabel.TabIndex = 2;
+            this.modMOTDHeaderDescLabel.Text = "Automatically repeats a specified message over\r\na specified time period.";
+            // 
+            // modMOTDHeaderLabel
+            // 
+            this.modMOTDHeaderLabel.AutoSize = true;
+            this.modMOTDHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modMOTDHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modMOTDHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modMOTDHeaderLabel.Name = "modMOTDHeaderLabel";
+            this.modMOTDHeaderLabel.Size = new System.Drawing.Size(299, 25);
+            this.modMOTDHeaderLabel.TabIndex = 1;
+            this.modMOTDHeaderLabel.Text = "Message of the Day Module";
+            // 
+            // modMOTDHeaderPictureBox
+            // 
+            this.modMOTDHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modMOTDHeaderPictureBox.Image")));
+            this.modMOTDHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modMOTDHeaderPictureBox.Name = "modMOTDHeaderPictureBox";
+            this.modMOTDHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modMOTDHeaderPictureBox.TabIndex = 0;
+            this.modMOTDHeaderPictureBox.TabStop = false;
+            // 
+            // pickupTab
+            // 
+            this.pickupTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.pickupTab.Controls.Add(this.modPickupContainerGroupBox);
+            this.pickupTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pickupTab.ForeColor = System.Drawing.Color.White;
+            this.pickupTab.Location = new System.Drawing.Point(4, 25);
+            this.pickupTab.Name = "pickupTab";
+            this.pickupTab.Size = new System.Drawing.Size(714, 460);
+            this.pickupTab.TabIndex = 7;
+            this.pickupTab.Text = "Pickup";
+            // 
+            // modPickupContainerGroupBox
+            // 
+            this.modPickupContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupSettingsGroupBox);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupOptGroupBox);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderDescLabel);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderLabel);
+            this.modPickupContainerGroupBox.Controls.Add(this.modPickupHeaderPictureBox);
+            this.modPickupContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modPickupContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modPickupContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modPickupContainerGroupBox.Name = "modPickupContainerGroupBox";
+            this.modPickupContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modPickupContainerGroupBox.TabIndex = 5;
+            this.modPickupContainerGroupBox.TabStop = false;
+            this.modPickupContainerGroupBox.Text = "Pickup";
             // 
             // modPickupSettingsGroupBox
             // 
@@ -3518,6 +3072,64 @@
             this.coreToolTip.SetToolTip(this.modPickupEnableCheckBox, "Select whether this module should be enabled.");
             this.modPickupEnableCheckBox.UseVisualStyleBackColor = true;
             // 
+            // modPickupHeaderDescLabel
+            // 
+            this.modPickupHeaderDescLabel.AutoSize = true;
+            this.modPickupHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modPickupHeaderDescLabel.Name = "modPickupHeaderDescLabel";
+            this.modPickupHeaderDescLabel.Size = new System.Drawing.Size(230, 28);
+            this.modPickupHeaderDescLabel.TabIndex = 2;
+            this.modPickupHeaderDescLabel.Text = "Allows the server to be set up in pick-up\r\ngame mode.";
+            // 
+            // modPickupHeaderLabel
+            // 
+            this.modPickupHeaderLabel.AutoSize = true;
+            this.modPickupHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modPickupHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modPickupHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modPickupHeaderLabel.Name = "modPickupHeaderLabel";
+            this.modPickupHeaderLabel.Size = new System.Drawing.Size(231, 25);
+            this.modPickupHeaderLabel.TabIndex = 1;
+            this.modPickupHeaderLabel.Text = "Pickup Game Module";
+            // 
+            // modPickupHeaderPictureBox
+            // 
+            this.modPickupHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modPickupHeaderPictureBox.Image")));
+            this.modPickupHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modPickupHeaderPictureBox.Name = "modPickupHeaderPictureBox";
+            this.modPickupHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modPickupHeaderPictureBox.TabIndex = 0;
+            this.modPickupHeaderPictureBox.TabStop = false;
+            // 
+            // serversTab
+            // 
+            this.serversTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.serversTab.Controls.Add(this.modServerListContainerGroupBox);
+            this.serversTab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.serversTab.ForeColor = System.Drawing.Color.White;
+            this.serversTab.Location = new System.Drawing.Point(4, 25);
+            this.serversTab.Name = "serversTab";
+            this.serversTab.Size = new System.Drawing.Size(714, 460);
+            this.serversTab.TabIndex = 8;
+            this.serversTab.Text = "Server List";
+            // 
+            // modServerListContainerGroupBox
+            // 
+            this.modServerListContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListSettingsGroupBox);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListOptGroupBox);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderDescLabel);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderLabel);
+            this.modServerListContainerGroupBox.Controls.Add(this.modServerListHeaderPictureBox);
+            this.modServerListContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modServerListContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.modServerListContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.modServerListContainerGroupBox.Name = "modServerListContainerGroupBox";
+            this.modServerListContainerGroupBox.Size = new System.Drawing.Size(708, 453);
+            this.modServerListContainerGroupBox.TabIndex = 4;
+            this.modServerListContainerGroupBox.TabStop = false;
+            this.modServerListContainerGroupBox.Text = "Server List";
+            // 
             // modServerListSettingsGroupBox
             // 
             this.modServerListSettingsGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
@@ -3658,6 +3270,65 @@
             this.coreToolTip.SetToolTip(this.modServerListEnableCheckBox, "Select whether this module should be enabled.");
             this.modServerListEnableCheckBox.UseVisualStyleBackColor = true;
             // 
+            // modServerListHeaderDescLabel
+            // 
+            this.modServerListHeaderDescLabel.AutoSize = true;
+            this.modServerListHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.modServerListHeaderDescLabel.Name = "modServerListHeaderDescLabel";
+            this.modServerListHeaderDescLabel.Size = new System.Drawing.Size(337, 28);
+            this.modServerListHeaderDescLabel.TabIndex = 2;
+            this.modServerListHeaderDescLabel.Text = "Allows players to list active servers for a specified game type\r\nand region in-ga" +
+    "me.";
+            // 
+            // modServerListHeaderLabel
+            // 
+            this.modServerListHeaderLabel.AutoSize = true;
+            this.modServerListHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.modServerListHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.modServerListHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.modServerListHeaderLabel.Name = "modServerListHeaderLabel";
+            this.modServerListHeaderLabel.Size = new System.Drawing.Size(326, 25);
+            this.modServerListHeaderLabel.TabIndex = 1;
+            this.modServerListHeaderLabel.Text = "Quake Live Server List Module";
+            // 
+            // modServerListHeaderPictureBox
+            // 
+            this.modServerListHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("modServerListHeaderPictureBox.Image")));
+            this.modServerListHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.modServerListHeaderPictureBox.Name = "modServerListHeaderPictureBox";
+            this.modServerListHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.modServerListHeaderPictureBox.TabIndex = 0;
+            this.modServerListHeaderPictureBox.TabStop = false;
+            // 
+            // usersTab
+            // 
+            this.usersTab.BackColor = System.Drawing.Color.Black;
+            this.usersTab.Controls.Add(this.usrMContainerGroupBox);
+            this.usersTab.ForeColor = System.Drawing.Color.White;
+            this.usersTab.ImageIndex = 3;
+            this.usersTab.Location = new System.Drawing.Point(4, 26);
+            this.usersTab.Name = "usersTab";
+            this.usersTab.Size = new System.Drawing.Size(718, 485);
+            this.usersTab.TabIndex = 4;
+            this.usersTab.Text = "User Management";
+            // 
+            // usrMContainerGroupBox
+            // 
+            this.usrMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.usrMContainerGroupBox.Controls.Add(this.usrMCurUsersGroupBox);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMAddUserGroupBox);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderDescLabel);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderLabel);
+            this.usrMContainerGroupBox.Controls.Add(this.usrMHeaderPictureBox);
+            this.usrMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usrMContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.usrMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.usrMContainerGroupBox.Name = "usrMContainerGroupBox";
+            this.usrMContainerGroupBox.Size = new System.Drawing.Size(710, 479);
+            this.usrMContainerGroupBox.TabIndex = 5;
+            this.usrMContainerGroupBox.TabStop = false;
+            this.usrMContainerGroupBox.Text = "User Management";
+            // 
             // usrMCurUsersGroupBox
             // 
             this.usrMCurUsersGroupBox.BackColor = System.Drawing.Color.Black;
@@ -3795,6 +3466,64 @@
             this.usrMUserAccessComboBox.TabIndex = 8;
             this.coreToolTip.SetToolTip(this.usrMUserAccessComboBox, "This list contains the access level of the user. Higher access levels\r\nhave acces" +
         "s to more sensitive commands.");
+            // 
+            // usrMHeaderDescLabel
+            // 
+            this.usrMHeaderDescLabel.AutoSize = true;
+            this.usrMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.usrMHeaderDescLabel.Name = "usrMHeaderDescLabel";
+            this.usrMHeaderDescLabel.Size = new System.Drawing.Size(141, 14);
+            this.usrMHeaderDescLabel.TabIndex = 2;
+            this.usrMHeaderDescLabel.Text = "Add or delete SST users";
+            // 
+            // usrMHeaderLabel
+            // 
+            this.usrMHeaderLabel.AutoSize = true;
+            this.usrMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.usrMHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.usrMHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.usrMHeaderLabel.Name = "usrMHeaderLabel";
+            this.usrMHeaderLabel.Size = new System.Drawing.Size(248, 25);
+            this.usrMHeaderLabel.TabIndex = 1;
+            this.usrMHeaderLabel.Text = "SST User Management";
+            // 
+            // usrMHeaderPictureBox
+            // 
+            this.usrMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("usrMHeaderPictureBox.Image")));
+            this.usrMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.usrMHeaderPictureBox.Name = "usrMHeaderPictureBox";
+            this.usrMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.usrMHeaderPictureBox.TabIndex = 0;
+            this.usrMHeaderPictureBox.TabStop = false;
+            // 
+            // banTab
+            // 
+            this.banTab.BackColor = System.Drawing.Color.Black;
+            this.banTab.Controls.Add(this.banMContainerGroupBox);
+            this.banTab.ForeColor = System.Drawing.Color.White;
+            this.banTab.ImageIndex = 4;
+            this.banTab.Location = new System.Drawing.Point(4, 26);
+            this.banTab.Name = "banTab";
+            this.banTab.Size = new System.Drawing.Size(718, 485);
+            this.banTab.TabIndex = 5;
+            this.banTab.Text = "Ban Management";
+            // 
+            // banMContainerGroupBox
+            // 
+            this.banMContainerGroupBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.banMContainerGroupBox.Controls.Add(this.banMCurBansGroupBox);
+            this.banMContainerGroupBox.Controls.Add(this.banMAddBanGroupBox);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderDescLabel);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderLabel);
+            this.banMContainerGroupBox.Controls.Add(this.banMHeaderPictureBox);
+            this.banMContainerGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.banMContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.banMContainerGroupBox.Location = new System.Drawing.Point(5, 3);
+            this.banMContainerGroupBox.Name = "banMContainerGroupBox";
+            this.banMContainerGroupBox.Size = new System.Drawing.Size(710, 479);
+            this.banMContainerGroupBox.TabIndex = 6;
+            this.banMContainerGroupBox.TabStop = false;
+            this.banMContainerGroupBox.Text = "Ban Management";
             // 
             // banMCurBansGroupBox
             // 
@@ -3975,10 +3704,66 @@
             this.banMBanDurationLabel.TabIndex = 9;
             this.banMBanDurationLabel.Text = "Ban Duration";
             // 
+            // banMHeaderDescLabel
+            // 
+            this.banMHeaderDescLabel.AutoSize = true;
+            this.banMHeaderDescLabel.Location = new System.Drawing.Point(82, 47);
+            this.banMHeaderDescLabel.Name = "banMHeaderDescLabel";
+            this.banMHeaderDescLabel.Size = new System.Drawing.Size(165, 14);
+            this.banMHeaderDescLabel.TabIndex = 2;
+            this.banMHeaderDescLabel.Text = "Add or delete SST user bans";
+            // 
+            // banMHeaderLabel
+            // 
+            this.banMHeaderLabel.AutoSize = true;
+            this.banMHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.banMHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.banMHeaderLabel.Location = new System.Drawing.Point(76, 18);
+            this.banMHeaderLabel.Name = "banMHeaderLabel";
+            this.banMHeaderLabel.Size = new System.Drawing.Size(240, 25);
+            this.banMHeaderLabel.TabIndex = 1;
+            this.banMHeaderLabel.Text = "SST Ban Management";
+            // 
+            // banMHeaderPictureBox
+            // 
+            this.banMHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("banMHeaderPictureBox.Image")));
+            this.banMHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.banMHeaderPictureBox.Name = "banMHeaderPictureBox";
+            this.banMHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.banMHeaderPictureBox.TabIndex = 0;
+            this.banMHeaderPictureBox.TabStop = false;
+            // 
+            // aboutTab
+            // 
+            this.aboutTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.aboutTab.Controls.Add(this.abtContainerGroupBox);
+            this.aboutTab.ForeColor = System.Drawing.Color.White;
+            this.aboutTab.ImageIndex = 5;
+            this.aboutTab.Location = new System.Drawing.Point(4, 26);
+            this.aboutTab.Name = "aboutTab";
+            this.aboutTab.Size = new System.Drawing.Size(718, 485);
+            this.aboutTab.TabIndex = 3;
+            this.aboutTab.Text = "About";
+            // 
+            // abtContainerGroupBox
+            // 
+            this.abtContainerGroupBox.Controls.Add(this.aboutGroupBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderDescLabel);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderPictureBox);
+            this.abtContainerGroupBox.Controls.Add(this.abtHeaderLabel);
+            this.abtContainerGroupBox.ForeColor = System.Drawing.Color.White;
+            this.abtContainerGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.abtContainerGroupBox.Name = "abtContainerGroupBox";
+            this.abtContainerGroupBox.Size = new System.Drawing.Size(710, 479);
+            this.abtContainerGroupBox.TabIndex = 9;
+            this.abtContainerGroupBox.TabStop = false;
+            this.abtContainerGroupBox.Text = "About SST";
+            // 
             // aboutGroupBox
             // 
             this.aboutGroupBox.BackColor = System.Drawing.Color.Black;
             this.aboutGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
+            this.aboutGroupBox.Controls.Add(this.abtCheckUpdateButton);
             this.aboutGroupBox.Controls.Add(this.abtWebsiteButton);
             this.aboutGroupBox.Controls.Add(this.xaeroPictureBox);
             this.aboutGroupBox.Controls.Add(this.abtAuthorLabel);
@@ -3997,6 +3782,21 @@
             this.aboutGroupBox.TabIndex = 1;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "Application Info";
+            // 
+            // abtCheckUpdateButton
+            // 
+            this.abtCheckUpdateButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.abtCheckUpdateButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.abtCheckUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abtCheckUpdateButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtCheckUpdateButton.ForeColor = System.Drawing.Color.White;
+            this.abtCheckUpdateButton.Location = new System.Drawing.Point(227, 277);
+            this.abtCheckUpdateButton.Name = "abtCheckUpdateButton";
+            this.abtCheckUpdateButton.Size = new System.Drawing.Size(132, 28);
+            this.abtCheckUpdateButton.TabIndex = 11;
+            this.abtCheckUpdateButton.Text = "Check for Update";
+            this.coreToolTip.SetToolTip(this.abtCheckUpdateButton, "Click this button to check for application updates.");
+            this.abtCheckUpdateButton.UseVisualStyleBackColor = false;
             // 
             // abtWebsiteButton
             // 
@@ -4096,6 +3896,242 @@
             this.abtIconPictureBox.TabIndex = 0;
             this.abtIconPictureBox.TabStop = false;
             // 
+            // abtHeaderDescLabel
+            // 
+            this.abtHeaderDescLabel.AutoSize = true;
+            this.abtHeaderDescLabel.ForeColor = System.Drawing.Color.White;
+            this.abtHeaderDescLabel.Location = new System.Drawing.Point(81, 47);
+            this.abtHeaderDescLabel.Name = "abtHeaderDescLabel";
+            this.abtHeaderDescLabel.Size = new System.Drawing.Size(207, 14);
+            this.abtHeaderDescLabel.TabIndex = 8;
+            this.abtHeaderDescLabel.Text = "Information about the SST software";
+            // 
+            // abtHeaderPictureBox
+            // 
+            this.abtHeaderPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("abtHeaderPictureBox.Image")));
+            this.abtHeaderPictureBox.Location = new System.Drawing.Point(12, 21);
+            this.abtHeaderPictureBox.Name = "abtHeaderPictureBox";
+            this.abtHeaderPictureBox.Size = new System.Drawing.Size(64, 64);
+            this.abtHeaderPictureBox.TabIndex = 6;
+            this.abtHeaderPictureBox.TabStop = false;
+            // 
+            // abtHeaderLabel
+            // 
+            this.abtHeaderLabel.AutoSize = true;
+            this.abtHeaderLabel.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtHeaderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(207)))), ((int)(((byte)(218)))), ((int)(((byte)(227)))));
+            this.abtHeaderLabel.Location = new System.Drawing.Point(79, 18);
+            this.abtHeaderLabel.Name = "abtHeaderLabel";
+            this.abtHeaderLabel.Size = new System.Drawing.Size(119, 25);
+            this.abtHeaderLabel.TabIndex = 7;
+            this.abtHeaderLabel.Text = "About SST";
+            // 
+            // uiTabImageList
+            // 
+            this.uiTabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uiTabImageList.ImageStream")));
+            this.uiTabImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uiTabImageList.Images.SetKeyName(0, "tab_log_icon");
+            this.uiTabImageList.Images.SetKeyName(1, "tab_coreoptions_icon");
+            this.uiTabImageList.Images.SetKeyName(2, "tab_module_icon");
+            this.uiTabImageList.Images.SetKeyName(3, "tab_user_icon");
+            this.uiTabImageList.Images.SetKeyName(4, "tab_bans_icon");
+            this.uiTabImageList.Images.SetKeyName(5, "tab_about_icon");
+            // 
+            // sstStartButton
+            // 
+            this.sstStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.sstStartButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.sstStartButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sstStartButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sstStartButton.ForeColor = System.Drawing.Color.White;
+            this.sstStartButton.Location = new System.Drawing.Point(367, 646);
+            this.sstStartButton.Name = "sstStartButton";
+            this.sstStartButton.Size = new System.Drawing.Size(132, 28);
+            this.sstStartButton.TabIndex = 0;
+            this.sstStartButton.Text = "Start Monitoring";
+            this.coreToolTip.SetToolTip(this.sstStartButton, "Start monitoring your server.");
+            this.sstStartButton.UseVisualStyleBackColor = false;
+            this.sstStartButton.Click += new System.EventHandler(this.sstStartButton_Click);
+            // 
+            // coreToolTip
+            // 
+            this.coreToolTip.AutoPopDelay = 15000;
+            this.coreToolTip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.coreToolTip.ForeColor = System.Drawing.Color.White;
+            this.coreToolTip.InitialDelay = 500;
+            this.coreToolTip.IsBalloon = true;
+            this.coreToolTip.ReshowDelay = 100;
+            // 
+            // sstStopButton
+            // 
+            this.sstStopButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.sstStopButton.Enabled = false;
+            this.sstStopButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.sstStopButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sstStopButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sstStopButton.ForeColor = System.Drawing.Color.White;
+            this.sstStopButton.Location = new System.Drawing.Point(516, 646);
+            this.sstStopButton.Name = "sstStopButton";
+            this.sstStopButton.Size = new System.Drawing.Size(132, 28);
+            this.sstStopButton.TabIndex = 7;
+            this.sstStopButton.Text = "Stop Monitoring";
+            this.coreToolTip.SetToolTip(this.sstStopButton, "Stop monitoring your server.");
+            this.sstStopButton.UseVisualStyleBackColor = false;
+            this.sstStopButton.Click += new System.EventHandler(this.sstStopButton_Click);
+            // 
+            // sstResetButton
+            // 
+            this.sstResetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.sstResetButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.sstResetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sstResetButton.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sstResetButton.ForeColor = System.Drawing.Color.White;
+            this.sstResetButton.Location = new System.Drawing.Point(665, 646);
+            this.sstResetButton.Name = "sstResetButton";
+            this.sstResetButton.Size = new System.Drawing.Size(68, 28);
+            this.sstResetButton.TabIndex = 8;
+            this.sstResetButton.Text = "Reset";
+            this.coreToolTip.SetToolTip(this.sstResetButton, "Stop monitoring if it\'s active, or start monitoring if it\'s\r\nnot active.");
+            this.sstResetButton.UseVisualStyleBackColor = false;
+            this.sstResetButton.Click += new System.EventHandler(this.sstResetButton_Click);
+            // 
+            // minimizeButton
+            // 
+            this.minimizeButton.Image = ((System.Drawing.Image)(resources.GetObject("minimizeButton.Image")));
+            this.minimizeButton.Location = new System.Drawing.Point(681, 5);
+            this.minimizeButton.Name = "minimizeButton";
+            this.minimizeButton.Size = new System.Drawing.Size(21, 17);
+            this.minimizeButton.TabIndex = 4;
+            this.minimizeButton.TabStop = false;
+            this.minimizeButton.Click += new System.EventHandler(this.minimizeButton_Click);
+            // 
+            // closeButton
+            // 
+            this.closeButton.Image = ((System.Drawing.Image)(resources.GetObject("closeButton.Image")));
+            this.closeButton.Location = new System.Drawing.Point(711, 5);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(21, 17);
+            this.closeButton.TabIndex = 5;
+            this.closeButton.TabStop = false;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            // 
+            // titleBarVersionLabel
+            // 
+            this.titleBarVersionLabel.AutoSize = true;
+            this.titleBarVersionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.titleBarVersionLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.titleBarVersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
+            this.titleBarVersionLabel.Location = new System.Drawing.Point(39, 7);
+            this.titleBarVersionLabel.Name = "titleBarVersionLabel";
+            this.titleBarVersionLabel.Size = new System.Drawing.Size(61, 13);
+            this.titleBarVersionLabel.TabIndex = 6;
+            this.titleBarVersionLabel.Text = "version 0.0";
+            // 
+            // errorProvider
+            // 
+            this.errorProvider.BlinkRate = 300;
+            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.AlwaysBlink;
+            this.errorProvider.ContainerControl = this;
+            this.errorProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider.Icon")));
+            // 
+            // sysTrayIcon
+            // 
+            this.sysTrayIcon.ContextMenuStrip = this.sysTrayContextMenuStrip;
+            this.sysTrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("sysTrayIcon.Icon")));
+            this.sysTrayIcon.Text = "SST";
+            this.sysTrayIcon.Visible = true;
+            this.sysTrayIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sysTrayIcon_MouseClick);
+            // 
+            // sysTrayContextMenuStrip
+            // 
+            this.sysTrayContextMenuStrip.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sysTrayContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sysTrayWebsiteMenuItem,
+            this.sysTrayUpdateMenuItem,
+            this.sysTrayExitMenuItem});
+            this.sysTrayContextMenuStrip.Name = "sysTrayContextMenuStrip";
+            this.sysTrayContextMenuStrip.ShowImageMargin = false;
+            this.sysTrayContextMenuStrip.Size = new System.Drawing.Size(146, 70);
+            // 
+            // sysTrayWebsiteMenuItem
+            // 
+            this.sysTrayWebsiteMenuItem.Name = "sysTrayWebsiteMenuItem";
+            this.sysTrayWebsiteMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.sysTrayWebsiteMenuItem.Text = "SSB Website";
+            this.sysTrayWebsiteMenuItem.Click += new System.EventHandler(this.sysTrayWebsiteMenuItem_Click);
+            // 
+            // sysTrayUpdateMenuItem
+            // 
+            this.sysTrayUpdateMenuItem.Name = "sysTrayUpdateMenuItem";
+            this.sysTrayUpdateMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.sysTrayUpdateMenuItem.Text = "Check for Update";
+            this.sysTrayUpdateMenuItem.Click += new System.EventHandler(this.sysTrayUpdateMenuItem_Click);
+            // 
+            // sysTrayExitMenuItem
+            // 
+            this.sysTrayExitMenuItem.Name = "sysTrayExitMenuItem";
+            this.sysTrayExitMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.sysTrayExitMenuItem.Text = "Exit SST";
+            this.sysTrayExitMenuItem.Click += new System.EventHandler(this.sysTrayExitMenuItem_Click);
+            // 
+            // monitorIconPictureBox
+            // 
+            this.monitorIconPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.monitorIconPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("monitorIconPictureBox.Image")));
+            this.monitorIconPictureBox.Location = new System.Drawing.Point(3, 3);
+            this.monitorIconPictureBox.Name = "monitorIconPictureBox";
+            this.monitorIconPictureBox.Size = new System.Drawing.Size(16, 16);
+            this.monitorIconPictureBox.TabIndex = 9;
+            this.monitorIconPictureBox.TabStop = false;
+            // 
+            // activeModulesLabel
+            // 
+            this.activeModulesLabel.AutoSize = true;
+            this.activeModulesLabel.BackColor = System.Drawing.Color.Transparent;
+            this.activeModulesLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activeModulesLabel.ForeColor = System.Drawing.Color.White;
+            this.activeModulesLabel.Location = new System.Drawing.Point(28, 25);
+            this.activeModulesLabel.Name = "activeModulesLabel";
+            this.activeModulesLabel.Size = new System.Drawing.Size(107, 14);
+            this.activeModulesLabel.TabIndex = 12;
+            this.activeModulesLabel.Text = "No active modules";
+            // 
+            // moduleIconPictureBox
+            // 
+            this.moduleIconPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.moduleIconPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("moduleIconPictureBox.Image")));
+            this.moduleIconPictureBox.Location = new System.Drawing.Point(3, 25);
+            this.moduleIconPictureBox.Name = "moduleIconPictureBox";
+            this.moduleIconPictureBox.Size = new System.Drawing.Size(16, 16);
+            this.moduleIconPictureBox.TabIndex = 11;
+            this.moduleIconPictureBox.TabStop = false;
+            // 
+            // monitorStatusLabel
+            // 
+            this.monitorStatusLabel.AutoSize = true;
+            this.monitorStatusLabel.BackColor = System.Drawing.Color.Transparent;
+            this.monitorStatusLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.monitorStatusLabel.ForeColor = System.Drawing.Color.White;
+            this.monitorStatusLabel.Location = new System.Drawing.Point(28, 3);
+            this.monitorStatusLabel.Name = "monitorStatusLabel";
+            this.monitorStatusLabel.Size = new System.Drawing.Size(136, 14);
+            this.monitorStatusLabel.TabIndex = 10;
+            this.monitorStatusLabel.Text = "Not monitoring a server";
+            // 
+            // statusPanel
+            // 
+            this.statusPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(35)))), ((int)(((byte)(38)))));
+            this.statusPanel.Controls.Add(this.monitorIconPictureBox);
+            this.statusPanel.Controls.Add(this.monitorStatusLabel);
+            this.statusPanel.Controls.Add(this.activeModulesLabel);
+            this.statusPanel.Controls.Add(this.moduleIconPictureBox);
+            this.statusPanel.Location = new System.Drawing.Point(1, 683);
+            this.statusPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.statusPanel.Name = "statusPanel";
+            this.statusPanel.Size = new System.Drawing.Size(738, 44);
+            this.statusPanel.TabIndex = 13;
+            this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
+            // 
             // UserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4121,60 +4157,157 @@
             this.logTab.ResumeLayout(false);
             this.logContainerGroupBox.ResumeLayout(false);
             this.logContainerGroupBox.PerformLayout();
+            this.logEventsGroupBox.ResumeLayout(false);
+            this.logEventsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logHeaderPictureBox)).EndInit();
             this.coreOptionsTab.ResumeLayout(false);
             this.coreContainerGroupBox.ResumeLayout(false);
             this.coreContainerGroupBox.PerformLayout();
+            this.coreSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).EndInit();
+            this.coreCfgGroupBox.ResumeLayout(false);
+            this.coreAccountGroupBox.ResumeLayout(false);
+            this.coreAccountGroupBox.PerformLayout();
+            this.coreInterfaceGroupBox.ResumeLayout(false);
+            this.coreInterfaceGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.coreHeaderPictureBox)).EndInit();
             this.modulesTab.ResumeLayout(false);
             this.moduleTabControl.ResumeLayout(false);
             this.accountDateTab.ResumeLayout(false);
             this.modAccDateContainerGroupBox.ResumeLayout(false);
             this.modAccDateContainerGroupBox.PerformLayout();
+            this.modAccDateSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).EndInit();
+            this.modAccDateOptGroupBox.ResumeLayout(false);
+            this.modAccDateOptGroupBox.PerformLayout();
+            this.modAccDateOptAccAgeGroupBox.ResumeLayout(false);
+            this.modAccDateOptAccAgeGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccDateHeaderPictureBox)).EndInit();
             this.accuracyTab.ResumeLayout(false);
             this.modAccuracyContainerGroupBox.ResumeLayout(false);
             this.modAccuracyContainerGroupBox.PerformLayout();
+            this.modAccuracySettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).EndInit();
+            this.modAccuracyOptGroupBox.ResumeLayout(false);
+            this.modAccuracyOptGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAccuracyHeaderPictureBox)).EndInit();
             this.autoVoterTab.ResumeLayout(false);
             this.modAutoVoterContainerGroupBox.ResumeLayout(false);
             this.modAutoVoterContainerGroupBox.PerformLayout();
+            this.modAutoVoterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).EndInit();
+            this.modAutoVoterOptCurVotesGroupBox.ResumeLayout(false);
+            this.modAutoVoterOptVoteDetailsGroupBox.ResumeLayout(false);
+            this.modAutoVoterOptVoteDetailsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterHeaderPictureBox)).EndInit();
             this.earlyQuitTab.ResumeLayout(false);
             this.modEarlyQuitContainerGroupBox.ResumeLayout(false);
             this.modEarlyQuitContainerGroupBox.PerformLayout();
+            this.modEarlyQuitSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).EndInit();
+            this.modEarlyQuitOptCurQuitsGroupBox.ResumeLayout(false);
+            this.modEarlyQuitOptDetailsGroupBox.ResumeLayout(false);
+            this.modEarlyQuitOptDetailsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitHeaderPictureBox)).EndInit();
             this.eloLimitTab.ResumeLayout(false);
             this.modEloLimiterContainerGroupBox.ResumeLayout(false);
             this.modEloLimiterContainerGroupBox.PerformLayout();
+            this.modEloLimiterSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).EndInit();
+            this.modEloLimiterOptGroupBox.ResumeLayout(false);
+            this.modEloLimiterOptGroupBox.PerformLayout();
+            this.modEloLimiterOptEloGroupBox.ResumeLayout(false);
+            this.modEloLimiterOptEloGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterHeaderPictureBox)).EndInit();
             this.ircTab.ResumeLayout(false);
             this.modIRCContainerGroupBox.ResumeLayout(false);
             this.modIRCContainerGroupBox.PerformLayout();
+            this.modIRCSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).EndInit();
+            this.modIRCOptGroupBox.ResumeLayout(false);
+            this.modIRCOptGroupBox.PerformLayout();
+            this.modIRCOptServerGroupBox.ResumeLayout(false);
+            this.modIRCOptServerGroupBox.PerformLayout();
+            this.modIRCOptNamingGroupBox.ResumeLayout(false);
+            this.modIRCOptNamingGroupBox.PerformLayout();
+            this.modIRCOptQuakeNetGroupBox.ResumeLayout(false);
+            this.modIRCOptQuakeNetGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modIRCHeaderPictureBox)).EndInit();
             this.motdTab.ResumeLayout(false);
             this.modMOTDContainerGroupBox.ResumeLayout(false);
             this.modMOTDContainerGroupBox.PerformLayout();
+            this.modMOTDSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).EndInit();
+            this.modMOTDOptGroupBox.ResumeLayout(false);
+            this.modMOTDOptGroupBox.PerformLayout();
+            this.modMOTDOptMsgRepeatGroupBox.ResumeLayout(false);
+            this.modMOTDOptMsgRepeatGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modMOTDHeaderPictureBox)).EndInit();
             this.pickupTab.ResumeLayout(false);
             this.modPickupContainerGroupBox.ResumeLayout(false);
             this.modPickupContainerGroupBox.PerformLayout();
+            this.modPickupSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).EndInit();
+            this.modPickupOptGroupBox.ResumeLayout(false);
+            this.modPickupOptGroupBox.PerformLayout();
+            this.modPickupOptTeamSizeGroupBox.ResumeLayout(false);
+            this.modPickupOptTeamSizeGroupBox.PerformLayout();
+            this.modPickupOptNoShowsGroupBox.ResumeLayout(false);
+            this.modPickupOptNoShowsGroupBox.PerformLayout();
+            this.modPickupOptSubsGroupBox.ResumeLayout(false);
+            this.modPickupOptSubsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modPickupHeaderPictureBox)).EndInit();
             this.serversTab.ResumeLayout(false);
             this.modServerListContainerGroupBox.ResumeLayout(false);
             this.modServerListContainerGroupBox.PerformLayout();
+            this.modServerListSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).EndInit();
+            this.modServerListOptGroupBox.ResumeLayout(false);
+            this.modServerListOptGroupBox.PerformLayout();
+            this.modServerListOptDisplayGroupBox.ResumeLayout(false);
+            this.modServerListOptDisplayGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modServerListHeaderPictureBox)).EndInit();
             this.usersTab.ResumeLayout(false);
             this.usrMContainerGroupBox.ResumeLayout(false);
             this.usrMContainerGroupBox.PerformLayout();
+            this.usrMCurUsersGroupBox.ResumeLayout(false);
+            this.usrMAddUserGroupBox.ResumeLayout(false);
+            this.usrMAddUserGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.usrMHeaderPictureBox)).EndInit();
             this.banTab.ResumeLayout(false);
             this.banMContainerGroupBox.ResumeLayout(false);
             this.banMContainerGroupBox.PerformLayout();
+            this.banMCurBansGroupBox.ResumeLayout(false);
+            this.banMAddBanGroupBox.ResumeLayout(false);
+            this.banMAddBanGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.banMHeaderPictureBox)).EndInit();
             this.aboutTab.ResumeLayout(false);
             this.abtContainerGroupBox.ResumeLayout(false);
             this.abtContainerGroupBox.PerformLayout();
+            this.aboutGroupBox.ResumeLayout(false);
+            this.aboutGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.abtHeaderPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeButton)).EndInit();
@@ -4188,103 +4321,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.moduleIconPictureBox)).EndInit();
             this.statusPanel.ResumeLayout(false);
             this.statusPanel.PerformLayout();
-            this.logEventsGroupBox.ResumeLayout(false);
-            this.logEventsGroupBox.PerformLayout();
-            this.coreSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.coreResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coreSaveSettingsPictureBox)).EndInit();
-            this.coreCfgGroupBox.ResumeLayout(false);
-            this.coreAccountGroupBox.ResumeLayout(false);
-            this.coreAccountGroupBox.PerformLayout();
-            this.coreInterfaceGroupBox.ResumeLayout(false);
-            this.coreInterfaceGroupBox.PerformLayout();
-            this.modAccDateSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccDateSaveSettingsPictureBox)).EndInit();
-            this.modAccDateOptGroupBox.ResumeLayout(false);
-            this.modAccDateOptGroupBox.PerformLayout();
-            this.modAccDateOptAccAgeGroupBox.ResumeLayout(false);
-            this.modAccDateOptAccAgeGroupBox.PerformLayout();
-            this.modAccuracySettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracyLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAccuracySaveSettingsPictureBox)).EndInit();
-            this.modAccuracyOptGroupBox.ResumeLayout(false);
-            this.modAccuracyOptGroupBox.PerformLayout();
-            this.modAutoVoterSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modAutoVoterSaveSettingsPictureBox)).EndInit();
-            this.modAutoVoterOptCurVotesGroupBox.ResumeLayout(false);
-            this.modAutoVoterOptVoteDetailsGroupBox.ResumeLayout(false);
-            this.modAutoVoterOptVoteDetailsGroupBox.PerformLayout();
-            this.modEarlyQuitSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEarlyQuitSaveSettingsPictureBox)).EndInit();
-            this.modEarlyQuitOptCurQuitsGroupBox.ResumeLayout(false);
-            this.modEarlyQuitOptDetailsGroupBox.ResumeLayout(false);
-            this.modEarlyQuitOptDetailsGroupBox.PerformLayout();
-            this.modEloLimiterSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modEloLimiterSaveSettingsPictureBox)).EndInit();
-            this.modEloLimiterOptGroupBox.ResumeLayout(false);
-            this.modEloLimiterOptGroupBox.PerformLayout();
-            this.modEloLimiterOptEloGroupBox.ResumeLayout(false);
-            this.modEloLimiterOptEloGroupBox.PerformLayout();
-            this.modIRCSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modIRCSaveSettingsPictureBox)).EndInit();
-            this.modIRCOptGroupBox.ResumeLayout(false);
-            this.modIRCOptGroupBox.PerformLayout();
-            this.modIRCOptServerGroupBox.ResumeLayout(false);
-            this.modIRCOptServerGroupBox.PerformLayout();
-            this.modIRCOptNamingGroupBox.ResumeLayout(false);
-            this.modIRCOptNamingGroupBox.PerformLayout();
-            this.modIRCOptQuakeNetGroupBox.ResumeLayout(false);
-            this.modIRCOptQuakeNetGroupBox.PerformLayout();
-            this.modMOTDSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modMOTDSaveSettingsPictureBox)).EndInit();
-            this.modMOTDOptGroupBox.ResumeLayout(false);
-            this.modMOTDOptGroupBox.PerformLayout();
-            this.modMOTDOptMsgRepeatGroupBox.ResumeLayout(false);
-            this.modMOTDOptMsgRepeatGroupBox.PerformLayout();
-            this.modPickupSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modPickupSaveSettingsPictureBox)).EndInit();
-            this.modPickupOptGroupBox.ResumeLayout(false);
-            this.modPickupOptGroupBox.PerformLayout();
-            this.modPickupOptTeamSizeGroupBox.ResumeLayout(false);
-            this.modPickupOptTeamSizeGroupBox.PerformLayout();
-            this.modPickupOptNoShowsGroupBox.ResumeLayout(false);
-            this.modPickupOptNoShowsGroupBox.PerformLayout();
-            this.modPickupOptSubsGroupBox.ResumeLayout(false);
-            this.modPickupOptSubsGroupBox.PerformLayout();
-            this.modServerListSettingsGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListResetSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListLoadSettingsPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modServerListSaveSettingsPictureBox)).EndInit();
-            this.modServerListOptGroupBox.ResumeLayout(false);
-            this.modServerListOptGroupBox.PerformLayout();
-            this.modServerListOptDisplayGroupBox.ResumeLayout(false);
-            this.modServerListOptDisplayGroupBox.PerformLayout();
-            this.usrMCurUsersGroupBox.ResumeLayout(false);
-            this.usrMAddUserGroupBox.ResumeLayout(false);
-            this.usrMAddUserGroupBox.PerformLayout();
-            this.banMCurBansGroupBox.ResumeLayout(false);
-            this.banMAddBanGroupBox.ResumeLayout(false);
-            this.banMAddBanGroupBox.PerformLayout();
-            this.aboutGroupBox.ResumeLayout(false);
-            this.aboutGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xaeroPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.abtIconPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4584,5 +4620,8 @@
         private System.Windows.Forms.Button copyLogEventsClipboardButton;
         private CustGroupBox modAccuracyOptGroupBox;
         private CustGroupBox modAccuracySettingsGroupBox;
+        private System.Windows.Forms.ToolStripMenuItem sysTrayWebsiteMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sysTrayUpdateMenuItem;
+        private System.Windows.Forms.Button abtCheckUpdateButton;
     }
 }

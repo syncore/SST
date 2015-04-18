@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -18,6 +20,7 @@ namespace SST.Core
     /// </summary>
     public class SynServerTool
     {
+        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _delayedInitTaskTimer;
@@ -25,7 +28,6 @@ namespace SST.Core
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
-        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerTool" /> main class.
@@ -44,7 +46,8 @@ namespace SST.Core
         ///     start. If Quake Live is running, we will check to see if the client is connected to a server. If connected, we will
         ///     retrieve the server information and players using built in QL commands. After that, we will start a timer that
         ///     waits for ~6.5s to perform any final initlization tasks to make sure all necessary information is present.
-        ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so refactoring
+        ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so
+        ///     refactoring
         ///     in various places is almost certainly in order.
         /// </remarks>
         public SynServerTool()
@@ -309,6 +312,19 @@ namespace SST.Core
         }
 
         /// <summary>
+        /// Handles the situation where the user disables developer mode
+        /// while the server is being monitored.
+        /// </summary>
+        public void HandleDevModeDisabled()
+        {
+            StopMonitoring();
+            MessageBox.Show(
+                    @"SST requires developer mode to be enabled! Now stopping monitoring.",
+                    @"Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
         ///     Reloads the initialization step.
         /// </summary>
         /// <remarks>
@@ -329,7 +345,7 @@ namespace SST.Core
             if (IsReadingConsole) return;
             Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
@@ -364,6 +380,28 @@ namespace SST.Core
             StopConsoleReadThread();
             ServerInfo.IsQlConnectedToServer = false;
             ServerInfo.Reset();
+        }
+
+        /// <summary>
+        ///     Terminates on zmalloc crash.
+        /// </summary>
+        public void TerminateOnZmallocCrash()
+        {
+            MessageBox.Show(
+                @"Quake Live has crashed due to the memory allocation bug which happens after your server has been running for too long.
+                " +
+                @" Click 'OK' to terminate.",
+                @"Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            IsMonitoringServer = false;
+            var procs = Process.GetProcesses();
+            foreach (var proc in procs.Where(proc =>
+                proc.ProcessName.Equals("quakelive", StringComparison.InvariantCultureIgnoreCase) ||
+                proc.ProcessName.Equals("quakelive_steam", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                proc.Kill();
+            }
+            Application.Exit();
         }
 
         /// <summary>
@@ -410,7 +448,7 @@ namespace SST.Core
             CheckServerAddress();
 
             // Wait 2 sec then clear the internal console
-            await Task.Delay(2*1000);
+            await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();
 
             // Update UI status bar with IP
@@ -533,7 +571,7 @@ namespace SST.Core
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInitTasks(double seconds)
         {
-            _delayedInitTaskTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
+            _delayedInitTaskTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
             _delayedInitTaskTimer.Elapsed += DelayedInitTaskTimerOnElapsed;
         }
     }

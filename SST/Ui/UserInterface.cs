@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -507,7 +508,7 @@ namespace SST.Ui
                         "Owner {0} attempted to clear all bans from ban database, but no bans exist.",
                         owner), _logClassType, _logPrefix);
 
-                ShowErrorMessage("There are no expired bans to remove.",
+                ShowErrorMessage("There are no bans to remove.",
                     "No expired bans");
                 return;
             }
@@ -2967,6 +2968,27 @@ namespace SST.Ui
             Log.Write(
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
                     owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Handles the Click event of the sysTrayWebsiteMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void sysTrayWebsiteMenuItem_Click(object sender, EventArgs e)
+        {
+            var p = new Process {StartInfo = new ProcessStartInfo("http://ssb.syncore.org")};
+            p.Start();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the sysTrayUpdateMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void sysTrayUpdateMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
