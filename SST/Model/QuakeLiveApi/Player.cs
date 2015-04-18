@@ -1,4 +1,5 @@
-﻿namespace SST.Model.QuakeLiveApi
+﻿// ReSharper disable InconsistentNaming
+namespace SST.Model.QuakeLiveApi
 {
     /// <summary>
     /// Model representing a player on a QL server contained within the Server class.

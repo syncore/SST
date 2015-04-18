@@ -33,22 +33,25 @@ namespace SST.Core
         ///     Initializes a new instance of the <see cref="SynServerTool" /> main class.
         /// </summary>
         /// <remarks>
-        ///     Some notes:
+        ///     Some notes/thoughts:
         ///     All of the core functions of the bot including console text processing, player/server
         ///     event processing, modules, command processing, vote management, parsing, etc. are initialized in
         ///     this constructor and set as properties in this main class. The bot only allows one instance of itself
         ///     for the explicit reason that Quake Live can only have one running copy open at a time.
-        ///     For this reason, the initilizated <see cref="SynServerTool" /> object is frequently passed around
-        ///     the rest of the code almost entirely through constructor dependency injection and the properties are
-        ///     directly accessed rather than constantly instantiating new classes, which also explains many of the public
-        ///     methods. Once intilizated, the bot will then call the <see cref="CheckForAutoMonitoring" /> method which
+        ///     For this reason, this initilizated <see cref="SynServerTool" /> object is frequently passed around
+        ///     the rest of the code almost entirely through constructor injection and the properties are
+        ///     directly accessed rather than constantly instantiating new classes. In this application,
+        ///     access to state among most parts is crucial, and unfortunately that leads to some unavoidable tight coupling.
+
+        ///     Once intilizated, the bot will then call the <see cref="CheckForAutoMonitoring" /> method which
         ///     reads the configuration to see if the user has specified whether server monitoring should begin on application
         ///     start. If Quake Live is running, we will check to see if the client is connected to a server. If connected, we will
         ///     retrieve the server information and players using built in QL commands. After that, we will start a timer that
         ///     waits for ~6.5s to perform any final initlization tasks to make sure all necessary information is present.
+        ///
         ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so
-        ///     refactoring
-        ///     in various places is almost certainly in order.
+        ///     refactoring in various places is almost certainly in order. For example, a user interface was not initially planned
+        ///     (the tool was going to only be command-driven in-game), but was later added during development for ease of use.
         /// </remarks>
         public SynServerTool()
         {
@@ -387,13 +390,14 @@ namespace SST.Core
         /// </summary>
         public void TerminateOnZmallocCrash()
         {
+            StopMonitoring();
             MessageBox.Show(
                 @"Quake Live has crashed due to the memory allocation bug which happens after your server has been running for too long.
                 " +
                 @" Click 'OK' to terminate.",
                 @"Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
-            IsMonitoringServer = false;
+            
             var procs = Process.GetProcesses();
             foreach (var proc in procs.Where(proc =>
                 proc.ProcessName.Equals("quakelive", StringComparison.InvariantCultureIgnoreCase) ||

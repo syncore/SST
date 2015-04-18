@@ -37,6 +37,16 @@ namespace SST.Config.Core
         public bool autoMonitorServerOnStart { get; set; }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether SST should check for application
+        ///     updates on program start.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if SST should check for updates on start; otherwise,
+        ///     <c>false</c>.
+        /// </value>
+        public bool checkForUpdatesOnStart { get; set; }
+
+        /// <summary>
         ///     Gets or sets the elo cache interval, which is
         ///     the time in minutes after which the cached elo data will expire.
         /// </summary>
@@ -107,6 +117,7 @@ namespace SST.Config.Core
             accountName = "syncore";
             appendToActivityLog = true;
             autoMonitorServerOnStart = false;
+            checkForUpdatesOnStart = true;
             owner = "syncore";
             requiredTimeBetweenCommands = 6.5;
             eloCacheExpiration = 300; // 5 hours

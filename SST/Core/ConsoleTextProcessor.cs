@@ -110,7 +110,7 @@ namespace SST.Core
             //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -364,19 +364,20 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Handles the user's own console commands.
+        ///     Handles the user's own console commands.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <remarks>
-        /// This is used in rare circumstances when we want to actually
-        /// analyze what the user is sending to the game.
+        ///     This is used in rare circumstances when we want to actually
+        ///     analyze what the user is sending to the game.
         /// </remarks>
         private void HandleOwnCommand(string text)
         {
             if (text.StartsWith("]/developer 0", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (!_sst.IsMonitoringServer) return;
-                Log.Write("Detected that user attempted to disable developer mode while server monitoring was active.",
+                Log.Write(
+                    "Detected that user attempted to disable developer mode while server monitoring was active.",
                     _logClassType, _logPrefix);
                 _sst.HandleDevModeDisabled();
             }
@@ -731,12 +732,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Determines whether the text matches that of a message that indicates that QL has
-        /// crashed due to the infamous (and yet unfixed 15+ year old memory allocation problem).
+        ///     Determines whether the text matches that of a message that indicates that QL has
+        ///     crashed due to the infamous (and yet unfixed 15+ year old memory allocation problem).
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        /// <c>true</c> if the ZMalloc crash text was detected, otherwise <c>false</c>.
+        ///     <c>true</c> if the ZMalloc crash text was detected, otherwise <c>false</c>.
         /// </returns>
         private bool ZmallocCrashDetected(string text)
         {

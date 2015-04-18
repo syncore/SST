@@ -166,6 +166,7 @@
     <Compile Include="Core\BanManager.cs" />
     <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="Core\TeamBalancer.cs" />
+    <Compile Include="Core\VersionChecker.cs" />
     <Compile Include="Core\VoteHandler.cs" />
     <Compile Include="Core\VoteManager.cs" />
     <Compile Include="Database\DbBans.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="Model\QuakeLiveApi\Player.cs" />
     <Compile Include="Model\QuakeLiveApi\Server.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\SstVersion.cs" />
     <Compile Include="Model\Vote.cs" />
     <Compile Include="Ui\CustGroupBox.cs">
       <SubType>Component</SubType>

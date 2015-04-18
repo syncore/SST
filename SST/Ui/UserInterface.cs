@@ -76,6 +76,8 @@ namespace SST.Ui
             _ircValidator = new IrcValidator(_sst.Mod.Irc.IrcManager.ValidIrcNickRegex);
             PopulateAllUiTabs();
             _sst.UserInterface = this;
+
+            AutoCheckForUpdates();
         }
 
         /// <summary>
@@ -407,6 +409,30 @@ namespace SST.Ui
                             : address))
                     : "Not monitoring a server");
             });
+        }
+
+        /// <summary>
+        ///     Handles the Click event of the abtCheckUpdateButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        private async void abtCheckUpdateButton_Click(object sender, EventArgs e)
+        {
+            var checker = new VersionChecker();
+            await checker.CheckForUpdates(false);
+        }
+
+        /// <summary>
+        ///     Automatically checks for updates if specified by user.
+        /// </summary>
+        private void AutoCheckForUpdates()
+        {
+            _cfgHandler.ReadConfiguration();
+            if (!_cfgHandler.Config.CoreOptions.checkForUpdatesOnStart) return;
+            var checker = new VersionChecker();
+            // ReSharper disable once UnusedVariable
+            // Synchronous
+            var c = checker.CheckForUpdates(true);
         }
 
         /// <summary>
@@ -812,6 +838,7 @@ namespace SST.Ui
                 coreOptions.accountName = coreAccountNameTextBox.Text;
                 coreOptions.appendToActivityLog = coreAppendEventsCheckBox.Checked;
                 coreOptions.autoMonitorServerOnStart = coreAutoMonitorStartCheckBox.Checked;
+                coreOptions.checkForUpdatesOnStart = coreCheckForUpdatesCheckBox.Checked;
                 coreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
                 coreOptions.requiredTimeBetweenCommands = double.Parse(coreTimeCommandTextBox.Text);
                 coreOptions.hideAllQlConsoleText = coreHideQlConsoleCheckBox.Checked;
@@ -887,13 +914,17 @@ namespace SST.Ui
             _sst.AccountName = coreOptions.accountName;
             Log.LogToDisk = coreOptions.logSstEventsToDisk;
             Log.LogToSstConsole = coreOptions.appendToActivityLog;
-            if (coreOptions.hideAllQlConsoleText)
+            var qlw = new QlWindowUtils();
+            if (qlw.QuakeLiveConsoleWindowExists())
             {
-                _sst.QlCommands.DisableConsolePrinting();
-            }
-            else
-            {
-                _sst.QlCommands.EnableConsolePrinting();
+                if (coreOptions.hideAllQlConsoleText)
+                {
+                    _sst.QlCommands.DisableConsolePrinting();
+                }
+                else
+                {
+                    _sst.QlCommands.EnableConsolePrinting();
+                }
             }
             // ReSharper disable once UnusedVariable
             // Add the owner (via constructor)
@@ -2620,6 +2651,7 @@ namespace SST.Ui
             coreAccountNameTextBox.Text = coreOptions.accountName;
             coreAppendEventsCheckBox.Checked = coreOptions.appendToActivityLog;
             coreAutoMonitorStartCheckBox.Checked = coreOptions.autoMonitorServerOnStart;
+            coreCheckForUpdatesCheckBox.Checked = coreOptions.checkForUpdatesOnStart;
             coreEloCacheTextBox.Text = coreOptions.eloCacheExpiration.ToString();
             coreTimeCommandTextBox.Text = coreOptions.requiredTimeBetweenCommands.
                 ToString(CultureInfo.InvariantCulture);
@@ -2810,6 +2842,27 @@ namespace SST.Ui
         }
 
         /// <summary>
+        ///     Handles the Click event of the sysTrayUpdateMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        private async void sysTrayUpdateMenuItem_Click(object sender, EventArgs e)
+        {
+            var checker = new VersionChecker();
+            await checker.CheckForUpdates(false);
+        }
+
+        /// <summary>
+        ///     Handles the Click event of the sysTrayWebsiteMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        private void sysTrayWebsiteMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://ssb.syncore.org");
+        }
+
+        /// <summary>
         ///     Handles the SelectedIndexChanged event of the UiTabCtl control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -2968,27 +3021,6 @@ namespace SST.Ui
             Log.Write(
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
                     owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
-        }
-
-        /// <summary>
-        /// Handles the Click event of the sysTrayWebsiteMenuItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void sysTrayWebsiteMenuItem_Click(object sender, EventArgs e)
-        {
-            var p = new Process {StartInfo = new ProcessStartInfo("http://ssb.syncore.org")};
-            p.Start();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the sysTrayUpdateMenuItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void sysTrayUpdateMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

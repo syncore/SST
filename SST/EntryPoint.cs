@@ -42,9 +42,9 @@ namespace SST
             else
             {
                 MessageBox.Show(
-                        @"SST is already running. Only one copy of SST can run at a time!",
-                        @"SST is already running",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    @"SST is already running. Only one copy of SST can run at a time!",
+                    @"SST is already running",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
