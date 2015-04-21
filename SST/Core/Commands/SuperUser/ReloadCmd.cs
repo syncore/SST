@@ -9,7 +9,7 @@ using SST.Util;
 namespace SST.Core.Commands.SuperUser
 {
     /// <summary>
-    ///     Command: Refresh server information.
+    ///     Command: Restart server monitoring.
     /// </summary>
     public class ReloadCmd : IBotCommand
     {
@@ -94,11 +94,11 @@ namespace SST.Core.Commands.SuperUser
         /// <param name="c">The command argument information.</param>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            await _sst.QlCommands.QlCmdSay("^3[ATTENTION] ^2Reloading...please wait");
+            await _sst.QlCommands.QlCmdSay("^3[ATTENTION] ^2Attempt to reload SST...please wait 10-15 seconds.");
             StatusMessage = "^2[SUCCESS]^7 Attempting to reload server information";
             await SendServerTell(c, StatusMessage);
-            Log.Write("Will attempt to reload server information.", _logClassType, _logPrefix);
-            _sst.ReloadInit();
+            Log.Write("Will attempt to restart server monitoring.", _logClassType, _logPrefix);
+            await _sst.ReloadInit();
             return true;
         }
 

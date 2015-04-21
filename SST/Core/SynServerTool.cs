@@ -20,7 +20,6 @@ namespace SST.Core
     /// </summary>
     public class SynServerTool
     {
-        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _delayedInitTaskTimer;
@@ -28,6 +27,7 @@ namespace SST.Core
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
+        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerTool" /> main class.
@@ -42,13 +42,11 @@ namespace SST.Core
         ///     the rest of the code almost entirely through constructor injection and the properties are
         ///     directly accessed rather than constantly instantiating new classes. In this application,
         ///     access to state among most parts is crucial, and unfortunately that leads to some unavoidable tight coupling.
-
         ///     Once intilizated, the bot will then call the <see cref="CheckForAutoMonitoring" /> method which
         ///     reads the configuration to see if the user has specified whether server monitoring should begin on application
         ///     start. If Quake Live is running, we will check to see if the client is connected to a server. If connected, we will
         ///     retrieve the server information and players using built in QL commands. After that, we will start a timer that
         ///     waits for ~6.5s to perform any final initlization tasks to make sure all necessary information is present.
-        ///
         ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so
         ///     refactoring in various places is almost certainly in order. For example, a user interface was not initially planned
         ///     (the tool was going to only be command-driven in-game), but was later added during development for ease of use.
@@ -215,8 +213,7 @@ namespace SST.Core
         /// </summary>
         public async Task AttemptAutoMonitorStart()
         {
-            var qlw = new QlWindowUtils();
-            if (!qlw.QuakeLiveConsoleWindowExists())
+            if (!QlWindowUtils.QuakeLiveConsoleWindowExists())
             {
                 Log.Write(
                     "User has enabled 'auto server monitoring on program start', but QL instance not found. Won't allow.",
@@ -315,16 +312,16 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Handles the situation where the user disables developer mode
-        /// while the server is being monitored.
+        ///     Handles the situation where the user disables developer mode
+        ///     while the server is being monitored.
         /// </summary>
         public void HandleDevModeDisabled()
         {
             StopMonitoring();
             MessageBox.Show(
-                    @"SST requires developer mode to be enabled! Now stopping monitoring.",
-                    @"Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                @"SST requires developer mode to be enabled! Now stopping monitoring.",
+                @"Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -333,11 +330,12 @@ namespace SST.Core
         /// <remarks>
         ///     This is primarily designed to be accessed via an admin command from QL.
         /// </remarks>
-        public void ReloadInit()
+        public async Task ReloadInit()
         {
             IsInitComplete = false;
-            GetServerInformation();
+            StopMonitoring();
             QlCommands.ClearQlWinConsole();
+            await BeginMonitoring();
         }
 
         /// <summary>
@@ -348,7 +346,7 @@ namespace SST.Core
             if (IsReadingConsole) return;
             Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
             readConsoleThread.Start();
         }
 
@@ -397,7 +395,7 @@ namespace SST.Core
                 @" Click 'OK' to terminate.",
                 @"Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
-            
+
             var procs = Process.GetProcesses();
             foreach (var proc in procs.Where(proc =>
                 proc.ProcessName.Equals("quakelive", StringComparison.InvariantCultureIgnoreCase) ||
@@ -452,7 +450,7 @@ namespace SST.Core
             CheckServerAddress();
 
             // Wait 2 sec then clear the internal console
-            await Task.Delay(2 * 1000);
+            await Task.Delay(2*1000);
             QlCommands.ClearQlWinConsole();
 
             // Update UI status bar with IP
@@ -575,7 +573,7 @@ namespace SST.Core
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInitTasks(double seconds)
         {
-            _delayedInitTaskTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
+            _delayedInitTaskTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
             _delayedInitTaskTimer.Elapsed += DelayedInitTaskTimerOnElapsed;
         }
     }
