@@ -1,0 +1,657 @@
+This is the command list for SST. The updated version is always available at:
+
+http://sst.syncore.org/howto/
+
+
+
+######################################
+#   OWNER level commands             #
+######################################
+
+
+______________________________________________________
+Give a player operator privileges using the QL system:
+Usage: !op <name>
+Notes: Name is without clan tag.
+Example: !op SomePlayer
+______________________________________________________
+
+Remove a player's operator privileges using the QL system:
+Usage: !deop <name>
+Notes: Name is without clan tag.
+Example: !deop SomePlayer
+______________________________________________________
+
+Completely exit Quake Live and stop SST:
+Usage: !shutdown
+Example: !shutdown
+______________________________________________________
+
+Stop the current Quake Live server after a timed delay:
+Usage: !stopserver <delayInSeconds>
+Notes: delayInSeconds is a number, in seconds, greater than 0.
+Example: !stopserver 30
+______________________________________________________
+
+
+
+######################################
+#   ADMIN level general commands     #
+######################################
+
+
+
+Abort a match and return to warmup:
+Usage: !abort
+Example: !abort
+______________________________________________________
+
+Add a user to the tool's internal user database:
+Usage: !adduser <name> <access level>
+Notes: Name is without clan tag, access level can be 1, 2, or 3. 1 is user, 2 is super-user, 3 is administrator.
+Example: !adduser SomePlayer 2
+______________________________________________________
+
+Remove a user from the tool's internal user database:
+Usage: !deluser <name>
+Notes: Name is without clan tag.
+Example: !deluser SomePlayer
+______________________________________________________
+
+Kickban a player using the QL ban system:
+Usage: !kickban <name>
+Notes: Name is without clan tag.
+Example: !kickban SomePlayer
+______________________________________________________
+
+Admin-force a vote to change the map:
+Usage: !map <mapname>
+Example: !map campgrounds
+______________________________________________________
+
+Mute a player using QL's mute system:
+Usage: !mute <name>
+Notes: Name is without clan tag.
+Example: !mute SomePlayer
+______________________________________________________
+
+Pause the match indefinitely:
+Usage: !pause
+Example: !pause
+______________________________________________________
+
+Add a timed ban for a player to the tool's internal system:
+Usage: !timeban add <name> <time> <scale>
+Notes: Name is without clan tag, time is a number, scale is: secs, mins, hours, days, months, or years.
+Example: !timeban add SomePlayer 7 days
+______________________________________________________
+
+Delete a player's timed ban from the tool's internal ban system:
+Usage: !timeban del <name>
+Notes: Name is without clan tag.
+Example: !timeban del SomePlayer
+______________________________________________________
+
+Check if a timeban exists for a player and if so display its info:
+Usage: !timeban check <name>
+Notes: Name is without clan tag.
+Example: !timeban check SomePlayer
+______________________________________________________
+
+List the players who are time banned:
+Usage: !timeban list
+Example: !timeban list
+______________________________________________________
+
+Unban a player using QL's ban system:
+Usage: !unban <name>
+Notes: Name is without clan tag.
+Example: !unban SomePlayer
+______________________________________________________
+
+Unmute a player using QL's mute system:
+Usage: !unmute <name>
+Notes: Name is without clan tag.
+Example: !unmute SomePlayer
+______________________________________________________
+
+Unpause the match:
+Usage: !unpause
+Example: !unpause
+______________________________________________________
+
+Force an admin "vote no" vote:
+Usage: !no
+Example: !no
+______________________________________________________
+
+Force an admin "vote yes" vote:
+Usage: !yes
+Example: !yes
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level accountdate module commands    #
+################################################
+
+
+
+Prevent a player from joining if account registration date is less than specified days:
+Usage: !mod accountdate <days>
+Note: Days is the minimum account age in days, which must be a number greater than zero.
+Example: !mod accountdate 30
+______________________________________________________
+
+Disable the account date limiter:
+Usage: !mod accountdate off
+Example: !mod accountdate off
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level accuracy module commands       #
+################################################
+
+
+
+Enable the accuracy display module:
+Usage: !mod acc on
+Notes: The account running the tool must be in spectator mode to enable the accuracy display.
+Example: !mod acc on
+______________________________________________________
+
+Disables the accuracy display module:
+Usage: !mod acc off
+Example: !mod acc off
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level autovoter module commands      #
+################################################
+
+
+
+Add an automatic "no" vote for the specified vote to the tool's internal system:
+Usage: !mod autovote no <vote> [vote args]
+Notes: If the vote is specified without arguments (i.e. "map" instead of "map campgrounds") then all votes of that type will be rejected.
+Example: !mod autovote no teamsize 5
+Example: !mod autovote no shuffle
+Example: !mod autovote no clientkick
+______________________________________________________
+
+Add an automatic "yes" vote for the specified vote to the tool's internal system:
+Usage: !mod autovote yes <vote> [vote args]
+Notes: If the vote is specified without arguments (i.e. "kick" instead of "kick player") then all votes of that type will be passed.
+Example: !mod autovote yes map overkill
+Example: !mod autovote yes shuffle
+Example: !mod autovote yes kick AnnoyingPlayer
+______________________________________________________
+
+List the automatic votes and vote ids in the tool's internal system:
+Usage: !mod autovote list
+Example: !mod autovote list
+______________________________________________________
+
+Delete the specified automatic vote from the tool's internal system:
+Usage: !mod autovote del <id>
+Note: The id is obtained from the "!mod autovote list" command
+Example: !mod autovote del 2
+______________________________________________________
+
+Clear all automatic votes from the tool's internal system and disable the module:
+Usage: !mod autovote clear
+Example: !mod autovote clear
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level earlyquit module commands      #
+################################################
+
+
+
+Enable early quit tracking and set punishment for early quitters:
+Usage: !mod earlyquit <maxEarlyQuits> <time> <scale>
+Notes: maxEarlyQuits is a positive number, time is a positive number, scale is: secs, mins, hours, days, months, or years.
+Example: !mod earlyquit 2 21 days
+______________________________________________________
+
+Forgive a specified number of early quits for a player:
+Usage: !mod earlyquit forgive <name> <numEarlyQuitsToForgive>
+Notes: Name is without clantag. numEarlyQuitsToForgive is a positive number.
+Example: !mod earlyquit forgive SomePlayer 1
+______________________________________________________
+
+Remove all of a player's early quits:
+Usage: !mod earlyquit clear <name>
+Notes: Name is without clantag.
+Example: !mod earlyquit clear SomePlayer
+______________________________________________________
+
+Disable the tracking of early quitters:
+Usage: !mod earlyquit off
+Example: !mod earlyquit off
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level elo module commands            #
+################################################
+
+
+
+Restrict the server to the specified QLRanks Elo rating:
+Usage: !mod elo <minimumRequiredElo> [maximumElo]
+Notes: The minimum Elo must be specified. If the maximum Elo is also specified then the server is restricted to that range.
+Example: !mod elo 1400
+Example: !mod elo 1500 2000
+______________________________________________________
+
+Disable QLRanks Elo ranking server restrictions:
+Usage: !mod elo off
+Example: !mod elo off
+______________________________________________________
+
+
+
+################################################
+#   ADMIN level irc module commands            #
+################################################
+
+
+
+Enable the IRC module and connect the tool to an Internet Relay Chat (IRC) server:
+Usage: !mod irc connect
+Notes: You must first use the GUI to set up the IRC configuration before attempting to connect
+Example: !mod irc connect
+______________________________________________________
+
+Disconnect the tool from an Internet Relay Chat (IRC) server:
+Usage: !mod irc disconnect
+Example: !mod irc disconnect
+______________________________________________________
+
+Reconnect the tool to an Internet Relay Chat (IRC) server:
+Usage: !mod irc reconnect
+Example: !mod irc reconnect
+
+______________________________________________________
+
+Disable the IRC module and kill the existing IRC connection:
+Usage: !mod irc reconnect
+Example: !mod irc reconnect
+
+
+
+################################################
+#   ADMIN level motd module commands           #
+################################################
+
+
+
+Repeat a specified message every X minutes:
+Usage: !mod motd <repeatEveryMins> <message>
+Notes: repeatEveryMins is a number greater than zero.
+Example: !mod motd 10 Welcome to my server. Have fun!
+______________________________________________________
+
+Disable repeating of the message of the day:
+Usage: !mod motd off
+Example: !mod motd off
+
+
+
+################################################
+#   ADMIN level pickup module commands         #
+################################################
+
+
+
+Enable a pickup game to be started with the specified team size:
+Usage: !mod pickup <teamsize>
+Notes: This does not actually start the pick-up game, but allows the server to be placed in pickup mode. To start, use !pickup start
+Example: !mod pickup 4
+______________________________________________________
+
+Specify the max number of times a player can fail to complete a pickup game before being banned
+for the specified duration:
+Usage: !mod pickup <noshowbans> <maxNumNoShows> <banTime> <banScale>
+Notes: This has reasonable defaults and typically doesn't need to be configured.
+maxNumNoShows is a number greater than zero, banTime is a number greater than zero, banScale is: secs, mins, hours, days, months, or years.
+Example: !mod pickup noshowbans 2 4 weeks
+______________________________________________________
+
+Specify the max number of times a player can use a substitute player before being banned
+for the specified duration:
+Usage: !mod pickup <subbans> <maxSubsUsed> <banTime> <banScale>
+Notes: This has reasonable defaults and typically doesn't need to be configured.
+maxSubsUsed is a number greater than zero, banTime is a number greater than zero, banScale is: secs, mins, hours, days, months, or years.
+Example: !mod pickup subbans 2 9 days
+______________________________________________________
+
+Disable the pickup game module:
+Usage: !mod pickup off
+Example: !mod pickup off
+
+
+
+################################################
+#   ADMIN level servers module commands        #
+################################################
+
+
+
+Enable the server list display module:
+Usage: !mod servers <maxServersToDisplay> <timeBetweenRequests>
+Notes: maxServersToDisplay is a number greater than zero, secondsBetweenRequests is a number greater than zero.
+Example: !mod servers 5 60
+______________________________________________________
+
+Disable the server list module:
+Usage: !mod servers off
+Example: !mod servers off
+
+
+
+################################################
+#   SUPERUSER level servers module commands    #
+################################################
+
+
+
+Force all players to ready and start the game:
+Usage: !allready
+Example: !allready
+______________________________________________________
+
+Force a player to join the blue team in team games:
+Usage: !blue <name>
+<p>Notes: Name is without clan tag.
+Example: !blue SomePlayer
+______________________________________________________
+
+Force a player to join the red team in team games:
+Usage: !red <name>
+<p>Notes: Name is without clan tag.
+Example: !red SomePlayer
+______________________________________________________
+
+Force a player to join the spectators in team games:
+Usage: !spec <name>
+<p>Notes: Name is without clan tag.
+Example: !spec SomePlayer
+______________________________________________________
+
+Invite a player to the server:
+Usage: !invite <name>
+<p>Notes: Name is without clan tag.
+Example: !invite SomePlayer
+______________________________________________________
+
+Lock the specified team:
+Usage: !lock <red> <blue> <both>
+Example: !lock red
+Example: !lock blue
+Example: !lock both
+______________________________________________________
+
+Reload and restart server monitoring:
+Usage: !reload
+Example: !reload
+______________________________________________________
+
+Force a team balance (bypass the suggestion vote):
+Usage: !suggest force
+Example: !suggest force
+______________________________________________________
+
+Unlock the specified team:
+Usage: !unlock <red> <blue> <both>
+Example: !unlock red
+Example: !unlock blue
+Example: !unlock both
+
+
+
+################################################
+#   Commands requiring no user level           #
+################################################
+
+
+
+Show a player's real-time accuracy:
+Usage: !acc <name>
+Notes: Name is without clan tag. Accuracy module must be enabled.
+Example: !acc SomePlayer
+______________________________________________________
+
+Vote to accept the team balance suggestion:
+Usage: !accept
+Example: !accept
+______________________________________________________
+
+Show a player's SST access level:
+Usage: !access [[name]]
+Notes: Name is without clan tag. Leave name blank to check your own access level:
+Example: !access
+Example: !access SomePlayer
+______________________________________________________
+
+Check when a player's account was registered:
+Usage: !date  <name>
+Notes: Name is without clan tag.
+Example: !date SomePlayer
+______________________________________________________
+
+List all players who have quit early:
+Usage: !earlyquit list
+Example: !earlyquit list
+______________________________________________________
+
+Check how many times a player has quit early & how many quits remain before ban:
+Usage: !earlyquit check <name>
+Notes: Name is without clan tag. Earlyquit module must be enabled.
+Example: !earlyquit check SomePlayer
+______________________________________________________
+
+Show the QLRanks Elo information for up to 3 players:
+Usage: !elo [name1,name2,name3]
+Notes: Names are without clan tags. No spaces after commas. Leave name blank to check your own Elo information.
+Example: !elo SomePlayer1,SomePlayer2,SomePlayer3
+Example: !elo
+______________________________________________________
+
+Find a player on all world-wide QL servers:
+Usage: !findplayer <name>
+Notes: Name is without clan tag.
+Example: !findplayer SomePlayer
+______________________________________________________
+
+Show all commands allowed by your access level:
+Usage: !help
+Example: !help
+______________________________________________________
+
+Vote to reject the team balance suggestion:
+Usage: !reject
+Example: !reject
+______________________________________________________
+
+Check when a player was last seen on the server:
+Usage: !seen <name>
+Notes: Name is without clan tag.
+Example: !seen SomePlayer
+______________________________________________________
+
+List active servers for a specified game type and region:
+Usage: !servers <gametype> <region>
+Notes: Game types can be: ca, ctf, duel, ffa, ft, tdm, race. Regions can be: africa, asia, eu, na, oceania, sa. Server List module must be enabled.
+Example: !servers ca NA
+Example: !servers tdm EU
+______________________________________________________
+
+Request that the bot suggest balanced teams:
+Usage: !suggest
+Example: !suggest
+______________________________________________________
+
+Show the version of SST that the server is running:
+Usage: !version
+Example: !version
+______________________________________________________
+
+
+
+################################################
+#   Pickup commands                            #
+################################################
+
+
+
+Show the pickup help information:
+Usage: !pickup help
+Notes: The pickup module must be active.
+Example: !pickup help
+______________________________________________________
+
+Sign up for a pickup game:
+Usage: !a
+Notes: The pickup module must be active.
+Example: !a
+______________________________________________________
+
+Volunteer to be a captain for the pickup game:
+Usage: !cap
+Notes: The pickup module must be active.
+Example: !cap
+______________________________________________________
+
+Remove yourself from a pickup game before it starts:
+Usage: !r
+Notes: The pickup module must be active.
+Example: !r
+______________________________________________________
+
+Request a replacement player for yourself:
+Usage: !sub  <name>
+Notes: Name is without clan tag. Your replacement must already be signed up. The pickup module must be active.
+Example: !sub SomePlayer
+______________________________________________________
+
+See who has signed up for the next pickup game:
+Usage: !who
+Notes: The pickup module must be active.
+Example: !who
+______________________________________________________
+
+Start the pickup pre-game signup process:
+Usage: !pickup start
+Notes: This command requires "SuperUser" access or higher. The pickup module must be active.
+Example: !pickup start
+______________________________________________________
+
+Cancel (stop) the pickup game and unlock the teams:
+Usage: !pickup stop
+Notes: This command requires "SuperUser" access or higher. The pickup module must be active.
+Example: !pickup stop
+______________________________________________________
+
+Reset the pickup game and return to pickup pre-game:
+Usage: !pickup reset
+Notes: This command requires "SuperUser" access or higher. The pickup module must be active.
+Example: !pickup reset
+______________________________________________________
+
+Unban a player who was banned for pickup no-show or sub abuse:
+Usage: !pickup unban  <name>
+Notes: Name is without clan tag. This command requires "SuperUser" access or higher. The pickup module must be active.
+Example: !pickup unban SomePlayer
+
+
+
+################################################
+#   IRC commands                               #
+################################################
+
+
+Show the IRC help information:
+Usage: .help
+Example: .help
+______________________________________________________
+
+List the tool's active modules:
+Usage: .mods
+Example: .mods
+______________________________________________________
+
+Start QL server monitoring if it is not active:
+Usage: .monitor start
+Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
+Example: .monitor start
+______________________________________________________
+
+Stop QL server monitoring if it is active:
+Usage: .monitor stop
+Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
+Example: .monitor stop
+______________________________________________________
+
+Reset QL server monitoring:
+Usage: .monitor reset
+Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
+Example: .monitor reset
+______________________________________________________
+
+Request IRC operator status:
+Usage: .opme
+Notes: This command can only be used by the owner. The tool must have IRC operator (@) status in the channel.
+Example: .opme
+______________________________________________________
+
+Send an SST command to Quake Live via IRC:
+Usage: .ql <SST command> [SST command arguments]
+Notes: This command requires IRC operator (@) status. Some SST commands do not allow IRC access.
+Example: .ql adduser SomePlayer 2
+Example: .ql mod elo 1300
+Example: .ql stopserver 90
+Example: .ql timeban add SomePlayer 7 days
+Example: .ql mute SomePlayer
+Example: .ql mod earlyquit off
+Example: .ql date SomePlayer
+______________________________________________________
+
+Send a regular message to the QL server:
+Usage: .say <message>
+Example: .say Hello from IRC!
+______________________________________________________
+
+Send a team message to the QL server:
+Usage: .sayteam <message>
+Example: .sayteam Hello from IRC!
+______________________________________________________
+
+Display the status and details of the current QL server:
+Usage: .status
+Example: .status
+______________________________________________________
+
+List the SST user levels of the players currently on the server:
+Usage: .users
+Example: .users
+______________________________________________________
+
+Display the SST version information:
+Usage: .version
+Example: .version
+______________________________________________________
+
+Display the server's current players:
+Usage: .who
+Example: .who

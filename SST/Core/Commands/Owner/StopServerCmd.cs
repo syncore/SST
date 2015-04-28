@@ -95,8 +95,7 @@ namespace SST.Core.Commands.Owner
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             int delay;
-            var delayIsNum = (int.TryParse(Helpers.GetArgVal(c, 1), out delay));
-            if (delayIsNum)
+            if (int.TryParse(Helpers.GetArgVal(c, 1), out delay) && delay >= 0)
             {
                 StatusMessage = string.Format(
                             "^1[ATTENTION] ^7This server will be shutting down in^1 ***{0}***^7 seconds. Thanks for playing!",
@@ -129,7 +128,7 @@ namespace SST.Core.Commands.Owner
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
             return string.Format(
-                "^1[ERROR]^3 Usage: {0}{1} delay - delay is in seconds.",
+                "^1[ERROR]^3 Usage: {0}{1} delay - delay must be a number in seconds and greater than 0",
                 CommandList.GameCommandPrefix,
                 ((c.FromIrc) ? (string.Format("{0} {1}",
                 c.CmdName, c.Args[1])) : c.CmdName));

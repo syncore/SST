@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -235,8 +236,10 @@ namespace SST.Core.Commands.None
         private async Task ListQuits(CmdArgs c)
         {
             var quits = _quitDb.GetAllQuitters();
+            // First 25 quits (also, avoiding multiple enumeration)
+            var limited = quits.Take(25);
             var quitBuilder = new StringBuilder();
-            foreach (var q in quits)
+            foreach (var q in limited)
             {
                 quitBuilder.Append(string.Format("{0}({1})", q.Name, q.QuitCount));
             }
@@ -244,7 +247,7 @@ namespace SST.Core.Commands.None
             StatusMessage = string.Format("^5[EARLYQUIT]^7 {0}",
                 ((quits.Count != 0)
                     ? (string.Format(
-                        "Early quitters: ^1{0}^7 - To see quits remaining: ^3{1}{2} check <player>",
+                        "Early quitters: ^1{0}^7 (showing 25 max) - To see quits remaining: ^3{1}{2} check <player>",
                         quitBuilder, CommandList.GameCommandPrefix,
                         ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)))
                     : "No players have quit early."));

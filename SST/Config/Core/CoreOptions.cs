@@ -7,6 +7,10 @@ namespace SST.Config.Core
     /// </summary>
     public class CoreOptions
     {
+
+        public const string defaultUnsetAccountName = "ChangeThisName";
+        public const string defaultUnsetOwnerName = "ChangeThisName";
+
         /// <summary>
         ///     Gets or sets the name of the bot.
         /// </summary>
@@ -113,12 +117,11 @@ namespace SST.Config.Core
         /// </summary>
         public void SetDefaults()
         {
-            // TODO: prior to release, change these default bot & account names to something completely random
-            accountName = "syncore";
+            accountName = defaultUnsetAccountName;
             appendToActivityLog = true;
             autoMonitorServerOnStart = false;
             checkForUpdatesOnStart = true;
-            owner = "syncore";
+            owner = defaultUnsetOwnerName;
             requiredTimeBetweenCommands = 6.5;
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;

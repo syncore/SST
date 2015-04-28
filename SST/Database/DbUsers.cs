@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using SST.Config;
+using SST.Config.Core;
 using SST.Enums;
 using SST.Interfaces;
 using SST.Model;
@@ -454,6 +455,12 @@ namespace SST.Database
         /// </summary>
         private void AddOwnerToDb()
         {
+            if (_owner.Equals(CoreOptions.defaultUnsetOwnerName,
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+            
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             AddUserToDb(_owner, UserLevel.Owner, "AUTO", date);
         }

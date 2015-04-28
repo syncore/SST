@@ -130,7 +130,7 @@ namespace SST.Core.Commands.None
             }
             var daysAgo = Math.Truncate((DateTime.Now - date).TotalDays * 100) / 100;
             StatusMessage = string.Format(
-                "^5[DATE]^7 {0}'s account was registered on:^5 {1}^7 (^3 {2} ^7days old)",
+                "^5[DATE]^7 {0}'s account was registered on:^5 {1}^7 (^3{2} ^7days old)",
                 Helpers.GetArgVal(c, 1), date.ToString("d"), daysAgo);
             await SendServerSay(c, StatusMessage);
             return true;

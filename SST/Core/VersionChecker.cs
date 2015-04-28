@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -141,7 +142,23 @@ namespace SST.Core
 
             if (result != DialogResult.Yes) return;
             // TODO: update the URL
-            Process.Start("http://10.0.0.7/sstupdate.txt");
+            try
+            {
+                Process.Start("http://10.0.0.7/sstupdate.txt");
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == -2147467259)
+                {
+                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
+                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(@"Unable to open website. Error launching web browser.");
+                Log.Write("Error launching web browser", _logClassType, _logPrefix);
+            }
         }
     }
 }

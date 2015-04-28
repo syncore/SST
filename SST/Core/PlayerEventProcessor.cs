@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SST.Config;
 using SST.Core.Modules;
 using SST.Database;
 using SST.Enums;
@@ -15,6 +16,7 @@ namespace SST.Core
     /// </summary>
     public class PlayerEventProcessor
     {
+        private readonly ConfigHandler _cfgHandler;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private readonly QlRanksHelper _qlRanksHelper;
@@ -30,6 +32,7 @@ namespace SST.Core
             _sst = sst;
             _qlRanksHelper = new QlRanksHelper();
             _seenDb = new DbSeenDates();
+            _cfgHandler = new ConfigHandler();
         }
 
         /// <summary>
@@ -71,6 +74,9 @@ namespace SST.Core
             {
                 await _sst.Mod.AccountDateLimit.RunUserDateCheck(player);
             }
+            // Send general info delayed message
+            await SendConnectionInfoMessage(player);
+
             // Pickup module: notify connecting player of the game signup process
             if (_sst.Mod.Pickup.Active)
             {
@@ -93,7 +99,7 @@ namespace SST.Core
             player = player.ToLowerInvariant();
 
             // The outgoing player was actually in the game, and not a spectator
-            bool outgoingWasActive = _sst.ServerInfo.IsActivePlayer(player);
+            var outgoingWasActive = _sst.ServerInfo.IsActivePlayer(player);
             // Get the outgoing player's team before he disconnected
             var outgoingTeam = _sst.ServerInfo.CurrentPlayers[player].Team;
 
@@ -141,7 +147,7 @@ namespace SST.Core
         /// <param name="m">The match.</param>
         public void HandlePlayerAccuracyData(Match m)
         {
-            string player = _sst.ServerInfo.PlayerCurrentlyFollowing;
+            var player = _sst.ServerInfo.PlayerCurrentlyFollowing;
             if (string.IsNullOrEmpty(player))
             {
                 Log.Write(
@@ -158,15 +164,15 @@ namespace SST.Core
 
                 return;
             }
-            string extracted = m.Groups["accdata"].Value;
-            string[] accstrings = extracted.Split(' ');
+            var extracted = m.Groups["accdata"].Value;
+            var accstrings = extracted.Split(' ');
             if (accstrings.Length < 15)
             {
                 Log.Write("Got accuracy data length of invalid size. Ignoring.", _logClassType, _logPrefix);
                 return;
             }
             var accs = new int[accstrings.Length];
-            for (int k = 0; k < accstrings.Length; k++)
+            for (var k = 0; k < accstrings.Length; k++)
             {
                 int n;
                 int.TryParse(accstrings[k], out n);
@@ -208,21 +214,21 @@ namespace SST.Core
         {
             // Typically we'd normalize using ToUpperInvariant() but QL doesn't allow accented characters,
             // so it doesn't matter
-            string msgContent =
+            var msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
 
-            string name = text.Substring(0, text.LastIndexOf('\u0019'));
+            var name = text.Substring(0, text.LastIndexOf('\u0019'));
 
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
             if (name.StartsWith("\u0019[")) return;
 
-            string msgFrom = Helpers.GetStrippedName(name);
+            var msgFrom = Helpers.GetStrippedName(name);
 
             if (!_sst.AccountName.Equals(msgFrom, StringComparison.InvariantCultureIgnoreCase))
             {
-            Log.Write(string.Format("Detected chat message {0} from {1}",
-                msgContent, msgFrom), _logClassType, _logPrefix);
+                Log.Write(string.Format("Detected chat message {0} from {1}",
+                    msgContent, msgFrom), _logClassType, _logPrefix);
             }
 
             // If IRC module is active, send the message to the IRC channel
@@ -241,7 +247,7 @@ namespace SST.Core
             {
                 // Synchronous
                 // ReSharper disable once UnusedVariable
-                Task s = _sst.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
+                var s = _sst.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
         }
 
@@ -258,22 +264,22 @@ namespace SST.Core
                 return;
             }
 
-            string idMatchText = m.Groups["id"].Value;
-            string playerInfoMatchText = m.Groups["playerinfo"].Value.Replace("\"", "");
+            var idMatchText = m.Groups["id"].Value;
+            var playerInfoMatchText = m.Groups["playerinfo"].Value.Replace("\"", "");
 
-            string[] pi = playerInfoMatchText.Split('\\');
+            var pi = playerInfoMatchText.Split('\\');
             if (pi.Length == 0)
             {
                 Log.Write("Received invalid player info array length.", _logClassType, _logPrefix);
                 return;
             }
-            string playername = GetCsValue("n", pi);
+            var playername = GetCsValue("n", pi);
             int status;
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus)status;
-            var team = (Team)tm;
+            var ready = (ReadyStatus) status;
+            var team = (Team) tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_sst.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -304,7 +310,7 @@ namespace SST.Core
 
             // The outgoing player was actually in the game & not a spectator.
             //TODO: investigate this, it might always be false for sub being moved out in pickup
-            bool outgoingWasActive = _sst.ServerInfo.IsActivePlayer(player);
+            var outgoingWasActive = _sst.ServerInfo.IsActivePlayer(player);
             // Get the outgoing player's team before he disconnected
             var outgoingTeam = _sst.ServerInfo.CurrentPlayers[player].Team;
 
@@ -343,8 +349,8 @@ namespace SST.Core
         /// </returns>
         private static string GetCsValue(string term, string[] arr)
         {
-            string foundVal = string.Empty;
-            for (int i = 0; i < arr.Length; i++)
+            var foundVal = string.Empty;
+            for (var i = 0; i < arr.Length; i++)
             {
                 if (arr[i].Equals(term, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -372,7 +378,7 @@ namespace SST.Core
             }
             id = (id - 29);
             int tm;
-            string playername = GetCsValue("n", pi).ToLowerInvariant();
+            var playername = GetCsValue("n", pi).ToLowerInvariant();
             if (!int.TryParse(GetCsValue("t", pi), out tm))
             {
                 Log.Write(string.Format("Unable to determine team info for player {0} from cstr.",
@@ -380,22 +386,23 @@ namespace SST.Core
                 return;
             }
 
-            string clantag = GetCsValue("cn", pi);
-            string subscriber = GetCsValue("su", pi);
-            string fullclanname = GetCsValue("xcn", pi);
-            string country = GetCsValue("c", pi);
+            var clantag = GetCsValue("cn", pi);
+            var subscriber = GetCsValue("su", pi);
+            var fullclanname = GetCsValue("xcn", pi);
+            var country = GetCsValue("c", pi);
 
             // Create player. Also set misc details like full clan name, country code, subscription status.
-            _sst.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
-                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
+            _sst.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
+                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
 
             Log.Write(
                 string.Format(
                     "Detected player from cstr: {0} - Country: {1} - Tag: {2} - Clan Name: {3} - Pro Acct: {4}",
-                    playername, country, clantag, fullclanname, (subscriber.Equals("1") ? "yes" : "no")), _logClassType, _logPrefix);
+                    playername, country, clantag, fullclanname, (subscriber.Equals("1") ? "yes" : "no")),
+                _logClassType, _logPrefix);
 
             // Keep team information up to date
-            UpdatePlayerTeam(playername, (Team)tm);
+            UpdatePlayerTeam(playername, (Team) tm);
         }
 
         /// <summary>
@@ -416,7 +423,7 @@ namespace SST.Core
                 {
                     Log.Write(
                         string.Format("Outdated cached Elo data found in database for {0}. Will update.",
-                        player), _logClassType, _logPrefix);
+                            player), _logClassType, _logPrefix);
 
                     _qlRanksHelper.CreateNewPlayerEloData(_sst.ServerInfo.CurrentPlayers, player);
                     await
@@ -450,6 +457,22 @@ namespace SST.Core
                         "Unable to remove {0} from the current in-game players. Player was not in list of current in-game players.",
                         player), _logClassType, _logPrefix);
             }
+        }
+
+        /// <summary>
+        ///     Sends a general delayed information message to connecting players.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        private async Task SendConnectionInfoMessage(string player)
+        {
+            _cfgHandler.ReadConfiguration();
+            await
+                _sst.QlCommands.QlCmdDelayedTell(
+                    string.Format(
+                        "^7This server is running SST v^5{0}^7. Use ^3{1}{2}^7 for command list. One command is allowed every^3 {3}^7 seconds.",
+                        Helpers.GetVersion(), CommandList.GameCommandPrefix, CommandList.CmdHelp,
+                        _cfgHandler.Config.CoreOptions.requiredTimeBetweenCommands),
+                    player, 25);
         }
 
         /// <summary>

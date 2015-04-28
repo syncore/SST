@@ -97,7 +97,7 @@ namespace SST.Core.Modules.Irc
             if (activeCount == 0)
             {
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
-                    string.Format("\u0003My server has no active modules loaded at this time"));
+                    "My server has no active modules loaded at this time");
             }
             else
             {

@@ -389,6 +389,17 @@ namespace SST.Core
         public void TerminateOnZmallocCrash()
         {
             StopMonitoring();
+
+            // If IRC connection exists then notify the channel and admin that QL has crashed
+            if (Mod.Irc.IsConnectedToIrc)
+            {
+                Mod.Irc.IrcManager.SendIrcMessage(Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    "\u0003\u0002[ALERT]\u0002 Quake Live has crashed due to the Z_Malloc memory allocation error.");
+
+                Mod.Irc.IrcManager.SendIrcMessage(Mod.Irc.IrcManager.IrcSettings.ircAdminNickname,
+                    "\u0003\u0002[ALERT]\u0002 Quake Live has crashed due to the Z_Malloc memory allocation error.");
+            }
+
             MessageBox.Show(
                 @"Quake Live has crashed due to the memory allocation bug which happens after your server has been running for too long.
                 " +
@@ -460,6 +471,14 @@ namespace SST.Core
             IsInitComplete = true;
             _delayedInitTaskTimer.Enabled = false;
             _delayedInitTaskTimer = null;
+
+            // Let the server's players know
+            await
+                QlCommands.QlCmdSay(
+                    string.Format(
+                        "^7SST ^3v{0}^7 by syncore is now loaded on this server. ^3{1}{2}^7 for help.",
+                        Helpers.GetVersion(),
+                        CommandList.GameCommandPrefix, CommandList.CmdHelp));
         }
 
         /// <summary>

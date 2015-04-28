@@ -93,7 +93,7 @@ namespace SST.Core.Modules.Irc
             if (_sst.ServerInfo.CurrentPlayers.Count == 0)
             {
                 _irc.SendIrcMessage(_irc.IrcSettings.ircChannel,
-                    string.Format("\u0003My server has no players at this time."));
+                    "My server has no players at this time.");
             }
             else
             {

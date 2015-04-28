@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -284,7 +285,7 @@ namespace SST.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
+            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SST users listbox
@@ -423,6 +424,49 @@ namespace SST.Ui
         }
 
         /// <summary>
+        /// Handles the Click event of the abtCommandList control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void abtCommandList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sst-commands.txt"));
+            }
+            catch (Exception)
+            {
+                Log.Write("Unable to open command text file.", _logClassType, _logPrefix);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the abtWebsiteButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void abtWebsiteButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start("http://sst.syncore.org");
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == -2147467259)
+                {
+                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
+                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(@"Unable to open website. Error launching web browser.");
+                Log.Write("Error launching web browser", _logClassType, _logPrefix);
+            }
+        }
+
+        /// <summary>
         ///     Automatically checks for updates if specified by user.
         /// </summary>
         private void AutoCheckForUpdates()
@@ -490,7 +534,7 @@ namespace SST.Ui
                 return;
             }
 
-            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
+            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
             banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
@@ -574,7 +618,7 @@ namespace SST.Ui
 
             var banDb = new DbBans();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -1310,7 +1354,7 @@ namespace SST.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Log.Write(string.Format("Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -1426,7 +1470,7 @@ namespace SST.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter) p;
+                var player = (EarlyQuitter)p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_sst, player.Name);
             }
@@ -1448,7 +1492,7 @@ namespace SST.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1477,7 +1521,7 @@ namespace SST.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1570,7 +1614,7 @@ namespace SST.Ui
                 earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
                 earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
                 earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
                 earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
                 _cfgHandler.WriteConfiguration();
 
@@ -2405,9 +2449,9 @@ namespace SST.Ui
                 pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
                 pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
                 pickupOptions.excessiveSubUseBanTimeScale =
-                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveNoShowBanTimeScale =
-                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
                 pickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
                 pickupOptions.excessiveNoShowBanTimeScaleIndex =
@@ -2763,6 +2807,26 @@ namespace SST.Ui
                 return;
             }
 
+            // Check for default names
+            _cfgHandler.ReadConfiguration();
+            if (_cfgHandler.Config.CoreOptions.accountName.Equals(CoreOptions.defaultUnsetAccountName,
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                Log.Write("SST account name has not been set. Cannot start.", _logClassType, _logPrefix);
+                MessageBox.Show(@"Cannot start. You must first set the SST account name in the core options!",
+                   @"Account Name Is Unset",
+                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (_cfgHandler.Config.CoreOptions.owner.Equals(CoreOptions.defaultUnsetOwnerName,
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                Log.Write("SST owner's account name has not been set. Cannot start.", _logClassType, _logPrefix);
+                MessageBox.Show(@"Cannot start. You must first set the SST owner's account name in the core options!",
+                   @"Owner Name Is Unset",
+                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (_sst.IsMonitoringServer)
             {
                 // Do nothing if we're already monitoring
@@ -2859,7 +2923,23 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void sysTrayWebsiteMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://ssb.syncore.org");
+            try
+            {
+                Process.Start("http://sst.syncore.org");
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == -2147467259)
+                {
+                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
+                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(@"Unable to open website. Error launching web browser.");
+                Log.Write("Error launching web browser", _logClassType, _logPrefix);
+            }
         }
 
         /// <summary>
@@ -2940,7 +3020,7 @@ namespace SST.Ui
             }
             _cfgHandler.ReadConfiguration();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
+            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -3008,7 +3088,7 @@ namespace SST.Ui
 
             var userDb = new DbUsers();
             var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
