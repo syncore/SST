@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using SST.Enums;
 using SST.Interfaces;
 using SST.Model;
@@ -6,9 +8,9 @@ using SST.Model;
 namespace SST.Core.Commands.Admin
 {
     /// <summary>
-    ///     Command: Abort a match and return to warmup.
+    ///     Command: Restore the previous game's teams in the warm-up period of a new game.
     /// </summary>
-    public class AbortCmd : IBotCommand
+    public class RestoreTeamsCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
         private readonly SynServerTool _sst;
@@ -16,10 +18,10 @@ namespace SST.Core.Commands.Admin
         private int _qlMinArgs = 0;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AbortCmd" /> class.
+        ///     Initializes a new instance of the <see cref="RestoreTeamsCmd" /> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
-        public AbortCmd(SynServerTool sst)
+        public RestoreTeamsCmd(SynServerTool sst)
         {
             _sst = sst;
         }
@@ -92,9 +94,22 @@ namespace SST.Core.Commands.Admin
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            StatusMessage = "^2[SUCCESS]^7 Attempted to abort match.";
-            await _sst.QlCommands.SendToQlAsync("abort", true);
+            if (!_sst.ServerInfo.IsATeamGame())
+            {
+                StatusMessage = "^1[ERROR]^3 Teams can only be restored in team-based game modes.";
+                await SendServerTell(c, StatusMessage);
+                return false;
+            }
+            if (_sst.ServerInfo.CurrentServerGameState != QlGameStates.Warmup)
+            {
+                StatusMessage = "^1[ERROR]^3 Teams can only be restored during warm-up.";
+                await SendServerTell(c, StatusMessage);
+                return false;
+            }
+
+            StatusMessage = ("^2[SUCCESS]^7 Attempting to restore the teams from last game.");
             await SendServerTell(c, StatusMessage);
+            await RestoreTeams();
             return true;
         }
 
@@ -134,6 +149,33 @@ namespace SST.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+        }
+
+        /// <summary>
+        /// Restores the teams from the last game.
+        /// </summary>
+        private async Task RestoreTeams()
+        {
+            // Lock
+            await _sst.QlCommands.SendToQlAsync("lock", false);
+            // Move all to spec
+            foreach (var player in _sst.ServerInfo.CurrentPlayers.ToList().Where(player =>
+                !player.Value.ShortName.Equals(_sst.AccountName,
+                    StringComparison.InvariantCultureIgnoreCase)))
+            {
+                await _sst.QlCommands.CustCmdPutPlayer(player.Value.ShortName, Team.Spec);
+            }
+            // Restore
+            foreach (var player in _sst.ServerInfo.EndOfGameRedTeam)
+            {
+                await _sst.QlCommands.CustCmdPutPlayer(player, Team.Red);
+            }
+            foreach (var player in _sst.ServerInfo.EndOfGameBlueTeam)
+            {
+                await _sst.QlCommands.CustCmdPutPlayer(player, Team.Blue);
+            }
+            // Unlock
+            await _sst.QlCommands.SendToQlDelayedAsync("unlock", false, 5);
         }
     }
 }

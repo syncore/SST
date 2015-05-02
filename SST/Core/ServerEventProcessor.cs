@@ -195,6 +195,8 @@ namespace SST.Core
             Log.Write("End of game (frag/time/roundlimit reached) detected: setting status back to warm-up.",
                 _logClassType, _logPrefix);
 
+            SetEndOfGameTeams();
+
             // Pickup module
             if (_sst.Mod.Pickup.Active)
             {
@@ -487,6 +489,25 @@ namespace SST.Core
                 {
                     _sst.Mod.Pickup.Manager.HandlePickupEnd();
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the end of game teams.
+        /// </summary>
+        private void SetEndOfGameTeams()
+        {
+            if (!_sst.ServerInfo.IsATeamGame()) return;
+            _sst.ServerInfo.EndOfGameRedTeam.Clear();
+            _sst.ServerInfo.EndOfGameBlueTeam.Clear();
+
+            foreach (var player in _sst.ServerInfo.GetTeam(Team.Red))
+            {
+                _sst.ServerInfo.EndOfGameRedTeam.Add(player.ShortName);
+            }
+            foreach (var player in _sst.ServerInfo.GetTeam(Team.Blue))
+            {
+                _sst.ServerInfo.EndOfGameBlueTeam.Add(player.ShortName);
             }
         }
     }

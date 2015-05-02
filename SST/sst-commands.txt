@@ -80,6 +80,11 @@ Usage: !pause
 Example: !pause
 ______________________________________________________
 
+Restore the teams from the last game:
+Usage: !restoreteams
+Example: !restoreteams
+______________________________________________________
+
 Add a timed ban for a player to the tool's internal system:
 Usage: !timeban add <name> <time> <scale>
 Notes: Name is without clan tag, time is a number, scale is: secs, mins, hours, days, months, or years.

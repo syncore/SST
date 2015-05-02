@@ -47,6 +47,7 @@ namespace SST.Core
         public const string CmdPickupWho = "who";
         public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdReload = "reload";
+        public const string CmdRestoreTeams = "restoreteams";
         public const string CmdSeen = "seen";
         public const string CmdServers = "servers";
         public const string CmdShutdown = "shutdown";
@@ -117,6 +118,7 @@ namespace SST.Core
             Commands.Add(CmdPickupWho, new PickupWhoCmd(_sst));
             Commands.Add(CmdForceJoinRed, new ForceJoinRedCmd(_sst));
             Commands.Add(CmdForceJoinSpec, new ForceJoinSpecCmd(_sst));
+            Commands.Add(CmdRestoreTeams, new RestoreTeamsCmd(_sst));
             Commands.Add(CmdServers, new ServersCmd(_sst));
             Commands.Add(CmdSuggestTeams, new SuggestTeamsCmd(_sst));
             Commands.Add(CmdTimeBan, new TimeBanCmd(_sst));

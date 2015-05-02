@@ -88,6 +88,7 @@
     <Compile Include="Core\CommandProcessor.cs" />
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\MapCmd.cs" />
+    <Compile Include="Core\Commands\Admin\RestoreTeamsCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />

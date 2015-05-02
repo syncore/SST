@@ -861,6 +861,7 @@ namespace SST.Ui
             var coreOptions = _cfgHandler.Config.CoreOptions;
             coreOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             PopulateCoreOptionsUi();
             HandleCoreSettingsUpdate(coreOptions);
             Log.Write("Core settings were reset to their default values",
@@ -1176,6 +1177,7 @@ namespace SST.Ui
             var accountDateOptions = _cfgHandler.Config.AccountDateOptions;
             accountDateOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             await
                 HandleAccountDateModActivation(accountDateOptions.isActive,
                     accountDateOptions.minimumDaysRequired);
@@ -1238,6 +1240,7 @@ namespace SST.Ui
             var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
             accuracyOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleStandardModuleActivation(_sst.Mod.Accuracy, accuracyOptions.isActive);
             PopulateModAccuracyUi();
             Log.Write(
@@ -1303,10 +1306,10 @@ namespace SST.Ui
             }
 
             _cfgHandler.ReadConfiguration();
-            var addedByAdmin = _cfgHandler.Config.CoreOptions.owner;
+            var coreopts = _cfgHandler.Config.CoreOptions;
 
             modAutoVoterCurrentVotesBindingSource.Add(new AutoVote(fullVoteText,
-                containsParam, intendedResult, addedByAdmin));
+                containsParam, intendedResult, coreopts.owner));
 
             RefreshCurrentVotesDataSource();
             modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
@@ -1316,7 +1319,7 @@ namespace SST.Ui
             modAutoVoterContainingTextBox.Clear();
 
             Log.Write(string.Format("Owner {0} added auto {1} vote for: {2}",
-                addedByAdmin, ((intendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
+                coreopts.owner, ((intendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
                 fullVoteText), _logClassType, _logPrefix);
         }
 
@@ -1411,6 +1414,7 @@ namespace SST.Ui
             var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
             autoVoterOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleStandardModuleActivation(_sst.Mod.AutoVoter, autoVoterOptions.isActive);
             PopulateModAutoVoterUi();
             Log.Write(
@@ -1593,6 +1597,7 @@ namespace SST.Ui
             var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
             earlyQuitOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleStandardModuleActivation(_sst.Mod.EarlyQuit, earlyQuitOptions.isActive);
             PopulateModEarlyQuitUi();
             Log.Write(
@@ -1739,6 +1744,7 @@ namespace SST.Ui
             var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
             eloLimitOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             await HandleEloLimitModActivation(eloLimitOptions.isActive);
             PopulateModEloLimiterUi();
             Log.Write(
@@ -2018,6 +2024,7 @@ namespace SST.Ui
             var ircOptions = _cfgHandler.Config.IrcOptions;
             ircOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleIrcModActivation(ircOptions.isActive);
             PopulateModIrcUi();
             Log.Write("IRC settings were reset to their default values", _logClassType, _logPrefix);
@@ -2256,6 +2263,7 @@ namespace SST.Ui
             var motdOptions = _cfgHandler.Config.MotdOptions;
             motdOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleMotdModActivation(motdOptions.isActive);
             PopulateModMotdUi();
             Log.Write(
@@ -2426,6 +2434,7 @@ namespace SST.Ui
             var pickupOptions = _cfgHandler.Config.PickupOptions;
             pickupOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             await HandlePickupModActivation(pickupOptions.isActive);
             PopulateModPickupUi();
             Log.Write("Pickup settings were reset to their default values", _logClassType, _logPrefix);
@@ -2564,6 +2573,7 @@ namespace SST.Ui
             var serverListOptions = _cfgHandler.Config.ServersOptions;
             serverListOptions.SetDefaults();
             _cfgHandler.WriteConfiguration();
+            _cfgHandler.ReadConfiguration();
             HandleStandardModuleActivation(_sst.Mod.Servers, serverListOptions.isActive);
             PopulateModServerListUi();
             Log.Write(

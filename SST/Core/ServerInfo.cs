@@ -24,6 +24,8 @@ namespace SST.Core
             // Ignoring case is very important here
             CurrentPlayers =
                 new Dictionary<string, PlayerInfo>(StringComparer.InvariantCultureIgnoreCase);
+            EndOfGameRedTeam = new List<string>();
+            EndOfGameBlueTeam = new List<string>();
         }
 
         /// <summary>
@@ -65,6 +67,22 @@ namespace SST.Core
         ///     The current server identifier.
         /// </value>
         public string CurrentServerId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the blue team at game's end.
+        /// </summary>
+        /// <value>
+        /// The blue team at game's end.
+        /// </value>
+        public List<string> EndOfGameBlueTeam { get; set; }
+
+        /// <summary>
+        /// Gets or sets the red team at game's end.
+        /// </summary>
+        /// <value>
+        /// The red team at game's end.
+        /// </value>
+        public List<string> EndOfGameRedTeam { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the Quake Live client is actually

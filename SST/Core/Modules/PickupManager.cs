@@ -548,8 +548,6 @@ namespace SST.Core.Modules
         /// </summary>
         public void HandlePickupEnd()
         {
-            // Pickup needs to have previously been in progress
-            if (!IsPickupInProgress) return;
             Log.Write("Pickup game has now officially ended. Will proceed to update database.",
                 _logClassType, _logPrefix);
             // Update the pickup DB table to incldue any changes that occurred between the
@@ -615,6 +613,8 @@ namespace SST.Core.Modules
         /// </summary>
         public void HandleScoreOrTimelimitHit()
         {
+            // Pickup needs to have previously been in progress
+            if (!IsPickupInProgress) return;
             Log.Write("Score or timelimit hit!", _logClassType, _logPrefix);
             IsIntermission = true;
             // Pickup has now officially ended
