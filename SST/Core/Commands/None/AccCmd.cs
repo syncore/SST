@@ -353,7 +353,7 @@ namespace SST.Core.Commands.None
             var player = Helpers.GetArgVal(c, 1);
             await RetrieveAccuracy(c);
             var accStr = FormatAccString(player);
-            StatusMessage = string.Format("^3{0}'s^7 accuracy: {1}",
+            StatusMessage = string.Format("^3{0}'s^7 in-game accuracy: {1}",
                 player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr));
             await SendServerSay(c, StatusMessage);
 

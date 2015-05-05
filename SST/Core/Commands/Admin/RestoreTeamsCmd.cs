@@ -106,6 +106,12 @@ namespace SST.Core.Commands.Admin
                 await SendServerTell(c, StatusMessage);
                 return false;
             }
+            if (_sst.ServerInfo.EndOfGameBlueTeam.Count == 0 || _sst.ServerInfo.EndOfGameRedTeam.Count == 0)
+            {
+                StatusMessage = "^1[ERROR]^3 Unable to restore teams as this time.";
+                await SendServerTell(c, StatusMessage);
+                return false;
+            }
 
             StatusMessage = ("^2[SUCCESS]^7 Attempting to restore the teams from last game.");
             await SendServerTell(c, StatusMessage);

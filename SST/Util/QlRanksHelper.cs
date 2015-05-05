@@ -13,12 +13,14 @@ namespace SST.Util
     /// <summary>
     ///     Helper class for various QlRanks-related functions.
     /// </summary>
+    /// <remarks>
+    /// TODO: much of this came from an earlier project and should be cleaned up
+    /// </remarks>
     public class QlRanksHelper
     {
         private readonly DbElo _eloDb;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[API:QLRANKS]";
-        // TODO: much of this came from an earlier project and should be cleaned up
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="QlRanksHelper" /> class.
@@ -208,8 +210,8 @@ namespace SST.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            //string url = "http://www.qlranks.com/api.aspx?nick=" + players;
-            var url = "http://10.0.0.7/api.aspx?nick=" + players;
+            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            //var url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try
             {

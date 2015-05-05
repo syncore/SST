@@ -9,7 +9,7 @@ http://sst.syncore.org/howto/
 ######################################
 
 
-______________________________________________________
+
 Give a player operator privileges using the QL system:
 Usage: !op <name>
 Notes: Name is without clan tag.
@@ -143,7 +143,7 @@ ______________________________________________________
 
 
 
-Prevent a player from joining if account registration date is less than specified days:
+Enable accountdate module and prevent player from joining if account registration date is less than specified days:
 Usage: !mod accountdate <days>
 Note: Days is the minimum account age in days, which must be a number greater than zero.
 Example: !mod accountdate 30
@@ -588,75 +588,75 @@ Example: !pickup unban SomePlayer
 
 Show the IRC help information:
 Usage: .help
-Example: .help
+Example: !help
 ______________________________________________________
 
 List the tool's active modules:
 Usage: .mods
-Example: .mods
+Example: !mods
 ______________________________________________________
 
 Start QL server monitoring if it is not active:
-Usage: .monitor start
+Usage: !monitor start
 Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
-Example: .monitor start
+Example: !monitor start
 ______________________________________________________
 
 Stop QL server monitoring if it is active:
-Usage: .monitor stop
+Usage: !monitor stop
 Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
-Example: .monitor stop
+Example: !monitor stop
 ______________________________________________________
 
 Reset QL server monitoring:
-Usage: .monitor reset
+Usage: !monitor reset
 Notes: This command requires IRC operator (@) status. QL must be running and connected to the server.
-Example: .monitor reset
+Example: !monitor reset
 ______________________________________________________
 
 Request IRC operator status:
-Usage: .opme
+Usage: !opme
 Notes: This command can only be used by the owner. The tool must have IRC operator (@) status in the channel.
-Example: .opme
+Example: !opme
 ______________________________________________________
 
 Send an SST command to Quake Live via IRC:
-Usage: .ql <SST command> [SST command arguments]
+Usage: !ql <SST command> [SST command arguments]
 Notes: This command requires IRC operator (@) status. Some SST commands do not allow IRC access.
-Example: .ql adduser SomePlayer 2
-Example: .ql mod elo 1300
-Example: .ql stopserver 90
-Example: .ql timeban add SomePlayer 7 days
-Example: .ql mute SomePlayer
-Example: .ql mod earlyquit off
-Example: .ql date SomePlayer
+Example: !ql adduser SomePlayer 2
+Example: !ql mod elo 1300
+Example: !ql stopserver 90
+Example: !ql timeban add SomePlayer 7 days
+Example: !ql mute SomePlayer
+Example: !ql mod earlyquit off
+Example: !ql date SomePlayer
 ______________________________________________________
 
 Send a regular message to the QL server:
-Usage: .say <message>
-Example: .say Hello from IRC!
+Usage: !say <message>
+Example: !say Hello from IRC!
 ______________________________________________________
 
 Send a team message to the QL server:
-Usage: .sayteam <message>
-Example: .sayteam Hello from IRC!
+Usage: !sayteam <message>
+Example: !sayteam Hello from IRC!
 ______________________________________________________
 
 Display the status and details of the current QL server:
-Usage: .status
-Example: .status
+Usage: !status
+Example: !status
 ______________________________________________________
 
 List the SST user levels of the players currently on the server:
-Usage: .users
-Example: .users
+Usage: !users
+Example: !users
 ______________________________________________________
 
 Display the SST version information:
-Usage: .version
-Example: .version
+Usage: !version
+Example: !version
 ______________________________________________________
 
 Display the server's current players:
-Usage: .who
-Example: .who
+Usage: !who
+Example: !who

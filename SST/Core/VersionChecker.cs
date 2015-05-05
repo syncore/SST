@@ -21,7 +21,7 @@ namespace SST.Core
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
-        private readonly string _updateUrl = "http://10.0.0.7/sstversion.json";
+        private readonly string _updateUrl = "http://sst.syncore.org/download/sstversion.json";
 
         /// <summary>
         ///     Checks for updates.
@@ -141,10 +141,9 @@ namespace SST.Core
                 @"Update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result != DialogResult.Yes) return;
-            // TODO: update the URL
             try
             {
-                Process.Start("http://10.0.0.7/sstupdate.txt");
+                Process.Start("http://sst.syncore.org/download");
             }
             catch (Win32Exception noBrowser)
             {

@@ -81,7 +81,7 @@ namespace SST.Core.Modules.Irc
         {
             _irc.SendIrcNotice(c.FromUser,
                 string.Format(
-                    "\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 <start|stop|reset>",
+                    "\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 <start|stop|reset|status>",
                     IrcCommandList.IrcCommandPrefix, c.CmdName));
         }
 
@@ -119,7 +119,7 @@ namespace SST.Core.Modules.Irc
             if (!qlw.QuakeLiveConsoleWindowExists())
             {
                 _irc.SendIrcNotice(c.FromUser,
-                    string.Format("\u0002[ERROR]\u0002 A running instance of Quake Live could not be found."));
+                    "[ERROR] A running instance of Quake Live could not be found.");
 
                 Log.Write(string.Format(
                     "{0} attempted to use {1} command but a running instance of Quake Live could not be found. Ignoring.",
@@ -132,7 +132,7 @@ namespace SST.Core.Modules.Irc
                 if (_sst.IsMonitoringServer)
                 {
                     _irc.SendIrcNotice(c.FromUser,
-                        string.Format("\u0002[ERROR]\u0002 Your QL server is already being monitored."));
+                        "[ERROR] Your QL server is already being monitored.");
 
                     Log.Write(string.Format(
                     "{0} attempted to start server monitoring but server is already being monitored. Ignoring.",
@@ -152,7 +152,7 @@ namespace SST.Core.Modules.Irc
                 if (!_sst.IsMonitoringServer)
                 {
                     _irc.SendIrcNotice(c.FromUser,
-                        string.Format("\u0002[ERROR]\u0002 No QL server is currently being monitored."));
+                        "[ERROR] No QL server is currently being monitored.");
 
                     Log.Write(string.Format(
                     "{0} attempted to stop server monitoring but server is not currently being monitored. Ignoring.",

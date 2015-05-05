@@ -91,7 +91,6 @@ namespace SST.Core.Modules.Irc
             var cmds = _cmdList.Select(cmd =>
                 string.Format("{0}{1}", IrcCommandList.IrcCommandPrefix, cmd.Key)).ToList();
 
-            //TODO: update the URL
             _irc.SendIrcNotice(c.FromUser,
                 string.Format(
                     "\u0003[COMMANDS]: \u0002{0}\u0002 - for more information, visit: http://sst.syncore.org/help",
