@@ -18,7 +18,7 @@ namespace SST.Util
         private readonly string _logPrefix = "[ACCOUNTDATECHECKER]";
         private readonly DbRegistrationDates _regDateDb;
 
-        private string _userAgent =
+        private readonly string _userAgent =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1003.1 Safari/535.19 Awesomium/1.7.1";
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace SST.Util
         {
             var httpClientHandler = new HttpClientHandler();
             var httpClient = new HttpClient(httpClientHandler);
-            string playerurl = "http://www.quakelive.com/profile/summary/" + user.ToLowerInvariant();
+            var playerurl = "http://www.quakelive.com/profile/summary/" + user.ToLowerInvariant();
             var registeredDate = new DateTime();
             //var playerurl = "http://10.0.0.7/datetest.html";
 
@@ -75,14 +75,14 @@ namespace SST.Util
                     }
 
                     httpClient.DefaultRequestHeaders.Add("User-Agent", _userAgent);
-                    HttpResponseMessage response = await httpClient.GetAsync(playerurl);
+                    var response = await httpClient.GetAsync(playerurl);
                     response.EnsureSuccessStatusCode();
 
-                    using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                    using (var responseStream = await response.Content.ReadAsStreamAsync())
                     {
                         using (var sr = new StreamReader(responseStream))
                         {
-                            string result = sr.ReadToEnd();
+                            var result = sr.ReadToEnd();
                             var htmlDocument = new HtmlDocument();
                             htmlDocument.LoadHtml(result);
                             /* <div class="prf_vitals">
@@ -96,14 +96,14 @@ namespace SST.Util
                             </div>
                             */
 
-                            HtmlNode elem =
+                            var elem =
                                 htmlDocument.DocumentNode.SelectSingleNode(
                                     "//div[contains(@class,'prf_vitals')]");
                             if (elem != null)
                             {
-                                HtmlNode pg = elem.SelectSingleNode("p");
+                                var pg = elem.SelectSingleNode("p");
 
-                                string regdateStr = pg.ChildNodes[2].InnerText.Trim();
+                                var regdateStr = pg.ChildNodes[2].InnerText.Trim();
                                 DateTime.TryParse(regdateStr, out registeredDate);
 
                                 Log.Write(string.Format("Got account date for {0} from remote site: {1}",

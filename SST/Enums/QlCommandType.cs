@@ -12,9 +12,11 @@
         ConfigStrings,
         Players,
         ServerInfo,
+
         // Note: InitInfo isn't a tool-issued command but occurs automatically in QL
         // when certain things occur - i.e. map loading, vid_restart, etc.
         InitInfo,
+
         CvarRequest
     }
 }

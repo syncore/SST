@@ -1,4 +1,5 @@
 ﻿using System;
+
 // ReSharper disable InconsistentNaming
 
 namespace SST.Config.Modules
@@ -165,6 +166,16 @@ namespace SST.Config.Modules
         public bool isActive { get; set; }
 
         /// <summary>
+        ///     Generates a random identifier.
+        /// </summary>
+        /// <returns>A random identifier in the range of 0 to 32768.</returns>
+        public string GenerateRandomIdentifier()
+        {
+            var r = new Random();
+            return r.Next(0, 32769).ToString();
+        }
+
+        /// <summary>
         ///     Sets the defaults.
         /// </summary>
         public void SetDefaults()
@@ -185,16 +196,6 @@ namespace SST.Config.Modules
             ircServerPassword = string.Empty;
             ircServerPort = 6667;
             ircUserName = string.Format("sstQL{0}", GenerateRandomIdentifier());
-        }
-
-        /// <summary>
-        ///     Generates a random identifier.
-        /// </summary>
-        /// <returns>A random identifier in the range of 0 to 32768.</returns>
-        public string GenerateRandomIdentifier()
-        {
-            var r = new Random();
-            return r.Next(0, 32769).ToString();
         }
     }
 }

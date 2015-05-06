@@ -14,7 +14,7 @@ namespace SST.Util
     ///     Helper class for various QlRanks-related functions.
     /// </summary>
     /// <remarks>
-    /// TODO: much of this came from an earlier project and should be cleaned up
+    ///     TODO: much of this came from an earlier project and should be cleaned up
     /// </remarks>
     public class QlRanksHelper
     {
@@ -210,7 +210,7 @@ namespace SST.Util
         /// <returns>QLRanks object</returns>
         private async Task<QlRanks> GetEloDataFromQlRanksApiAsync(string players)
         {
-            string url = "http://www.qlranks.com/api.aspx?nick=" + players;
+            var url = "http://www.qlranks.com/api.aspx?nick=" + players;
             //var url = "http://10.0.0.7/api.aspx?nick=" + players;
 
             try

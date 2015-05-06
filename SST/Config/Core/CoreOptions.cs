@@ -7,7 +7,6 @@ namespace SST.Config.Core
     /// </summary>
     public class CoreOptions
     {
-
         public const string defaultUnsetAccountName = "ChangeThisName";
         public const string defaultUnsetOwnerName = "ChangeThisName";
 

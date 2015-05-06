@@ -39,6 +39,14 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
+
+        /// <summary>
         ///     Gets or sets a numeric value representing the time to ban excessive substitutes.
         /// </summary>
         /// <value>
@@ -95,6 +103,28 @@ namespace SST.Core.Commands.Modules
         public int ExcessiveSubUseBanTimeScaleIndex { get; set; }
 
         /// <summary>
+        ///     Gets the minimum module arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum module arguments for the IRC command.
+        /// </value>
+        public int IrcMinModuleArgs
+        {
+            get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsIrcAccessAllowed
+        {
+            get { return _isIrcAccessAllowed; }
+        }
+
+        /// <summary>
         ///     Gets the pickup manager.
         /// </summary>
         /// <value>
@@ -129,44 +159,6 @@ namespace SST.Core.Commands.Modules
         public int MaxSubsPerPlayer { get; set; }
 
         /// <summary>
-        ///     Gets or sets the teamsize.
-        /// </summary>
-        /// <value>
-        ///     The teamsize.
-        /// </value>
-        public int Teamsize { get; set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
-        public int IrcMinModuleArgs
-        {
-            get { return _qlMinModuleArgs + 1; }
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsIrcAccessAllowed
-        {
-            get { return _isIrcAccessAllowed; }
-        }
-
-        /// <summary>
         ///     Gets the name of the module.
         /// </summary>
         /// <value>
@@ -195,6 +187,14 @@ namespace SST.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the teamsize.
+        /// </summary>
+        /// <value>
+        ///     The teamsize.
+        /// </value>
+        public int Teamsize { get; set; }
 
         /// <summary>
         ///     Displays the argument length error.

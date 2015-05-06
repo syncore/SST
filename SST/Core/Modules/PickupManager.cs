@@ -355,7 +355,7 @@ namespace SST.Core.Modules
             // Team selection started and an eligible player leaves, notify of cancelation possibility
             if (HasTeamSelectionStarted && AvailablePlayers.Contains(player))
             {
-                if ((_sst.Mod.Pickup.Teamsize*2) - (redSize + blueSize) < AvailablePlayers.Count)
+                if ((_sst.Mod.Pickup.Teamsize * 2) - (redSize + blueSize) < AvailablePlayers.Count)
                 {
                     await
                         _sst.QlCommands.QlCmdSay(string.Format(
@@ -624,7 +624,7 @@ namespace SST.Core.Modules
             // ReSharper disable once UnusedVariable
             var i1 = _sst.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 Pickup is OVER. A new pickup should start ^3{0}^7 seconds after map restart or map change!",
-                (PickupResetOnEndGameLimit/1000)));
+                (PickupResetOnEndGameLimit / 1000)));
         }
 
         /// <summary>
@@ -929,11 +929,11 @@ namespace SST.Core.Modules
                 _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[PICKUP]^7 You have ^5{0}^7 seconds to type^2 {1}{2}^7 to become a captain!",
-                        (CaptainSelectionTimeLimit/1000), CommandList.GameCommandPrefix,
+                        (CaptainSelectionTimeLimit / 1000), CommandList.GameCommandPrefix,
                         CommandList.CmdPickupCap));
 
             Log.Write(string.Format("Captain selection countdown started. Will last for {0} seconds",
-                (CaptainSelectionTimeLimit/1000)), _logClassType, _logPrefix);
+                (CaptainSelectionTimeLimit / 1000)), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -1215,7 +1215,7 @@ namespace SST.Core.Modules
         {
             Log.Write(string.Format(
                 "Starting end-game pickup reset timer. Will try to start a new pickup in {0} seconds",
-                (PickupResetOnEndGameLimit/1000)), _logClassType, _logPrefix);
+                (PickupResetOnEndGameLimit / 1000)), _logClassType, _logPrefix);
 
             _endGameResetTimer.AutoReset = false;
             _endGameResetTimer.Interval = PickupResetOnEndGameLimit;
@@ -1239,7 +1239,7 @@ namespace SST.Core.Modules
 
             await _sst.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
-                (_sst.Mod.Pickup.Teamsize*2)));
+                (_sst.Mod.Pickup.Teamsize * 2)));
 
             IsPickupPreGame = true;
             Log.Write("Pickup is in pre-game.", _logClassType, _logPrefix);
@@ -1253,7 +1253,7 @@ namespace SST.Core.Modules
             // We should have both captains (+2) selected at this point.
             // However, players might have disconnected before the captain selection timer expired, so
             // make sure we have enough players one last time, and reset if we don't.
-            if ((AvailablePlayers.Count + 2) < (_sst.Mod.Pickup.Teamsize*2))
+            if ((AvailablePlayers.Count + 2) < (_sst.Mod.Pickup.Teamsize * 2))
             {
                 await ResetDueToInadequatePlayerCount();
                 return;

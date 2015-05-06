@@ -447,23 +447,7 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void abtWebsiteButton_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Process.Start("http://sst.syncore.org");
-            }
-            catch (Win32Exception noBrowser)
-            {
-                if (noBrowser.ErrorCode == -2147467259)
-                {
-                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
-                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(@"Unable to open website. Error launching web browser.");
-                Log.Write("Error launching web browser", _logClassType, _logPrefix);
-            }
+            Helpers.LaunchUrlInBrowser("http://sst.syncore.org");
         }
 
         /// <summary>
@@ -2933,23 +2917,7 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void sysTrayWebsiteMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Process.Start("http://sst.syncore.org");
-            }
-            catch (Win32Exception noBrowser)
-            {
-                if (noBrowser.ErrorCode == -2147467259)
-                {
-                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
-                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(@"Unable to open website. Error launching web browser.");
-                Log.Write("Error launching web browser", _logClassType, _logPrefix);
-            }
+            Helpers.LaunchUrlInBrowser("http://sst.syncore.org");
         }
 
         /// <summary>

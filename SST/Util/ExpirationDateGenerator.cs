@@ -42,13 +42,13 @@ namespace SST.Util
                 case "months":
                     // AddMonths(int months) and AddYears(int years) only accept int type; also already checked for
                     // overflow in Eval method
-                    int monthAsInt = Convert.ToInt32(timePeriod);
+                    var monthAsInt = Convert.ToInt32(timePeriod);
                     expirationDate = DateTime.Now.AddMonths(monthAsInt);
                     break;
 
                 case "year":
                 case "years":
-                    int yearAsInt = Convert.ToInt32(timePeriod);
+                    var yearAsInt = Convert.ToInt32(timePeriod);
                     expirationDate = DateTime.Now.AddYears(yearAsInt);
                     break;
             }

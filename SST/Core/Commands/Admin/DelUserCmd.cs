@@ -132,18 +132,7 @@ namespace SST.Core.Commands.Admin
             return (string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} user - user is without clantag",
                 CommandList.GameCommandPrefix,
-                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) :  c.CmdName)));
-        }
-
-        /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+                ((c.FromIrc) ? (string.Format("{0} {1}", c.CmdName, c.Args[1])) : c.CmdName)));
         }
 
         /// <summary>
@@ -155,6 +144,17 @@ namespace SST.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

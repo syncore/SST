@@ -193,9 +193,9 @@ namespace SST.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    var player = (string) reader["user"];
+                                    var player = (string)reader["user"];
                                     var quitCount = GetUserQuitCount(player);
-                                    allQuitters.Add(new EarlyQuitter {Name = player, QuitCount = quitCount});
+                                    allQuitters.Add(new EarlyQuitter { Name = player, QuitCount = quitCount });
                                 }
                             }
                         }
@@ -243,7 +243,7 @@ namespace SST.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    quitCount = (long) reader["numQuits"];
+                                    quitCount = (long)reader["numQuits"];
                                     Log.Write(
                                         string.Format(
                                             "Got early quit count for player {0} from early quitter database; early quits: {1}"
@@ -293,7 +293,7 @@ namespace SST.Database
 
                             cmd.Parameters.AddWithValue("@newQuitCount",
                                 ((doublePenalty
-                                    ? GetUserQuitCount(user)*2
+                                    ? GetUserQuitCount(user) * 2
                                     : GetUserQuitCount(user) + 1)));
                             var total = cmd.ExecuteNonQuery();
                             if (total > 0)

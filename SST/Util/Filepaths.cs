@@ -24,7 +24,7 @@ namespace SST.Util
 
         private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
             NameLogDirectory);
-
+        
         private static readonly string _accountDateDatabaseFilePath = Path.Combine(DataDirectory,
             AccountDateDatabaseFile);
 
@@ -43,10 +43,10 @@ namespace SST.Util
         private static readonly string _userDatabaseFilePath = Path.Combine(DataDirectory, UserDatabaseFile);
 
         /// <summary>
-        /// Gets the account date database file path.
+        ///     Gets the account date database file path.
         /// </summary>
         /// <value>
-        /// The account date database file path.
+        ///     The account date database file path.
         /// </value>
         public static string AccountDateDatabaseFilePath
         {
@@ -54,10 +54,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the ban database file path.
+        ///     Gets the ban database file path.
         /// </summary>
         /// <value>
-        /// The ban database file path.
+        ///     The ban database file path.
         /// </value>
         public static string BanDatabaseFilePath
         {
@@ -65,10 +65,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the configuration path.
+        ///     Gets the configuration path.
         /// </summary>
         /// <value>
-        /// The configuration path.
+        ///     The configuration path.
         /// </value>
         public static string ConfigurationFilePath
         {
@@ -76,21 +76,21 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the data directory path.
+        ///     Gets the data directory path.
         /// </summary>
         /// <value>
-        /// The data directory path.
+        ///     The data directory path.
         /// </value>
         public static string DataDirectoryPath
         {
-            get { return DataDirectory;}
+            get { return DataDirectory; }
         }
 
         /// <summary>
-        /// Gets the elo database file path.
+        ///     Gets the elo database file path.
         /// </summary>
         /// <value>
-        /// The elo database file path.
+        ///     The elo database file path.
         /// </value>
         public static string EloDatabaseFilePath
         {
@@ -98,10 +98,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the name of the log directory.
+        ///     Gets the name of the log directory.
         /// </summary>
         /// <value>
-        /// The name of the log directory.
+        ///     The name of the log directory.
         /// </value>
         public static string LogDirectoryName
         {
@@ -109,10 +109,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the log directory path.
+        ///     Gets the log directory path.
         /// </summary>
         /// <value>
-        /// The log directory path.
+        ///     The log directory path.
         /// </value>
         public static string LogDirectoryPath
         {
@@ -120,10 +120,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the pickup game database file path.
+        ///     Gets the pickup game database file path.
         /// </summary>
         /// <value>
-        /// The pickup game database file path.
+        ///     The pickup game database file path.
         /// </value>
         public static string PickupGameDatabaseFilePath
         {
@@ -131,10 +131,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the quit database file path.
+        ///     Gets the quit database file path.
         /// </summary>
         /// <value>
-        /// The quit database file path.
+        ///     The quit database file path.
         /// </value>
         public static string QuitDatabaseFilePath
         {
@@ -142,10 +142,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the seen date database file path.
+        ///     Gets the seen date database file path.
         /// </summary>
         /// <value>
-        /// The seen date database file path.
+        ///     The seen date database file path.
         /// </value>
         public static string SeenDateDatabaseFilePath
         {
@@ -153,10 +153,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Gets the user database path.
+        ///     Gets the user database path.
         /// </summary>
         /// <value>
-        /// The user database path.
+        ///     The user database path.
         /// </value>
         public static string UserDatabaseFilePath
         {
@@ -164,10 +164,12 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Creates the data directory.
+        ///     Creates the data directory.
         /// </summary>
-        /// <returns><c>true</c> if the data directory already exists
-        /// or was successfully created, otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the data directory already exists
+        ///     or was successfully created, otherwise <c>false</c>.
+        /// </returns>
         public static bool CreateDataDirectory()
         {
             if (Directory.Exists(DataDirectory)) return true;
@@ -183,10 +185,12 @@ namespace SST.Util
         }
 
         /// <summary>
-        /// Creates the log directory.
+        ///     Creates the log directory.
         /// </summary>
-        /// <returns><c>true</c> if the log directory already exists
-        /// or was successfully created, otherwise <c>false</c>.</returns>
+        /// <returns>
+        ///     <c>true</c> if the log directory already exists
+        ///     or was successfully created, otherwise <c>false</c>.
+        /// </returns>
         public static bool CreateLogDirectory()
         {
             if (Directory.Exists(LogDirectoryPath)) return true;

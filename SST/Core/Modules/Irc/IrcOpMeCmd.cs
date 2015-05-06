@@ -13,13 +13,13 @@ namespace SST.Core.Modules.Irc
     /// </summary>
     public class IrcOpMeCmd : IIrcCommand
     {
-        private int _ircMinArgs = 0;
-        private bool _isAsync = false;
         private readonly IrcManager _irc;
-        private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
-        private bool _requiresMonitoring = false;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[IRCCMD:OPME]";
+        private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
+        private int _ircMinArgs = 0;
+        private bool _isAsync = false;
+        private bool _requiresMonitoring = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IrcOpMeCmd" /> class.
@@ -28,6 +28,17 @@ namespace SST.Core.Modules.Irc
         public IrcOpMeCmd(IrcManager irc)
         {
             _irc = irc;
+        }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs
+        {
+            get { return _ircMinArgs; }
         }
 
         /// <summary>
@@ -49,17 +60,6 @@ namespace SST.Core.Modules.Irc
         public bool RequiresMonitoring
         {
             get { return _requiresMonitoring; }
-        }
-
-        /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
-        public int IrcMinArgs
-        {
-            get { return _ircMinArgs; }
         }
 
         /// <summary>

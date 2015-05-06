@@ -20,6 +20,7 @@ namespace SST.Core
     /// </summary>
     public class SynServerTool
     {
+        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _delayedInitTaskTimer;
@@ -27,7 +28,6 @@ namespace SST.Core
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
-        public double InitDelay = 6.5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynServerTool" /> main class.
@@ -346,7 +346,7 @@ namespace SST.Core
             if (IsReadingConsole) return;
             Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) {IsBackground = true};
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
             readConsoleThread.Start();
         }
 
@@ -461,7 +461,7 @@ namespace SST.Core
             CheckServerAddress();
 
             // Wait 2 sec then clear the internal console
-            await Task.Delay(2*1000);
+            await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();
 
             // Update UI status bar with IP
@@ -592,7 +592,7 @@ namespace SST.Core
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInitTasks(double seconds)
         {
-            _delayedInitTaskTimer = new Timer(seconds*1000) {AutoReset = false, Enabled = true};
+            _delayedInitTaskTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
             _delayedInitTaskTimer.Elapsed += DelayedInitTaskTimerOnElapsed;
         }
     }

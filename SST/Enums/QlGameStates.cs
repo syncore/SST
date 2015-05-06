@@ -7,6 +7,7 @@
     {
         // error or default
         Unspecified,
+
         Warmup,
         Countdown,
         InProgress

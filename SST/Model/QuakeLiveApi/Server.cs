@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 // ReSharper disable InconsistentNaming
 
 namespace SST.Model.QuakeLiveApi

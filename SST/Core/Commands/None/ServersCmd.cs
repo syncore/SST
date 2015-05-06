@@ -215,7 +215,7 @@ namespace SST.Core.Commands.None
             // so each msg will need to be sent individually.
             if (message.Contains(Environment.NewLine))
             {
-                var msg = message.Split(new[] {Environment.NewLine},
+                var msg = message.Split(new[] { Environment.NewLine },
                     StringSplitOptions.RemoveEmptyEntries);
                 foreach (var m in msg)
                 {
@@ -243,7 +243,7 @@ namespace SST.Core.Commands.None
             // so each msg will need to be sent individually.
             if (message.Contains(Environment.NewLine))
             {
-                var msg = message.Split(new[] {Environment.NewLine},
+                var msg = message.Split(new[] { Environment.NewLine },
                     StringSplitOptions.RemoveEmptyEntries);
                 foreach (var m in msg)
                 {

@@ -22,5 +22,13 @@ namespace SST.Model
         ///     The release date.
         /// </value>
         public string releaseDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the abbreviated form of the release date.
+        /// </summary>
+        /// <value>
+        /// The abbreviated form of the release date.
+        /// </value>
+        public string releaseDateShort { get; set; }
     }
 }

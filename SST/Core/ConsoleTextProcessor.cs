@@ -110,7 +110,7 @@ namespace SST.Core
             //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 

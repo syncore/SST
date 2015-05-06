@@ -9,15 +9,6 @@ namespace SST.Config.Modules
     public class AutoVoterOptions
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this module is active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this module is active; otherwise, <c>false</c>.
-        /// </value>
-        // ReSharper disable once InconsistentNaming
-        public bool isActive { get; set; }
-
-        /// <summary>
         ///     Gets or sets the automatic votes.
         /// </summary>
         /// <value>
@@ -25,6 +16,15 @@ namespace SST.Config.Modules
         /// </value>
         // ReSharper disable once InconsistentNaming
         public List<AutoVote> autoVotes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this module is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this module is active; otherwise, <c>false</c>.
+        /// </value>
+        // ReSharper disable once InconsistentNaming
+        public bool isActive { get; set; }
 
         /// <summary>
         /// Sets the defaults.

@@ -143,13 +143,13 @@ namespace SST.Core
                 }
 
                 Log.Write(string.Format("Attempted to move player {0} to team {1}",
-                    player, Enum.GetName(typeof (Team), team)), _logClassType, _logPrefix);
+                    player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
             }
             else
             {
                 Log.Write(string.Format(
                     "Unable to move player {0} to team {1} because player ID could not be retrieved",
-                    player, Enum.GetName(typeof (Team), team)), _logClassType, _logPrefix);
+                    player, Enum.GetName(typeof(Team), team)), _logClassType, _logPrefix);
             }
         }
 
@@ -162,7 +162,7 @@ namespace SST.Core
         /// <returns></returns>
         public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await CustCmdPutPlayer(player, team);
         }
 
@@ -240,7 +240,7 @@ namespace SST.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await QlCmdSay(text);
         }
 
@@ -252,7 +252,7 @@ namespace SST.Core
         /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
         public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             await QlCmdTell(text, player);
         }
 
@@ -280,7 +280,7 @@ namespace SST.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -318,7 +318,7 @@ namespace SST.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<string> say = DoSay;
                         say(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -354,7 +354,7 @@ namespace SST.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -392,7 +392,7 @@ namespace SST.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<string> sayTeam = DoSayTeam;
                         sayTeam(multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -442,7 +442,7 @@ namespace SST.Core
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length/MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -480,7 +480,7 @@ namespace SST.Core
                         }
 
                         // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec*2);
+                        await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<int, string> tell = DoTell;
                         tell(playerId, multiLine[i]);
                         startPos += MaxChatlineLength;
@@ -547,7 +547,7 @@ namespace SST.Core
         /// </remarks>
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
-            await Task.Delay(runCmdInSeconds*1000);
+            await Task.Delay(runCmdInSeconds * 1000);
             Action<string, bool> sendQl = SendQlCommand;
             sendQl(toSend, delay);
         }

@@ -329,6 +329,16 @@
       <MergedExePath>bin\Release\merged</MergedExePath>
     </PropertyGroup>
 
+    <!--Get the version number of the assembly (only interested in the major and minor numbers, not build nor revision numbers)-->
+    <GetAssemblyIdentity AssemblyFiles="$(TargetDir)$(TargetFileName)">
+        <Output TaskParameter="Assemblies" ItemName="AssemblyVersion"/>
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+        <Pattern>(\d+)\.(\d+)</Pattern>
+        <In>%(AssemblyVersion.Version)</In>
+        <AppVersion>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</AppVersion>
+    </PropertyGroup>
+
     <!--Create the merged exe directory and required SQLite interop directories-->
     <Message Importance="high" Text="Creating merged executable directory at $(SolutionDir)$(AssemblyName)\$(MergedExePath)" />
     <MakeDir Directories="$(MergedExePath);$(MergedExePath)\x86;$(MergedExePath)\x64" />
@@ -339,7 +349,7 @@
 
     <!--Run ILMerge-->
     <Message Importance="high" Text="Running ILMerge with target platform referenced assemblies from $(ReferenceAssemblies)" />
-    <Exec Command="&quot;$(SolutionDir)packages\ilmerge.2.14.1208\tools\ILMerge.exe&quot; /out:&quot;$(SolutionDir)$(AssemblyName)\$(MergedExePath)\$(TargetFileName)&quot; &quot;$(TargetDir)$(TargetFileName)&quot; &quot;$(TargetDir)*.dll&quot; /target:exe /targetplatform:v4,&quot;$(ReferenceAssemblies)&quot; /ndebug /wildcards" />
+    <Exec Command="&quot;$(SolutionDir)packages\ilmerge.2.14.1208\tools\ILMerge.exe&quot; /out:&quot;$(SolutionDir)$(AssemblyName)\$(MergedExePath)\$(TargetFileName)&quot; &quot;$(TargetDir)$(TargetFileName)&quot; &quot;$(TargetDir)*.dll&quot; /target:winexe /targetplatform:v4,&quot;$(ReferenceAssemblies)&quot; /ndebug /wildcards" />
 
     <ItemGroup>
       <SSTCommandFile Include="$(TargetDir)sst-commands.txt" />
@@ -353,17 +363,13 @@
     <Copy SourceFiles="@(SQLitex86InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\x86" />
     <Copy SourceFiles="@(SQLitex64InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\x64" />
 
-    <!--Get the version number of the assembly-->
-    <GetAssemblyIdentity AssemblyFiles="$(TargetDir)$(TargetFileName)">
-        <Output TaskParameter="Assemblies" ItemName="AssemblyVersion"/>
-    </GetAssemblyIdentity>
 
     <!--Zip the merged exe directory-->
-    <Message Importance="high" Text="Packaging release as zip file: $(DistributionPackagePath)\sst-v%(AssemblyVersion.Version).zip" />
+    <Message Importance="high" Text="Packaging version $(AppVersion) release as zip file: $(DistributionPackagePath)\sst-v$(AppVersion).zip" />
     <ItemGroup>
         <FilesToZip Include="$(MergedExePath)\**\*.*"/>
     </ItemGroup>
-    <Zip Files="@(FilesToZip)" WorkingDirectory="$(MergedExePath)" ZipFileName="$(DistributionPackagePath)\sst-v%(AssemblyVersion.Version).zip" ZipLevel="9" />
+    <Zip Files="@(FilesToZip)" WorkingDirectory="$(MergedExePath)" ZipFileName="$(DistributionPackagePath)\sst-v$(AppVersion).zip" ZipLevel="9" />
 
     <!--Remove merged exe directory-->
     <Message Importance="high" Text="Removing merged executable directory" />

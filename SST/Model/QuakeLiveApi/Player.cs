@@ -28,7 +28,6 @@ namespace SST.Model.QuakeLiveApi
             set;
         }
 
-
         /// <summary>
         /// Gets or sets the model.
         /// </summary>
@@ -54,7 +53,6 @@ namespace SST.Model.QuakeLiveApi
                 _name = value.ToLowerInvariant();
             }
         }
-
 
         /// <summary>
         /// Gets or sets the rank.
@@ -95,6 +93,5 @@ namespace SST.Model.QuakeLiveApi
             get;
             set;
         }
-
     }
 }

@@ -55,7 +55,7 @@ namespace SST.Core
         /// <param name="msg">The full message text.</param>
         public async Task ProcessBotCommand(string fromUser, string msg)
         {
-            char[] sep = {' '};
+            char[] sep = { ' ' };
             var args = msg.Split(sep);
             var cmdName = args[0].Substring(1);
 
@@ -163,7 +163,7 @@ namespace SST.Core
                 Log.Write(
                     string.Format(
                         "Player {0} sent {1}{2} command but has permission less than {3} needed for {2}. Ingoring.",
-                        fromUser, CommandList.GameCommandPrefix, commandName, Enum.GetName(typeof (UserLevel),
+                        fromUser, CommandList.GameCommandPrefix, commandName, Enum.GetName(typeof(UserLevel),
                             _cmdList.Commands[commandName].UserLevel)), _logClassType, _logPrefix);
 
                 return false;

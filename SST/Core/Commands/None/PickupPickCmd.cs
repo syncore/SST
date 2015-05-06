@@ -15,12 +15,12 @@ namespace SST.Core.Commands.None
     /// </summary>
     public class PickupPickCmd : IBotCommand
     {
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:PICKUPPICK]";
         private readonly int _qlMinArgs = 2;
         private readonly SynServerTool _sst;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = false;
-        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[CMD:PICKUPPICK]";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupCapCmd" /> class.

@@ -7,9 +7,9 @@
     {
         public string[] Args;
         public string CmdName;
+        public bool FromIrc;
         public string FromUser;
         public string Text;
-        public bool FromIrc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CmdArgs" /> struct.

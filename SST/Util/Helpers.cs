@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using SST.Enums;
@@ -79,7 +82,11 @@ namespace SST.Util
         /// <returns>The version number as a string.</returns>
         public static string GetVersion()
         {
-            return typeof (EntryPoint).Assembly.GetName().Version.ToString();
+            // Version includes the major, minor, build, and revision numbers of the assembly, i.e. 1.0.0.0
+            var v = typeof (EntryPoint).Assembly.GetName().Version.ToString();
+            var version = v.Split('.');
+            // Only interested in the major and minor numbers (1.0), not the build and revision numbers
+            return string.Format("{0}.{1}", version[0], version[1]);
         }
 
         /// <summary>
@@ -174,6 +181,35 @@ namespace SST.Util
         {
             TVal val;
             return dictionary.TryGetValue(key, out val);
+        }
+
+        /// <summary>
+        ///     Launches the URL in the user's web browser.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        public static void LaunchUrlInBrowser(string url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == -2147467259)
+                {
+                    MessageBox.Show(@"Unable to open website. Web Browser Error.",
+                        @"Unable to open Web Browser", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Log.Write("Error launching web browser",
+                        MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(@"Unable to launch web browser to open website. Web Browser Error.",
+                    @"Unable to open Web Browser", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Write("Error launching web browser",
+                    MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
+            }
         }
 
         /// <summary>

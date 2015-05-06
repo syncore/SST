@@ -79,7 +79,7 @@ namespace SST.Core
         {
             if (_sst.IsDisconnectionScanPending) return;
             if (!_sst.IsInitComplete) return;
-            _disconnectScanTimer = new Timer(10000) {AutoReset = false, Enabled = true};
+            _disconnectScanTimer = new Timer(10000) { AutoReset = false, Enabled = true };
             _disconnectScanTimer.Elapsed += DisconnectScanElapsed;
             _sst.IsDisconnectionScanPending = true;
             Log.Write("Will check if server connection still exists in 10 seconds.",
@@ -278,8 +278,8 @@ namespace SST.Core
             var gameType = QlGameTypes.Unspecified;
             if (int.TryParse(gtText, out gt))
             {
-                _sst.ServerInfo.CurrentServerGameType = (QlGameTypes) gt;
-                gameType = (QlGameTypes) gt;
+                _sst.ServerInfo.CurrentServerGameType = (QlGameTypes)gt;
+                gameType = (QlGameTypes)gt;
                 Log.Write("Found server gametype: " + gameType, _logClassType, _logPrefix);
             }
             else

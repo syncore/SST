@@ -8,8 +8,10 @@
         None,
         Voice, // +
         Operator, // @
+
         // Admin and owner are not applicable to QuakeNet
         Admin, // &
+
         Owner // ~
     }
 }

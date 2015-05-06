@@ -35,6 +35,14 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
+
+        /// <summary>
         ///     Gets or sets a numeric value representing the time to ban early quitters.
         /// </summary>
         /// <value>
@@ -62,22 +70,6 @@ namespace SST.Core.Commands.Modules
         public int BanTimeScaleIndex { get; set; }
 
         /// <summary>
-        ///     Gets or sets the maximum quits allowed before a user is banned.
-        /// </summary>
-        /// <value>
-        ///     The maximum quits allowed before a user is banned.
-        /// </value>
-        public uint MaxQuitsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
@@ -98,6 +90,14 @@ namespace SST.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
+
+        /// <summary>
+        ///     Gets or sets the maximum quits allowed before a user is banned.
+        /// </summary>
+        /// <value>
+        ///     The maximum quits allowed before a user is banned.
+        /// </value>
+        public uint MaxQuitsAllowed { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.

@@ -12,7 +12,7 @@
         /// <returns>The coutnry name as a string.</returns>
         public string GetLocationNameFromId(long id)
         {
-            string locName = string.Empty;
+            var locName = string.Empty;
             switch (id)
             {
                 case 14:

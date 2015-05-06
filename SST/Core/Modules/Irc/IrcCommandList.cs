@@ -9,6 +9,7 @@ namespace SST.Core.Modules.Irc
     /// </summary>
     public class IrcCommandList
     {
+        public const string IrcCmdQl = "ql";
         public const string IrcCommandPrefix = "!";
         private readonly IrcManager _irc;
         private readonly SynServerTool _sst;
@@ -16,7 +17,6 @@ namespace SST.Core.Modules.Irc
         private readonly string IrcCmdMods = "mods";
         private readonly string IrcCmdMonitor = "monitor";
         private readonly string IrcCmdOpMe = "opme";
-        public const string IrcCmdQl = "ql";
         private readonly string IrcCmdSay = "say";
         private readonly string IrcCmdSayTeam = "sayteam";
         private readonly string IrcCmdStatus = "status";

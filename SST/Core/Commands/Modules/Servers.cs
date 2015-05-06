@@ -29,30 +29,6 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the date and time that the query command was last used.
-        /// </summary>
-        /// <value>
-        ///     The date and time that the query command was last used.
-        /// </value>
-        public DateTime LastQueryTime { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the maximum servers to display.
-        /// </summary>
-        /// <value>
-        ///     The maximum servers to display.
-        /// </value>
-        public int MaxServersToDisplay { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the time between queries.
-        /// </summary>
-        /// <value>
-        ///     The time between queries.
-        /// </value>
-        public double TimeBetweenQueries { get; set; }
-
-        /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
@@ -81,6 +57,22 @@ namespace SST.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
+
+        /// <summary>
+        ///     Gets or sets the date and time that the query command was last used.
+        /// </summary>
+        /// <value>
+        ///     The date and time that the query command was last used.
+        /// </value>
+        public DateTime LastQueryTime { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the maximum servers to display.
+        /// </summary>
+        /// <value>
+        ///     The maximum servers to display.
+        /// </value>
+        public int MaxServersToDisplay { get; set; }
 
         /// <summary>
         ///     Gets the name of the module.
@@ -113,6 +105,28 @@ namespace SST.Core.Commands.Modules
         public string StatusMessage { get; set; }
 
         /// <summary>
+        ///     Gets or sets the time between queries.
+        /// </summary>
+        /// <value>
+        ///     The time between queries.
+        /// </value>
+        public double TimeBetweenQueries { get; set; }
+
+        /// <summary>
+        ///     Disables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        public async Task DisableServers(CmdArgs c)
+        {
+            UpdateConfig(false);
+            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
+            await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to disable server list . Disabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
         ///     Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
@@ -120,6 +134,30 @@ namespace SST.Core.Commands.Modules
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
+        }
+
+        /// <summary>
+        ///     Enables the active servers module.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="maxServers">The maximum servers to display.</param>
+        /// <param name="timeBetween">
+        ///     The time in seconds that must elapse between users issuing the
+        ///     query command.
+        /// </param>
+        public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
+        {
+            MaxServersToDisplay = maxServers;
+            TimeBetweenQueries = timeBetween;
+            UpdateConfig(true);
+            StatusMessage = string.Format(
+                "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
+                " see up to^5 {0}^7 active servers every^5 {1}^7 seconds.",
+                maxServers, timeBetween);
+            await SendServerSay(c, StatusMessage);
+
+            Log.Write(string.Format("Received {0} request from {1} to enable server list module. Enabling.",
+                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -262,44 +300,6 @@ namespace SST.Core.Commands.Modules
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModServerListUi();
-        }
-
-        /// <summary>
-        ///     Disables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        public async Task DisableServers(CmdArgs c)
-        {
-            UpdateConfig(false);
-            StatusMessage = "^2[SUCCESS]^7 Active server list display is ^1disabled^7.";
-            await SendServerSay(c, StatusMessage);
-
-            Log.Write(string.Format("Received {0} request from {1} to disable server list . Disabling.",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
-        }
-
-        /// <summary>
-        ///     Enables the active servers module.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="maxServers">The maximum servers to display.</param>
-        /// <param name="timeBetween">
-        ///     The time in seconds that must elapse between users issuing the
-        ///     query command.
-        /// </param>
-        public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
-        {
-            MaxServersToDisplay = maxServers;
-            TimeBetweenQueries = timeBetween;
-            UpdateConfig(true);
-            StatusMessage = string.Format(
-                "^3[ACTIVESERVERS]^7 Active server listing is now ^2ON^7. Players can" +
-                " see up to^5 {0}^7 active servers every^5 {1}^7 seconds.",
-                maxServers, timeBetween);
-            await SendServerSay(c, StatusMessage);
-
-            Log.Write(string.Format("Received {0} request from {1} to enable server list module. Enabling.",
-                (c.FromIrc ? "IRC" : "in-game"), c.FromUser), _logClassType, _logPrefix);
         }
     }
 }

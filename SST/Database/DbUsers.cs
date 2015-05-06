@@ -460,7 +460,7 @@ namespace SST.Database
             {
                 return;
             }
-            
+
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             AddUserToDb(_owner, UserLevel.Owner, "AUTO", date);
         }

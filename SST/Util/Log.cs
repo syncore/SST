@@ -20,6 +20,8 @@ namespace SST.Util
         private static bool _logToDisk;
         private static bool _logToSstConsole;
         private static readonly List<string> DeferredMessages;
+        private static readonly Type LogClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        public static readonly ILog Logger = LogManager.GetLogger(LogClassType);
 
         /// <summary>
         ///     Initializes the <see cref="Log" /> class.
@@ -233,8 +235,5 @@ namespace SST.Util
                 WriteCritical("Problem creating log directory!", LogClassType, _logPrefix);
             }
         }
-
-        private static readonly Type LogClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        public static readonly ILog Logger = LogManager.GetLogger(LogClassType);
     }
 }

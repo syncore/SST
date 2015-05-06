@@ -14,8 +14,8 @@ namespace SST.Core.Modules.Irc
         private readonly IrcManager _irc;
         private readonly SynServerTool _sst;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
-        private bool _isAsync = false;
         private int _ircMinArgs = 0;
+        private bool _isAsync = false;
         private bool _requiresMonitoring = true;
 
         /// <summary>
@@ -28,6 +28,14 @@ namespace SST.Core.Modules.Irc
             _sst = sst;
             _irc = irc;
         }
+
+        /// <summary>
+        ///     Gets the minimum arguments for the IRC command.
+        /// </summary>
+        /// <value>
+        ///     The minimum arguments for the IRC command.
+        /// </value>
+        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets a value that determines whether this command is to be executed asynchronously.
@@ -46,14 +54,6 @@ namespace SST.Core.Modules.Irc
         {
             get { return _requiresMonitoring; }
         }
-
-        /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
-        /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
-        public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
         ///     Gets the user level.

@@ -172,7 +172,7 @@ namespace SST.Core.Commands.Modules
         {
             _configHandler.ReadConfiguration();
             Active = _configHandler.Config.AccuracyOptions.isActive;
-            Log.Write(string.Format("Active: {0}", (Active ? "YES": "NO")),
+            Log.Write(string.Format("Active: {0}", (Active ? "YES" : "NO")),
                 _logClassType, _logPrefix);
         }
 

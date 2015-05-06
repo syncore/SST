@@ -37,6 +37,14 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        public bool Active { get; set; }
+
+        /// <summary>
         ///     Gets the IRC manager.
         /// </summary>
         /// <value>
@@ -48,25 +56,6 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether the bot is connected to IRC.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsConnectedToIrc
-        {
-            get { return _irc.IsConnectedToIrc; }
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
-        public bool Active { get; set; }
-
-        /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
         /// </summary>
         /// <value>
@@ -75,6 +64,17 @@ namespace SST.Core.Commands.Modules
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the bot is connected to IRC.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnectedToIrc
+        {
+            get { return _irc.IsConnectedToIrc; }
         }
 
         /// <summary>
@@ -114,6 +114,14 @@ namespace SST.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
+
+        /// <summary>
+        ///     Deactivates this module.
+        /// </summary>
+        public void Deactivate()
+        {
+            _irc.Disconnect();
+        }
 
         /// <summary>
         ///     Displays the argument length error.
@@ -195,6 +203,24 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
+        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// </summary>
+        /// <remarks>
+        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
+        ///     server on load, if applicable.
+        /// </remarks>
+        public void Init()
+        {
+            if (IsConnectedToIrc)
+            {
+                Deactivate();
+            }
+
+            Log.Write("Initializing IRC module.", _logClassType, _logPrefix);
+            _irc.StartIrcThread();
+        }
+
+        /// <summary>
         ///     Loads the configuration.
         /// </summary>
         public void LoadConfig()
@@ -254,32 +280,6 @@ namespace SST.Core.Commands.Modules
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModIrcUi();
-        }
-
-        /// <summary>
-        ///     Deactivates this module.
-        /// </summary>
-        public void Deactivate()
-        {
-            _irc.Disconnect();
-        }
-
-        /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
-        /// </summary>
-        /// <remarks>
-        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
-        ///     server on load, if applicable.
-        /// </remarks>
-        public void Init()
-        {
-            if (IsConnectedToIrc)
-            {
-                Deactivate();
-            }
-
-            Log.Write("Initializing IRC module.", _logClassType, _logPrefix);
-            _irc.StartIrcThread();
         }
 
         /// <summary>

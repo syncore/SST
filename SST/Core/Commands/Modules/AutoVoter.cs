@@ -52,28 +52,20 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the automatic votes.
-        /// </summary>
-        /// <value>
-        ///     The automatic votes.
-        /// </value>
-        public List<AutoVote> AutoVotes { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the valid callvotes.
-        /// </summary>
-        /// <value>
-        ///     The valid callvotes.
-        /// </value>
-        public List<Vote> ValidCallVotes { get; set; }
-
-        /// <summary>
         ///     Gets a value indicating whether this <see cref="IModule" /> is active.
         /// </summary>
         /// <value>
         ///     <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
         public bool Active { get; set; }
+
+        /// <summary>
+        ///     Gets the automatic votes.
+        /// </summary>
+        /// <value>
+        ///     The automatic votes.
+        /// </value>
+        public List<AutoVote> AutoVotes { get; set; }
 
         /// <summary>
         ///     Gets the minimum module arguments for the IRC command.
@@ -126,6 +118,14 @@ namespace SST.Core.Commands.Modules
         ///     The command's status message.
         /// </value>
         public string StatusMessage { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the valid callvotes.
+        /// </summary>
+        /// <value>
+        ///     The valid callvotes.
+        /// </value>
+        public List<Vote> ValidCallVotes { get; set; }
 
         /// <summary>
         ///     Displays the argument length error.

@@ -278,8 +278,8 @@ namespace SST.Core
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
             int.TryParse(GetCsValue("rp", pi), out status);
-            var ready = (ReadyStatus) status;
-            var team = (Team) tm;
+            var ready = (ReadyStatus)status;
+            var team = (Team)tm;
             PlayerInfo p;
             // Player already exists... Update if necessary.
             if (_sst.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
@@ -392,8 +392,8 @@ namespace SST.Core
             var country = GetCsValue("c", pi);
 
             // Create player. Also set misc details like full clan name, country code, subscription status.
-            _sst.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team) tm,
-                id) {Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country};
+            _sst.ServerInfo.CurrentPlayers[playername] = new PlayerInfo(playername, clantag, (Team)tm,
+                id) { Subscriber = subscriber, FullClanName = fullclanname, CountryCode = country };
 
             Log.Write(
                 string.Format(
@@ -402,7 +402,7 @@ namespace SST.Core
                 _logClassType, _logPrefix);
 
             // Keep team information up to date
-            UpdatePlayerTeam(playername, (Team) tm);
+            UpdatePlayerTeam(playername, (Team)tm);
         }
 
         /// <summary>

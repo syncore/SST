@@ -18,9 +18,9 @@ namespace SST.Core.Commands.None
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CMD:PICKUPWHO]";
+        private readonly int _qlMinArgs = 0;
         private readonly SynServerTool _sst;
         private readonly UserLevel _userLevel = UserLevel.None;
-        private readonly int _qlMinArgs = 0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PickupWhoCmd" /> class.

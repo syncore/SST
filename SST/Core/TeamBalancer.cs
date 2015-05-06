@@ -48,7 +48,7 @@ namespace SST.Core
             for (var i = 5; i < numPlayers; i++)
             {
                 // We're only interested in the even iterations
-                if (i%2 == 0) i++;
+                if (i % 2 == 0) i++;
 
                 var lowVsHigh =
                     CompareBothPlayers(
@@ -86,7 +86,7 @@ namespace SST.Core
         private long AddToTeamGetAvg(IList<PlayerInfo> team, long playerEloToAdd, QlGameTypes gametype)
         {
             var teamExistingTotal = team.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            return ((teamExistingTotal + playerEloToAdd)/(team.Count() + 1));
+            return ((teamExistingTotal + playerEloToAdd) / (team.Count() + 1));
         }
 
         /// <summary>
@@ -185,9 +185,9 @@ namespace SST.Core
             QlGameTypes gametype)
         {
             var redTeamElo = teamRed.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            var redTeamAvgElo = (redTeamElo/teamRed.Count);
+            var redTeamAvgElo = (redTeamElo / teamRed.Count);
             var blueTeamElo = teamBlue.Sum(player => player.EloData.GetEloFromGameType(gametype));
-            var blueTeamAvgElo = (blueTeamElo/teamBlue.Count);
+            var blueTeamAvgElo = (blueTeamElo / teamBlue.Count);
             var red = new StringBuilder();
             var blue = new StringBuilder();
 

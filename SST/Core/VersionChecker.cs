@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -104,18 +102,16 @@ namespace SST.Core
         private bool IsNewerVersionAvailable(SstVersion versionInfo)
         {
             if (versionInfo.latestVersion <= 0.0) return false;
-            var ourVersionArr = Helpers.GetVersion().Split('.');
 
+            var ver = Helpers.GetVersion();
             double ourVersion;
-            double.TryParse(string.Format("{0}.{1}",
-                ourVersionArr[0], ourVersionArr[1]), out ourVersion);
+            double.TryParse(ver, out ourVersion);
 
             if (versionInfo.latestVersion > ourVersion)
             {
                 Log.Write(string.Format(
                     "Newer version of SST exists (new version: {0}, released on {1}; user's version: {2})",
-                    versionInfo.latestVersion, versionInfo.releaseDate, string.Format("{0}.{1}",
-                        ourVersionArr[0], ourVersionArr[1])), _logClassType, _logPrefix);
+                    versionInfo.latestVersion, versionInfo.releaseDateShort, ver), _logClassType, _logPrefix);
             }
             else
             {
@@ -132,32 +128,15 @@ namespace SST.Core
         /// <param name="versionInfo">The version information.</param>
         private void ShowUpdateMessage(SstVersion versionInfo)
         {
-            var ourVersion = Helpers.GetVersion().Split('.');
             var result = MessageBox.Show(
                 string.Format(
                     "A newer version of SST is available (new version: {0}, released on {1}. your " +
-                    "version: {2}.{3}) Would you like to visit the SST download page?",
-                    versionInfo.latestVersion, versionInfo.releaseDate, ourVersion[0], ourVersion[1]),
+                    "version: {2}) Would you like to visit the SST download page?",
+                    versionInfo.latestVersion, versionInfo.releaseDate, Helpers.GetVersion()),
                 @"Update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result != DialogResult.Yes) return;
-            try
-            {
-                Process.Start("http://sst.syncore.org/download");
-            }
-            catch (Win32Exception noBrowser)
-            {
-                if (noBrowser.ErrorCode == -2147467259)
-                {
-                    MessageBox.Show(@"Unable to open website. No web browser could be found.");
-                    Log.Write("Error launching web browser", _logClassType, _logPrefix);
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(@"Unable to open website. Error launching web browser.");
-                Log.Write("Error launching web browser", _logClassType, _logPrefix);
-            }
+            Helpers.LaunchUrlInBrowser("http://sst.syncore.org/download");
         }
     }
 }

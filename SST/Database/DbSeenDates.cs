@@ -141,7 +141,7 @@ namespace SST.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    date = (DateTime) reader["seendate"];
+                                    date = (DateTime)reader["seendate"];
                                     Log.Write(string.Format(
                                         "Got last seen date for player {0} from last seen date database; last seen: {1}",
                                         user, date.ToString("G", DateTimeFormatInfo.InvariantInfo)),

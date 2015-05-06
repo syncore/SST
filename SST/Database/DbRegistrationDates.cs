@@ -141,7 +141,7 @@ namespace SST.Database
                                 }
                                 while (reader.Read())
                                 {
-                                    date = (DateTime) reader["acctdate"];
+                                    date = (DateTime)reader["acctdate"];
                                     Log.Write(string.Format(
                                         "Got registration date for player {0} from registration database; registration date: {1}",
                                         user, date.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);

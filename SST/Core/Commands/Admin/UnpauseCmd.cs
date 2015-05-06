@@ -14,11 +14,11 @@ namespace SST.Core.Commands.Admin
     public class UnpauseCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
+        private readonly string _logPrefix = "[CMD:UNPAUSE]";
         private readonly SynServerTool _sst;
         private readonly UserLevel _userLevel = UserLevel.Admin;
         private int _qlMinArgs = 0;
-        private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[CMD:UNPAUSE]";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnpauseCmd" /> class.
@@ -54,7 +54,7 @@ namespace SST.Core.Commands.Admin
         /// <value>
         ///     The minimum arguments for the QL command.
         /// </value>
-        public int QlMinArgs { get {return _qlMinArgs;} }
+        public int QlMinArgs { get { return _qlMinArgs; } }
 
         /// <summary>
         ///     Gets the command's status message.
@@ -124,17 +124,6 @@ namespace SST.Core.Commands.Admin
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -143,6 +132,17 @@ namespace SST.Core.Commands.Admin
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

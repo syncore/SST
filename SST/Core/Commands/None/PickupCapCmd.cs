@@ -15,9 +15,9 @@ namespace SST.Core.Commands.None
     /// </summary>
     public class PickupCapCmd : IBotCommand
     {
-        private readonly SynServerTool _sst;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CMD:PICKUPCAP]";
+        private readonly SynServerTool _sst;
         private readonly UserLevel _userLevel = UserLevel.None;
         private bool _isIrcAccessAllowed = false;
         private int _qlMinArgs = 0;
@@ -38,7 +38,6 @@ namespace SST.Core.Commands.None
         /// The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
-
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -139,17 +138,6 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
-        {
-            if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
         ///     Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -158,6 +146,17 @@ namespace SST.Core.Commands.None
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
+        }
+
+        /// <summary>
+        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(CmdArgs c, string message)
+        {
+            if (!c.FromIrc)
+                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
         }
     }
 }

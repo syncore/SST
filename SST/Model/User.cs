@@ -1,5 +1,5 @@
-﻿using SST.Enums;
-using System;
+﻿using System;
+using SST.Enums;
 
 namespace SST.Model
 {

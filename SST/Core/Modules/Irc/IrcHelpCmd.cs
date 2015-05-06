@@ -12,9 +12,9 @@ namespace SST.Core.Modules.Irc
     /// </summary>
     public class IrcHelpCmd : IIrcCommand
     {
+        private readonly Dictionary<string, IIrcCommand> _cmdList;
         private readonly IrcManager _irc;
         private readonly IrcUserLevel _userLevel = IrcUserLevel.None;
-        private readonly Dictionary<string, IIrcCommand> _cmdList;
         private int _ircMinArgs = 0;
         private bool _requiresMonitoring = false;
 
@@ -31,17 +31,17 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets a value that determines whether this command is to be executed asynchronously.
-        /// </summary>
-        public bool IsAsync { get; private set; }
-
-        /// <summary>
         ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
         ///     The minimum arguments for the IRC command.
         /// </value>
         public int IrcMinArgs { get { return _ircMinArgs; } }
+
+        /// <summary>
+        ///     Gets a value that determines whether this command is to be executed asynchronously.
+        /// </summary>
+        public bool IsAsync { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this command requires

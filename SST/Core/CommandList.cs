@@ -13,7 +13,6 @@ namespace SST.Core
     /// </summary>
     public class CommandList
     {
-        public const string GameCommandPrefix = "!";
         public const string CmdAbort = "abort";
         public const string CmdAcc = "acc";
         public const string CmdAcceptTeamSuggestion = "accept";
@@ -61,6 +60,7 @@ namespace SST.Core
         public const string CmdVersion = "version";
         public const string CmdVoteNo = "no";
         public const string CmdVoteYes = "yes";
+        public const string GameCommandPrefix = "!";
         private readonly SynServerTool _sst;
 
         /// <summary>
