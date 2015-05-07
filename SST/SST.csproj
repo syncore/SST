@@ -290,7 +290,6 @@
     <None Include="Resources\logHeaderPictureBox.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ssb_icon.ico" />
     <Content Include="sst-commands.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

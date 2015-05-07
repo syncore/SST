@@ -23,6 +23,8 @@ namespace SST.Core.Commands.Modules
         private readonly string _logPrefix = "[MOD:ACCOUNTDATE]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerTool _sst;
+        private readonly int _kickTellDelaySecs = 20;
+        private readonly int _kickDelaySecs = 3;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccountDateLimit" /> class.
@@ -301,10 +303,18 @@ namespace SST.Core.Commands.Modules
             if (regDate == default(DateTime)) return;
             if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
-                await _sst.QlCommands.CustCmdKickban(user);
                 await _sst.QlCommands.QlCmdSay(string.Format(
-                    "^3[=> KICK]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2} ^7days",
+                    "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2} ^7days",
                     user, regDate.ToString("d"), MinimumDaysRequired));
+
+                // Inform the user as a courtesy
+                await _sst.QlCommands.QlCmdDelayedTell(
+                    string.Format(
+                        "^3You will be kicked because your account is too new (^1{0}^3) and doesn't meet this server's limit of ^1{1}^3 days.",
+                        regDate.ToString("d"), MinimumDaysRequired), user, _kickTellDelaySecs);
+                await _sst.QlCommands.CustCmdDelayedKickban(user, _kickDelaySecs);
+
+
                 Log.Write(string.Format(
                     "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Kicking player.",
                     user, MinimumDaysRequired,

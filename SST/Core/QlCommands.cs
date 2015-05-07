@@ -88,6 +88,34 @@ namespace SST.Core
         }
 
         /// <summary>
+        ///     Sends the 'kickban' command to QL after the specified delay.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="delayInSecs">The delay in secs.</param>
+        /// <remarks>
+        ///     This is typically used as a courtesy when auto-kickbanning players so that
+        ///     they have some idea why they were kicked.
+        /// </remarks>
+        public async Task CustCmdDelayedKickban(string player, int delayInSecs)
+        {
+            var id = _sst.ServerEventProcessor.GetPlayerId(player.ToLowerInvariant());
+            if (id != -1)
+            {
+                await Task.Delay(delayInSecs * 1000);
+                await SendToQlAsync(string.Format("kickban {0}", id), false);
+                Log.Write(string.Format(
+                    "Attempted to kickban player {0} (id: {1}) using QL's ban system.",
+                    player, id), _logClassType, _logPrefix);
+            }
+            else
+            {
+                Log.Write(string.Format(
+                    "Unable to send kickban for player {0} because player ID could not be retrieved.",
+                    player), _logClassType, _logPrefix);
+            }
+        }
+
+        /// <summary>
         ///     Sends the 'kickban' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>

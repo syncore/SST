@@ -16,6 +16,8 @@ namespace SST.Core
     public class BanManager
     {
         private readonly DbBans _banDb;
+        private readonly int _kickDelaySecs = 3;
+        private readonly int _kickTellDelaySecs = 20;
         private readonly SynServerTool _sst;
 
         /// <summary>
@@ -59,15 +61,22 @@ namespace SST.Core
                         reason = "unspecified";
                         break;
                 }
-                await _sst.QlCommands.CustCmdKickban(player);
                 await
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
-                            "^3[=> TIMEBAN] ^7Player: ^3{0}^7 was banned on ^1{1}^7. Ban expires: ^2{2}^7. For: ^3{3}",
-                            player,
+                            "^3[=> TIMEBAN IN {0} SECS] ^7Player: ^3{1}^7 was banned on ^1{2}^7. Ban expires: ^2{3}^7. For: ^3{4}",
+                            _kickDelaySecs, player,
                             banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                             banInfo.BanExpirationDate.ToString("G",
                                 DateTimeFormatInfo.InvariantInfo), reason));
+
+                // Wait prior to kicking, so recipient's screen doesn't freeze on 'awaiting snapshot'
+                await _sst.QlCommands.QlCmdDelayedTell(string.Format(
+                    "^3You will be banned shortly. You were time-banned on {0} for: {1}, ban expires: {2}",
+                    banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo), reason,
+                    banInfo.BanExpirationDate.ToString("G",
+                        DateTimeFormatInfo.InvariantInfo)), player, _kickTellDelaySecs);
+                await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
             }
             else
             {

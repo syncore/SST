@@ -64,10 +64,10 @@ namespace SST.Util
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Log.Write(string.Format("Problem when making generic REST API query: {0}", ex.Message),
-                        MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
+                    Log.Write("Problem when making generic REST API query" 
+                        ,MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
                     return default(T);
                 }
             }

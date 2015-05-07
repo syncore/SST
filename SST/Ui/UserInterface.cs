@@ -955,9 +955,15 @@ namespace SST.Ui
                     _sst.QlCommands.EnableConsolePrinting();
                 }
             }
-            // ReSharper disable once UnusedVariable
             // Add the owner (via constructor)
             var userDb = new DbUsers();
+            // Also add bot account as owner
+            if (!coreOptions.accountName.Equals(CoreOptions.defaultUnsetOwnerName,
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                userDb.AddUserToDb(coreOptions.accountName, UserLevel.Owner, "AUTO",
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
         }
 
         /// <summary>

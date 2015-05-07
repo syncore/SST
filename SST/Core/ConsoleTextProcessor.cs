@@ -110,7 +110,7 @@ namespace SST.Core
             //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
@@ -198,7 +198,7 @@ namespace SST.Core
                 if (!_sst.IsMonitoringServer) return;
                 // -----------------------------------------------------------------
                 // 'player connected' detected.
-                if (IncomingPlayerDetected(text).Result) continue;
+                if (IncomingPlayerDetected(text)) continue;
                 // player configstring info detected (configstrings command)
                 if (PlayerConfigStringCsDetected(text)) continue;
                 // gametype configstring info detected (configstrings command)
@@ -206,9 +206,9 @@ namespace SST.Core
                 // player configstring info detected (servercommand)
                 if (PlayerConfigStringSrvCmdDetected(text)) continue;
                 // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
-                if (OutgoingPlayerDetected(text).Result) continue;
+                if (OutgoingPlayerDetected(text)) continue;
                 // 'player joined the spectators' detected
-                if (PlayerJoinedSpectatorsDetected(text).Result) continue;
+                if (PlayerJoinedSpectatorsDetected(text)) continue;
                 // player accuracy data detected
                 if (AccuracyInfoDetected(text)) continue;
                 // match aborted
@@ -388,12 +388,14 @@ namespace SST.Core
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a player connection was detected and handled, otherwise <c>false</c>.</returns>
-        private async Task<bool> IncomingPlayerDetected(string text)
+        private bool IncomingPlayerDetected(string text)
         {
             // 'player connected' detected.
             if (!_sst.Parser.ScmdPlayerConnected.IsMatch(text)) return false;
             var m = _sst.Parser.ScmdPlayerConnected.Match(text);
-            await _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
+            // Synchronous
+            // ReSharper disable once UnusedVariable
+            var p = _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
             return true;
         }
 
@@ -452,7 +454,7 @@ namespace SST.Core
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
         /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
-        private async Task<bool> OutgoingPlayerDetected(string text)
+        private bool OutgoingPlayerDetected(string text)
         {
             if (!_sst.Parser.ScmdPlayerDisconnected.IsMatch(text) &&
                 !_sst.Parser.ScmdPlayerKicked.IsMatch(text) &&
@@ -486,7 +488,9 @@ namespace SST.Core
                 m = _sst.Parser.ScmdPlayerInvalidPasswordDisconnect.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
-            await _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
+            // Synchronous
+            // ReSharper disable once UnusedVariable
+            var p = _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
             return true;
         }
 
@@ -533,11 +537,13 @@ namespace SST.Core
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if a player joined specs was detected and handled, otherwise <c>false</c>.</returns>
-        private async Task<bool> PlayerJoinedSpectatorsDetected(string text)
+        private bool PlayerJoinedSpectatorsDetected(string text)
         {
             if (!_sst.Parser.ScmdPlayerJoinedSpectators.IsMatch(text)) return false;
             var m = _sst.Parser.ScmdPlayerJoinedSpectators.Match(text);
-            await _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
+            // Synchronous
+            // ReSharper disable once UnusedVariable
+            var p = _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
             return true;
         }
 

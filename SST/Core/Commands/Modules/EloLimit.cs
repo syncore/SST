@@ -19,6 +19,8 @@ namespace SST.Core.Commands.Modules
         public const string NameModule = "elo";
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _kickDelaySecs = 3;
+        private readonly int _kickTellDelaySecs = 20;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[MOD:ELOLIMIT]";
         private readonly int _qlMinModuleArgs = 3;
@@ -499,16 +501,26 @@ namespace SST.Core.Commands.Modules
                         player,
                         GameType.ToString().ToUpper(), MinimumRequiredElo), _logClassType, _logPrefix);
 
-                await _sst.QlCommands.CustCmdKickban(player);
                 await _sst.QlCommands.QlCmdSay(
                     string.Format(
-                        "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
+                        "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
                         player, GameType.ToString().ToUpper(), playerElo,
                         MinimumRequiredElo,
                         hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""));
+
+                // Wait before notifying and kicking, so user's screen doesn't freeze on
+                // "awaiting snapshot", especially when connecting
+                await
+                    _sst.QlCommands.QlCmdDelayedTell(
+                        string.Format(
+                            "^3You will be kicked because your {0} QLRanks Elo (^1{1}^3) doesn't meet this server's requirements. Min: ^1{2} {3}",
+                            GameType.ToString().ToUpper(), playerElo, MinimumRequiredElo,
+                        hasMaxEloSpecified ? string.Format("^3Max:^1 {0}", MaximumRequiredElo) : ""), player, _kickTellDelaySecs);
+
+                await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
                 return;
-                // Handle range
             }
+            // Handle range
             if (!hasMaxEloSpecified) return;
             if (playerElo <= MaximumRequiredElo) return;
 
@@ -516,12 +528,19 @@ namespace SST.Core.Commands.Modules
                 string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Kicking player.", player,
                     GameType.ToString().ToUpper(), MaximumRequiredElo), _logClassType, _logPrefix);
 
-            await _sst.QlCommands.CustCmdKickban(player);
             await _sst.QlCommands.QlCmdSay(
                 string.Format(
-                    "^3[=> KICK]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} ^7Max:^1 {4}",
+                    "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} ^7Max:^1 {4}",
                     player, GameType.ToString().ToUpper(), playerElo,
                     MinimumRequiredElo, MaximumRequiredElo));
+
+            await
+                _sst.QlCommands.QlCmdDelayedTell(
+                    string.Format(
+                        "^3You will be kicked because your {0} QLRanks Elo (^1{1}^3) doesn't meet this server's requirements. Min: ^1{2}^3 Max: ^1{3}",
+                        GameType.ToString().ToUpper(), playerElo, MinimumRequiredElo, MaximumRequiredElo), player, _kickTellDelaySecs);
+
+            await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
         }
     }
 }

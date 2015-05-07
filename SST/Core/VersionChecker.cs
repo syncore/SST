@@ -87,7 +87,7 @@ namespace SST.Core
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(string.Format("Problem when querying SST version info from server: {0}",
+                    Log.WriteCritical(string.Format("Problem when querying SST version info from server: {0}",
                         ex.Message), _logClassType, _logPrefix);
                     return null;
                 }
