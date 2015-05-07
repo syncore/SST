@@ -187,8 +187,7 @@ namespace SST.Core
         public void SetEndOfGameLimitReached()
         {
             // Set the game to WARM_UP after an 'limit reached' event is detected.
-            var gameState = QlGameStates.Warmup;
-            _sst.ServerInfo.CurrentServerGameState = gameState;
+            _sst.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
             // Large batch of text incoming
             _sst.QlCommands.ClearQlWinConsole();
 
@@ -210,8 +209,7 @@ namespace SST.Core
         public void SetIntermissionStart()
         {
             // Set the game to WARM_UP after an intermission (typically map end vote) is detected.
-            var gameState = QlGameStates.Warmup;
-            _sst.ServerInfo.CurrentServerGameState = gameState;
+            _sst.ServerInfo.CurrentServerGameState = QlGameStates.Warmup;
             // Large batch of text incoming
             _sst.QlCommands.ClearQlWinConsole();
 

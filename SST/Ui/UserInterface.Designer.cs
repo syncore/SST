@@ -289,6 +289,7 @@
             this.aboutTab = new System.Windows.Forms.TabPage();
             this.abtContainerGroupBox = new System.Windows.Forms.GroupBox();
             this.aboutGroupBox = new SST.Ui.CustGroupBox();
+            this.abtCommandList = new System.Windows.Forms.Button();
             this.abtCheckUpdateButton = new System.Windows.Forms.Button();
             this.abtWebsiteButton = new System.Windows.Forms.Button();
             this.xaeroPictureBox = new System.Windows.Forms.PictureBox();
@@ -326,7 +327,6 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.abtCommandList = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.sstLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -3798,6 +3798,22 @@
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "Application Info";
             // 
+            // abtCommandList
+            // 
+            this.abtCommandList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
+            this.abtCommandList.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.abtCommandList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abtCommandList.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abtCommandList.ForeColor = System.Drawing.Color.White;
+            this.abtCommandList.Location = new System.Drawing.Point(206, 308);
+            this.abtCommandList.Name = "abtCommandList";
+            this.abtCommandList.Size = new System.Drawing.Size(132, 28);
+            this.abtCommandList.TabIndex = 12;
+            this.abtCommandList.Text = "SST Commands";
+            this.coreToolTip.SetToolTip(this.abtCommandList, "Click this button to view a file containing all of SST\'s commands.");
+            this.abtCommandList.UseVisualStyleBackColor = false;
+            this.abtCommandList.Click += new System.EventHandler(this.abtCommandList_Click);
+            // 
             // abtCheckUpdateButton
             // 
             this.abtCheckUpdateButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
@@ -4148,22 +4164,6 @@
             this.statusPanel.Size = new System.Drawing.Size(738, 44);
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
-            // 
-            // abtCommandList
-            // 
-            this.abtCommandList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(91)))), ((int)(((byte)(111)))));
-            this.abtCommandList.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.abtCommandList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.abtCommandList.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.abtCommandList.ForeColor = System.Drawing.Color.White;
-            this.abtCommandList.Location = new System.Drawing.Point(206, 308);
-            this.abtCommandList.Name = "abtCommandList";
-            this.abtCommandList.Size = new System.Drawing.Size(132, 28);
-            this.abtCommandList.TabIndex = 12;
-            this.abtCommandList.Text = "SST Commands";
-            this.coreToolTip.SetToolTip(this.abtCommandList, "Click this button to view a file containing all of SST\'s commands.");
-            this.abtCommandList.UseVisualStyleBackColor = false;
-            this.abtCommandList.Click += new System.EventHandler(this.abtCommandList_Click);
             // 
             // UserInterface
             // 

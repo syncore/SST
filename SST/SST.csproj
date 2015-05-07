@@ -3,8 +3,8 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
-    </PropertyGroup>
-    <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ssb_icon.ico</ApplicationIcon>
+    <ApplicationIcon>sst_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
@@ -294,6 +294,7 @@
     <Content Include="sst-commands.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="sst_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" />
@@ -310,7 +311,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <!--Actions to perform prior to building all builds-->
   <Target Name="BeforeBuild">
     <PropertyGroup>
@@ -321,60 +321,47 @@
     <RemoveDir Directories="$(MergedExePath)" />
     <RemoveDir Directories="$(DistributionPackagePath)" />
   </Target>
-
   <!--Actions to perform only for release builds-->
   <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-
     <PropertyGroup>
       <MergedExePath>bin\Release\merged</MergedExePath>
     </PropertyGroup>
-
     <!--Get the version number of the assembly (only interested in the major and minor numbers, not build nor revision numbers)-->
     <GetAssemblyIdentity AssemblyFiles="$(TargetDir)$(TargetFileName)">
-        <Output TaskParameter="Assemblies" ItemName="AssemblyVersion"/>
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <PropertyGroup>
-        <Pattern>(\d+)\.(\d+)</Pattern>
-        <In>%(AssemblyVersion.Version)</In>
-        <AppVersion>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</AppVersion>
+      <Pattern>(\d+)\.(\d+)</Pattern>
+      <In>%(AssemblyVersion.Version)</In>
+      <AppVersion>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</AppVersion>
     </PropertyGroup>
-
     <!--Create the merged exe directory and required SQLite interop directories-->
     <Message Importance="high" Text="Creating merged executable directory at $(SolutionDir)$(AssemblyName)\$(MergedExePath)" />
     <MakeDir Directories="$(MergedExePath);$(MergedExePath)\x86;$(MergedExePath)\x64" />
-
     <PropertyGroup>
       <ReferenceAssemblies>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5</ReferenceAssemblies>
     </PropertyGroup>
-
     <!--Run ILMerge-->
     <Message Importance="high" Text="Running ILMerge with target platform referenced assemblies from $(ReferenceAssemblies)" />
     <Exec Command="&quot;$(SolutionDir)packages\ilmerge.2.14.1208\tools\ILMerge.exe&quot; /out:&quot;$(SolutionDir)$(AssemblyName)\$(MergedExePath)\$(TargetFileName)&quot; &quot;$(TargetDir)$(TargetFileName)&quot; &quot;$(TargetDir)*.dll&quot; /target:winexe /targetplatform:v4,&quot;$(ReferenceAssemblies)&quot; /ndebug /wildcards" />
-
     <ItemGroup>
       <SSTCommandFile Include="$(TargetDir)sst-commands.txt" />
       <SQLitex86InteropFile Include="$(SolutionDir)packages\System.Data.SQLite.Core.1.0.94.0\build\net45\x86\SQLite.Interop.dll" />
       <SQLitex64InteropFile Include="$(SolutionDir)packages\System.Data.SQLite.Core.1.0.94.0\build\net45\x64\SQLite.Interop.dll" />
     </ItemGroup>
-
     <!--Copy the remaining files (SQLite interop, sst-commands) to merged for packaging-->
     <Message Importance="high" Text="Copying remaining SST files to merged executable directory" />
     <Copy SourceFiles="@(SSTCommandFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)" />
     <Copy SourceFiles="@(SQLitex86InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\x86" />
     <Copy SourceFiles="@(SQLitex64InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\x64" />
-
-
     <!--Zip the merged exe directory-->
     <Message Importance="high" Text="Packaging version $(AppVersion) release as zip file: $(DistributionPackagePath)\sst-v$(AppVersion).zip" />
     <ItemGroup>
-        <FilesToZip Include="$(MergedExePath)\**\*.*"/>
+      <FilesToZip Include="$(MergedExePath)\**\*.*" />
     </ItemGroup>
     <Zip Files="@(FilesToZip)" WorkingDirectory="$(MergedExePath)" ZipFileName="$(DistributionPackagePath)\sst-v$(AppVersion).zip" ZipLevel="9" />
-
     <!--Remove merged exe directory-->
     <Message Importance="high" Text="Removing merged executable directory" />
     <RemoveDir Directories="$(SolutionDir)$(AssemblyName)\$(MergedExePath)" />
   </Target>
-
-
 </Project>

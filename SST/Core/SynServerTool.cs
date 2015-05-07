@@ -571,7 +571,7 @@ namespace SST.Core
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
                     if ((begin >= 29300) && (end >= 29300))
                     {
-                        Log.Write("Console buffer is almost full. Automatically clearing.",
+                        Log.Write("Clearing nearly full conbuf.",
                             _logClassType, _logPrefix);
 
                         // Auto-clear

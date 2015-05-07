@@ -98,8 +98,11 @@ namespace SST.Core
         /// <param name="teamBlue">The blue team.</param>
         /// <param name="gametype">The gametype.</param>
         /// <returns>
-        ///     See comment for explanation.
+        ///     0 or 1 to indicate which of the players has a higher Elo value.
         /// </returns>
+        /// <remarks>
+        ///     See comment for explanation.
+        /// </remarks>
         private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo,
             IList<PlayerInfo> teamRed,
             IList<PlayerInfo> teamBlue, QlGameTypes gametype)
