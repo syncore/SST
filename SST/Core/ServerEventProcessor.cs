@@ -255,7 +255,7 @@ namespace SST.Core
             }
             // Set
             _sst.ServerInfo.CurrentServerGameState = gameState;
-            Log.Write(string.Format("Setting server gamestate to {0} ", gameState), _logClassType, _logPrefix);
+            Log.Write(string.Format("Gamestate is {0} ", gameState), _logClassType, _logPrefix);
             // Large text: clear again
             _sst.QlCommands.ClearQlWinConsole();
             // Pickup module

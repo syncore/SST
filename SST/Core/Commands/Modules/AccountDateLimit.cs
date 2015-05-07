@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using SST.Config;
+using SST.Database;
+using SST.Enums;
 using SST.Interfaces;
 using SST.Model;
 using SST.Util;
@@ -18,13 +20,14 @@ namespace SST.Core.Commands.Modules
     {
         public const string NameModule = "accountdate";
         private readonly ConfigHandler _configHandler;
+        private readonly DbUsers _userDb;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[MOD:ACCOUNTDATE]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerTool _sst;
         private readonly int _kickTellDelaySecs = 20;
-        private readonly int _kickDelaySecs = 3;
+        private readonly int _kickDelaySecs = 5;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccountDateLimit" /> class.
@@ -33,6 +36,7 @@ namespace SST.Core.Commands.Modules
         public AccountDateLimit(SynServerTool sst)
         {
             _sst = sst;
+            _userDb = new DbUsers();
             _configHandler = new ConfigHandler();
             LoadConfig();
         }
@@ -301,10 +305,12 @@ namespace SST.Core.Commands.Modules
         private async Task VerifyUserDate(string user, DateTime regDate)
         {
             if (regDate == default(DateTime)) return;
+            if (_userDb.GetUserLevel(user) >= UserLevel.SuperUser) return;
+            
             if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
                 await _sst.QlCommands.QlCmdSay(string.Format(
-                    "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of^2 {2} ^7days",
+                    "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of ^2{2} ^7days",
                     user, regDate.ToString("d"), MinimumDaysRequired));
 
                 // Inform the user as a courtesy

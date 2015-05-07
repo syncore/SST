@@ -14,6 +14,7 @@ namespace SST.Core
     {
         private const int DefaultCommandDelayMsec = 500;
         private const int MaxChatlineLength = 134;
+        private const int MaxTellLineLength = 106;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private readonly SynServerTool _sst;
@@ -463,14 +464,12 @@ namespace SST.Core
             var playerId = _sst.ServerInfo.CurrentPlayers[player].Id;
 
             // Text to send might be too long, so send over multiple lines.
-            // Line length of between 98 & 115 chars is probably optimal for
-            // lower resolutions based on guestimate. However, QL actually supports
-            // sending up to 135 characters at a time.
-            if ((text.Length) > MaxChatlineLength)
+            // With 'tell' it is 107 characters, which is shorter than for chat.
+            if ((text.Length) > MaxTellLineLength)
             {
                 // .5 ensures we always round up to next int, no matter size
                 // ReSharper disable once PossibleLossOfFraction
-                var l = ((text.Length / MaxChatlineLength) + .5);
+                var l = ((text.Length / MaxTellLineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
                 {
@@ -504,14 +503,14 @@ namespace SST.Core
                         else
                         {
                             multiLine[i] = string.Format("{0}{1}", lastColor,
-                                text.Substring(startPos, MaxChatlineLength));
+                                text.Substring(startPos, MaxTellLineLength));
                         }
 
                         // Double the usual delay when sending multiple lines.
                         await Task.Delay(DefaultCommandDelayMsec * 2);
                         Action<int, string> tell = DoTell;
                         tell(playerId, multiLine[i]);
-                        startPos += MaxChatlineLength;
+                        startPos += MaxTellLineLength;
                     }
                 }
                 catch (Exception ex)

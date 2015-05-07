@@ -397,7 +397,7 @@ namespace SST.Core
 
             Log.Write(
                 string.Format(
-                    "Detected player from cstr: {0} - Country: {1} - Tag: {2} - Clan Name: {3} - Pro Acct: {4}",
+                    "Detected player: {0} - Country: {1} - Tag: {2} - Clan Name: {3} - Pro Acct: {4}",
                     playername, country, clantag, fullclanname, (subscriber.Equals("1") ? "yes" : "no")),
                 _logClassType, _logPrefix);
 

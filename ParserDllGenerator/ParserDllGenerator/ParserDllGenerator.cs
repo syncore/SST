@@ -273,8 +273,8 @@ namespace ParserDllGenerator
             .......
             */
             // offline test: @"\S\w.adXmitDelay\s+\d+";
-            expr = new RegexCompilationInfo(@"sv_gtid (?<serverid>.+)",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "svInfoServerPublicId",
+            expr = new RegexCompilationInfo(@"^sv_gtid (?<serverid>.+)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant, "svInfoServerPublicId",
                 "SST.External.Parser",
                 true);
             compilationList.Add(expr);
