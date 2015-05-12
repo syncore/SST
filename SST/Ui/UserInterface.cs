@@ -54,8 +54,8 @@ namespace SST.Ui
             InitializeComponent();
 
             _cfgHandler = new ConfigHandler();
-            _cfgHandler.ReadConfiguration();
-            Log.LogToSstConsole = _cfgHandler.Config.CoreOptions.appendToActivityLog;
+            var cfg = _cfgHandler.ReadConfiguration();
+            Log.LogToSstConsole = cfg.CoreOptions.appendToActivityLog;
             Log.LogUiConsole = logConsoleTextBox;
             Log.ShowDeferredMessages();
 
@@ -100,11 +100,10 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModAccountDateUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var acctDateOptions = _cfgHandler.Config.AccountDateOptions;
-            modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = acctDateOptions.isActive; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.AccountDateOptions.isActive; });
             modAccDateAccAgeTextBox.InvokeIfRequired(
-                c => { c.Text = acctDateOptions.minimumDaysRequired.ToString(); });
+                c => { c.Text = cfg.AccountDateOptions.minimumDaysRequired.ToString(); });
             UpdateActiveModulesStatusText();
         }
 
@@ -113,9 +112,9 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModAccuracyUi()
         {
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
             modAccuracyEnableCheckBox.InvokeIfRequired(
-                c => { c.Checked = _cfgHandler.Config.AccuracyOptions.isActive; });
+                c => { c.Checked = cfg.AccuracyOptions.isActive; });
             UpdateActiveModulesStatusText();
         }
 
@@ -124,9 +123,9 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModAutoVoterUi()
         {
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
             modAutoVoterEnableCheckBox.InvokeIfRequired(
-                c => { c.Checked = _cfgHandler.Config.AutoVoterOptions.isActive; });
+                c => { c.Checked = cfg.AutoVoterOptions.isActive; });
 
             // Radio buttons
             modAutoVoterPassRadioButton.InvokeIfRequired(c => { c.Checked = true; });
@@ -148,17 +147,16 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModEarlyQuitUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-            modEarlyQuitEnableCheckBox.InvokeIfRequired(c => { c.Checked = earlyQuitOptions.isActive; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modEarlyQuitEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.EarlyQuitOptions.isActive; });
             modEarlyQuitMaxQuitsTextBox.InvokeIfRequired(
-                c => { c.Text = earlyQuitOptions.maxQuitsAllowed.ToString(); });
+                c => { c.Text = cfg.EarlyQuitOptions.maxQuitsAllowed.ToString(); });
             modEarlyQuitTimeTextBox.InvokeIfRequired(
-                c => { c.Text = earlyQuitOptions.banTime.ToString(CultureInfo.InvariantCulture); });
+                c => { c.Text = cfg.EarlyQuitOptions.banTime.ToString(CultureInfo.InvariantCulture); });
             modEarlyQuitTimeScaleComboxBox.InvokeIfRequired(c =>
             {
                 c.DataSource = Helpers.ValidTimeScales;
-                c.SelectedIndex = earlyQuitOptions.banTimeScaleIndex;
+                c.SelectedIndex = cfg.EarlyQuitOptions.banTimeScaleIndex;
             });
 
             // Current early quitters listbox
@@ -171,16 +169,15 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModEloLimiterUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-            modEloLimiterEnableCheckBox.InvokeIfRequired(c => { c.Checked = eloLimitOptions.isActive; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modEloLimiterEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.EloLimitOptions.isActive; });
             modEloLimiterMinEloTextBox.InvokeIfRequired(
-                c => { c.Text = eloLimitOptions.minimumRequiredElo.ToString(); });
+                c => { c.Text = cfg.EloLimitOptions.minimumRequiredElo.ToString(); });
             modEloLimiterMaxEloTextBox.InvokeIfRequired(c =>
             {
-                c.Text = ((eloLimitOptions.maximumRequiredElo == 0)
+                c.Text = ((cfg.EloLimitOptions.maximumRequiredElo == 0)
                     ? string.Empty
-                    : eloLimitOptions.maximumRequiredElo.ToString());
+                    : cfg.EloLimitOptions.maximumRequiredElo.ToString());
             });
             UpdateActiveModulesStatusText();
         }
@@ -190,23 +187,25 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModIrcUi()
         {
-            var ircOptions = _cfgHandler.Config.IrcOptions;
-            modIRCEnableCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.isActive; });
-            modIRCAdminNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircAdminNickname; });
-            modIRCBotNickNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickName; });
-            modIRCBotUserNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircUserName; });
-            modIRCQNetUserNameTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickServiceUsername; });
-            modIRCQNetPassTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircNickServicePassword; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modIRCEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.IrcOptions.isActive; });
+            modIRCAdminNameTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircAdminNickname; });
+            modIRCBotNickNameTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircNickName; });
+            modIRCBotUserNameTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircUserName; });
+            modIRCQNetUserNameTextBox.InvokeIfRequired(
+                c => { c.Text = cfg.IrcOptions.ircNickServiceUsername; });
+            modIRCQNetPassTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircNickServicePassword; });
             modIRCQNetAutoAuthCheckBox.InvokeIfRequired(
-                c => { c.Checked = ircOptions.autoAuthWithNickService; });
+                c => { c.Checked = cfg.IrcOptions.autoAuthWithNickService; });
             modIRCQNetHideHostCheckBox.InvokeIfRequired(
-                c => { c.Checked = ircOptions.hideHostnameOnQuakeNet; });
-            modIRCServerAddressTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerAddress; });
-            modIRCServerPortTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerPort.ToString(); });
-            modIRCServerPassTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircServerPassword; });
-            modIRCChannelTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannel; });
-            modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = ircOptions.ircChannelKey; });
-            modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = ircOptions.autoConnectOnStart; });
+                c => { c.Checked = cfg.IrcOptions.hideHostnameOnQuakeNet; });
+            modIRCServerAddressTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircServerAddress; });
+            modIRCServerPortTextBox.InvokeIfRequired(
+                c => { c.Text = cfg.IrcOptions.ircServerPort.ToString(); });
+            modIRCServerPassTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircServerPassword; });
+            modIRCChannelTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircChannel; });
+            modIRCChannelKeyTextBox.InvokeIfRequired(c => { c.Text = cfg.IrcOptions.ircChannelKey; });
+            modIRCAutoConnectCheckBox.InvokeIfRequired(c => { c.Checked = cfg.IrcOptions.autoConnectOnStart; });
             UpdateActiveModulesStatusText();
         }
 
@@ -215,11 +214,11 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModMotdUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var motdOptions = _cfgHandler.Config.MotdOptions;
-            modMOTDEnableCheckBox.InvokeIfRequired(c => { c.Checked = motdOptions.isActive; });
-            modMOTDRepeatTimeTextBox.InvokeIfRequired(c => { c.Text = motdOptions.repeatInterval.ToString(); });
-            modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = motdOptions.message; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modMOTDEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.MotdOptions.isActive; });
+            modMOTDRepeatTimeTextBox.InvokeIfRequired(
+                c => { c.Text = cfg.MotdOptions.repeatInterval.ToString(); });
+            modMOTDRepeatMsgTextBox.InvokeIfRequired(c => { c.Text = cfg.MotdOptions.message; });
             UpdateActiveModulesStatusText();
         }
 
@@ -228,23 +227,22 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModPickupUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var pickupOptions = _cfgHandler.Config.PickupOptions;
-            modPickupEnableCheckBox.InvokeIfRequired(c => { c.Checked = pickupOptions.isActive; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modPickupEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.PickupOptions.isActive; });
             modPickupMaxSubsTextBox.InvokeIfRequired(
-                c => { c.Text = pickupOptions.maxSubsPerPlayer.ToString(); });
+                c => { c.Text = cfg.PickupOptions.maxSubsPerPlayer.ToString(); });
             modPickupMaxNoShowsTextBox.InvokeIfRequired(
-                c => { c.Text = pickupOptions.maxNoShowsPerPlayer.ToString(); });
+                c => { c.Text = cfg.PickupOptions.maxNoShowsPerPlayer.ToString(); });
             modPickupPlayersPerTeamTextBox.InvokeIfRequired(
-                c => { c.Text = pickupOptions.teamSize.ToString(); });
+                c => { c.Text = cfg.PickupOptions.teamSize.ToString(); });
             modPickupNoShowsTimeBanTextBox.InvokeIfRequired(c =>
             {
-                c.Text = pickupOptions.excessiveNoShowBanTime.
+                c.Text = cfg.PickupOptions.excessiveNoShowBanTime.
                     ToString(CultureInfo.InvariantCulture);
             });
             modPickupSubsTimeBanTextBox.InvokeIfRequired(c =>
             {
-                c.Text = pickupOptions.excessiveSubUseBanTime.
+                c.Text = cfg.PickupOptions.excessiveSubUseBanTime.
                     ToString(CultureInfo.InvariantCulture);
             });
             modPickupSubsTimeBanScaleComboBox.InvokeIfRequired(
@@ -252,11 +250,11 @@ namespace SST.Ui
             modPickupNoShowsTimeBanScaleComboBox.InvokeIfRequired(
                 c => { c.DataSource = Helpers.ValidTimeScales; });
             modPickupSubsTimeBanScaleComboBox.InvokeIfRequired(
-                c => { c.SelectedIndex = pickupOptions.excessiveSubUseBanTimeScaleIndex; });
+                c => { c.SelectedIndex = cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex; });
             modPickupNoShowsTimeBanScaleComboBox.InvokeIfRequired(c =>
             {
                 c.SelectedIndex =
-                    pickupOptions.excessiveNoShowBanTimeScaleIndex;
+                    cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex;
             });
             UpdateActiveModulesStatusText();
         }
@@ -266,14 +264,13 @@ namespace SST.Ui
         /// </summary>
         public void PopulateModServerListUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var serverListOptions = _cfgHandler.Config.ServersOptions;
-            modServerListEnableCheckBox.InvokeIfRequired(c => { c.Checked = serverListOptions.isActive; });
+            var cfg = _cfgHandler.ReadConfiguration();
+            modServerListEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.ServersOptions.isActive; });
             modServerListMaxServersTextBox.InvokeIfRequired(
-                c => { c.Text = serverListOptions.maxServers.ToString(); });
+                c => { c.Text = cfg.ServersOptions.maxServers.ToString(); });
             modServerListTimeBetweenTextBox.InvokeIfRequired(c =>
             {
-                c.Text = serverListOptions.timeBetweenQueries.ToString(
+                c.Text = cfg.ServersOptions.timeBetweenQueries.ToString(
                     CultureInfo.InvariantCulture);
             });
             UpdateActiveModulesStatusText();
@@ -285,7 +282,7 @@ namespace SST.Ui
         public void PopulateUserManagementUi()
         {
             // Specfically leave out user levels of None and Owner type.
-            UserLevel[] levels = { UserLevel.User, UserLevel.SuperUser, UserLevel.Admin };
+            UserLevel[] levels = {UserLevel.User, UserLevel.SuperUser, UserLevel.Admin};
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.DataSource = levels; });
             usrMUserAccessComboBox.InvokeIfRequired(c => { c.SelectedIndex = 0; });
             // Current SST users listbox
@@ -424,10 +421,10 @@ namespace SST.Ui
         }
 
         /// <summary>
-        /// Handles the Click event of the abtCommandList control.
+        ///     Handles the Click event of the abtCommandList control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void abtCommandList_Click(object sender, EventArgs e)
         {
             try
@@ -441,10 +438,10 @@ namespace SST.Ui
         }
 
         /// <summary>
-        /// Handles the Click event of the abtWebsiteButton control.
+        ///     Handles the Click event of the abtWebsiteButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void abtWebsiteButton_Click(object sender, EventArgs e)
         {
             Helpers.LaunchUrlInBrowser("http://sst.syncore.org");
@@ -455,8 +452,8 @@ namespace SST.Ui
         /// </summary>
         private void AutoCheckForUpdates()
         {
-            _cfgHandler.ReadConfiguration();
-            if (!_cfgHandler.Config.CoreOptions.checkForUpdatesOnStart) return;
+            var cfg = _cfgHandler.ReadConfiguration();
+            if (!cfg.CoreOptions.checkForUpdatesOnStart) return;
             var checker = new VersionChecker();
             // ReSharper disable once UnusedVariable
             // Synchronous
@@ -501,14 +498,13 @@ namespace SST.Ui
             // See if the ban exists
             var banDb = new DbBans();
             var user = banMUserQlNameTextBox.Text;
-            _cfgHandler.ReadConfiguration();
-            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var cfg = _cfgHandler.ReadConfiguration();
 
             if (banDb.UserAlreadyBanned(user))
             {
                 Log.Write(string.Format(
                     "Owner {0} attempted to add ban for user {1} but {1} is already banned.",
-                    owner, user), _logClassType, _logPrefix);
+                    cfg.CoreOptions.owner, user), _logClassType, _logPrefix);
 
                 ShowErrorMessage(
                     string.Format(
@@ -518,9 +514,9 @@ namespace SST.Ui
                 return;
             }
 
-            var scale = (string)banMBanDurationScaleComboBox.SelectedItem;
+            var scale = (string) banMBanDurationScaleComboBox.SelectedItem;
             var expiration = ExpirationDateGenerator.GenerateExpirationDate(duration, scale);
-            banDb.AddUserToDb(user, owner, DateTime.Now, expiration, BanType.AddedByAdmin);
+            banDb.AddUserToDb(user, cfg.CoreOptions.owner, DateTime.Now, expiration, BanType.AddedByAdmin);
 
             // Kickban using QL internal system immediately
             if (_sst.IsMonitoringServer)
@@ -538,7 +534,8 @@ namespace SST.Ui
 
             Log.Write(string.Format(
                 "Owner {0} added ban of length {1} {2} for user: {3} expires on {4} to ban database.",
-                owner, duration, scale, user, expiration.ToString("G", DateTimeFormatInfo.InvariantInfo)),
+                cfg.CoreOptions.owner, duration, scale, user,
+                expiration.ToString("G", DateTimeFormatInfo.InvariantInfo)),
                 _logClassType, _logPrefix);
         }
 
@@ -553,14 +550,14 @@ namespace SST.Ui
 
             var banDb = new DbBans();
             var allBans = banDb.GetAllBans();
-            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var cfg = _cfgHandler.ReadConfiguration();
 
             if (allBans.Count == 0)
             {
                 Log.Write(
                     string.Format(
                         "Owner {0} attempted to clear all bans from ban database, but no bans exist.",
-                        owner), _logClassType, _logPrefix);
+                        cfg.CoreOptions.owner), _logClassType, _logPrefix);
 
                 ShowErrorMessage("There are no bans to remove.",
                     "No expired bans");
@@ -585,7 +582,7 @@ namespace SST.Ui
             RefreshCurrentBansDataSource();
 
             Log.Write(string.Format("Owner {0} cleared all bans from the ban database.",
-                owner), _logClassType, _logPrefix);
+                cfg.CoreOptions.owner), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -598,11 +595,9 @@ namespace SST.Ui
             if (banMCurrentBanBindingSource.Count == 0 ||
                 banMCurBansListBox.SelectedIndex == -1) return;
 
-            _cfgHandler.ReadConfiguration();
-
+            var cfg = _cfgHandler.ReadConfiguration();
             var banDb = new DbBans();
-            var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (BanInfo)banMCurBansListBox.SelectedItem;
+            var selectedUser = (BanInfo) banMCurBansListBox.SelectedItem;
 
             banMCurrentBanBindingSource.Remove(selectedUser);
             banDb.DeleteUserFromDb(selectedUser.PlayerName);
@@ -622,7 +617,7 @@ namespace SST.Ui
                 string.Format(
                     "Owner {0} removed ban for user: {1} from ban database. Ban originally added: {2}" +
                     " was set to expire on {3}",
-                    owner, selectedUser.PlayerName,
+                    cfg.CoreOptions.owner, selectedUser.PlayerName,
                     selectedUser.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                     selectedUser.BanExpirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)),
                 _logClassType, _logPrefix);
@@ -635,9 +630,7 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void banMDelExpiredBansButton_Click(object sender, EventArgs e)
         {
-            _cfgHandler.ReadConfiguration();
-
-            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var cfg = _cfgHandler.ReadConfiguration();
             var banDb = new DbBans();
             var expiredBans = banDb.GetAllBans().Where
                 (b => (b.BanExpirationDate != default(DateTime) &&
@@ -647,7 +640,7 @@ namespace SST.Ui
             {
                 Log.Write(
                     string.Format("Owner {0} attempted to remove all expired bans from ban" +
-                                  " database, but no expired bans exist.", owner),
+                                  " database, but no expired bans exist.", cfg.CoreOptions.owner),
                     _logClassType, _logPrefix);
                 ShowErrorMessage("There are no expired bans to remove.",
                     "No expired bans");
@@ -668,7 +661,7 @@ namespace SST.Ui
 
             Log.Write(string.Format(
                 "Owner {0} cleared all {1} expired bans from the ban database.",
-                owner, expiredBans.Count), _logClassType, _logPrefix);
+                cfg.CoreOptions.owner, expiredBans.Count), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -688,6 +681,8 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void closeButton_Click(object sender, EventArgs e)
         {
+            var cfg = _cfgHandler.ReadConfiguration();
+            _cfgHandler.WriteConfiguration(cfg);
             Close();
         }
 
@@ -805,26 +800,26 @@ namespace SST.Ui
         {
             _cfgHandler.VerifyConfigLocation();
             _cfgHandler.RestoreDefaultConfiguration();
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
 
-            await HandleAccountDateModActivation(_cfgHandler.Config.AccountDateOptions.isActive,
-                _cfgHandler.Config.AccountDateOptions.minimumDaysRequired);
-            await HandleEloLimitModActivation(_cfgHandler.Config.EloLimitOptions.isActive);
-            await HandlePickupModActivation(_cfgHandler.Config.PickupOptions.isActive);
+            await HandleAccountDateModActivation(cfg.AccountDateOptions.isActive,
+                cfg.AccountDateOptions.minimumDaysRequired);
+            await HandleEloLimitModActivation(cfg.EloLimitOptions.isActive);
+            await HandlePickupModActivation(cfg.PickupOptions.isActive);
 
-            HandleCoreSettingsUpdate(_cfgHandler.Config.CoreOptions);
+            HandleCoreSettingsUpdate(cfg.CoreOptions);
 
-            HandleMotdModActivation(_cfgHandler.Config.MotdOptions.isActive);
-            HandleIrcModActivation(_cfgHandler.Config.IrcOptions.isActive);
+            HandleMotdModActivation(cfg.MotdOptions.isActive);
+            HandleIrcModActivation(cfg.IrcOptions.isActive);
 
             HandleStandardModuleActivation(_sst.Mod.Accuracy,
-                _cfgHandler.Config.AccuracyOptions.isActive);
+                cfg.AccuracyOptions.isActive);
             HandleStandardModuleActivation(_sst.Mod.AutoVoter,
-                _cfgHandler.Config.AutoVoterOptions.isActive);
+                cfg.AutoVoterOptions.isActive);
             HandleStandardModuleActivation(_sst.Mod.EarlyQuit,
-                _cfgHandler.Config.EarlyQuitOptions.isActive);
+                cfg.EarlyQuitOptions.isActive);
             HandleStandardModuleActivation(_sst.Mod.Servers,
-                _cfgHandler.Config.ServersOptions.isActive);
+                cfg.ServersOptions.isActive);
 
             PopulateAllUiTabs();
 
@@ -842,12 +837,11 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void coreResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var coreOptions = _cfgHandler.Config.CoreOptions;
-            coreOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.CoreOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
             PopulateCoreOptionsUi();
-            HandleCoreSettingsUpdate(coreOptions);
+            HandleCoreSettingsUpdate(cfg.CoreOptions);
             Log.Write("Core settings were reset to their default values",
                 _logClassType, _logPrefix);
             ShowInfoMessage("Core settings were reset to their default values.",
@@ -863,19 +857,19 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var coreOptions = _cfgHandler.Config.CoreOptions;
-                coreOptions.accountName = coreAccountNameTextBox.Text;
-                coreOptions.appendToActivityLog = coreAppendEventsCheckBox.Checked;
-                coreOptions.autoMonitorServerOnStart = coreAutoMonitorStartCheckBox.Checked;
-                coreOptions.checkForUpdatesOnStart = coreCheckForUpdatesCheckBox.Checked;
-                coreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
-                coreOptions.requiredTimeBetweenCommands = double.Parse(coreTimeCommandTextBox.Text);
-                coreOptions.hideAllQlConsoleText = coreHideQlConsoleCheckBox.Checked;
-                coreOptions.logSstEventsToDisk = coreLogEventsDiskCheckBox.Checked;
-                coreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
-                coreOptions.owner = coreOwnerNameTextBox.Text;
-                _cfgHandler.WriteConfiguration();
-                HandleCoreSettingsUpdate(coreOptions);
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.CoreOptions.accountName = coreAccountNameTextBox.Text;
+                cfg.CoreOptions.appendToActivityLog = coreAppendEventsCheckBox.Checked;
+                cfg.CoreOptions.autoMonitorServerOnStart = coreAutoMonitorStartCheckBox.Checked;
+                cfg.CoreOptions.checkForUpdatesOnStart = coreCheckForUpdatesCheckBox.Checked;
+                cfg.CoreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
+                cfg.CoreOptions.requiredTimeBetweenCommands = double.Parse(coreTimeCommandTextBox.Text);
+                cfg.CoreOptions.hideAllQlConsoleText = coreHideQlConsoleCheckBox.Checked;
+                cfg.CoreOptions.logSstEventsToDisk = coreLogEventsDiskCheckBox.Checked;
+                cfg.CoreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
+                cfg.CoreOptions.owner = coreOwnerNameTextBox.Text;
+                _cfgHandler.WriteConfiguration(cfg);
+                HandleCoreSettingsUpdate(cfg.CoreOptions);
                 Log.Write("Core settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
@@ -1107,8 +1101,8 @@ namespace SST.Ui
         private void minimizeButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
-            _cfgHandler.ReadConfiguration();
-            if (_cfgHandler.Config.CoreOptions.minimizeToTray)
+            var cfg = _cfgHandler.ReadConfiguration();
+            if (cfg.CoreOptions.minimizeToTray)
             {
                 Hide();
                 sysTrayIcon.Visible = true;
@@ -1164,13 +1158,12 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modAccDateResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var accountDateOptions = _cfgHandler.Config.AccountDateOptions;
-            accountDateOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.AccountDateOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
             await
-                HandleAccountDateModActivation(accountDateOptions.isActive,
-                    accountDateOptions.minimumDaysRequired);
+                HandleAccountDateModActivation(cfg.AccountDateOptions.isActive,
+                    cfg.AccountDateOptions.minimumDaysRequired);
             PopulateModAccountDateUi();
             Log.Write(
                 "Account date limiter settings were reset to their default values",
@@ -1188,12 +1181,13 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var acctDateOptions = _cfgHandler.Config.AccountDateOptions;
-                var minAccountAge = uint.Parse(modAccDateAccAgeTextBox.Text);
-                acctDateOptions.isActive = modAccDateEnableCheckBox.Checked;
-                acctDateOptions.minimumDaysRequired = minAccountAge;
-                _cfgHandler.WriteConfiguration();
-                await HandleAccountDateModActivation(acctDateOptions.isActive, minAccountAge);
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.AccountDateOptions.isActive = modAccDateEnableCheckBox.Checked;
+                cfg.AccountDateOptions.minimumDaysRequired = uint.Parse(modAccDateAccAgeTextBox.Text);
+                _cfgHandler.WriteConfiguration(cfg);
+                await
+                    HandleAccountDateModActivation(cfg.AccountDateOptions.isActive,
+                        cfg.AccountDateOptions.minimumDaysRequired);
                 UpdateActiveModulesStatusText();
                 Log.Write("Account date limiter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
@@ -1227,11 +1221,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAccuracyResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
-            accuracyOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleStandardModuleActivation(_sst.Mod.Accuracy, accuracyOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.AccuracyOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleStandardModuleActivation(_sst.Mod.Accuracy, cfg.AccuracyOptions.isActive);
             PopulateModAccuracyUi();
             Log.Write(
                 "Accuracy display settings were reset to their default values",
@@ -1249,10 +1242,10 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var accuracyOptions = _cfgHandler.Config.AccuracyOptions;
-                accuracyOptions.isActive = modAccuracyEnableCheckBox.Checked;
-                _cfgHandler.WriteConfiguration();
-                HandleStandardModuleActivation(_sst.Mod.Accuracy, accuracyOptions.isActive);
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.AccuracyOptions.isActive = modAccuracyEnableCheckBox.Checked;
+                _cfgHandler.WriteConfiguration(cfg);
+                HandleStandardModuleActivation(_sst.Mod.Accuracy, cfg.AccuracyOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Accuracy display settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Accuracy display settings saved.", "Settings Saved");
@@ -1295,11 +1288,10 @@ namespace SST.Ui
                 intendedResult = IntendedVoteResult.Yes;
             }
 
-            _cfgHandler.ReadConfiguration();
-            var coreopts = _cfgHandler.Config.CoreOptions;
+            var cfg = _cfgHandler.ReadConfiguration();
 
             modAutoVoterCurrentVotesBindingSource.Add(new AutoVote(fullVoteText,
-                containsParam, intendedResult, coreopts.owner));
+                containsParam, intendedResult, cfg.CoreOptions.owner));
 
             RefreshCurrentVotesDataSource();
             modAutoVoterCurVotesListBox.SelectedIndex = ((modAutoVoterCurrentVotesBindingSource.Count > 0)
@@ -1309,7 +1301,7 @@ namespace SST.Ui
             modAutoVoterContainingTextBox.Clear();
 
             Log.Write(string.Format("Owner {0} added auto {1} vote for: {2}",
-                coreopts.owner, ((intendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
+                cfg.CoreOptions.owner, ((intendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
                 fullVoteText), _logClassType, _logPrefix);
         }
 
@@ -1330,9 +1322,10 @@ namespace SST.Ui
             RefreshCurrentVotesDataSource();
 
             // Disable auto voter since there are now no votes
-            _cfgHandler.Config.AutoVoterOptions.isActive = false;
-            _cfgHandler.Config.AutoVoterOptions.autoVotes = new List<AutoVote>();
-            _cfgHandler.WriteConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.AutoVoterOptions.isActive = false;
+            cfg.AutoVoterOptions.autoVotes = new List<AutoVote>();
+            _cfgHandler.WriteConfiguration(cfg);
 
             Log.Write("All automatic votes were cleared by owner.", _logClassType, _logPrefix);
         }
@@ -1347,7 +1340,7 @@ namespace SST.Ui
             if (modAutoVoterCurrentVotesBindingSource.Count == 0 ||
                 modAutoVoterCurVotesListBox.SelectedIndex == -1) return;
 
-            var selectedVote = (AutoVote)modAutoVoterCurVotesListBox.SelectedItem;
+            var selectedVote = (AutoVote) modAutoVoterCurVotesListBox.SelectedItem;
             modAutoVoterCurrentVotesBindingSource.Remove(selectedVote);
             Log.Write(string.Format("Owner removed auto {0} vote: {1}",
                 ((selectedVote.IntendedResult == IntendedVoteResult.No) ? "NO" : "YES"),
@@ -1401,11 +1394,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modAutoVoterResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
-            autoVoterOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleStandardModuleActivation(_sst.Mod.AutoVoter, autoVoterOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.AutoVoterOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleStandardModuleActivation(_sst.Mod.AutoVoter, cfg.AutoVoterOptions.isActive);
             PopulateModAutoVoterUi();
             Log.Write(
                 "Auto voter settings were reset to their default values", _logClassType, _logPrefix);
@@ -1422,11 +1414,11 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var autoVoterOptions = _cfgHandler.Config.AutoVoterOptions;
-                autoVoterOptions.isActive = modAutoVoterEnableCheckBox.Checked;
-                autoVoterOptions.autoVotes = _sst.Mod.AutoVoter.AutoVotes;
-                _cfgHandler.WriteConfiguration();
-                HandleStandardModuleActivation(_sst.Mod.AutoVoter, autoVoterOptions.isActive);
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.AutoVoterOptions.isActive = modAutoVoterEnableCheckBox.Checked;
+                cfg.AutoVoterOptions.autoVotes = _sst.Mod.AutoVoter.AutoVotes;
+                _cfgHandler.WriteConfiguration(cfg);
+                HandleStandardModuleActivation(_sst.Mod.AutoVoter, cfg.AutoVoterOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Auto voter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Auto voter settings saved.", "Settings Saved");
@@ -1464,7 +1456,7 @@ namespace SST.Ui
 
             foreach (var p in modEarlyQuitCurrentQuitBindingSource.List)
             {
-                var player = (EarlyQuitter)p;
+                var player = (EarlyQuitter) p;
                 earlyQuitDb.DeleteUserFromDb(player.Name);
                 await earlyQuitDb.RemoveQuitRelatedBan(_sst, player.Name);
             }
@@ -1486,7 +1478,7 @@ namespace SST.Ui
         private async void modEarlyQuitDelQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1515,7 +1507,7 @@ namespace SST.Ui
         private async void modEarlyQuitForgiveQuitButton_Click(object sender, EventArgs e)
         {
             if (modEarlyQuitCurQuitsListBox.SelectedIndex == -1) return;
-            var player = (EarlyQuitter)modEarlyQuitCurQuitsListBox.SelectedItem;
+            var player = (EarlyQuitter) modEarlyQuitCurQuitsListBox.SelectedItem;
             var earlyQuitDb = new DbQuits();
 
             // Might've been removed in-game
@@ -1584,11 +1576,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modEarlyQuitResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-            earlyQuitOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleStandardModuleActivation(_sst.Mod.EarlyQuit, earlyQuitOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.EarlyQuitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleStandardModuleActivation(_sst.Mod.EarlyQuit, cfg.EarlyQuitOptions.isActive);
             PopulateModEarlyQuitUi();
             Log.Write(
                 "Early quit banner settings were reset to their default values", _logClassType, _logPrefix);
@@ -1605,21 +1596,21 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var earlyQuitOptions = _cfgHandler.Config.EarlyQuitOptions;
-                earlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
-                earlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
-                earlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
-                earlyQuitOptions.banTimeScale = (string)modEarlyQuitTimeScaleComboxBox.SelectedItem;
-                earlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
-                _cfgHandler.WriteConfiguration();
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.EarlyQuitOptions.isActive = modEarlyQuitEnableCheckBox.Checked;
+                cfg.EarlyQuitOptions.maxQuitsAllowed = uint.Parse(modEarlyQuitMaxQuitsTextBox.Text);
+                cfg.EarlyQuitOptions.banTime = double.Parse(modEarlyQuitTimeTextBox.Text);
+                cfg.EarlyQuitOptions.banTimeScale = (string) modEarlyQuitTimeScaleComboxBox.SelectedItem;
+                cfg.EarlyQuitOptions.banTimeScaleIndex = modEarlyQuitTimeScaleComboxBox.SelectedIndex;
+                _cfgHandler.WriteConfiguration(cfg);
 
                 // Go into effect now
-                _sst.Mod.EarlyQuit.MaxQuitsAllowed = earlyQuitOptions.maxQuitsAllowed;
-                _sst.Mod.EarlyQuit.BanTime = earlyQuitOptions.banTime;
-                _sst.Mod.EarlyQuit.BanTimeScale = earlyQuitOptions.banTimeScale;
-                _sst.Mod.EarlyQuit.BanTimeScaleIndex = earlyQuitOptions.banTimeScaleIndex;
+                _sst.Mod.EarlyQuit.MaxQuitsAllowed = cfg.EarlyQuitOptions.maxQuitsAllowed;
+                _sst.Mod.EarlyQuit.BanTime = cfg.EarlyQuitOptions.banTime;
+                _sst.Mod.EarlyQuit.BanTimeScale = cfg.EarlyQuitOptions.banTimeScale;
+                _sst.Mod.EarlyQuit.BanTimeScaleIndex = cfg.EarlyQuitOptions.banTimeScaleIndex;
 
-                HandleStandardModuleActivation(_sst.Mod.EarlyQuit, earlyQuitOptions.isActive);
+                HandleStandardModuleActivation(_sst.Mod.EarlyQuit, cfg.EarlyQuitOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Early quit banner settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Early quit banner settings saved.", "Settings Saved");
@@ -1731,11 +1722,11 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modEloLimiterResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-            eloLimitOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.EloLimitOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
             _cfgHandler.ReadConfiguration();
-            await HandleEloLimitModActivation(eloLimitOptions.isActive);
+            await HandleEloLimitModActivation(cfg.EloLimitOptions.isActive);
             PopulateModEloLimiterUi();
             Log.Write(
                 "Elo limiter settings were reset to their default values", _logClassType, _logPrefix);
@@ -1771,19 +1762,19 @@ namespace SST.Ui
                     return;
                 }
 
-                var eloLimitOptions = _cfgHandler.Config.EloLimitOptions;
-                eloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
-                eloLimitOptions.minimumRequiredElo = minElo;
-                eloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.EloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
+                cfg.EloLimitOptions.minimumRequiredElo = minElo;
+                cfg.EloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
                     ? 0
                     : maxElo);
-                _cfgHandler.WriteConfiguration();
+                _cfgHandler.WriteConfiguration(cfg);
 
                 // Go into effect now
-                _sst.Mod.EloLimit.MinimumRequiredElo = eloLimitOptions.minimumRequiredElo;
-                _sst.Mod.EloLimit.MaximumRequiredElo = eloLimitOptions.maximumRequiredElo;
+                _sst.Mod.EloLimit.MinimumRequiredElo = cfg.EloLimitOptions.minimumRequiredElo;
+                _sst.Mod.EloLimit.MaximumRequiredElo = cfg.EloLimitOptions.maximumRequiredElo;
 
-                await HandleEloLimitModActivation(eloLimitOptions.isActive);
+                await HandleEloLimitModActivation(cfg.EloLimitOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Elo limiter settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
@@ -1933,10 +1924,11 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCGenerateRandomNamesButton_Click(object sender, EventArgs e)
         {
+            var cfg = _cfgHandler.ReadConfiguration();
             modIRCBotNickNameTextBox.Text = string.Format("SST|QLive-{0}",
-                _cfgHandler.Config.IrcOptions.GenerateRandomIdentifier());
+                cfg.IrcOptions.GenerateRandomIdentifier());
             modIRCBotUserNameTextBox.Text = string.Format("sstQL{0}",
-                _cfgHandler.Config.IrcOptions.GenerateRandomIdentifier());
+                cfg.IrcOptions.GenerateRandomIdentifier());
         }
 
         /// <summary>
@@ -2011,11 +2003,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modIRCResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var ircOptions = _cfgHandler.Config.IrcOptions;
-            ircOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleIrcModActivation(ircOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.IrcOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleIrcModActivation(cfg.IrcOptions.isActive);
             PopulateModIrcUi();
             Log.Write("IRC settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("IRC settings were reset to their default values.",
@@ -2050,40 +2041,43 @@ namespace SST.Ui
                     }
                 }
 
-                var ircOptions = _cfgHandler.Config.IrcOptions;
-                ircOptions.isActive = modIRCEnableCheckBox.Checked;
-                ircOptions.ircAdminNickname = modIRCAdminNameTextBox.Text;
-                ircOptions.ircNickName = modIRCBotNickNameTextBox.Text;
-                ircOptions.ircUserName = modIRCBotUserNameTextBox.Text;
-                ircOptions.ircServerAddress = modIRCServerAddressTextBox.Text;
-                ircOptions.ircServerPort = uint.Parse(modIRCServerPortTextBox.Text);
-                ircOptions.ircServerPassword = modIRCServerPassTextBox.Text;
-                ircOptions.ircChannel = modIRCChannelTextBox.Text;
-                ircOptions.ircChannelKey = modIRCChannelKeyTextBox.Text;
-                ircOptions.autoConnectOnStart = modIRCAutoConnectCheckBox.Checked;
-                ircOptions.ircNickServiceUsername = modIRCQNetUserNameTextBox.Text;
-                ircOptions.ircNickServicePassword = modIRCQNetPassTextBox.Text;
-                ircOptions.autoAuthWithNickService = modIRCQNetAutoAuthCheckBox.Checked;
-                ircOptions.hideHostnameOnQuakeNet = modIRCQNetHideHostCheckBox.Checked;
-                _cfgHandler.WriteConfiguration();
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.IrcOptions.isActive = modIRCEnableCheckBox.Checked;
+                cfg.IrcOptions.ircAdminNickname = modIRCAdminNameTextBox.Text;
+                cfg.IrcOptions.ircNickName = modIRCBotNickNameTextBox.Text;
+                cfg.IrcOptions.ircUserName = modIRCBotUserNameTextBox.Text;
+                cfg.IrcOptions.ircServerAddress = modIRCServerAddressTextBox.Text;
+                cfg.IrcOptions.ircServerPort = uint.Parse(modIRCServerPortTextBox.Text);
+                cfg.IrcOptions.ircServerPassword = modIRCServerPassTextBox.Text;
+                cfg.IrcOptions.ircChannel = modIRCChannelTextBox.Text;
+                cfg.IrcOptions.ircChannelKey = modIRCChannelKeyTextBox.Text;
+                cfg.IrcOptions.autoConnectOnStart = modIRCAutoConnectCheckBox.Checked;
+                cfg.IrcOptions.ircNickServiceUsername = modIRCQNetUserNameTextBox.Text;
+                cfg.IrcOptions.ircNickServicePassword = modIRCQNetPassTextBox.Text;
+                cfg.IrcOptions.autoAuthWithNickService = modIRCQNetAutoAuthCheckBox.Checked;
+                cfg.IrcOptions.hideHostnameOnQuakeNet = modIRCQNetHideHostCheckBox.Checked;
+                _cfgHandler.WriteConfiguration(cfg);
 
                 // Go into effect now
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircAdminNickname = ircOptions.ircAdminNickname;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickName = ircOptions.ircNickName;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircUserName = ircOptions.ircUserName;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerAddress = ircOptions.ircServerAddress;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerPort = ircOptions.ircServerPort;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerPassword = ircOptions.ircServerPassword;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircChannel = ircOptions.ircChannel;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircChannelKey = ircOptions.ircChannelKey;
-                _sst.Mod.Irc.IrcManager.IrcSettings.autoConnectOnStart = ircOptions.autoConnectOnStart;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickServiceUsername = ircOptions.ircNickServiceUsername;
-                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickServicePassword = ircOptions.ircNickServicePassword;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircAdminNickname = cfg.IrcOptions.ircAdminNickname;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickName = cfg.IrcOptions.ircNickName;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircUserName = cfg.IrcOptions.ircUserName;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerAddress = cfg.IrcOptions.ircServerAddress;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerPort = cfg.IrcOptions.ircServerPort;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircServerPassword = cfg.IrcOptions.ircServerPassword;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircChannel = cfg.IrcOptions.ircChannel;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircChannelKey = cfg.IrcOptions.ircChannelKey;
+                _sst.Mod.Irc.IrcManager.IrcSettings.autoConnectOnStart = cfg.IrcOptions.autoConnectOnStart;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickServiceUsername =
+                    cfg.IrcOptions.ircNickServiceUsername;
+                _sst.Mod.Irc.IrcManager.IrcSettings.ircNickServicePassword =
+                    cfg.IrcOptions.ircNickServicePassword;
                 _sst.Mod.Irc.IrcManager.IrcSettings.autoAuthWithNickService =
-                    ircOptions.autoAuthWithNickService;
-                _sst.Mod.Irc.IrcManager.IrcSettings.hideHostnameOnQuakeNet = ircOptions.hideHostnameOnQuakeNet;
+                    cfg.IrcOptions.autoAuthWithNickService;
+                _sst.Mod.Irc.IrcManager.IrcSettings.hideHostnameOnQuakeNet =
+                    cfg.IrcOptions.hideHostnameOnQuakeNet;
 
-                HandleIrcModActivation(ircOptions.isActive);
+                HandleIrcModActivation(cfg.IrcOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("IRC settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("IRC settings saved.", "Settings Saved");
@@ -2250,11 +2244,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modMOTDResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var motdOptions = _cfgHandler.Config.MotdOptions;
-            motdOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleMotdModActivation(motdOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.MotdOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleMotdModActivation(cfg.MotdOptions.isActive);
             PopulateModMotdUi();
             Log.Write(
                 "Account date limiter settings were reset to their default values", _logClassType, _logPrefix);
@@ -2271,12 +2264,12 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var motdOptions = _cfgHandler.Config.MotdOptions;
-                motdOptions.isActive = modMOTDEnableCheckBox.Checked;
-                motdOptions.repeatInterval = int.Parse(modMOTDRepeatTimeTextBox.Text);
-                motdOptions.message = modMOTDRepeatMsgTextBox.Text;
-                _cfgHandler.WriteConfiguration();
-                HandleMotdModActivation(motdOptions.isActive);
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.MotdOptions.isActive = modMOTDEnableCheckBox.Checked;
+                cfg.MotdOptions.repeatInterval = int.Parse(modMOTDRepeatTimeTextBox.Text);
+                cfg.MotdOptions.message = modMOTDRepeatMsgTextBox.Text;
+                _cfgHandler.WriteConfiguration(cfg);
+                HandleMotdModActivation(cfg.MotdOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("MOTD settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("MOTD settings saved.", "Settings Saved");
@@ -2421,11 +2414,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private async void modPickupResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var pickupOptions = _cfgHandler.Config.PickupOptions;
-            pickupOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            await HandlePickupModActivation(pickupOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.PickupOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            await HandlePickupModActivation(cfg.PickupOptions.isActive);
             PopulateModPickupUi();
             Log.Write("Pickup settings were reset to their default values", _logClassType, _logPrefix);
             ShowInfoMessage("Pickup settings were reset to their default values.",
@@ -2441,37 +2433,37 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var pickupOptions = _cfgHandler.Config.PickupOptions;
-                pickupOptions.isActive = modPickupEnableCheckBox.Checked;
-                pickupOptions.maxSubsPerPlayer = int.Parse(modPickupMaxSubsTextBox.Text);
-                pickupOptions.maxNoShowsPerPlayer = int.Parse(modPickupMaxNoShowsTextBox.Text);
-                pickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
-                pickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
-                pickupOptions.excessiveSubUseBanTimeScale =
-                    (string)modPickupSubsTimeBanScaleComboBox.SelectedItem;
-                pickupOptions.excessiveNoShowBanTimeScale =
-                    (string)modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
-                pickupOptions.excessiveSubUseBanTimeScaleIndex =
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.PickupOptions.isActive = modPickupEnableCheckBox.Checked;
+                cfg.PickupOptions.maxSubsPerPlayer = int.Parse(modPickupMaxSubsTextBox.Text);
+                cfg.PickupOptions.maxNoShowsPerPlayer = int.Parse(modPickupMaxNoShowsTextBox.Text);
+                cfg.PickupOptions.excessiveSubUseBanTime = double.Parse(modPickupSubsTimeBanTextBox.Text);
+                cfg.PickupOptions.excessiveNoShowBanTime = double.Parse(modPickupNoShowsTimeBanTextBox.Text);
+                cfg.PickupOptions.excessiveSubUseBanTimeScale =
+                    (string) modPickupSubsTimeBanScaleComboBox.SelectedItem;
+                cfg.PickupOptions.excessiveNoShowBanTimeScale =
+                    (string) modPickupNoShowsTimeBanScaleComboBox.SelectedItem;
+                cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex =
                     modPickupSubsTimeBanScaleComboBox.SelectedIndex;
-                pickupOptions.excessiveNoShowBanTimeScaleIndex =
+                cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex =
                     modPickupNoShowsTimeBanScaleComboBox.SelectedIndex;
-                pickupOptions.teamSize = int.Parse(modPickupPlayersPerTeamTextBox.Text);
-                _cfgHandler.WriteConfiguration();
+                cfg.PickupOptions.teamSize = int.Parse(modPickupPlayersPerTeamTextBox.Text);
+                _cfgHandler.WriteConfiguration(cfg);
 
                 // Go into effect now
-                _sst.Mod.Pickup.MaxSubsPerPlayer = pickupOptions.maxSubsPerPlayer;
-                _sst.Mod.Pickup.MaxNoShowsPerPlayer = pickupOptions.maxNoShowsPerPlayer;
-                _sst.Mod.Pickup.ExcessiveSubUseBanTime = pickupOptions.excessiveSubUseBanTime;
-                _sst.Mod.Pickup.ExcessiveNoShowBanTime = pickupOptions.excessiveNoShowBanTime;
-                _sst.Mod.Pickup.ExcessiveSubUseBanTimeScale = pickupOptions.excessiveSubUseBanTimeScale;
-                _sst.Mod.Pickup.ExcessiveNoShowBanTimeScale = pickupOptions.excessiveNoShowBanTimeScale;
+                _sst.Mod.Pickup.MaxSubsPerPlayer = cfg.PickupOptions.maxSubsPerPlayer;
+                _sst.Mod.Pickup.MaxNoShowsPerPlayer = cfg.PickupOptions.maxNoShowsPerPlayer;
+                _sst.Mod.Pickup.ExcessiveSubUseBanTime = cfg.PickupOptions.excessiveSubUseBanTime;
+                _sst.Mod.Pickup.ExcessiveNoShowBanTime = cfg.PickupOptions.excessiveNoShowBanTime;
+                _sst.Mod.Pickup.ExcessiveSubUseBanTimeScale = cfg.PickupOptions.excessiveSubUseBanTimeScale;
+                _sst.Mod.Pickup.ExcessiveNoShowBanTimeScale = cfg.PickupOptions.excessiveNoShowBanTimeScale;
                 _sst.Mod.Pickup.ExcessiveSubUseBanTimeScaleIndex =
-                    pickupOptions.excessiveSubUseBanTimeScaleIndex;
+                    cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex;
                 _sst.Mod.Pickup.ExcessiveNoShowBanTimeScaleIndex =
-                    pickupOptions.excessiveNoShowBanTimeScaleIndex;
-                _sst.Mod.Pickup.Teamsize = pickupOptions.teamSize;
+                    cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex;
+                _sst.Mod.Pickup.Teamsize = cfg.PickupOptions.teamSize;
 
-                await HandlePickupModActivation(pickupOptions.isActive);
+                await HandlePickupModActivation(cfg.PickupOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Pickup settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Pickup settings saved.", "Settings Saved");
@@ -2560,11 +2552,10 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void modServerListResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
-            var serverListOptions = _cfgHandler.Config.ServersOptions;
-            serverListOptions.SetDefaults();
-            _cfgHandler.WriteConfiguration();
-            _cfgHandler.ReadConfiguration();
-            HandleStandardModuleActivation(_sst.Mod.Servers, serverListOptions.isActive);
+            var cfg = _cfgHandler.ReadConfiguration();
+            cfg.ServersOptions.SetDefaults();
+            _cfgHandler.WriteConfiguration(cfg);
+            HandleStandardModuleActivation(_sst.Mod.Servers, cfg.ServersOptions.isActive);
             PopulateModServerListUi();
             Log.Write(
                 "Server list settings were reset to their default values", _logClassType, _logPrefix);
@@ -2581,17 +2572,17 @@ namespace SST.Ui
         {
             if (ValidateChildren())
             {
-                var serverListOptions = _cfgHandler.Config.ServersOptions;
-                serverListOptions.isActive = modServerListEnableCheckBox.Checked;
-                serverListOptions.maxServers = int.Parse(modServerListMaxServersTextBox.Text);
-                serverListOptions.timeBetweenQueries = double.Parse(modServerListTimeBetweenTextBox.Text);
-                _cfgHandler.WriteConfiguration();
+                var cfg = _cfgHandler.ReadConfiguration();
+                cfg.ServersOptions.isActive = modServerListEnableCheckBox.Checked;
+                cfg.ServersOptions.maxServers = int.Parse(modServerListMaxServersTextBox.Text);
+                cfg.ServersOptions.timeBetweenQueries = double.Parse(modServerListTimeBetweenTextBox.Text);
+                _cfgHandler.WriteConfiguration(cfg);
 
                 // Go into effect now
-                _sst.Mod.Servers.TimeBetweenQueries = serverListOptions.timeBetweenQueries;
-                _sst.Mod.Servers.MaxServersToDisplay = serverListOptions.maxServers;
+                _sst.Mod.Servers.TimeBetweenQueries = cfg.ServersOptions.timeBetweenQueries;
+                _sst.Mod.Servers.MaxServersToDisplay = cfg.ServersOptions.maxServers;
 
-                HandleStandardModuleActivation(_sst.Mod.Servers, serverListOptions.isActive);
+                HandleStandardModuleActivation(_sst.Mod.Servers, cfg.ServersOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Server list settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Server list settings saved.", "Settings Saved");
@@ -2690,21 +2681,20 @@ namespace SST.Ui
         /// </summary>
         private void PopulateCoreOptionsUi()
         {
-            _cfgHandler.ReadConfiguration();
-            var coreOptions = _cfgHandler.Config.CoreOptions;
-            coreAccountNameTextBox.Text = coreOptions.accountName;
-            coreAppendEventsCheckBox.Checked = coreOptions.appendToActivityLog;
-            coreAutoMonitorStartCheckBox.Checked = coreOptions.autoMonitorServerOnStart;
-            coreCheckForUpdatesCheckBox.Checked = coreOptions.checkForUpdatesOnStart;
-            coreEloCacheTextBox.Text = coreOptions.eloCacheExpiration.ToString();
-            coreTimeCommandTextBox.Text = coreOptions.requiredTimeBetweenCommands.
+            var cfg = _cfgHandler.ReadConfiguration();
+            coreAccountNameTextBox.Text = cfg.CoreOptions.accountName;
+            coreAppendEventsCheckBox.Checked = cfg.CoreOptions.appendToActivityLog;
+            coreAutoMonitorStartCheckBox.Checked = cfg.CoreOptions.autoMonitorServerOnStart;
+            coreCheckForUpdatesCheckBox.Checked = cfg.CoreOptions.checkForUpdatesOnStart;
+            coreEloCacheTextBox.Text = cfg.CoreOptions.eloCacheExpiration.ToString();
+            coreTimeCommandTextBox.Text = cfg.CoreOptions.requiredTimeBetweenCommands.
                 ToString(CultureInfo.InvariantCulture);
-            coreHideQlConsoleCheckBox.Checked = coreOptions.hideAllQlConsoleText;
-            coreLogEventsDiskCheckBox.Checked = coreOptions.logSstEventsToDisk;
+            coreHideQlConsoleCheckBox.Checked = cfg.CoreOptions.hideAllQlConsoleText;
+            coreLogEventsDiskCheckBox.Checked = cfg.CoreOptions.logSstEventsToDisk;
             // Special case for logging. Set value on population, otherwise it would be ignored
             Log.LogToDisk = coreLogEventsDiskCheckBox.Checked;
-            coreMinimizeToTrayCheckBox.Checked = coreOptions.minimizeToTray;
-            coreOwnerNameTextBox.Text = coreOptions.owner;
+            coreMinimizeToTrayCheckBox.Checked = cfg.CoreOptions.minimizeToTray;
+            coreOwnerNameTextBox.Text = cfg.CoreOptions.owner;
         }
 
         /// <summary>
@@ -2808,23 +2798,25 @@ namespace SST.Ui
             }
 
             // Check for default names
-            _cfgHandler.ReadConfiguration();
-            if (_cfgHandler.Config.CoreOptions.accountName.Equals(CoreOptions.defaultUnsetAccountName,
+            var cfg = _cfgHandler.ReadConfiguration();
+            if (cfg.CoreOptions.accountName.Equals(CoreOptions.defaultUnsetAccountName,
                 StringComparison.InvariantCultureIgnoreCase))
             {
                 Log.Write("SST account name has not been set. Cannot start.", _logClassType, _logPrefix);
                 MessageBox.Show(@"Cannot start. You must first set the SST account name in the core options!",
-                   @"Account Name Is Unset",
-                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    @"Account Name Is Unset",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (_cfgHandler.Config.CoreOptions.owner.Equals(CoreOptions.defaultUnsetOwnerName,
+            if (cfg.CoreOptions.owner.Equals(CoreOptions.defaultUnsetOwnerName,
                 StringComparison.InvariantCultureIgnoreCase))
             {
-                Log.Write("SST owner's account name has not been set. Cannot start.", _logClassType, _logPrefix);
-                MessageBox.Show(@"Cannot start. You must first set the SST owner's account name in the core options!",
-                   @"Owner Name Is Unset",
-                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Write("SST owner's account name has not been set. Cannot start.", _logClassType,
+                    _logPrefix);
+                MessageBox.Show(
+                    @"Cannot start. You must first set the SST owner's account name in the core options!",
+                    @"Owner Name Is Unset",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (_sst.IsMonitoringServer)
@@ -3002,9 +2994,9 @@ namespace SST.Ui
                         user), "User exists");
                 return;
             }
-            _cfgHandler.ReadConfiguration();
-            var owner = _cfgHandler.Config.CoreOptions.owner;
-            var accessLevel = (UserLevel)usrMUserAccessComboBox.SelectedItem;
+            var cfg = _cfgHandler.ReadConfiguration();
+            var owner = cfg.CoreOptions.owner;
+            var accessLevel = (UserLevel) usrMUserAccessComboBox.SelectedItem;
             userDb.AddUserToDb(user, accessLevel, owner,
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -3027,9 +3019,8 @@ namespace SST.Ui
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void usrMDelAllUsersButton_Click(object sender, EventArgs e)
         {
-            _cfgHandler.ReadConfiguration();
-
-            var owner = _cfgHandler.Config.CoreOptions.owner;
+            var cfg = _cfgHandler.ReadConfiguration();
+            var owner = cfg.CoreOptions.owner;
             var userDb = new DbUsers();
             var allUsers = userDb.GetAllUsers();
 
@@ -3068,14 +3059,12 @@ namespace SST.Ui
             if (usrMCurrentUserBindingSource.Count == 0 ||
                 usrMCurUsersListBox.SelectedIndex == -1) return;
 
-            _cfgHandler.ReadConfiguration();
-
+            var cfg = _cfgHandler.ReadConfiguration();
             var userDb = new DbUsers();
-            var owner = _cfgHandler.Config.CoreOptions.owner;
-            var selectedUser = (User)usrMCurUsersListBox.SelectedItem;
+            var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
 
             usrMCurrentUserBindingSource.Remove(selectedUser);
-            userDb.DeleteUserFromDb(selectedUser.Name, owner, UserLevel.Owner);
+            userDb.DeleteUserFromDb(selectedUser.Name, cfg.CoreOptions.owner, UserLevel.Owner);
 
             usrMCurUsersListBox.SelectedIndex = ((usrMCurrentUserBindingSource.Count > 0)
                 ? 0
@@ -3084,7 +3073,8 @@ namespace SST.Ui
 
             Log.Write(
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
-                    owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType, _logPrefix);
+                    cfg.CoreOptions.owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType,
+                _logPrefix);
         }
     }
 }

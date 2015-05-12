@@ -283,8 +283,8 @@ namespace SST.Database
         public void LoadCfg()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            _owner = cfgHandler.Config.CoreOptions.owner;
+            var cfg = cfgHandler.ReadConfiguration();
+            _owner = cfg.CoreOptions.owner;
         }
 
         /// <summary>
@@ -302,9 +302,9 @@ namespace SST.Database
         public void SaveCfg()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            cfgHandler.Config.CoreOptions.owner = _owner;
-            cfgHandler.WriteConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
+            cfg.CoreOptions.owner = _owner;
+            cfgHandler.WriteConfiguration(cfg);
         }
 
         /// <summary>

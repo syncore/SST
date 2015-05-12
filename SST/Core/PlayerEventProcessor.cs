@@ -465,13 +465,13 @@ namespace SST.Core
         /// <param name="player">The player.</param>
         private async Task SendConnectionInfoMessage(string player)
         {
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
             await
                 _sst.QlCommands.QlCmdDelayedTell(
                     string.Format(
-                        "^7This server is running SST v^5{0}^7. Use ^3{1}{2}^7 for command list. One command is allowed every^3 {3}^7 seconds.",
+                        "^7This server is running SST v^5{0}^7. Use ^3{1}{2}^7 for command list. One command is allowed every ^3{3}^7 seconds.",
                         Helpers.GetVersion(), CommandList.GameCommandPrefix, CommandList.CmdHelp,
-                        _cfgHandler.Config.CoreOptions.requiredTimeBetweenCommands),
+                        cfg.CoreOptions.requiredTimeBetweenCommands),
                     player, 25);
         }
 

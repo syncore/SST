@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
@@ -109,19 +110,23 @@ namespace SST.Util
             if (LogToDisk)
             {
                 // disk file
-                logger.Info(string.Format("{0} {1}", prefix, msg));
+                logger.Info(string.Format("[{0}] {1} {2}", DateTime.Now.ToString("G",
+                    DateTimeFormatInfo.InvariantInfo), prefix, msg));
             }
 
             if (LogUiConsole == null)
             {
-                DeferredMessages.Add(string.Format("{0} {1} {2}",
-                    Environment.NewLine, prefix, msg));
+                DeferredMessages.Add(string.Format("{0} [{1}] {2} {3}",
+                    Environment.NewLine, DateTime.Now.ToString("G",
+                    DateTimeFormatInfo.InvariantInfo), prefix, msg));
             }
 
             if (LogToSstConsole)
             {
                 LogUiConsole.InvokeIfRequired(
-                    c => { c.AppendText(string.Format("{0} {1} {2}", Environment.NewLine, prefix, msg)); });
+                    c => { c.AppendText(string.Format("{0} [{1}] {2} {3}",
+                        Environment.NewLine, DateTime.Now.ToString("G",
+                    DateTimeFormatInfo.InvariantInfo), prefix, msg)); });
             }
         }
 
@@ -142,12 +147,14 @@ namespace SST.Util
             logger.Debug(string.Format("{0} {1}", prefix, msg));
 #endif
 
-            logger.Info(string.Format("{0} {1}", prefix, msg));
+            logger.Info(string.Format("[{0}] {1} {2}", DateTime.Now.ToString("G",
+                    DateTimeFormatInfo.InvariantInfo), prefix, msg));
 
             if (LogUiConsole == null)
             {
-                DeferredMessages.Add(string.Format("{0} {1} {2}",
-                    Environment.NewLine, prefix, msg));
+                DeferredMessages.Add(string.Format("{0} [{1}] {2} {3}",
+                    Environment.NewLine, DateTime.Now.ToString("G",
+                    DateTimeFormatInfo.InvariantInfo), prefix, msg));
             }
         }
 

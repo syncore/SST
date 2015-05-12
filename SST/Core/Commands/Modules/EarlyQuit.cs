@@ -199,31 +199,32 @@ namespace SST.Core.Commands.Modules
             var eq = new DbQuits();
             eq.InitDb();
 
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
             // See if we're dealing with the default values
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (_configHandler.Config.EarlyQuitOptions.banTime == 0 ||
-                _configHandler.Config.EarlyQuitOptions.banTimeScale == string.Empty)
+            if (cfg.EarlyQuitOptions.banTime == 0 ||
+                cfg.EarlyQuitOptions.banTimeScale == string.Empty)
             {
                 Active = false;
                 return;
             }
             // See if it's a valid scale
-            if (!Helpers.ValidTimeScales.Contains(_configHandler.Config.EarlyQuitOptions.banTimeScale))
+            if (!Helpers.ValidTimeScales.Contains(cfg.EarlyQuitOptions.banTimeScale))
             {
                 Log.WriteCritical(
                     "Invalid time scale detected. Won't enable. Setting early quit banner defaults.",
                     _logClassType, _logPrefix);
 
                 Active = false;
-                _configHandler.Config.EarlyQuitOptions.SetDefaults();
+                cfg.EarlyQuitOptions.SetDefaults();
+                _configHandler.WriteConfiguration(cfg);
                 return;
             }
 
-            Active = _configHandler.Config.EarlyQuitOptions.isActive;
-            BanTime = _configHandler.Config.EarlyQuitOptions.banTime;
-            BanTimeScale = _configHandler.Config.EarlyQuitOptions.banTimeScale;
-            MaxQuitsAllowed = _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed;
+            Active = cfg.EarlyQuitOptions.isActive;
+            BanTime = cfg.EarlyQuitOptions.banTime;
+            BanTimeScale = cfg.EarlyQuitOptions.banTimeScale;
+            MaxQuitsAllowed = cfg.EarlyQuitOptions.maxQuitsAllowed;
 
             Log.Write(string.Format(
                 "Active: {0}, ban time: {1} {2}, max early quits allowed: {3}",
@@ -264,13 +265,14 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.EarlyQuitOptions.isActive = active;
-            _configHandler.Config.EarlyQuitOptions.banTime = BanTime;
-            _configHandler.Config.EarlyQuitOptions.banTimeScale = BanTimeScale;
-            _configHandler.Config.EarlyQuitOptions.banTimeScaleIndex = BanTimeScaleIndex;
-            _configHandler.Config.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.EarlyQuitOptions.isActive = active;
+            cfg.EarlyQuitOptions.banTime = BanTime;
+            cfg.EarlyQuitOptions.banTimeScale = BanTimeScale;
+            cfg.EarlyQuitOptions.banTimeScaleIndex = BanTimeScaleIndex;
+            cfg.EarlyQuitOptions.maxQuitsAllowed = MaxQuitsAllowed;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModEarlyQuitUi();

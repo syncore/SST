@@ -113,7 +113,7 @@ namespace SST.Core.Commands.Admin
                 var userLevel = IsIrcOwner(c) ? UserLevel.Owner : _users.GetUserLevel(c.FromUser);
                 if (userLevel != UserLevel.Owner)
                 {
-                    StatusMessage = string.Format("^1[ERROR]^3 Only owners can add admins.");
+                    StatusMessage = "^1[ERROR]^3 Only owners can add admins.";
                     await SendServerTell(c, StatusMessage);
 
                     Log.Write(string.Format("Non-owner {0} attempted to add an admin from {1} Ignoring.",
@@ -196,9 +196,9 @@ namespace SST.Core.Commands.Admin
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
             return
-                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                (c.FromUser.Equals(cfg.IrcOptions.ircAdminNickname,
                     StringComparison.InvariantCultureIgnoreCase));
         }
     }

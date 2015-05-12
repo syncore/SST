@@ -255,8 +255,12 @@ namespace SST.Core.Modules
             Log.Write(string.Format("It is the {0} captain's turn to pick.",
                 (team == Team.Red) ? "RED" : "BLUE"), _logClassType, _logPrefix);
 
-            await ShowWhosePick(team);
-            await _manager.DisplayAvailablePlayers();
+            // Avoid showing this when teams are full
+            if (!_manager.AreTeamsFull)
+            {
+                await ShowWhosePick(team);
+                await _manager.DisplayAvailablePlayers();
+            }
         }
 
         /// <summary>

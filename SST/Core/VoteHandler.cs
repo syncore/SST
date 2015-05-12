@@ -165,9 +165,6 @@ namespace SST.Core
             string user = _sst.ServerEventProcessor.GetPlayerNameFromId(id);
             if (string.IsNullOrEmpty(user)) return false;
 
-            Log.Write(string.Format("Detected attempted kick (clientkick) of admin: {0}", user),
-                _logClassType, _logPrefix);
-
             return _users.GetUserLevel(user) >= UserLevel.Admin;
         }
 
@@ -183,9 +180,6 @@ namespace SST.Core
             string type = details.Groups["votetype"].Value;
             string votearg = details.Groups["votearg"].Value;
             if (!type.Equals("kick", StringComparison.InvariantCultureIgnoreCase)) return false;
-
-            Log.Write(string.Format("Detected attempted kick (kick) of admin: {0}", votearg),
-                _logClassType, _logPrefix);
 
             return _users.GetUserLevel(votearg) >= UserLevel.Admin;
         }
@@ -251,6 +245,10 @@ namespace SST.Core
         {
             if (IsAdminKickAttempt(details) || IsAdminClientKickAttempt(details))
             {
+                
+                Log.Write(string.Format("Detected attempted kick of admin: {0}",
+                    details.Groups["votearg"].Value), _logClassType, _logPrefix);
+                
                 await DenyAdminKick(details);
             }
             if (IsUnevenShuffle(details))

@@ -145,15 +145,17 @@ namespace SST.Core
             }
             if (!Helpers.KeyExists(fromUser, _sst.ServerInfo.CurrentPlayers))
             {
+                // Player has not been indexed
+                await _sst.QlCommands.QlCmdPlayers();
+                Log.Write(
+                    string.Format("Player {0} has not been indexed in current player list. Ignoring command & will re-scan player list.",
+                        fromUser), _logClassType, _logPrefix);
+                
                 await _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then" +
-                        " retry your {1} request in^1 {2} ^3secs.",
-                        fromUser, commandName, _sst.InitDelay));
-
-                Log.Write(
-                    string.Format("Player {0} does not exist in current player list. Ignoring command.",
-                        fromUser), _logClassType, _logPrefix);
+                        " retry your {1} request in a few secs.",
+                        fromUser, commandName));
 
                 return false;
             }
@@ -184,9 +186,9 @@ namespace SST.Core
                 return true;
             }
 
-            _cfgHandler.ReadConfiguration();
+            var cfg = _cfgHandler.ReadConfiguration();
             return _playerCommandTime[user]
-                .AddSeconds(_cfgHandler.Config.CoreOptions.requiredTimeBetweenCommands) < DateTime.Now;
+                .AddSeconds(cfg.CoreOptions.requiredTimeBetweenCommands) < DateTime.Now;
         }
 
         /// <summary>

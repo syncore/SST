@@ -235,9 +235,9 @@ namespace SST.Util
         {
             var cfgHandler = new ConfigHandler();
             cfgHandler.VerifyConfigLocation();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
 
-            return cfgHandler.Config.CoreOptions.eloCacheExpiration;
+            return cfg.CoreOptions.eloCacheExpiration;
         }
 
         /// <summary>

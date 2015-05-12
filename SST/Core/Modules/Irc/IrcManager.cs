@@ -278,18 +278,17 @@ namespace SST.Core.Modules.Irc
         /// </remarks>
         public bool RequiredIrcSettingsAreValid()
         {
-            _configHandler.ReadConfiguration();
-            var cfg = _configHandler.Config.IrcOptions;
+            var cfg = _configHandler.ReadConfiguration();
             // Nickname validity
-            if (!IsValidIrcNickname(cfg.ircNickName)) return false;
+            if (!IsValidIrcNickname(cfg.IrcOptions.ircNickName)) return false;
             // Channel name validity
-            if (!IsValidIrcChannelName(cfg.ircChannel)) return false;
+            if (!IsValidIrcChannelName(cfg.IrcOptions.ircChannel)) return false;
             // Username (ident) validity; re-use nickname check
-            if (!IsValidIrcNickname(cfg.ircUserName)) return false;
+            if (!IsValidIrcNickname(cfg.IrcOptions.ircUserName)) return false;
             // IRC host validity
-            if (string.IsNullOrEmpty(cfg.ircServerAddress) || cfg.ircServerAddress.Contains(" ")) return false;
+            if (string.IsNullOrEmpty(cfg.IrcOptions.ircServerAddress) || cfg.IrcOptions.ircServerAddress.Contains(" ")) return false;
             // IRC port validity
-            if (cfg.ircServerPort > 65535) return false;
+            if (cfg.IrcOptions.ircServerPort > 65535) return false;
             return true;
         }
 
@@ -339,8 +338,8 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         private IrcOptions GetIrcSettingsFromConfig()
         {
-            _configHandler.ReadConfiguration();
-            return _configHandler.Config.IrcOptions;
+            var cfg = _configHandler.ReadConfiguration();
+            return cfg.IrcOptions;
         }
 
         /// <summary>

@@ -244,8 +244,8 @@ namespace SST.Core
 
             // Hide console text if user has option enabled
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            if (cfgHandler.Config.CoreOptions.hideAllQlConsoleText)
+            var cfg = cfgHandler.ReadConfiguration();
+            if (cfg.CoreOptions.hideAllQlConsoleText)
             {
                 QlCommands.DisableConsolePrinting();
             }
@@ -425,8 +425,8 @@ namespace SST.Core
         private void CheckForAutoMonitoring()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            if (!cfgHandler.Config.CoreOptions.autoMonitorServerOnStart) return;
+            var cfg = cfgHandler.ReadConfiguration();
+            if (!cfg.CoreOptions.autoMonitorServerOnStart) return;
 
             Log.Write(
                 "User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
@@ -487,9 +487,9 @@ namespace SST.Core
         private string GetAccountNameFromConfig()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
 
-            return cfgHandler.Config.CoreOptions.accountName;
+            return cfg.CoreOptions.accountName;
         }
 
         /// <summary>

@@ -326,7 +326,7 @@ namespace SST.Core.Commands.None
             else
             {
                 _sst.VoteManager.IsTeamSuggestionVotePending = true;
-                await _sst.QlCommands.QlCmdSay(string.Format("^2[TEAMBALANCE]^7 Forcing team balance."));
+                await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Forcing team balance.");
                 await MovePlayersToBalancedTeams();
                 _sst.VoteManager.IsTeamSuggestionVotePending = false;
             }
@@ -345,9 +345,9 @@ namespace SST.Core.Commands.None
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
             return
-                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                (c.FromUser.Equals(cfg.IrcOptions.ircAdminNickname,
                     StringComparison.InvariantCultureIgnoreCase));
         }
 

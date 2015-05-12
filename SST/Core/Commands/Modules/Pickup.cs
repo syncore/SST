@@ -17,7 +17,7 @@ namespace SST.Core.Commands.Modules
     {
         public const string NameModule = "pickup";
         public const int TeamMaxSize = 8;
-        public const int TeamMinSize = 3;
+        public const int TeamMinSize = 2;
         private readonly ConfigHandler _configHandler;
         private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
@@ -278,49 +278,51 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
 
             // Valid values?
-            if (_configHandler.Config.PickupOptions.teamSize < TeamMinSize ||
-                _configHandler.Config.PickupOptions.teamSize > TeamMaxSize)
+            if (cfg.PickupOptions.teamSize < TeamMinSize ||
+                cfg.PickupOptions.teamSize > TeamMaxSize)
             {
                 Log.Write("Invalid team size detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
                 Active = false;
-                _configHandler.Config.PickupOptions.SetDefaults();
+                cfg.PickupOptions.SetDefaults();
+                _configHandler.WriteConfiguration(cfg);
                 return;
             }
             // Valid scales?
             if (
                 (!Helpers.ValidTimeScales.Contains(
-                    _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale))
+                    cfg.PickupOptions.excessiveSubUseBanTimeScale))
                 &&
                 ((!Helpers.ValidTimeScales.Contains(
-                    _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale))))
+                    cfg.PickupOptions.excessiveNoShowBanTimeScale))))
             {
                 Log.Write("Invalid time scales detected on initial load of pickup module configuration." +
                           " Won't enable. Setting pickup module defaults.",
                     _logClassType, _logPrefix);
 
                 Active = false;
-                _configHandler.Config.PickupOptions.SetDefaults();
+                cfg.PickupOptions.SetDefaults();
+                _configHandler.WriteConfiguration(cfg);
                 return;
             }
 
-            Active = _configHandler.Config.PickupOptions.isActive;
-            MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
-            MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
-            ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
-            ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
+            Active = cfg.PickupOptions.isActive;
+            MaxNoShowsPerPlayer = cfg.PickupOptions.maxNoShowsPerPlayer;
+            MaxSubsPerPlayer = cfg.PickupOptions.maxSubsPerPlayer;
+            ExcessiveNoShowBanTime = cfg.PickupOptions.excessiveNoShowBanTime;
+            ExcessiveNoShowBanTimeScale = cfg.PickupOptions.excessiveNoShowBanTimeScale;
             ExcessiveNoShowBanTimeScaleIndex =
-                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
-            ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
-            ExcessiveSubUseBanTimeScale = _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
+                cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex;
+            ExcessiveSubUseBanTime = cfg.PickupOptions.excessiveSubUseBanTime;
+            ExcessiveSubUseBanTimeScale = cfg.PickupOptions.excessiveSubUseBanTimeScale;
             ExcessiveSubUseBanTimeScaleIndex =
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
-            Teamsize = _configHandler.Config.PickupOptions.teamSize;
+                cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex;
+            Teamsize = cfg.PickupOptions.teamSize;
 
             Log.Write(string.Format(
                 "Active: {0}, max no shows per player: {1}, max subs per player: {2}, no-show ban time: {3} {4}," +
@@ -364,20 +366,21 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.PickupOptions.isActive = active;
-            _configHandler.Config.PickupOptions.teamSize = Teamsize;
-            _configHandler.Config.PickupOptions.maxNoShowsPerPlayer = MaxNoShowsPerPlayer;
-            _configHandler.Config.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
-            _configHandler.Config.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
-            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
-            _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex =
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.PickupOptions.isActive = active;
+            cfg.PickupOptions.teamSize = Teamsize;
+            cfg.PickupOptions.maxNoShowsPerPlayer = MaxNoShowsPerPlayer;
+            cfg.PickupOptions.maxSubsPerPlayer = MaxSubsPerPlayer;
+            cfg.PickupOptions.excessiveNoShowBanTime = ExcessiveNoShowBanTime;
+            cfg.PickupOptions.excessiveNoShowBanTimeScale = ExcessiveNoShowBanTimeScale;
+            cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex =
                 ExcessiveNoShowBanTimeScaleIndex;
-            _configHandler.Config.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
-            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
-            _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex =
+            cfg.PickupOptions.excessiveSubUseBanTime = ExcessiveSubUseBanTime;
+            cfg.PickupOptions.excessiveSubUseBanTimeScale = ExcessiveSubUseBanTimeScale;
+            cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex =
                 ExcessiveSubUseBanTimeScaleIndex;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModPickupUi();
@@ -543,18 +546,19 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         private void UsePickupDefaults()
         {
-            _configHandler.Config.PickupOptions.SetDefaults();
-            MaxNoShowsPerPlayer = _configHandler.Config.PickupOptions.maxNoShowsPerPlayer;
-            MaxSubsPerPlayer = _configHandler.Config.PickupOptions.maxSubsPerPlayer;
-            ExcessiveNoShowBanTime = _configHandler.Config.PickupOptions.excessiveNoShowBanTime;
-            ExcessiveNoShowBanTimeScale = _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScale;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.PickupOptions.SetDefaults();
+            MaxNoShowsPerPlayer = cfg.PickupOptions.maxNoShowsPerPlayer;
+            MaxSubsPerPlayer = cfg.PickupOptions.maxSubsPerPlayer;
+            ExcessiveNoShowBanTime = cfg.PickupOptions.excessiveNoShowBanTime;
+            ExcessiveNoShowBanTimeScale = cfg.PickupOptions.excessiveNoShowBanTimeScale;
             ExcessiveNoShowBanTimeScaleIndex =
-                _configHandler.Config.PickupOptions.excessiveNoShowBanTimeScaleIndex;
-            ExcessiveSubUseBanTime = _configHandler.Config.PickupOptions.excessiveSubUseBanTime;
+                cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex;
+            ExcessiveSubUseBanTime = cfg.PickupOptions.excessiveSubUseBanTime;
             ExcessiveSubUseBanTimeScale =
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScale;
+                cfg.PickupOptions.excessiveSubUseBanTimeScale;
             ExcessiveSubUseBanTimeScaleIndex =
-                _configHandler.Config.PickupOptions.excessiveSubUseBanTimeScaleIndex;
+                cfg.PickupOptions.excessiveSubUseBanTimeScaleIndex;
         }
     }
 }

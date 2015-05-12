@@ -548,6 +548,8 @@ namespace SST.Core.Modules
         /// </summary>
         public void HandlePickupEnd()
         {
+            // Pickup needs to have previously been in progress
+            if (!IsPickupInProgress) return;
             Log.Write("Pickup game has now officially ended. Will proceed to update database.",
                 _logClassType, _logPrefix);
             // Update the pickup DB table to incldue any changes that occurred between the
@@ -580,6 +582,7 @@ namespace SST.Core.Modules
             // So do nothing if for some reason we are not at this point
             if (!IsPickupPreGame) return;
             Log.Write("Pickup game has now officially started!", _logClassType, _logPrefix);
+            
             // When game officially starts (IN_PROGRESS) update the pickup DB table to include
             // actual start time, any team member changes, subs &/or no-shows that occurred after the teams
             // were already full.
@@ -924,7 +927,7 @@ namespace SST.Core.Modules
             HasCaptainSelectionStarted = true;
             await
                 _sst.QlCommands.QlCmdSay(
-                    "^5[PICKUP]^7 Captain selection has started. **^22**^7 captains are needed!");
+                    "^5[PICKUP]^7 Captain selection has started. **^22^7** captains are needed!");
             await
                 _sst.QlCommands.QlCmdSay(
                     string.Format(
@@ -1073,9 +1076,9 @@ namespace SST.Core.Modules
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
             return
-                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                (c.FromUser.Equals(cfg.IrcOptions.ircAdminNickname,
                     StringComparison.InvariantCultureIgnoreCase));
         }
 

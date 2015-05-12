@@ -191,11 +191,11 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
-            Active = _configHandler.Config.AccountDateOptions.minimumDaysRequired != 0 &&
-                     _configHandler.Config.AccountDateOptions.isActive;
+            var cfg = _configHandler.ReadConfiguration();
+            Active = cfg.AccountDateOptions.minimumDaysRequired != 0 &&
+                     cfg.AccountDateOptions.isActive;
             MinimumDaysRequired =
-                _configHandler.Config.AccountDateOptions.minimumDaysRequired;
+                cfg.AccountDateOptions.minimumDaysRequired;
 
             Log.Write(string.Format("Active: {0}, minimum days required: {1}",
                 (Active ? "YES" : "NO"), MinimumDaysRequired), _logClassType, _logPrefix);
@@ -256,9 +256,10 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.AccountDateOptions.isActive = active;
-            _configHandler.Config.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
-            _configHandler.WriteConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.AccountDateOptions.isActive = active;
+            cfg.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModAccountDateUi();

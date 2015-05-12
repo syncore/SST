@@ -220,13 +220,11 @@ namespace SST.Core.Commands.Modules
         public void Init()
         {
             // Loaded from UI context
-            _configHandler.ReadConfiguration();
-            var interval = _configHandler.Config.MotdOptions.repeatInterval;
-            var message = _configHandler.Config.MotdOptions.message;
-            var active = _configHandler.Config.MotdOptions.isActive;
-            if ((!active) || (string.IsNullOrEmpty(message)) || (interval <= MinRepeatThresholdStart)) return;
-            _motd.Message = message;
-            _motd.RepeatInterval = interval;
+            var cfg = _configHandler.ReadConfiguration();
+            if ((!cfg.MotdOptions.isActive) || (string.IsNullOrEmpty(cfg.MotdOptions.message)) ||
+                (cfg.MotdOptions.repeatInterval <= MinRepeatThresholdStart)) return;
+            _motd.Message = cfg.MotdOptions.message;
+            _motd.RepeatInterval = cfg.MotdOptions.repeatInterval;
             _motd.RestartMotdTimer();
         }
 
@@ -235,18 +233,18 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
-            if (string.IsNullOrEmpty(_configHandler.Config.MotdOptions.message) ||
-                (_configHandler.Config.MotdOptions.repeatInterval <= MinRepeatThresholdStart))
+            var cfg = _configHandler.ReadConfiguration();
+            if (string.IsNullOrEmpty(cfg.MotdOptions.message) ||
+                (cfg.MotdOptions.repeatInterval <= MinRepeatThresholdStart))
             {
                 Active = false;
             }
             else
             {
-                Active = _configHandler.Config.MotdOptions.isActive;
+                Active = cfg.MotdOptions.isActive;
             }
-            Message = _configHandler.Config.MotdOptions.message;
-            RepeatInterval = _configHandler.Config.MotdOptions.repeatInterval;
+            Message = cfg.MotdOptions.message;
+            RepeatInterval = cfg.MotdOptions.repeatInterval;
 
             Log.Write(string.Format(
                 "Active: {0}, message is: \"{1}\". Will repeat every: {2} {3}",
@@ -284,11 +282,12 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.MotdOptions.isActive = active;
-            _configHandler.Config.MotdOptions.message = Message;
-            _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.MotdOptions.isActive = active;
+            cfg.MotdOptions.message = Message;
+            cfg.MotdOptions.repeatInterval = RepeatInterval;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModMotdUi();
@@ -302,7 +301,7 @@ namespace SST.Core.Commands.Modules
         {
             _motd.StopMotdTimer();
             UpdateConfig(false);
-            StatusMessage = string.Format("^2[SUCCESS]^7 Message of the day has been disabled.");
+            StatusMessage = "^2[SUCCESS]^7 Message of the day has been disabled.";
             await SendServerSay(c, StatusMessage);
 
             Log.Write(string.Format("Received {0} request from {1} to disable MOTD module. Disabling.",
@@ -338,7 +337,8 @@ namespace SST.Core.Commands.Modules
 
             Message = c.Text.Substring(msgStart);
             RepeatInterval = interval;
-            _configHandler.Config.MotdOptions.repeatInterval = RepeatInterval;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.MotdOptions.repeatInterval = RepeatInterval;
 
             _motd.Message = Message;
             _motd.RepeatInterval = RepeatInterval;

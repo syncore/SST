@@ -17,48 +17,33 @@ namespace SST.Config
         private readonly string _logPrefix = "[CFG]";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ConfigHandler" /> class.
-        /// </summary>
-        public ConfigHandler()
-        {
-            Config = new Configuration();
-        }
-
-        /// <summary>
-        /// Gets or sets the configuration.
-        /// </summary>
-        /// <value>
-        /// The configuration.
-        /// </value>
-        public Configuration Config { get; set; }
-
-        /// <summary>
         ///     Reads the configuration.
         /// </summary>
-        public void ReadConfiguration()
+        public Configuration ReadConfiguration()
         {
             VerifyConfigLocation();
+            Configuration cfg;
             try
             {
                 using (var sr = new StreamReader(Filepaths.ConfigurationFilePath))
                 using (var jsonTextReader = new JsonTextReader(sr))
                 {
                     var serializer = new JsonSerializer();
-                    var cfg = serializer.Deserialize<Configuration>(jsonTextReader);
-                    Config = cfg;
+                    cfg = serializer.Deserialize<Configuration>(jsonTextReader);
                 }
             }
             catch (Exception ex)
             {
                 Log.WriteCritical("Error loading configuration " + ex.Message, _logClassType, _logPrefix);
-                RestoreDefaultConfiguration();
+                cfg = RestoreDefaultConfiguration();
             }
+            return cfg;
         }
 
         /// <summary>
         ///     Restores the default configuration.
         /// </summary>
-        public void RestoreDefaultConfiguration()
+        public Configuration RestoreDefaultConfiguration()
         {
             // Load these fail-safe defaults and save as the new configuration
             var acctDateOptions = new AccountDateOptions();
@@ -82,7 +67,7 @@ namespace SST.Config
             var serversOptions = new ServersOptions();
             serversOptions.SetDefaults();
 
-            Config = new Configuration
+            var cfg = new Configuration
             {
                 AccountDateOptions = acctDateOptions,
                 AccuracyOptions = accuracyOptions,
@@ -96,13 +81,26 @@ namespace SST.Config
                 ServersOptions = serversOptions
             };
 
-            var json = JsonConvert.SerializeObject(Config);
-            using (var fs = File.Create(Filepaths.ConfigurationFilePath))
-            using (TextWriter writer = new StreamWriter(fs))
+            try
             {
-                writer.WriteLine(json);
-                Log.WriteCritical("Restored fail-safe, default configuration to: " + Filepaths.ConfigurationFilePath,
-                    _logClassType, _logPrefix);
+                var json = JsonConvert.SerializeObject(cfg);
+                using (var fs = File.Create(Filepaths.ConfigurationFilePath))
+                using (TextWriter writer = new StreamWriter(fs))
+                {
+                    writer.WriteLine(json);
+                    Log.WriteCritical(
+                        "Restored fail-safe, default configuration to: " + Filepaths.ConfigurationFilePath,
+                        _logClassType, _logPrefix);
+                    return cfg;
+                }
+            }
+            catch (Exception)
+            {
+                Log.WriteCritical(
+                        "Fatal error, unable to restore fail-safe default configuration. Verify that SST data folder" +
+                        " and/or .cfg is not read only!",
+                        _logClassType, _logPrefix);
+                return null;
             }
         }
 
@@ -133,9 +131,9 @@ namespace SST.Config
         /// <summary>
         ///     Writes the configuration to the disk.
         /// </summary>
-        public void WriteConfiguration()
+        public void WriteConfiguration(Configuration cfg)
         {
-            var json = JsonConvert.SerializeObject(Config);
+            var json = JsonConvert.SerializeObject(cfg);
             using (var fs = File.Create(Filepaths.ConfigurationFilePath))
             using (TextWriter writer = new StreamWriter(fs))
             {

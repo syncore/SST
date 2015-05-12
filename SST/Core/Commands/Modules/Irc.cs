@@ -225,7 +225,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
             // Validate
             if (!_irc.RequiredIrcSettingsAreValid())
             {
@@ -233,10 +233,10 @@ namespace SST.Core.Commands.Modules
             }
             else
             {
-                Active = _configHandler.Config.IrcOptions.isActive;
+                Active = cfg.IrcOptions.isActive;
             }
 
-            if (Active && _configHandler.Config.IrcOptions.autoConnectOnStart)
+            if (Active && cfg.IrcOptions.autoConnectOnStart)
             {
                 Log.Write("IRC is set to auto-connect on start. Will attempt."
                     , _logClassType, _logPrefix);
@@ -275,8 +275,9 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.IrcOptions.isActive = active;
-            _configHandler.WriteConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.IrcOptions.isActive = active;
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModIrcUi();
@@ -303,7 +304,7 @@ namespace SST.Core.Commands.Modules
         /// <param name="c">The command argument information.</param>
         private async Task EnableIrc(CmdArgs c)
         {
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
 
             // Set the module to active
             UpdateConfig(true);
@@ -313,9 +314,9 @@ namespace SST.Core.Commands.Modules
 
             StatusMessage = string.Format(
                 "^6[IRC]^7 Attempting to connect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
-                _configHandler.Config.IrcOptions.ircServerAddress,
-                _configHandler.Config.IrcOptions.ircServerPort,
-                _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel);
+                cfg.IrcOptions.ircServerAddress,
+                cfg.IrcOptions.ircServerPort,
+                cfg.IrcOptions.ircNickName, cfg.IrcOptions.ircChannel);
             // This was successful, but send as a /tell msg (error) to hide IRC server info.
             await SendServerTell(c, StatusMessage);
 
@@ -438,13 +439,13 @@ namespace SST.Core.Commands.Modules
             // Validity check
             if (_irc.RequiredIrcSettingsAreValid())
             {
-                _configHandler.ReadConfiguration();
+                var cfg = _configHandler.ReadConfiguration();
 
                 StatusMessage = string.Format(
                     "^6[IRC]^7 Attempting to reconnect to IRC server: ^2{0}:{1}^7 using name: ^2{2},^7 channel:^2 {3}",
-                    _configHandler.Config.IrcOptions.ircServerAddress,
-                    _configHandler.Config.IrcOptions.ircServerPort,
-                    _configHandler.Config.IrcOptions.ircNickName, _configHandler.Config.IrcOptions.ircChannel);
+                    cfg.IrcOptions.ircServerAddress,
+                    cfg.IrcOptions.ircServerPort,
+                    cfg.IrcOptions.ircNickName, cfg.IrcOptions.ircChannel);
 
                 // This was successful, but send as a /tell msg (error) to hide IRC server info.
                 await SendServerTell(c, StatusMessage);

@@ -52,7 +52,7 @@ Open `sst-commands.txt` in a text editor, or in the SST application, go to the
 ### Help / Issues
 
 I can be found under the name "syncore" on QuakeNet IRC - irc.quakenet.org - in
-the SST channel, #sst_ql channel. [click here to connect](http://irc.lc/quakenet/sst_ql)
+the SST channel, #SST. [Click here to connect.](http://irc.lc/quakenet/sst)
 The preferable method of contact would be for you to open up an [issue] on
 GitHub.
 

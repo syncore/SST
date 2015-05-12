@@ -221,10 +221,10 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
-            Active = _configHandler.Config.AutoVoterOptions.autoVotes.Count != 0 &&
-                     _configHandler.Config.AutoVoterOptions.isActive;
-            AutoVotes = _configHandler.Config.AutoVoterOptions.autoVotes;
+            var cfg = _configHandler.ReadConfiguration();
+            Active = cfg.AutoVoterOptions.autoVotes.Count != 0 &&
+                     cfg.AutoVoterOptions.isActive;
+            AutoVotes = cfg.AutoVoterOptions.autoVotes;
 
             var sb = new StringBuilder();
             foreach (var a in AutoVotes)
@@ -271,10 +271,11 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.AutoVoterOptions.isActive = active;
-            _configHandler.Config.AutoVoterOptions.autoVotes = AutoVotes;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.AutoVoterOptions.isActive = active;
+            cfg.AutoVoterOptions.autoVotes = AutoVotes;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModAutoVoterUi();

@@ -232,11 +232,11 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
 
             // Valid values?
-            if (_configHandler.Config.ServersOptions.maxServers == 0 ||
-                _configHandler.Config.ServersOptions.timeBetweenQueries < 0)
+            if (cfg.ServersOptions.maxServers == 0 ||
+                cfg.ServersOptions.timeBetweenQueries < 0)
             {
                 Log.Write(
                     "Invalid max servers or time between queries value detected during initial load" +
@@ -244,13 +244,14 @@ namespace SST.Core.Commands.Modules
                     _logClassType, _logPrefix);
 
                 Active = false;
-                _configHandler.Config.ServersOptions.SetDefaults();
+                cfg.ServersOptions.SetDefaults();
+                _configHandler.WriteConfiguration(cfg);
                 return;
             }
 
-            Active = _configHandler.Config.ServersOptions.isActive;
-            MaxServersToDisplay = _configHandler.Config.ServersOptions.maxServers;
-            TimeBetweenQueries = _configHandler.Config.ServersOptions.timeBetweenQueries;
+            Active = cfg.ServersOptions.isActive;
+            MaxServersToDisplay = cfg.ServersOptions.maxServers;
+            TimeBetweenQueries = cfg.ServersOptions.timeBetweenQueries;
 
             Log.Write(string.Format(
                 "Active: {0}, max servers to display: {1}, time between queries: {2} seconds",
@@ -292,11 +293,12 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.ServersOptions.isActive = active;
-            _configHandler.Config.ServersOptions.maxServers = MaxServersToDisplay;
-            _configHandler.Config.ServersOptions.timeBetweenQueries = TimeBetweenQueries;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.ServersOptions.isActive = active;
+            cfg.ServersOptions.maxServers = MaxServersToDisplay;
+            cfg.ServersOptions.timeBetweenQueries = TimeBetweenQueries;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModServerListUi();

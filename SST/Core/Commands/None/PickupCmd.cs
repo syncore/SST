@@ -154,17 +154,17 @@ namespace SST.Core.Commands.None
             }
             if (Helpers.GetArgVal(c, 1).Equals("start"))
             {
-                await _sst.Mod.Pickup.Manager.EvalPickupStart(c);
+                return await _sst.Mod.Pickup.Manager.EvalPickupStart(c);
             }
-            else if (Helpers.GetArgVal(c, 1).Equals("stop"))
+            if (Helpers.GetArgVal(c, 1).Equals("stop"))
             {
                 return await _sst.Mod.Pickup.Manager.EvalPickupStop(c);
             }
-            else if (Helpers.GetArgVal(c, 1).Equals("unban"))
+            if (Helpers.GetArgVal(c, 1).Equals("unban"))
             {
                 return await _sst.Mod.Pickup.Manager.EvalPickupUnban(c);
             }
-            else if (Helpers.GetArgVal(c, 1).Equals("help"))
+            if (Helpers.GetArgVal(c, 1).Equals("help"))
             {
                 await DisplayPickupHelp(c);
                 return true;
@@ -266,9 +266,9 @@ namespace SST.Core.Commands.None
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
+            var cfg = cfgHandler.ReadConfiguration();
             return
-                (c.FromUser.Equals(cfgHandler.Config.IrcOptions.ircAdminNickname,
+                (c.FromUser.Equals(cfg.IrcOptions.ircAdminNickname,
                     StringComparison.InvariantCultureIgnoreCase));
         }
     }

@@ -170,8 +170,8 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
-            Active = _configHandler.Config.AccuracyOptions.isActive;
+            var cfg = _configHandler.ReadConfiguration();
+            Active = cfg.AccuracyOptions.isActive;
             Log.Write(string.Format("Active: {0}", (Active ? "YES" : "NO")),
                 _logClassType, _logPrefix);
         }
@@ -209,8 +209,9 @@ namespace SST.Core.Commands.Modules
         {
             Active = active;
 
-            _configHandler.Config.AccuracyOptions.isActive = active;
-            _configHandler.WriteConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.AccuracyOptions.isActive = active;
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModAccuracyUi();

@@ -121,10 +121,10 @@ namespace SST.Core.Modules
         private void GetConfigData()
         {
             var cfgHandler = new ConfigHandler();
-            cfgHandler.ReadConfiguration();
-            _banTime = cfgHandler.Config.EarlyQuitOptions.banTime;
-            _banTimeScale = cfgHandler.Config.EarlyQuitOptions.banTimeScale;
-            _maxQuitsAllowed = cfgHandler.Config.EarlyQuitOptions.maxQuitsAllowed;
+            var cfg = cfgHandler.ReadConfiguration();
+            _banTime = cfg.EarlyQuitOptions.banTime;
+            _banTimeScale = cfg.EarlyQuitOptions.banTimeScale;
+            _maxQuitsAllowed = cfg.EarlyQuitOptions.maxQuitsAllowed;
         }
 
         /// <summary>

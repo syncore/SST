@@ -261,40 +261,41 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         public void LoadConfig()
         {
-            _configHandler.ReadConfiguration();
+            var cfg = _configHandler.ReadConfiguration();
             // Check to see if it's the default values
-            if (_configHandler.Config.EloLimitOptions.minimumRequiredElo == 0 &&
-                _configHandler.Config.EloLimitOptions.maximumRequiredElo == 0)
+            if (cfg.EloLimitOptions.minimumRequiredElo == 0 &&
+                cfg.EloLimitOptions.maximumRequiredElo == 0)
             {
                 Active = false;
             }
             // Only min set
-            else if (_configHandler.Config.EloLimitOptions.minimumRequiredElo != 0 &&
-                     _configHandler.Config.EloLimitOptions.maximumRequiredElo == 0)
+            else if (cfg.EloLimitOptions.minimumRequiredElo != 0 &&
+                     cfg.EloLimitOptions.maximumRequiredElo == 0)
             {
-                Active = _configHandler.Config.EloLimitOptions.isActive;
+                Active = cfg.EloLimitOptions.isActive;
             }
             // Range set
-            else if (_configHandler.Config.EloLimitOptions.minimumRequiredElo != 0 &&
-                     _configHandler.Config.EloLimitOptions.maximumRequiredElo != 0)
+            else if (cfg.EloLimitOptions.minimumRequiredElo != 0 &&
+                     cfg.EloLimitOptions.maximumRequiredElo != 0)
             {
-                Active = _configHandler.Config.EloLimitOptions.isActive;
+                Active = cfg.EloLimitOptions.isActive;
             }
             // Min can't be greater than max
-            if ((_configHandler.Config.EloLimitOptions.maximumRequiredElo > 0) &&
-                (_configHandler.Config.EloLimitOptions.minimumRequiredElo >
-                 _configHandler.Config.EloLimitOptions.maximumRequiredElo))
+            if ((cfg.EloLimitOptions.maximumRequiredElo > 0) &&
+                (cfg.EloLimitOptions.minimumRequiredElo >
+                 cfg.EloLimitOptions.maximumRequiredElo))
             {
                 Log.Write("Minimum required Elo was greater than maximum Elo on initial load of Elo limiter" +
                           " module configuration. Will not enable & will set defaults.", _logClassType,
                     _logPrefix);
                 Active = false;
-                _configHandler.Config.EloLimitOptions.SetDefaults();
+                cfg.EloLimitOptions.SetDefaults();
+                _configHandler.WriteConfiguration(cfg);
                 return;
             }
             // Set
-            MaximumRequiredElo = _configHandler.Config.EloLimitOptions.maximumRequiredElo;
-            MinimumRequiredElo = _configHandler.Config.EloLimitOptions.minimumRequiredElo;
+            MaximumRequiredElo = cfg.EloLimitOptions.maximumRequiredElo;
+            MinimumRequiredElo = cfg.EloLimitOptions.minimumRequiredElo;
 
             Log.Write(string.Format(
                 "Active: {0}, minimum Elo required: {1}, maxmium Elo: {2}",
@@ -337,11 +338,12 @@ namespace SST.Core.Commands.Modules
             // Go into effect now
             Active = active;
 
-            _configHandler.Config.EloLimitOptions.isActive = active;
-            _configHandler.Config.EloLimitOptions.maximumRequiredElo = MaximumRequiredElo;
-            _configHandler.Config.EloLimitOptions.minimumRequiredElo = MinimumRequiredElo;
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.EloLimitOptions.isActive = active;
+            cfg.EloLimitOptions.maximumRequiredElo = MaximumRequiredElo;
+            cfg.EloLimitOptions.minimumRequiredElo = MinimumRequiredElo;
 
-            _configHandler.WriteConfiguration();
+            _configHandler.WriteConfiguration(cfg);
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModEloLimiterUi();
