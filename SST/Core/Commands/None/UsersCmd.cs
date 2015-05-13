@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SST.Database;
@@ -10,9 +9,9 @@ using SST.Model;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Help command.
+    ///     Command: Users command that lists access levels of all players currently on server.
     /// </summary>
-    public class HelpCmd : IBotCommand
+    public class UsersCmd : IBotCommand
     {
         private readonly SynServerTool _sst;
         private bool _isIrcAccessAllowed = true;
@@ -20,11 +19,7 @@ namespace SST.Core.Commands.None
 
         private UserLevel _userLevel = UserLevel.None;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCmd"/> class.
-        /// </summary>
-        /// <param name="sst">The main class.</param>
-        public HelpCmd(SynServerTool sst)
+        public UsersCmd(SynServerTool sst)
         {
             _sst = sst;
         }
@@ -99,21 +94,14 @@ namespace SST.Core.Commands.None
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             var userDb = new DbUsers();
-            var senderLevel = userDb.GetUserLevel(c.FromUser);
-            var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
-            var cmds = new StringBuilder();
-            foreach (var cmd in _sst.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
+            var allUsers = userDb.GetAllUsers();
+            var sb = new StringBuilder();
+            foreach (var u in allUsers.Where(u => _sst.ServerInfo.CurrentPlayers.ContainsKey(u.Name)))
             {
-                cmds.Append(string.Format("{0}, ", cmd.Key));
+                sb.Append(string.Format("^7{0} (^5{1}^7), ", u.Name, u.AccessLevel));
             }
-            StatusMessage = string.Format(
-                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
-                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
-
-            await SendServerTell(c, StatusMessage);
-
-            StatusMessage = "^7For detailed help visit the website at ^3sst.syncore.org^7, or ^3#sst_ql^7 on QuakeNet.";
-            await SendServerTell(c, StatusMessage);
+            StatusMessage = string.Format("^5Access levels: {0}", sb.ToString().TrimEnd(',', ' '));
+            await SendServerSay(c, StatusMessage);
             return true;
         }
 

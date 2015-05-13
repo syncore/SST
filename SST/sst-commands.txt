@@ -507,6 +507,11 @@ Usage: !suggest
 Example: !suggest
 ______________________________________________________
 
+Show the access levels of all players currently on the server:
+Usage: !users
+Example: !users
+______________________________________________________
+
 Show the version of SST that the server is running:
 Usage: !version
 Example: !version
@@ -548,6 +553,21 @@ Request a replacement player for yourself:
 Usage: !sub  <name>
 Notes: Name is without clan tag. Your replacement must already be signed up. The pickup module must be active.
 Example: !sub SomePlayer
+______________________________________________________
+
+Show 10 players with the most pickup games played:
+Usage: !top10
+Example: !top10
+______________________________________________________
+
+See the information for the last-played pickup game:
+Usage: !last
+Example: !last
+______________________________________________________
+
+See a player's pickup game information:
+Usage: !pinfo <name>
+Example: !pinfo SomePlayer
 ______________________________________________________
 
 See who has signed up for the next pickup game:

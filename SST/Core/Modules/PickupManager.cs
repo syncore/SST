@@ -625,8 +625,8 @@ namespace SST.Core.Modules
             // Start the pickup reset timer
             StartEndGameResetTimer();
             // ReSharper disable once UnusedVariable
-            var i1 = _sst.QlCommands.QlCmdSay(string.Format(
-                "^5[PICKUP]^7 Pickup is OVER. A new pickup should start ^3{0}^7 seconds after map restart or map change!",
+            var s = _sst.QlCommands.QlCmdSay(string.Format(
+                "^5[PICKUP]^7 Pickup ENDED. New pickup to start in ^3{0}^7 seconds!",
                 (PickupResetOnEndGameLimit / 1000)));
         }
 
@@ -1190,13 +1190,13 @@ namespace SST.Core.Modules
             await ClearTeams();
             // Force the bot to join a team, since votes can't be called in spectator mode.
             var botId = _sst.ServerInfo.CurrentPlayers[_sst.AccountName].Id;
-            await _sst.QlCommands.SendToQlAsync(string.Format("put {0} r", botId), false);
+            await _sst.QlCommands.SendToQlDelayedAsync(string.Format("put {0} r", botId), true, 1);
             // Callvote the teamsize based on the specified teamsize in the pickup module options.
             await
-                _sst.QlCommands.SendToQlAsync(
-                    string.Format("cv teamsize {0}", _sst.Mod.Pickup.Teamsize), false);
+                _sst.QlCommands.SendToQlDelayedAsync(
+                    string.Format("cv teamsize {0}", _sst.Mod.Pickup.Teamsize), true, 3);
             // Force the bot back to spectators.
-            await _sst.QlCommands.SendToQlAsync(string.Format("put {0} s", botId), false);
+            await _sst.QlCommands.SendToQlDelayedAsync(string.Format("put {0} s", botId), true, 1);
             IsBotSettingUpTeams = false;
         }
 
@@ -1236,13 +1236,13 @@ namespace SST.Core.Modules
 
             // Lock down the server
             await SetupTeams();
-            await _sst.QlCommands.QlCmdSay(string.Format(
+            await _sst.QlCommands.QlCmdDelayedSay(string.Format(
                 "^5[PICKUP]^7 Pickup mode is enabled. To be eligible to play, type: ^2{0}{1}",
-                CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+                CommandList.GameCommandPrefix, CommandList.CmdPickupAdd), 3);
 
-            await _sst.QlCommands.QlCmdSay(string.Format(
+            await _sst.QlCommands.QlCmdDelayedSay(string.Format(
                 "^5[PICKUP]^7 At least ^2{0}^7 players needed before teams and captains are picked.",
-                (_sst.Mod.Pickup.Teamsize * 2)));
+                (_sst.Mod.Pickup.Teamsize * 2)), 3);
 
             IsPickupPreGame = true;
             Log.Write("Pickup is in pre-game.", _logClassType, _logPrefix);

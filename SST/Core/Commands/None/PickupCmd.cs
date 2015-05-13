@@ -227,30 +227,33 @@ namespace SST.Core.Commands.None
         /// </summary>
         private async Task DisplayPickupHelp(CmdArgs c)
         {
-            StatusMessage = string.Format(
-                "^5[PICKUP] ^7Commands: ^3{0}{1}^7 sign yourself up, ^3{0}{2}^7 remove yourself, ^3{0}{3}^7 sign up as a captain",
+
+            string[] msgs = {
+                string.Format(
+                "^5[PICKUP] ^7Commands: ^3{0}{1}^7 sign up, ^3{0}{2}^7 remove yourself, ^3{0}{3}^7 sign up as captain",
                 CommandList.GameCommandPrefix, CommandList.CmdPickupAdd,
-                CommandList.CmdPickupRemove, CommandList.CmdPickupCap);
-
-            await SendServerSay(c, StatusMessage);
-
-            StatusMessage = string.Format(
+                CommandList.CmdPickupRemove, CommandList.CmdPickupCap),
+                
+                string.Format(
                 "^3{0}{1}^7 captains: pick a player, ^3{0}{2}^7 request a substitute for yourself, ^3{0}{3}^7 see who's signed up",
                 CommandList.GameCommandPrefix, CommandList.CmdPickupPick,
-                CommandList.CmdPickupSub, CommandList.CmdPickupWho);
+                CommandList.CmdPickupSub, CommandList.CmdPickupWho),
 
-            await SendServerSay(c, StatusMessage);
-
-            StatusMessage = string.Format(
+                string.Format(
                 "^5Privileged: ^3{0}{1} start^7 lock server & start, ^3{0}{1} reset^7 reset game," +
-                " ^3{0}{1} stop^7 cancel and unlock, ^3{0}{1} unban^7 to unban no-shows",
+                " ^3{0}{1} stop^7 cancel & unlock, ^3{0}{1} unban^7 to unban no-shows",
                 CommandList.GameCommandPrefix,
                 ((c.FromIrc)
                     ? (string.Format("{0} {1}",
                         IrcCommandList.IrcCmdQl, CommandList.CmdPickup))
-                    : CommandList.CmdPickup));
+                    : CommandList.CmdPickup))
+                            };
 
-            await SendServerSay(c, StatusMessage);
+            foreach (var msg in msgs)
+            {
+                StatusMessage = msg;
+                await SendServerSay(c, StatusMessage);
+            }
         }
 
         /// <summary>

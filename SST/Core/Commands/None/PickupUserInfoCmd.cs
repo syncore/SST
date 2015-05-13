@@ -1,41 +1,43 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SST.Database;
 using SST.Enums;
 using SST.Interfaces;
 using SST.Model;
+using SST.Util;
 
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Help command.
+    ///     Command: Check a player's pickup game information.
     /// </summary>
-    public class HelpCmd : IBotCommand
+    public class PickupUserInfoCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
+        private readonly DbPickups _pickupDb;
+        private readonly int _qlMinArgs = 2;
         private readonly SynServerTool _sst;
-        private bool _isIrcAccessAllowed = true;
-        private int _qlMinArgs = 0;
-
-        private UserLevel _userLevel = UserLevel.None;
+        private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCmd"/> class.
+        ///     Initializes a new instance of the <see cref="PickupUserInfoCmd" /> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
-        public HelpCmd(SynServerTool sst)
+        public PickupUserInfoCmd(SynServerTool sst)
         {
             _sst = sst;
+            _pickupDb = new DbPickups();
         }
 
         /// <summary>
-        /// Gets the minimum arguments for the IRC command.
+        ///     Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>
-        /// The minimum arguments for the IRC command.
+        ///     The minimum arguments for the IRC command.
         /// </value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this command can be accessed from IRC.
@@ -89,31 +91,25 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        /// Executes the specified command asynchronously.
+        ///     Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
+        ///     <c>true</c> if the command was successfully executed, otherwise
+        ///     <c>false</c>.
         /// </returns>
+        /// <remarks>
+        ///     Helpers.GetArgVal(c, 1) if specified: user to check
+        /// </remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var userDb = new DbUsers();
-            var senderLevel = userDb.GetUserLevel(c.FromUser);
-            var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
-            var cmds = new StringBuilder();
-            foreach (var cmd in _sst.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
-            {
-                cmds.Append(string.Format("{0}, ", cmd.Key));
-            }
-            StatusMessage = string.Format(
-                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
-                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
+            var pInfo = _pickupDb.GetUserPickupInfo(Helpers.GetArgVal(c, 1));
 
-            await SendServerTell(c, StatusMessage);
+            StatusMessage = string.Format("^5[PICKUP]^7 {0}", string.IsNullOrEmpty(pInfo)
+                ? string.Format("No pickup game info available for: ^5{0}", Helpers.GetArgVal(c, 1))
+                : string.Format("pickup game info for ^5{0}:^7 ", pInfo));
 
-            StatusMessage = "^7For detailed help visit the website at ^3sst.syncore.org^7, or ^3#sst_ql^7 on QuakeNet.";
-            await SendServerTell(c, StatusMessage);
+            await SendServerSay(c, StatusMessage);
             return true;
         }
 
@@ -127,7 +123,13 @@ namespace SST.Core.Commands.None
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
-            return string.Empty;
+            return string.Format(
+                "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
+                CommandList.GameCommandPrefix,
+                ((c.FromIrc)
+                    ? (string.Format("{0} {1}",
+                        c.CmdName, c.Args[1]))
+                    : c.CmdName));
         }
 
         /// <summary>

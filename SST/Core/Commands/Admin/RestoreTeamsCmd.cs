@@ -114,7 +114,7 @@ namespace SST.Core.Commands.Admin
             }
 
             StatusMessage = ("^2[SUCCESS]^7 Attempting to restore the teams from last game.");
-            await SendServerTell(c, StatusMessage);
+            await SendServerSay(c, StatusMessage);
             await RestoreTeams();
             return true;
         }

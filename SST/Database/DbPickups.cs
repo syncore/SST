@@ -235,6 +235,7 @@ namespace SST.Database
                         "Problem getting info for pickup game (dated: {0}) from pickup database: {1}",
                         pInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo), ex.Message),
                         _logClassType, _logPrefix);
+                    return null;
                 }
             }
             return pInfo;
@@ -282,6 +283,7 @@ namespace SST.Database
                     Log.WriteCritical(
                         "Problem retrieving top 10 users from pickup database" + ex.Message, _logClassType,
                         _logPrefix);
+                    return string.Empty;
                 }
             }
             return users.ToString().TrimEnd(',', ' ');
@@ -459,6 +461,7 @@ namespace SST.Database
                     Log.WriteCritical(string.Format(
                         "Problem getting pickup info for player {0} from pickup database: {1}",
                         user, ex.Message), _logClassType, _logPrefix);
+                    return string.Empty;
                 }
             }
             return userInfo.ToString();

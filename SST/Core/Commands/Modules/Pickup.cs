@@ -242,13 +242,13 @@ namespace SST.Core.Commands.Modules
             }
             if (!_sst.ServerInfo.IsATeamGame())
             {
-                // Might have not gotten it the first time, so request again, in a few seconds.
-                await _sst.QlCommands.SendToQlDelayedAsync("serverinfo", false, 3);
-                _sst.QlCommands.ClearQlWinConsole();
                 StatusMessage =
                     "^1[ERROR]^3 Pickup module can only be enabled for team-based games. If this is" +
                     " an error, try again in a few seconds.";
                 await SendServerTell(c, StatusMessage);
+                // Might have not gotten it the first time, so request again, in a few seconds.
+                await _sst.QlCommands.SendToQlDelayedAsync("serverinfo", false, 3);
+                _sst.QlCommands.ClearQlWinConsole();
                 return false;
             }
             await EnablePickup(c, teamsize);

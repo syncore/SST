@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SST.Database;
 using SST.Enums;
 using SST.Interfaces;
@@ -10,9 +7,9 @@ using SST.Model;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Help command.
+    ///     Command: Show the 10 players with the most played games.
     /// </summary>
-    public class HelpCmd : IBotCommand
+    public class PickupTopTenCmd : IBotCommand
     {
         private readonly SynServerTool _sst;
         private bool _isIrcAccessAllowed = true;
@@ -21,10 +18,10 @@ namespace SST.Core.Commands.None
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCmd"/> class.
+        /// Initializes a new instance of the <see cref="PickupTopTenCmd" /> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
-        public HelpCmd(SynServerTool sst)
+        public PickupTopTenCmd(SynServerTool sst)
         {
             _sst = sst;
         }
@@ -98,22 +95,14 @@ namespace SST.Core.Commands.None
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var userDb = new DbUsers();
-            var senderLevel = userDb.GetUserLevel(c.FromUser);
-            var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
-            var cmds = new StringBuilder();
-            foreach (var cmd in _sst.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
-            {
-                cmds.Append(string.Format("{0}, ", cmd.Key));
-            }
-            StatusMessage = string.Format(
-                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
-                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
+            var pickupDb = new DbPickups();
+            var topTenPlayers = pickupDb.GetTopTenUsers();
 
-            await SendServerTell(c, StatusMessage);
-
-            StatusMessage = "^7For detailed help visit the website at ^3sst.syncore.org^7, or ^3#sst_ql^7 on QuakeNet.";
-            await SendServerTell(c, StatusMessage);
+            StatusMessage = string.Format("^5[PICKUP]^7 {0}", string.IsNullOrEmpty(topTenPlayers)
+                ? "Top 10 pickup game players are unavailable."
+                : string.Format("Top 10 by pickup games played: ^5{0}", topTenPlayers));
+               
+            await SendServerSay(c, StatusMessage);
             return true;
         }
 

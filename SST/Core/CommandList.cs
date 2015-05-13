@@ -40,9 +40,12 @@ namespace SST.Core
         public const string CmdPickup = "pickup";
         public const string CmdPickupAdd = "a";
         public const string CmdPickupCap = "cap";
+        public const string CmdPickupLastGame = "last";
         public const string CmdPickupPick = "pick";
         public const string CmdPickupRemove = "r";
         public const string CmdPickupSub = "sub";
+        public const string CmdPickupTopTen = "top10";
+        public const string CmdPickupUserInfo = "pinfo";
         public const string CmdPickupWho = "who";
         public const string CmdRejectTeamSuggestion = "reject";
         public const string CmdReload = "reload";
@@ -57,6 +60,7 @@ namespace SST.Core
         public const string CmdUnlock = "unlock";
         public const string CmdUnmute = "unmute";
         public const string CmdUnpause = "unpause";
+        public const string CmdUsers = "users";
         public const string CmdVersion = "version";
         public const string CmdVoteNo = "no";
         public const string CmdVoteYes = "yes";
@@ -112,9 +116,12 @@ namespace SST.Core
             Commands.Add(CmdPickup, new PickupCmd(_sst));
             Commands.Add(CmdPickupAdd, new PickupAddCmd(_sst));
             Commands.Add(CmdPickupCap, new PickupCapCmd(_sst));
+            Commands.Add(CmdPickupLastGame, new PickupLastGameCmd(_sst));
+            Commands.Add(CmdPickupUserInfo, new PickupUserInfoCmd(_sst));
             Commands.Add(CmdPickupRemove, new PickupRemoveCmd(_sst));
             Commands.Add(CmdPickupPick, new PickupPickCmd(_sst));
             Commands.Add(CmdPickupSub, new PickupSubCmd(_sst));
+            Commands.Add(CmdPickupTopTen, new PickupTopTenCmd(_sst));
             Commands.Add(CmdPickupWho, new PickupWhoCmd(_sst));
             Commands.Add(CmdForceJoinRed, new ForceJoinRedCmd(_sst));
             Commands.Add(CmdForceJoinSpec, new ForceJoinSpecCmd(_sst));
@@ -126,6 +133,7 @@ namespace SST.Core
             Commands.Add(CmdUnlock, new UnlockCmd(_sst));
             Commands.Add(CmdUnmute, new UnmuteCmd(_sst));
             Commands.Add(CmdUnpause, new UnpauseCmd(_sst));
+            Commands.Add(CmdUsers, new UsersCmd(_sst));
             Commands.Add(CmdReload, new ReloadCmd(_sst));
             Commands.Add(CmdSeen, new SeenCmd(_sst));
             Commands.Add(CmdShutdown, new ShutdownCmd(_sst));

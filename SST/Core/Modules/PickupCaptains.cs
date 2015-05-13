@@ -255,8 +255,8 @@ namespace SST.Core.Modules
             Log.Write(string.Format("It is the {0} captain's turn to pick.",
                 (team == Team.Red) ? "RED" : "BLUE"), _logClassType, _logPrefix);
 
-            // Avoid showing this when teams are full
-            if (!_manager.AreTeamsFull)
+            // Avoid showing this when team is full
+            if (_sst.ServerInfo.GetTeam(team).Count != _sst.Mod.Pickup.Teamsize)
             {
                 await ShowWhosePick(team);
                 await _manager.DisplayAvailablePlayers();

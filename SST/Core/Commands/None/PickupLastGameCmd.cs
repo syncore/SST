@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Threading.Tasks;
 using SST.Database;
 using SST.Enums;
@@ -10,9 +8,9 @@ using SST.Model;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Help command.
+    ///     Command: Show the info from the last pickup game.
     /// </summary>
-    public class HelpCmd : IBotCommand
+    public class PickupLastGameCmd : IBotCommand
     {
         private readonly SynServerTool _sst;
         private bool _isIrcAccessAllowed = true;
@@ -21,10 +19,10 @@ namespace SST.Core.Commands.None
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCmd"/> class.
+        /// Initializes a new instance of the <see cref="PickupLastGameCmd" /> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
-        public HelpCmd(SynServerTool sst)
+        public PickupLastGameCmd(SynServerTool sst)
         {
             _sst = sst;
         }
@@ -98,22 +96,16 @@ namespace SST.Core.Commands.None
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
-            var userDb = new DbUsers();
-            var senderLevel = userDb.GetUserLevel(c.FromUser);
-            var senderLevelName = Enum.GetName(typeof(UserLevel), senderLevel);
-            var cmds = new StringBuilder();
-            foreach (var cmd in _sst.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
-            {
-                cmds.Append(string.Format("{0}, ", cmd.Key));
-            }
-            StatusMessage = string.Format(
-                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
-                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
+            var pickupDb = new DbPickups();
+            var lastInfo = pickupDb.GetLastPickupInfo();
 
-            await SendServerTell(c, StatusMessage);
-
-            StatusMessage = "^7For detailed help visit the website at ^3sst.syncore.org^7, or ^3#sst_ql^7 on QuakeNet.";
-            await SendServerTell(c, StatusMessage);
+            StatusMessage = string.Format("^5[PICKUP]^7 {0}", (lastInfo == null)
+               ? "Info for last pickup game is unavailable."
+               : string.Format("last pickup game ^2{0} - ^1Red: {1} (C: {2}), ^5Blue: {3} (C: {4}), ^3Subs: {5}, ^6No-Shows: {6}",
+               lastInfo.StartDate.ToString("G", DateTimeFormatInfo.InvariantInfo), lastInfo.RedTeam, lastInfo.RedCaptain,
+               lastInfo.BlueTeam, lastInfo.BlueCaptain, lastInfo.Subs, lastInfo.NoShows));
+            
+            await SendServerSay(c, StatusMessage);
             return true;
         }
 
