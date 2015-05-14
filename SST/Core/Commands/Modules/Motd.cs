@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Message of the day. Repeat a given message every X minutes.
+    /// Module: Message of the day. Repeat a given message every X minutes.
     /// </summary>
     public class Motd : IModule
     {
@@ -25,7 +25,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Motd" /> class.
+        /// Initializes a new instance of the <see cref="Motd"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public Motd(SynServerTool sst)
@@ -37,83 +37,67 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets or sets the MOTD message to repeat.
+        /// Gets or sets the MOTD message to repeat.
         /// </summary>
-        /// <value>
-        ///     The MOTD message to repeat.
-        /// </value>
+        /// <value>The MOTD message to repeat.</value>
         public string Message { get; set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets or sets the message repeat time.
+        /// Gets or sets the message repeat time.
         /// </summary>
-        /// <value>
-        ///     The message repeat time.
-        /// </value>
+        /// <value>The message repeat time.</value>
         public int RepeatInterval { get; set; }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Deactivates the module.
+        /// Deactivates the module.
         /// </summary>
         /// <remarks>This is called from the UI context.</remarks>
         public void Deactivate()
@@ -122,7 +106,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -132,13 +116,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -194,12 +175,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -213,9 +193,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// Automatically starts the module if an active flag is detected in the configuration.
         /// </summary>
-        /// <remarks>This is used after <see cref="LoadConfig" /> has been called, to set the motd on load.</remarks>
+        /// <remarks>
+        /// This is used after <see cref="LoadConfig"/> has been called, to set the motd on load.
+        /// </remarks>
         /// <remarks>This is called from the UI context.</remarks>
         public void Init()
         {
@@ -229,7 +211,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -253,7 +235,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -264,7 +246,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -275,7 +257,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         public void UpdateConfig(bool active)
         {
@@ -294,7 +276,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the motd.
+        /// Disables the motd.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisableMotd(CmdArgs c)
@@ -309,13 +291,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sets the message of the day.
+        /// Sets the message of the day.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="interval">The interval.</param>
-        /// <remarks>
-        ///     This is used when an admin issues the command in-game.
-        /// </remarks>
+        /// <remarks>This is used when an admin issues the command in-game.</remarks>
         private async Task SetMotd(CmdArgs c, int interval)
         {
             int msgStart;

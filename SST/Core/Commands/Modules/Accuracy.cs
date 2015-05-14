@@ -9,7 +9,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: enable or disable the ability to check a player's accuracy when bot is in spectator mode.
+    /// Module: enable or disable the ability to check a player's accuracy when bot is in spectator mode.
     /// </summary>
     public class Accuracy : IModule
     {
@@ -22,7 +22,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Accuracy" /> class.
+        /// Initializes a new instance of the <see cref="Accuracy"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public Accuracy(SynServerTool sst)
@@ -33,67 +33,55 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -103,13 +91,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -147,12 +132,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -166,7 +150,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -177,7 +161,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -188,7 +172,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -199,11 +183,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// <param name="active">
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active; otherwise it is to be
+        /// disabled when updating the configuration.
         /// </param>
         public void UpdateConfig(bool active)
         {
@@ -218,7 +202,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the accuracy scanning module.
+        /// Disables the accuracy scanning module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisableAcc(CmdArgs c)
@@ -232,7 +216,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the accuracy scanning module.
+        /// Enables the accuracy scanning module.
         /// </summary>
         private async Task EnableAcc(CmdArgs c)
         {

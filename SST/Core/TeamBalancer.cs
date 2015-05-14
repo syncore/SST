@@ -9,24 +9,20 @@ using SST.Util;
 
 namespace SST.Core
 {
-    /// <summary>
-    ///     Quick and dirty team balancer according to Elo ranking
-    ///     Algorithm idea by 'Nari' <see cref="http://forums.faforever.com/forums//viewtopic.php?f=42&t=3659&start=10" />
-    /// </summary>
+    /// <summary> Quick and dirty team balancer according to Elo ranking Algorithm idea by 'Nari'
+    /// <see cref="http://forums.faforever.com/forums//viewtopic.php?f=42&t=3659&start=10" /> </summary>
     public class TeamBalancer
     {
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[TEAMBALANCE]";
 
         /// <summary>
-        ///     Main method for performing the team balance operation.
+        /// Main method for performing the team balance operation.
         /// </summary>
         /// <param name="players">The players.</param>
         /// <param name="gametype">The gametype.</param>
         /// <param name="desiredTeam">The desired team to return.</param>
-        /// <returns>
-        ///     A list of players for the desired team.
-        /// </returns>
+        /// <returns>A list of players for the desired team.</returns>
         public List<PlayerInfo> DoBalance(IList<PlayerInfo> players, QlGameTypes gametype, Team desiredTeam)
         {
             // Ascending array sort
@@ -35,8 +31,7 @@ namespace SST.Core
             var numPlayers = playersSortedByElo.Count;
             var redTeam = new List<PlayerInfo>();
             var blueTeam = new List<PlayerInfo>();
-            // The first four players are predetermined:
-            // Highest ranked player to red
+            // The first four players are predetermined: Highest ranked player to red
             redTeam.Add(playersSortedByElo[numPlayers - 1]);
             // Second highest ranked player to blue
             blueTeam.Add(playersSortedByElo[numPlayers - 2]);
@@ -55,8 +50,8 @@ namespace SST.Core
                         playersSortedByElo[numPlayers - i].EloData.GetEloFromGameType(gametype),
                         playersSortedByElo[numPlayers - (i + 1)].EloData.GetEloFromGameType(gametype),
                         redTeam, blueTeam, gametype);
-                // better ranked player: playerElos[numPlayers - i]
-                // worse ranked player: playerElos[numPlayers - (i+1)]
+                // better ranked player: playerElos[numPlayers - i] worse ranked player:
+                // playerElos[numPlayers - (i+1)]
                 if (lowVsHigh == 0)
                 {
                     redTeam.Add(playersSortedByElo[numPlayers - (i + 1)]);
@@ -74,14 +69,14 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Adds a player's Elo to the existing Elo of a team to determine what the average Elo
-        ///     would be if that player were on that team.
+        /// Adds a player's Elo to the existing Elo of a team to determine what the average Elo
+        /// would be if that player were on that team.
         /// </summary>
         /// <param name="team">The team.</param>
         /// <param name="playerEloToAdd">The player's Elo to add.</param>
         /// <param name="gametype">The gametype.</param>
         /// <returns>
-        ///     The average once the player's Elo has been added to the existing team's Elo.
+        /// The average once the player's Elo has been added to the existing team's Elo.
         /// </returns>
         private long AddToTeamGetAvg(IList<PlayerInfo> team, long playerEloToAdd, QlGameTypes gametype)
         {
@@ -90,19 +85,15 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Compares a higher ranked player's Elo versus a lower ranked player's Elo.
+        /// Compares a higher ranked player's Elo versus a lower ranked player's Elo.
         /// </summary>
         /// <param name="betterRankedPlayerElo">The better ranked player's Elo.</param>
         /// <param name="worseRankedPlayerElo">The worse ranked player's Elo.</param>
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>
         /// <param name="gametype">The gametype.</param>
-        /// <returns>
-        ///     0 or 1 to indicate which of the players has a higher Elo value.
-        /// </returns>
-        /// <remarks>
-        ///     See comment for explanation.
-        /// </remarks>
+        /// <returns>0 or 1 to indicate which of the players has a higher Elo value.</returns>
+        /// <remarks>See comment for explanation.</remarks>
         private long CompareBothPlayers(long betterRankedPlayerElo, long worseRankedPlayerElo,
             IList<PlayerInfo> teamRed,
             IList<PlayerInfo> teamBlue, QlGameTypes gametype)
@@ -179,7 +170,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets and displays the results (for debug purposes)
+        /// Gets and displays the results (for debug purposes)
         /// </summary>
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>

@@ -9,7 +9,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: enable or disable the ability to list the active QL servers for a given gametype and region.
+    /// Module: enable or disable the ability to list the active QL servers for a given gametype and region.
     /// </summary>
     public class Servers : IModule
     {
@@ -29,91 +29,73 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets or sets the date and time that the query command was last used.
+        /// Gets or sets the date and time that the query command was last used.
         /// </summary>
-        /// <value>
-        ///     The date and time that the query command was last used.
-        /// </value>
+        /// <value>The date and time that the query command was last used.</value>
         public DateTime LastQueryTime { get; set; }
 
         /// <summary>
-        ///     Gets or sets the maximum servers to display.
+        /// Gets or sets the maximum servers to display.
         /// </summary>
-        /// <value>
-        ///     The maximum servers to display.
-        /// </value>
+        /// <value>The maximum servers to display.</value>
         public int MaxServersToDisplay { get; set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time between queries.
+        /// Gets or sets the time between queries.
         /// </summary>
-        /// <value>
-        ///     The time between queries.
-        /// </value>
+        /// <value>The time between queries.</value>
         public double TimeBetweenQueries { get; set; }
 
         /// <summary>
-        ///     Disables the active servers module.
+        /// Disables the active servers module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         public async Task DisableServers(CmdArgs c)
@@ -127,7 +109,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -137,13 +119,12 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the active servers module.
+        /// Enables the active servers module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="maxServers">The maximum servers to display.</param>
         /// <param name="timeBetween">
-        ///     The time in seconds that must elapse between users issuing the
-        ///     query command.
+        /// The time in seconds that must elapse between users issuing the query command.
         /// </param>
         public async Task EnableServers(CmdArgs c, int maxServers, double timeBetween)
         {
@@ -161,13 +142,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -208,12 +186,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -228,7 +205,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -260,7 +237,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -271,7 +248,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -282,12 +259,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// if set to
         /// <c>true</c>
-        /// then the module is to remain active;
-        /// otherwise it is to be disabled when updating the configuration.
+        /// then the module is to remain active; otherwise it is to be disabled when updating the configuration.
         public void UpdateConfig(bool active)
         {
             // Go into effect now

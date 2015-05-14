@@ -13,7 +13,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Database class responsible for tracking banned players.
+    /// Database class responsible for tracking banned players.
     /// </summary>
     public class DbBans : CommonSqliteDb
     {
@@ -23,7 +23,7 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.BanDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbBans" /> class.
+        /// Initializes a new instance of the <see cref="DbBans"/> class.
         /// </summary>
         public DbBans()
         {
@@ -31,7 +31,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="bannedBy">The admin who added the ban.</param>
@@ -87,7 +87,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         public void DeleteUserFromDb(string user)
@@ -125,9 +125,9 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets all of the bans in the ban database.
+        /// Gets all of the bans in the ban database.
         /// </summary>
-        /// <returns>The users as a list of <see cref="BanInfo" /> objects.</returns>
+        /// <returns>The users as a list of <see cref="BanInfo"/> objects.</returns>
         public List<BanInfo> GetAllBans()
         {
             var allBans = new List<BanInfo>();
@@ -171,7 +171,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the ban information.
+        /// Gets the ban information.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The ban information as a QL color-formatted string.</returns>
@@ -241,13 +241,13 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Determines whether the existing ban is still valid, if it exists, for the specified user.
+        /// Determines whether the existing ban is still valid, if it exists, for the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="banInfo">The ban information.</param>
         /// <returns>
-        ///     <c>true</c> if the existing ban's expiration date has not passed,
-        ///     <c>false</c> is ban has expired or does not exist.
+        /// <c>true</c> if the existing ban's expiration date has not passed, <c>false</c> is ban
+        /// has expired or does not exist.
         /// </returns>
         public bool IsExistingBanStillValid(string user, out BanInfo banInfo)
         {
@@ -257,14 +257,13 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Removes any expired bans, and if ban was set by a module with ability
-        ///     to set bans, reset any module-specific properties.
+        /// Removes any expired bans, and if ban was set by a module with ability to set bans, reset
+        /// any module-specific properties.
         /// </summary>
         /// <remarks>
-        /// If access to the user interface or the underlying main tool class are needed
-        /// (i.e. to send an unban command directly to the game), see the RemoveBan method
-        /// in the BanManager class since SST database classes are given
-        /// no access to the main class nor the user interface.
+        /// If access to the user interface or the underlying main tool class are needed (i.e. to
+        /// send an unban command directly to the game), see the RemoveBan method in the BanManager
+        /// class since SST database classes are given no access to the main class nor the user interface.
         /// </remarks>
         public void RemoveExpiredBans()
         {
@@ -300,7 +299,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user is already banned.
+        /// Checks whether the user is already banned.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user is already banned, otherwise <c>false</c>.</returns>
@@ -310,7 +309,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the database.
+        /// Creates the database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -342,16 +341,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the ban database exists.
+        /// Checks whether the ban database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the ban database.
+        /// Deletes the ban database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -369,7 +368,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -401,7 +400,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the registration database.
+        /// Verifies the registration database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

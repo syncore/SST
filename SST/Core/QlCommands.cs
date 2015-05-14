@@ -8,7 +8,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for sending various commands to the QL game instance.
+    /// Class responsible for sending various commands to the QL game instance.
     /// </summary>
     public class QlCommands
     {
@@ -20,7 +20,7 @@ namespace SST.Core
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="QlCommands" /> class.
+        /// Initializes a new instance of the <see cref="QlCommands"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public QlCommands(SynServerTool sst)
@@ -36,7 +36,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks the main menu (ui_mainmenu) status.
+        /// Checks the main menu (ui_mainmenu) status.
         /// </summary>
         public async Task CheckMainMenuStatus()
         {
@@ -46,7 +46,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Clear both the QL WinConsole and the in-game console.
+        /// Clear both the QL WinConsole and the in-game console.
         /// </summary>
         public void ClearBothQlConsoles()
         {
@@ -57,7 +57,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Clears the Ql windows console.
+        /// Clears the Ql windows console.
         /// </summary>
         public void ClearQlWinConsole()
         {
@@ -77,7 +77,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'unban' command to QL.
+        /// Sends the 'unban' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task CmdUnban(string player)
@@ -89,13 +89,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'kickban' command to QL after the specified delay.
+        /// Sends the 'kickban' command to QL after the specified delay.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="delayInSecs">The delay in secs.</param>
         /// <remarks>
-        ///     This is typically used as a courtesy when auto-kickbanning players so that
-        ///     they have some idea why they were kicked.
+        /// This is typically used as a courtesy when auto-kickbanning players so that they have
+        /// some idea why they were kicked.
         /// </remarks>
         public async Task CustCmdDelayedKickban(string player, int delayInSecs)
         {
@@ -117,12 +117,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'kickban' command to QL.
+        /// Sends the 'kickban' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <remarks>
-        ///     Our version takes the player name as an argument and converts it into the
-        ///     playerID required for the actual QL command.
+        /// Our version takes the player name as an argument and converts it into the playerID
+        /// required for the actual QL command.
         /// </remarks>
         public async Task CustCmdKickban(string player)
         {
@@ -143,13 +143,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'put' command to QL.
+        /// Sends the 'put' command to QL.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>
         /// <remarks>
-        ///     Our version takes the player name as an argument and converts it into the playerID required for the actual QL
-        ///     command.
+        /// Our version takes the player name as an argument and converts it into the playerID
+        /// required for the actual QL command.
         /// </remarks>
         public async Task CustCmdPutPlayer(string player, Team team)
         {
@@ -183,11 +183,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the /put command after a given delay in seconds.
+        /// Sends the /put command after a given delay in seconds.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>
-        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'put' command.</param>
+        /// <param name="runCmdInSeconds">
+        /// The time to wait, in seconds, before sending the 'put' command.
+        /// </param>
         /// <returns></returns>
         public async Task CustCmdPutPlayerDelayed(string player, Team team, int runCmdInSeconds)
         {
@@ -196,12 +198,10 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Disables in-game console printing.
-        ///     <remarks>
-        ///         With this set (con_noprint 1) no text will be shown in the in-game console. This
-        ///         is the preferred mode when developer mode is enabled. Note, text will ALWAYS be appended
-        ///         to the winconsole, regardless of this setting.
-        ///     </remarks>
+        /// Disables in-game console printing. <remarks> With this set (con_noprint 1) no text will
+        /// be shown in the in-game console. This is the preferred mode when developer mode is
+        /// enabled. Note, text will ALWAYS be appended to the winconsole, regardless of this
+        /// setting. </remarks>
         /// </summary>
         public void DisableConsolePrinting()
         {
@@ -211,7 +211,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Disables the developer mode.
+        /// Disables the developer mode.
         /// </summary>
         public void DisableDeveloperMode()
         {
@@ -221,12 +221,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Enables in-game console printing.
+        /// Enables in-game console printing.
         /// </summary>
         /// <remarks>
-        ///     With this set (con_noprint 0), text will be shown on the in-game console.
-        ///     Note: this might be annoying when attempting to play with developer mode on since
-        ///     there will be multiple 'tinfo' messages.
+        /// With this set (con_noprint 0), text will be shown on the in-game console.
+        /// Note: this might be annoying when attempting to play with developer mode on since there
+        ///       will be multiple 'tinfo' messages.
         /// </remarks>
         public void EnableConsolePrinting()
         {
@@ -236,7 +236,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Enables the developer mode.
+        /// Enables the developer mode.
         /// </summary>
         public void EnableDeveloperMode()
         {
@@ -246,7 +246,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'clear' command to QL.
+        /// Sends the 'clear' command to QL.
         /// </summary>
         public void QlCmdClear()
         {
@@ -254,7 +254,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'configstrings' command to QL.
+        /// Sends the 'configstrings' command to QL.
         /// </summary>
         public async Task QlCmdConfigStrings()
         {
@@ -263,10 +263,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the /say command after a given delay in seconds.
+        /// Sends the /say command after a given delay in seconds.
         /// </summary>
         /// <param name="text">The text to send.</param>
-        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'say' command.</param>
+        /// <param name="runCmdInSeconds">
+        /// The time to wait, in seconds, before sending the 'say' command.
+        /// </param>
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
             await Task.Delay(runCmdInSeconds * 1000);
@@ -274,11 +276,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the /tell command to a player after a given delay in seconds.
+        /// Sends the /tell command to a player after a given delay in seconds.
         /// </summary>
         /// <param name="text">The text to send.</param>
         /// <param name="player">The player.</param>
-        /// <param name="runCmdInSeconds">The time to wait, in seconds, before sending the 'tell' command.</param>
+        /// <param name="runCmdInSeconds">
+        /// The time to wait, in seconds, before sending the 'tell' command.
+        /// </param>
         public async Task QlCmdDelayedTell(string text, string player, int runCmdInSeconds)
         {
             await Task.Delay(runCmdInSeconds * 1000);
@@ -286,7 +290,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'players' command to QL.
+        /// Sends the 'players' command to QL.
         /// </summary>
         public async Task QlCmdPlayers()
         {
@@ -294,21 +298,19 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'say' command to QL. If too much text is received then issue 'say' command
-        ///     over multiple lines.
+        /// Sends the 'say' command to QL. If too much text is received then issue 'say' command
+        /// over multiple lines.
         /// </summary>
         /// <param name="text">The text to say.</param>
         /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
         public async Task QlCmdSay(string text)
         {
-            // Text to send might be too long, so send over multiple lines.
-            // Line length of between 98 & 115 chars is probably optimal for
-            // lower resolutions based on guestimate. However, QL actually supports
-            // sending up to 135 characters at a time.
+            // Text to send might be too long, so send over multiple lines. Line length of between
+            // 98 & 115 chars is probably optimal for lower resolutions based on guestimate.
+            // However, QL actually supports sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
-                // .5 ensures we always round up to next int, no matter size
-                // ReSharper disable once PossibleLossOfFraction
+                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -368,21 +370,19 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'say_team' command to QL. If too much text is received then issue 'say_team' command
-        ///     over multiple lines.
+        /// Sends the 'say_team' command to QL. If too much text is received then issue 'say_team'
+        /// command over multiple lines.
         /// </summary>
         /// <param name="text">The text to say.</param>
         /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
         public async Task QlCmdSayTeam(string text)
         {
-            // Text to send might be too long, so send over multiple lines.
-            // Line length of between 98 & 115 chars is probably optimal for
-            // lower resolutions based on guestimate. However, QL actually supports
-            // sending up to 135 characters at a time.
+            // Text to send might be too long, so send over multiple lines. Line length of between
+            // 98 & 115 chars is probably optimal for lower resolutions based on guestimate.
+            // However, QL actually supports sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
-                // .5 ensures we always round up to next int, no matter size
-                // ReSharper disable once PossibleLossOfFraction
+                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -442,7 +442,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'serverinfo' command to QL.
+        /// Sends the 'serverinfo' command to QL.
         /// </summary>
         public async Task QlCmdServerInfo()
         {
@@ -450,8 +450,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'tell player' command to QL. If too much text is received then issue 'tell' command
-        ///     over multiple lines.
+        /// Sends the 'tell player' command to QL. If too much text is received then issue 'tell'
+        /// command over multiple lines.
         /// </summary>
         /// <param name="player">The player to whom the message is to be sent.</param>
         /// <param name="text">The text to tell.</param>
@@ -463,12 +463,11 @@ namespace SST.Core
 
             var playerId = _sst.ServerInfo.CurrentPlayers[player].Id;
 
-            // Text to send might be too long, so send over multiple lines.
-            // With 'tell' it is 107 characters, which is shorter than for chat.
+            // Text to send might be too long, so send over multiple lines. With 'tell' it is 107
+            // characters, which is shorter than for chat.
             if ((text.Length) > MaxTellLineLength)
             {
-                // .5 ensures we always round up to next int, no matter size
-                // ReSharper disable once PossibleLossOfFraction
+                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxTellLineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -528,7 +527,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Requests the server address.
+        /// Requests the server address.
         /// </summary>
         public void RequestServerAddress()
         {
@@ -537,7 +536,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Send a synchronous command, typically for retrieving cvars.
+        /// Send a synchronous command, typically for retrieving cvars.
         /// </summary>
         /// <param name="toSend">The command (cvar) to send.</param>
         /// <param name="delay">if set to <c>true</c> send with a delay.</param>
@@ -547,13 +546,15 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Asynchronously sends the given text to the QL console.
+        /// Asynchronously sends the given text to the QL console.
         /// </summary>
         /// <param name="toSend">To text to send.</param>
-        /// <param name="delay">if set to <c>true</c> then sends the text to QL and waits with a slight delay.</param>
+        /// <param name="delay">
+        /// if set to <c>true</c> then sends the text to QL and waits with a slight delay.
+        /// </param>
         /// <remarks>
-        ///     Some commands that return significant amounts of text (i.e. serverinfo) have to have some time to be
-        ///     received, so a delay is necessary.
+        /// Some commands that return significant amounts of text (i.e. serverinfo) have to have
+        /// some time to be received, so a delay is necessary.
         /// </remarks>
         public async Task SendToQlAsync(string toSend, bool delay)
         {
@@ -563,14 +564,17 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Asynchronously sends the given text to the QL console after a specified time delay.
+        /// Asynchronously sends the given text to the QL console after a specified time delay.
         /// </summary>
         /// <param name="toSend">The text to send.</param>
         /// <param name="delay">if set to <c>true</c> [delay].</param>
-        /// <param name="runCmdInSeconds">The number of seconds to wait before sending the given text..</param>
+        /// <param name="runCmdInSeconds">
+        /// The number of seconds to wait before sending the given text..
+        /// </param>
         /// <remarks>
-        ///     This is primarily used for the 'players' command since the player info is not immediately available
-        ///     when a player connects, we wait a certain number of seconds before requesting it.
+        /// This is primarily used for the 'players' command since the player info is not
+        /// immediately available when a player connects, we wait a certain number of seconds before
+        /// requesting it.
         /// </remarks>
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
@@ -580,7 +584,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'say' command to QL.
+        /// Sends the 'say' command to QL.
         /// </summary>
         /// <param name="text">The text.</param>
         private void DoSay(string text)
@@ -589,7 +593,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'say_team' command to QL.
+        /// Sends the 'say_team' command to QL.
         /// </summary>
         /// <param name="text">The text.</param>
         private void DoSayTeam(string text)
@@ -598,7 +602,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the 'tell player' command to QL.
+        /// Sends the 'tell player' command to QL.
         /// </summary>
         /// <param name="playerId">The player's id.</param>
         /// <param name="text">The text.</param>
@@ -608,7 +612,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends the QL command.
+        /// Sends the QL command.
         /// </summary>
         /// <param name="toSend">To send.</param>
         /// <param name="delay">if set to <c>true</c> [delay].</param>
@@ -628,10 +632,12 @@ namespace SST.Core
             // Simulate the pressing of 'ENTER' key to send message.
             Win32Api.SendMessage(iText, Win32Api.WM_CHAR, new IntPtr(Win32Api.VK_RETURN), IntPtr.Zero);
 
-            // Tiny delay is sometimes necessary with QL commands that send back a lot of info (i.e. players, serverinfo)
+            // Tiny delay is sometimes necessary with QL commands that send back a lot of info (i.e.
+            // players, serverinfo)
             if (delay)
             {
-                // Creates a new event handler that will never be set, and then waits the full timeout period
+                // Creates a new event handler that will never be set, and then waits the full
+                // timeout period
                 new ManualResetEvent(false).WaitOne(10);
             }
         }

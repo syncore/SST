@@ -1,18 +1,16 @@
 ﻿namespace SST.Ui.Validation.Modules
 {
     /// <summary>
-    ///     UI Validation class for the Modules: Elo Limiter Banner tab.
+    /// UI Validation class for the Modules: Elo Limiter Banner tab.
     /// </summary>
     public class EloLimitValidator
     {
         /// <summary>
-        ///     Determines whether the specified user input is a valid maximum Elo value.
+        /// Determines whether the specified user input is a valid maximum Elo value.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidMaximumElo(string userInput, out string errorMsg)
         {
             errorMsg = "The maximum Elo must be a positive number!";
@@ -31,13 +29,11 @@
         }
 
         /// <summary>
-        ///     Determines whether the specified user input is a valid minimum Elo value.
+        /// Determines whether the specified user input is a valid minimum Elo value.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidMinimumElo(string userInput, out string errorMsg)
         {
             errorMsg = "The minimum Elo must be a positive number!";

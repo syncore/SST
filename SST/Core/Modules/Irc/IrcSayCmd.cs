@@ -36,9 +36,7 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        /// The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs
         {
             get { return _ircMinArgs; }
@@ -53,12 +51,11 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets a value indicating whether this command requires
-        /// the bot to be monitoring a server before it can be used.
+        /// Gets a value indicating whether this command requires the bot to be monitoring a server
+        /// before it can be used.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command requires the bot to be monitoring
-        /// a server; otherwise, <c>false</c>.
+        /// <c>true</c> if this command requires the bot to be monitoring a server; otherwise, <c>false</c>.
         /// </value>
         public bool RequiresMonitoring
         {
@@ -68,9 +65,7 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the user level.
         /// </summary>
-        /// <value>
-        /// The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public IrcUserLevel UserLevel
         {
             get { return _userLevel; }
@@ -91,11 +86,10 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         /// <remarks>
-        /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync" />
+        /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync"/>
         /// </remarks>
         public bool Exec(CmdArgs c)
         {
@@ -107,8 +101,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {

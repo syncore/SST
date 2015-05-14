@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for processing bot commands.
+    /// Class responsible for processing bot commands.
     /// </summary>
     public class CommandProcessor
     {
@@ -25,7 +25,7 @@ namespace SST.Core
         private readonly DbUsers _users;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CommandProcessor" /> class.
+        /// Initializes a new instance of the <see cref="CommandProcessor"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public CommandProcessor(SynServerTool sst)
@@ -38,18 +38,16 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the commands.
+        /// Gets the commands.
         /// </summary>
-        /// <value>
-        ///     The commands.
-        /// </value>
+        /// <value>The commands.</value>
         public Dictionary<string, IBotCommand> Commands
         {
             get { return _cmdList.Commands; }
         }
 
         /// <summary>
-        ///     Processes the bot command.
+        /// Processes the bot command.
         /// </summary>
         /// <param name="fromUser">The user who sent the command.</param>
         /// <param name="msg">The full message text.</param>
@@ -93,15 +91,15 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the command can be executed without taking into account
-        ///     the required argument length.
+        /// Determines whether the command can be executed without taking into account the required
+        /// argument length.
         /// </summary>
         /// <param name="fromUser">The sender of the command..</param>
         /// <param name="commandName">Name of the command.</param>
         /// <param name="fullMessageText">The full message text.</param>
         /// <returns>
-        ///     <c>true</c> if the command can be executed, without taking into account
-        ///     required argument length of the command, otherwise <c>false</c>.
+        /// <c>true</c> if the command can be executed, without taking into account required
+        /// argument length of the command, otherwise <c>false</c>.
         /// </returns>
         private async Task<bool> CheckCommand(string fromUser, string commandName, string fullMessageText)
         {
@@ -150,7 +148,7 @@ namespace SST.Core
                 Log.Write(
                     string.Format("Player {0} has not been indexed in current player list. Ignoring command & will re-scan player list.",
                         fromUser), _logClassType, _logPrefix);
-                
+
                 await _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then" +
@@ -175,7 +173,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks whether sufficient time has elapsed since the user last issued a command.
+        /// Checks whether sufficient time has elapsed since the user last issued a command.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
@@ -192,7 +190,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks whether the user has the required access level to issue a command.
+        /// Checks whether the user has the required access level to issue a command.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="requiredLevel">The required access level.</param>

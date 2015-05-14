@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: retrieve players' accuracy information.
+    /// Command: retrieve players' accuracy information.
     /// </summary>
     public class AccCmd : IBotCommand
     {
@@ -24,7 +24,7 @@ namespace SST.Core.Commands.None
         private readonly UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AccCmd" /> class.
+        /// Initializes a new instance of the <see cref="AccCmd"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public AccCmd(SynServerTool sst)
@@ -33,59 +33,49 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs
         {
             get { return _qlMinArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinArgs
         {
             get { return _qlMinArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public UserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -95,13 +85,10 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the command was successfully executed, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (!_sst.Mod.Accuracy.Active)
@@ -167,12 +154,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -185,7 +171,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -196,7 +182,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -207,14 +193,14 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Ends the accuracy read by sending the -acc button command to Quake Live, rejoining the spectators,
-        ///     and by clearing the player that is currently being tracked by the tool internally.
+        /// Ends the accuracy read by sending the -acc button command to Quake Live, rejoining the
+        /// spectators, and by clearing the player that is currently being tracked by the tool internally.
         /// </summary>
         private async Task EndAccuracyRead()
         {
-            // Send negative state of acc button.
-            // Must "re-join" spectators even though we're already there, so that the 1st player whose
-            // accuracy is being scanned on the next go-around is correctly detected (QL issue)
+            // Send negative state of acc button. Must "re-join" spectators even though we're
+            // already there, so that the 1st player whose accuracy is being scanned on the next
+            // go-around is correctly detected (QL issue)
             await _sst.QlCommands.SendToQlAsync("-acc;team s", true);
             // Reset internal tracking
             _sst.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
@@ -222,12 +208,12 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Formats a colored accuracy string based on the existing accuracies, if any.
+        /// Formats a colored accuracy string based on the existing accuracies, if any.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <returns>
-        ///     A colored string containing the accuracies if they exist, otherwise
-        ///     a blank string if they do not.
+        /// A colored string containing the accuracies if they exist, otherwise a blank string if
+        /// they do not.
         /// </returns>
         private string FormatAccString(string player)
         {
@@ -297,10 +283,12 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Determines whether the owner is currently playing on the same account as the bot, and
-        ///     prevents accuracy scanning from taking place, in addition to silently disabling it as well.
+        /// Determines whether the owner is currently playing on the same account as the bot, and
+        /// prevents accuracy scanning from taking place, in addition to silently disabling it as well.
         /// </summary>
-        /// <returns><c>true</c> if the owner is currently playing on the bot account, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if the owner is currently playing on the bot account, otherwise <c>false</c>.
+        /// </returns>
         private bool IsBotPlayer()
         {
             // We've joined the game. Disable scanning.
@@ -309,8 +297,8 @@ namespace SST.Core.Commands.None
 
             if (botIsPlayer)
             {
-                // Silently disable, but don't update the config on disk so as to save the owner
-                // the trouble of not having to re-enable the accuracy scanner the next time tool is launched
+                // Silently disable, but don't update the config on disk so as to save the owner the
+                // trouble of not having to re-enable the accuracy scanner the next time tool is launched
                 _sst.Mod.Accuracy.Active = false;
 
                 Log.Write("Bot owner has left spectator mode and is playing on bot account. Silently" +
@@ -322,7 +310,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Retrieves the accuracy.
+        /// Retrieves the accuracy.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task RetrieveAccuracy(CmdArgs c)
@@ -345,7 +333,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Shows the accuracy of a single player.
+        /// Shows the accuracy of a single player.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task ShowAccSinglePlayer(CmdArgs c)
@@ -363,7 +351,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Starts the accuracy read by sending the +acc button command to Quake Live.
+        /// Starts the accuracy read by sending the +acc button command to Quake Live.
         /// </summary>
         private async Task StartAccuracyRead()
         {

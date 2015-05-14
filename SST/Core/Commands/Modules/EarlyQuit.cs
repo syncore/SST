@@ -11,7 +11,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Early quitter detection. Keep track of players who leave the game before it is finished.
+    /// Module: Early quitter detection. Keep track of players who leave the game before it is finished.
     /// </summary>
     public class EarlyQuit : IModule
     {
@@ -24,7 +24,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EarlyQuit" /> class.
+        /// Initializes a new instance of the <see cref="EarlyQuit"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public EarlyQuit(SynServerTool sst)
@@ -35,102 +35,85 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets or sets a numeric value representing the time to ban early quitters.
+        /// Gets or sets a numeric value representing the time to ban early quitters.
         /// </summary>
-        /// <value>
-        ///     A numeric value representing the time to ban early quitters.
-        /// </value>
+        /// <value>A numeric value representing the time to ban early quitters.</value>
         /// <remarks>
-        ///     <see cref="BanTimeScale" /> for the scale that is to be combined with this setting.
+        /// <see cref="BanTimeScale"/> for the scale that is to be combined with this setting.
         /// </remarks>
         public double BanTime { get; set; }
 
         /// <summary>
-        ///     Gets or sets the scale that is combined with <see cref="BanTime" /> that specifies the duration of the ban.
+        /// Gets or sets the scale that is combined with <see cref="BanTime"/> that specifies the
+        /// duration of the ban.
         /// </summary>
         /// <value>
-        ///     The scale that is combined with <see cref="BanTime" /> that specifies the duration of the ban.
+        /// The scale that is combined with <see cref="BanTime"/> that specifies the duration of the ban.
         /// </value>
         public string BanTimeScale { get; set; }
 
         /// <summary>
-        ///     Gets or sets the array index of the ban time scale.
+        /// Gets or sets the array index of the ban time scale.
         /// </summary>
-        /// <value>
-        ///     The array index of the ban time scale.
-        /// </value>
+        /// <value>The array index of the ban time scale.</value>
         public int BanTimeScaleIndex { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets or sets the maximum quits allowed before a user is banned.
+        /// Gets or sets the maximum quits allowed before a user is banned.
         /// </summary>
-        /// <value>
-        ///     The maximum quits allowed before a user is banned.
-        /// </value>
+        /// <value>The maximum quits allowed before a user is banned.</value>
         public uint MaxQuitsAllowed { get; set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -140,13 +123,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -172,12 +152,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -191,7 +170,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -200,8 +179,7 @@ namespace SST.Core.Commands.Modules
             eq.InitDb();
 
             var cfg = _configHandler.ReadConfiguration();
-            // See if we're dealing with the default values
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            // See if we're dealing with the default values ReSharper disable once CompareOfFloatsByEqualityOperator
             if (cfg.EarlyQuitOptions.banTime == 0 ||
                 cfg.EarlyQuitOptions.banTimeScale == string.Empty)
             {
@@ -232,7 +210,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -243,7 +221,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -254,11 +232,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// <param name="active">
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active; otherwise it is to be
+        /// disabled when updating the configuration.
         /// </param>
         public void UpdateConfig(bool active)
         {
@@ -279,7 +257,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Clears the early quits for a given user.
+        /// Clears the early quits for a given user.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="qdb">The quit database.</param>
@@ -300,7 +278,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the early quitter module.
+        /// Disables the early quitter module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns></returns>
@@ -317,7 +295,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the early quitter module.
+        /// Enables the early quitter module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="maxQuits">The maximum number of quits allowed.</param>
@@ -343,7 +321,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the early quit clear command to see if it can be successfully processed.
+        /// Evaluates the early quit clear command to see if it can be successfully processed.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
@@ -375,19 +353,14 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the parameters passed to the early quit module to see if
-        ///     it can be enabled and enables if parameters are
-        ///     valid.
+        /// Evaluates the parameters passed to the early quit module to see if it can be enabled and
+        /// enables if parameters are valid.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation was successful, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
         private async Task<bool> EvalEarlyQuitEnable(CmdArgs c)
         {
-            // !mod earlyquit numquits time scale
-            // [0]  [1]       [2]      [3]  [4]
+            // !mod earlyquit numquits time scale [0] [1] [2] [3] [4]
             if (c.Args.Length != (c.FromIrc ? 6 : 5))
             {
                 await DisplayArgLengthError(c);
@@ -421,8 +394,8 @@ namespace SST.Core.Commands.Modules
             }
             if (time > int.MaxValue)
             {
-                // Just compare to int type's max size because in the case of month and year
-                // it has to be converted to int and can't be double anyway
+                // Just compare to int type's max size because in the case of month and year it has
+                // to be converted to int and can't be double anyway
                 StatusMessage = "^1[ERROR]^3 Time is too large!";
                 await SendServerTell(c, StatusMessage);
                 return false;
@@ -440,12 +413,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the early quit forgive command to see if it can be successfully processed.
+        /// Evaluates the early quit forgive command to see if it can be successfully processed.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation was successful, otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
         private async Task<bool> EvalEarlyQuitForgive(CmdArgs c)
         {
             if (c.Args.Length != (c.FromIrc ? 6 : 5))
@@ -502,7 +473,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Forgives a given numer of early quits for a user.
+        /// Forgives a given numer of early quits for a user.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="num">The number of quits to forgive.</param>

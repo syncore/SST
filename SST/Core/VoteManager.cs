@@ -28,49 +28,37 @@ namespace SST.Core
         /// <summary>
         /// Gets or sets a value indicating whether a team suggestion vote is pending.
         /// </summary>
-        /// <value>
-        /// <c>true</c> if a team suggestion voteis  pending; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if a team suggestion voteis pending; otherwise, <c>false</c>.</value>
         public bool IsTeamSuggestionVotePending { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether a Quake Live vote is in progress.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if a QL vote is in progress; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if a QL vote is in progress; otherwise, <c>false</c>.</value>
         public bool QlVoteInProgress { get; set; }
 
         /// <summary>
         /// Gets or sets the vote timer.
         /// </summary>
-        /// <value>
-        /// The vote timer.
-        /// </value>
+        /// <value>The vote timer.</value>
         public Timer QlVoteTimer { get; private set; }
 
         /// <summary>
         /// Gets or sets the team suggestion no vote count.
         /// </summary>
-        /// <value>
-        /// The team suggestion no vote count.
-        /// </value>
+        /// <value>The team suggestion no vote count.</value>
         public int TeamSuggestionNoVoteCount { get; set; }
 
         /// <summary>
         /// Gets or sets the players who have already voted in the team balance vote.
         /// </summary>
-        /// <value>
-        /// The players who have already voted in the team balance vote.
-        /// </value>
+        /// <value>The players who have already voted in the team balance vote.</value>
         public Dictionary<string, TeamBalanceVote> TeamSuggestionVoters { get; private set; }
 
         /// <summary>
         /// Gets or sets the team suggestion yes vote count.
         /// </summary>
-        /// <value>
-        /// The team suggestion yes vote count.
-        /// </value>
+        /// <value>The team suggestion yes vote count.</value>
         public int TeamSuggestionYesVoteCount { get; set; }
 
         /// <summary>
@@ -112,7 +100,9 @@ namespace SST.Core
         /// Method that is executed when the QL vote timer has elapsed.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
+        /// <param name="elapsedEventArgs">
+        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
+        /// </param>
         private void QlVoteTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             QlVoteInProgress = false;

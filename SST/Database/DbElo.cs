@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Database class responsible for QLRanks elo data for players.
+    /// Database class responsible for QLRanks elo data for players.
     /// </summary>
     public class DbElo : CommonSqliteDb
     {
@@ -22,7 +22,7 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.EloDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbElo" /> class.
+        /// Initializes a new instance of the <see cref="DbElo"/> class.
         /// </summary>
         public DbElo()
         {
@@ -30,7 +30,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="lastUpdatedDate">The date and time on which the elo data was last updated.</param>
@@ -39,7 +39,9 @@ namespace SST.Database
         /// <param name="duelElo">The Duel elo.</param>
         /// <param name="ffaElo">The FFA elo.</param>
         /// <param name="tdmElo">The TDM elo.</param>
-        /// <returns>A <see cref="UserDbResult" /> value indicating the result of the attempted user addition.</returns>
+        /// <returns>
+        /// A <see cref="UserDbResult"/> value indicating the result of the attempted user addition.
+        /// </returns>
         public UserDbResult AddUserToDb(string user, DateTime lastUpdatedDate, long caElo, long ctfElo,
             long duelElo, long ffaElo, long tdmElo)
         {
@@ -89,10 +91,10 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the elo data for a given player.
+        /// Gets the elo data for a given player.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns>The player's elo data as an <see cref="EloData" /> object.</returns>
+        /// <returns>The player's elo data as an <see cref="EloData"/> object.</returns>
         public EloData GetEloData(string user)
         {
             var eloData = new EloData();
@@ -142,7 +144,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Updates a player's elo data in the database.
+        /// Updates a player's elo data in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="lastUpdatedDate">The date and time on which the elo data was last updated.</param>
@@ -200,7 +202,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user is already banned.
+        /// Checks whether the user is already banned.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user is already banned, otherwise <c>false</c>.</returns>
@@ -210,7 +212,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the database.
+        /// Creates the database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -243,16 +245,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the ban database exists.
+        /// Checks whether the ban database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the ban database.
+        /// Deletes the ban database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -270,7 +272,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -302,7 +304,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the registration database.
+        /// Verifies the registration database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

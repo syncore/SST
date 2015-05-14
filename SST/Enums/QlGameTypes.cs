@@ -1,7 +1,7 @@
 ﻿namespace SST.Enums
 {
     /// <summary>
-    ///     Enum representing the various types of server game modes.
+    /// Enum representing the various types of server game modes.
     /// </summary>
     public enum QlGameTypes
     {

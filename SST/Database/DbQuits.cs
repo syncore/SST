@@ -13,7 +13,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Database class responsible for tracking players who leave games early.
+    /// Database class responsible for tracking players who leave games early.
     /// </summary>
     public class DbQuits : CommonSqliteDb
     {
@@ -23,7 +23,7 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.QuitDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbQuits" /> class.
+        /// Initializes a new instance of the <see cref="DbQuits"/> class.
         /// </summary>
         public DbQuits()
         {
@@ -31,14 +31,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="doublePenalty">
-        ///     if set to <c>true</c> double the penalty
-        ///     for particularly egregious early quits (i.e. during countdown).
+        /// if set to <c>true</c> double the penalty for particularly egregious early quits (i.e.
+        /// during countdown).
         /// </param>
-        /// <returns>The result of the addition operation as an <see cref="UserDbResult" /> enum value.</returns>
+        /// <returns>
+        /// The result of the addition operation as an <see cref="UserDbResult"/> enum value.
+        /// </returns>
         public UserDbResult AddUserToDb(string user, bool doublePenalty)
         {
             var result = UserDbResult.Unspecified;
@@ -80,11 +82,13 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Decrements the user quit count by a given amount.
+        /// Decrements the user quit count by a given amount.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="amount">The amount of quits by which to decrement.</param>
-        /// <remarks>This is typically used when an admin chooses to forgive a number of early quits for a user.</remarks>
+        /// <remarks>
+        /// This is typically used when an admin chooses to forgive a number of early quits for a user.
+        /// </remarks>
         public void DecrementUserQuitCount(string user, int amount)
         {
             if (VerifyDb())
@@ -127,7 +131,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         public void DeleteUserFromDb(string user)
@@ -168,9 +172,9 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets all of the users who have quit early.
+        /// Gets all of the users who have quit early.
         /// </summary>
-        /// <returns>The early quitters as a list of <see cref="EarlyQuitter" /> objects.</returns>
+        /// <returns>The early quitters as a list of <see cref="EarlyQuitter"/> objects.</returns>
         public List<EarlyQuitter> GetAllQuitters()
         {
             var allQuitters = new List<EarlyQuitter>();
@@ -212,7 +216,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user quit count.
+        /// Gets the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user quit counts</returns>
@@ -264,12 +268,12 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Increments the user quit count.
+        /// Increments the user quit count.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="doublePenalty">
-        ///     if set to <c>true</c> double the penalty
-        ///     for particularly egregious early quits (i.e. during countdown).
+        /// if set to <c>true</c> double the penalty for particularly egregious early quits (i.e.
+        /// during countdown).
         /// </param>
         public void IncrementUserQuitCount(string user, bool doublePenalty)
         {
@@ -315,7 +319,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Initializes the database.
+        /// Initializes the database.
         /// </summary>
         public void InitDb()
         {
@@ -324,7 +328,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Removes an early quit-related ban.
+        /// Removes an early quit-related ban.
         /// </summary>
         /// <param name="sst">The main class.</param>
         /// <param name="user">The user.</param>
@@ -349,7 +353,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user already exists, otherwise <c>false</c>.</returns>
@@ -359,7 +363,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the database.
+        /// Creates the database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -390,16 +394,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the early quit database exists.
+        /// Checks whether the early quit database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the early quit database.
+        /// Deletes the early quit database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -417,7 +421,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -450,7 +454,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the quit database.
+        /// Verifies the quit database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

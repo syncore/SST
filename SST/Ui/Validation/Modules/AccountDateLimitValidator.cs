@@ -1,18 +1,16 @@
 ﻿namespace SST.Ui.Validation.Modules
 {
     /// <summary>
-    ///     UI Validation class for the Modules: Account Date Limiter tab.
+    /// UI Validation class for the Modules: Account Date Limiter tab.
     /// </summary>
     public class AccountDateLimitValidator
     {
         /// <summary>
-        ///     Determines whether the specified user input is a valid minimum account age value.
+        /// Determines whether the specified user input is a valid minimum account age value.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidMinimumAccountAge(string userInput, out string errorMsg)
         {
             if (userInput.Length == 0)

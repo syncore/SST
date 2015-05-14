@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace SST.Util
 {
     /// <summary>
-    ///     This class is responsible for querying Quake Live and QLRanks REST APIs for various information.
+    /// This class is responsible for querying Quake Live and QLRanks REST APIs for various information.
     /// </summary>
     public class RestApiQuery
     {
@@ -21,7 +21,7 @@ namespace SST.Util
         private HttpClientHandler _httpClientHandler;
 
         /// <summary>
-        ///     Asynchronously makes a call to a given REST API.
+        /// Asynchronously makes a call to a given REST API.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="url">The API's URL.</param>
@@ -66,15 +66,15 @@ namespace SST.Util
                 }
                 catch (Exception)
                 {
-                    Log.Write("Problem when making generic REST API query" 
-                        ,MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
+                    Log.Write("Problem when making generic REST API query"
+                        , MethodBase.GetCurrentMethod().DeclaringType, "[CORE]");
                     return default(T);
                 }
             }
         }
 
         /// <summary>
-        ///     Determines whether the given URL is a quakelive.com URL.
+        /// Determines whether the given URL is a quakelive.com URL.
         /// </summary>
         /// <param name="url">The URL.</param>
         /// <returns><c>true</c> if the URL is a quakelive.com URL, otherwise <c>false</c>.</returns>

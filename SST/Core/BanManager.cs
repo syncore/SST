@@ -10,8 +10,8 @@ using SST.Model;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for automatically banning players if necessary and
-    ///     handling removal of module-specific bans.
+    /// Class responsible for automatically banning players if necessary and handling removal of
+    /// module-specific bans.
     /// </summary>
     public class BanManager
     {
@@ -21,7 +21,7 @@ namespace SST.Core
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="BanManager" /> class.
+        /// Initializes a new instance of the <see cref="BanManager"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public BanManager(SynServerTool sst)
@@ -31,8 +31,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Check to see whether a time-ban exists for the specified user and
-        ///     kickbans the player from the server if so; if ban has expired then remove ban.
+        /// Check to see whether a time-ban exists for the specified user and kickbans the player
+        /// from the server if so; if ban has expired then remove ban.
         /// </summary>
         /// <param name="player">The player to check.</param>
         public async Task CheckForBans(string player)
@@ -85,8 +85,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Check to see whether a time-ban exists for the specified group of users and
-        ///     kickbans any player in the group from the server if so; if ban has expired then remove ban.
+        /// Check to see whether a time-ban exists for the specified group of users and kickbans any
+        /// player in the group from the server if so; if ban has expired then remove ban.
         /// </summary>
         /// <param name="players">The players to check.</param>
         public async Task CheckForBans(Dictionary<string, PlayerInfo> players)
@@ -98,29 +98,24 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Removes a user's ban and removes/resets any other extraneous ban-related
-        ///     database properties for the user.
+        /// Removes a user's ban and removes/resets any other extraneous ban-related database
+        /// properties for the user.
         /// </summary>
         /// <param name="banInfo">The ban information.</param>
         /// <param name="updateUi">
-        ///     if set to <c>true</c> then update
-        ///     relevant datasources in the user interface.
+        /// if set to <c>true</c> then update relevant datasources in the user interface.
         /// </param>
-        /// <returns>
-        ///     <c>true</c> if the ban was deleted,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the ban was deleted, otherwise <c>false</c>.</returns>
         /// <remarks>
-        ///     This method is typically used when access to the user interface is
-        ///     needed and when the unban command needs to be directly sent to the game.
-        ///     The underlying SST database classes are not given access to the main
-        ///     SST class.
+        /// This method is typically used when access to the user interface is needed and when the
+        /// unban command needs to be directly sent to the game. The underlying SST database classes
+        /// are not given access to the main SST class.
         /// </remarks>
         public async Task<bool> RemoveBan(BanInfo banInfo, bool updateUi = true)
         {
             if (banInfo == null) return false;
-            // If the user was banned for quitting early, then also remove the user from the early quit database
-            // when we clear the expired ban
+            // If the user was banned for quitting early, then also remove the user from the early
+            // quit database when we clear the expired ban
             if (banInfo.BanType == BanType.AddedByEarlyQuit)
             {
                 var eQuitDb = new DbQuits();
@@ -132,24 +127,27 @@ namespace SST.Core
                     _sst.UserInterface.RefreshCurrentQuittersDataSource();
                 }
             }
-            // If the user was banned for using too many substitutes in pickup games, reset the sub-used count
+            // If the user was banned for using too many substitutes in pickup games, reset the
+            // sub-used count
             if (banInfo.BanType == BanType.AddedByPickupSubs)
             {
                 var pickupDb = new DbPickups();
                 pickupDb.ResetSubsUsedCount(banInfo.PlayerName);
             }
-            // If the user was banned for too many no-shows in pickup games, reset the user's no-show count
+            // If the user was banned for too many no-shows in pickup games, reset the user's
+            // no-show count
             if (banInfo.BanType == BanType.AddedByPickupNoShows)
             {
                 var pickupDb = new DbPickups();
                 pickupDb.ResetNoShowCount(banInfo.PlayerName);
             }
             // Remove the ban from the database. This "on-demand" method of removing the ban is
-            // preferred instead of using some mechanism such as a timer that would check every X time period;
-            // In other words, leave the user banned until he tries to reconnect then silently remove the ban.
+            // preferred instead of using some mechanism such as a timer that would check every X
+            // time period; In other words, leave the user banned until he tries to reconnect then
+            // silently remove the ban.
             // Note: expired bans are also removed at various points during the bot's existence, for example,
-            // they are also removed when admins try to add, list, or check bans with the timeban command or
-            // can be removed using the UI.
+            // they are also removed when admins try to add, list, or check bans with the timeban
+            // command or can be removed using the UI.
             _banDb.DeleteUserFromDb(banInfo.PlayerName);
 
             // remove from QL's external temp kickban system as well

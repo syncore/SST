@@ -1,7 +1,7 @@
 ﻿namespace SST.Util
 {
     /// <summary>
-    ///     Utility class containing QL and IRC color codes.
+    /// Utility class containing QL and IRC color codes.
     /// </summary>
     public static class TextColor
     {

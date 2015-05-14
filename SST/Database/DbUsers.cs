@@ -15,7 +15,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Class responsible for user database operations.
+    /// Class responsible for user database operations.
     /// </summary>
     public class DbUsers : CommonSqliteDb, IConfiguration
     {
@@ -26,7 +26,7 @@ namespace SST.Database
         private string _owner;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbUsers" /> class.
+        /// Initializes a new instance of the <see cref="DbUsers"/> class.
         /// </summary>
         public DbUsers()
         {
@@ -36,13 +36,13 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="accessLevel">The access level.</param>
         /// <param name="addedBy">The user who is performing the addition.</param>
         /// <param name="dateAdded">The date the user was added.</param>
-        /// <returns><c>true</c>if successful, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if successful, otherwise <c>false</c>.</returns>
         public UserDbResult AddUserToDb(string user, UserLevel accessLevel, string addedBy, string dateAdded)
         {
             if (VerifyDb())
@@ -87,22 +87,22 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the configuration already exists.
+        /// Checks whether the configuration already exists.
         /// </summary>
-        /// <returns>
-        ///     <c>true</c> if configuration exists, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if configuration exists, otherwise <c>false</c></returns>
         public bool CfgExists()
         {
             return (File.Exists(Filepaths.ConfigurationFilePath));
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         /// <param name="addedBy">The admin who originally added the user to be deleted.</param>
-        /// <param name="addedByLevel">The access level of the admin who originally added the user to be deleted.</param>
+        /// <param name="addedByLevel">
+        /// The access level of the admin who originally added the user to be deleted.
+        /// </param>
         /// <returns><c>true</c> if the user was successfully deleted, <c>false</c> if unsuccessful.</returns>
         public UserDbResult DeleteUserFromDb(string user, string addedBy, UserLevel addedByLevel)
         {
@@ -120,7 +120,8 @@ namespace SST.Database
 
                         using (var cmd = new SQLiteCommand(sqlcon))
                         {
-                            // Owners can delete anyone, regular admins can only delete users they have personally added.
+                            // Owners can delete anyone, regular admins can only delete users they
+                            // have personally added.
                             cmd.CommandText = addedByLevel == UserLevel.Owner
                                 ? "DELETE FROM users WHERE user = @user"
                                 : "DELETE FROM users WHERE user = @user AND addedby = @addedby";
@@ -153,9 +154,9 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets all of the users in the users database.
+        /// Gets all of the users in the users database.
         /// </summary>
-        /// <returns>The users as a list of <see cref="User" /> objects.</returns>
+        /// <returns>The users as a list of <see cref="User"/> objects.</returns>
         public List<User> GetAllUsers()
         {
             var allUsers = new List<User>();
@@ -196,7 +197,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the current admins on the server.
+        /// Gets the current admins on the server.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <returns>The current admins on the server as a comma-separated string, if any.</returns>
@@ -214,10 +215,12 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the users on the server who are of SuperUser access level or higher.
+        /// Gets the users on the server who are of SuperUser access level or higher.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
-        /// <returns>The current users on the server of SuperUser access level or higher, if any.</returns>
+        /// <returns>
+        /// The current users on the server of SuperUser access level or higher, if any.
+        /// </returns>
         public string GetSuperUsersOrHigherOnServer(Dictionary<string, PlayerInfo> currentPlayers)
         {
             var sb = new StringBuilder();
@@ -232,7 +235,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the requested user's level.
+        /// Gets the requested user's level.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's level.</returns>
@@ -278,7 +281,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadCfg()
         {
@@ -288,7 +291,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Loads the default configuration.
+        /// Loads the default configuration.
         /// </summary>
         public void LoadDefaultCfg()
         {
@@ -297,7 +300,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Saves the configuration.
+        /// Saves the configuration.
         /// </summary>
         public void SaveCfg()
         {
@@ -308,21 +311,18 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Public method for accessing protected <see cref="DoesUserExistInDb" /> method
-        ///     to check whether a user exists in the user database or not.
+        /// Public method for accessing protected <see cref="DoesUserExistInDb"/> method to check
+        /// whether a user exists in the user database or not.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <returns>
-        ///     <c>true</c> if the user exists in the user database, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the user exists in the user database, otherwise <c>false</c>.</returns>
         public bool UserExists(string user)
         {
             return DoesUserExistInDb(user);
         }
 
         /// <summary>
-        ///     Creates the user database.
+        /// Creates the user database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -354,16 +354,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user database exists.
+        /// Checks whether the user database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the user database.
+        /// Deletes the user database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -381,7 +381,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -415,7 +415,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the user database.
+        /// Verifies the user database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {
@@ -451,7 +451,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the owner (from the config file on the disk) to the database.
+        /// Adds the owner (from the config file on the disk) to the database.
         /// </summary>
         private void AddOwnerToDb()
         {

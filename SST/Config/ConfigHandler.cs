@@ -9,7 +9,7 @@ using SST.Util;
 namespace SST.Config
 {
     /// <summary>
-    ///     Class responsible for handling SST's configuration.
+    /// Class responsible for handling SST's configuration.
     /// </summary>
     public class ConfigHandler
     {
@@ -17,7 +17,7 @@ namespace SST.Config
         private readonly string _logPrefix = "[CFG]";
 
         /// <summary>
-        ///     Reads the configuration.
+        /// Reads the configuration.
         /// </summary>
         public Configuration ReadConfiguration()
         {
@@ -41,7 +41,7 @@ namespace SST.Config
         }
 
         /// <summary>
-        ///     Restores the default configuration.
+        /// Restores the default configuration.
         /// </summary>
         public Configuration RestoreDefaultConfiguration()
         {
@@ -129,7 +129,7 @@ namespace SST.Config
         }
 
         /// <summary>
-        ///     Writes the configuration to the disk.
+        /// Writes the configuration to the disk.
         /// </summary>
         public void WriteConfiguration(Configuration cfg)
         {

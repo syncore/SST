@@ -3,36 +3,30 @@
 namespace SST.Config.Modules
 {
     /// <summary>
-    ///     Model class that represents the active servers module options for the configuration file.
+    /// Model class that represents the active servers module options for the configuration file.
     /// </summary>
     public class ServersOptions
     {
         /// <summary>
-        ///     Gets or sets a value indicating whether this module is active.
+        /// Gets or sets a value indicating whether this module is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this module is active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this module is active; otherwise, <c>false</c>.</value>
         public bool isActive { get; set; }
 
         /// <summary>
-        ///     Gets or sets the maximum active servers to display.
+        /// Gets or sets the maximum active servers to display.
         /// </summary>
-        /// <value>
-        ///     The maximum active servers to display.
-        /// </value>
+        /// <value>The maximum active servers to display.</value>
         public int maxServers { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time between queries for the purpose of rate-limiting.
+        /// Gets or sets the time between queries for the purpose of rate-limiting.
         /// </summary>
-        /// <value>
-        ///     The time between queries for the purpose of rate-limiting.
-        /// </value>
+        /// <value>The time between queries for the purpose of rate-limiting.</value>
         public double timeBetweenQueries { get; set; }
 
         /// <summary>
-        ///     Sets the defaults.
+        /// Sets the defaults.
         /// </summary>
         public void SetDefaults()
         {

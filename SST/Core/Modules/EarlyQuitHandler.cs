@@ -10,8 +10,8 @@ using SST.Util;
 namespace SST.Core.Modules
 {
     /// <summary>
-    ///     Class responsible for evaluating and handling players who quit early,
-    ///     as specified by the EarlyQuit module.
+    /// Class responsible for evaluating and handling players who quit early, as specified by the
+    /// EarlyQuit module.
     /// </summary>
     public class EarlyQuitHandler
     {
@@ -26,7 +26,7 @@ namespace SST.Core.Modules
         private uint _maxQuitsAllowed;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EarlyQuitHandler" /> class.
+        /// Initializes a new instance of the <see cref="EarlyQuitHandler"/> class.
         /// </summary>
         public EarlyQuitHandler(SynServerTool sst)
         {
@@ -38,8 +38,8 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates early quitters who leave during countdown and punishes them
-        ///     with double the usual punishment if the teams would be made uneven by their quitting.
+        /// Evaluates early quitters who leave during countdown and punishes them with double the
+        /// usual punishment if the teams would be made uneven by their quitting.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task EvalCountdownQuitter(string player)
@@ -55,7 +55,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates early quitters who leave during games that are in progress.
+        /// Evaluates early quitters who leave during games that are in progress.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task EvalInProgressQuitter(string player)
@@ -66,7 +66,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Bans the early quitter.
+        /// Bans the early quitter.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task BanEarlyQuitter(string player)
@@ -97,7 +97,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates the user quit count and bans the user if count exceeds a certain value.
+        /// Evaluates the user quit count and bans the user if count exceeds a certain value.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task<long> EvaluateUserQuitCount(string player)
@@ -116,7 +116,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets the configuration data.
+        /// Gets the configuration data.
         /// </summary>
         private void GetConfigData()
         {
@@ -128,12 +128,12 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Processes the early quit.
+        /// Processes the early quit.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="doublePenalty">
-        ///     if set to <c>true</c> double the penalty
-        ///     for particularly egregious early quits (i.e. during countdown).
+        /// if set to <c>true</c> double the penalty for particularly egregious early quits (i.e.
+        /// during countdown).
         /// </param>
         private async Task ProcessEarlyQuit(string player, bool doublePenalty)
         {
@@ -172,7 +172,8 @@ namespace SST.Core.Modules
                 Log.Write(string.Format("Active player {0} left during count-down. Penalty will be doubled.",
                     player), _logClassType, _logPrefix);
             }
-            // Only show the log msg if we're not banning the user this time (ban msg is shown in that case)
+            // Only show the log msg if we're not banning the user this time (ban msg is shown in
+            // that case)
             if (qCount < _maxQuitsAllowed)
             {
                 await

@@ -11,11 +11,9 @@ using SST.Model.QlRanks;
 namespace SST.Util
 {
     /// <summary>
-    ///     Helper class for various QlRanks-related functions.
+    /// Helper class for various QlRanks-related functions.
     /// </summary>
-    /// <remarks>
-    ///     TODO: much of this came from an earlier project and should be cleaned up
-    /// </remarks>
+    /// <remarks>TODO: much of this came from an earlier project and should be cleaned up</remarks>
     public class QlRanksHelper
     {
         private readonly DbElo _eloDb;
@@ -23,7 +21,7 @@ namespace SST.Util
         private readonly string _logPrefix = "[API:QLRANKS]";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="QlRanksHelper" /> class.
+        /// Initializes a new instance of the <see cref="QlRanksHelper"/> class.
         /// </summary>
         public QlRanksHelper()
         {
@@ -31,7 +29,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Creates the new player elo data.
+        /// Creates the new player elo data.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="player">The player.</param>
@@ -44,19 +42,17 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Evaluates whether cached Elo information already exists for a player.
+        /// Evaluates whether cached Elo information already exists for a player.
         /// </summary>
         /// <param name="shortPlayerName">Short name of the player (not including clan tag).</param>
-        /// <returns>
-        ///     <c>true</c> if cached Elo info already exists for a player, otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if cached Elo info already exists for a player, otherwise <c>false</c>.</returns>
         public bool DoesCachedEloExist(string shortPlayerName)
         {
             return _eloDb.UserAlreadyExists(shortPlayerName) && IsValidEloDatabaseData(shortPlayerName);
         }
 
         /// <summary>
-        ///     Asynchronously performs the QLRanks data retrieval for multiple players.
+        /// Asynchronously performs the QLRanks data retrieval for multiple players.
         /// </summary>
         /// <returns>QlRanks object</returns>
         public async Task<QlRanks> DoQlRanksRetrievalAsync<T>(IEnumerable<T> players)
@@ -66,7 +62,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchronously performs the QLRanks data retrieval for a single player.
+        /// Asynchronously performs the QLRanks data retrieval for a single player.
         /// </summary>
         /// <returns>QlRanks object</returns>
         /// <remarks>This can also handle comma-separated lists of players if need be.</remarks>
@@ -99,8 +95,8 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Determines whether the cached elo data for the specified user is too old,
-        ///     based on a value set in the core configuration options.
+        /// Determines whether the cached elo data for the specified user is too old, based on a
+        /// value set in the core configuration options.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the cached elo data is outdated, otherwise <c>false</c>.</returns>
@@ -112,7 +108,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Checks whether the players the has invalid elo data.
+        /// Checks whether the players the has invalid elo data.
         /// </summary>
         /// <param name="pinfo">The pinfo.</param>
         /// <returns><c>true</c> if the player has invalid elo data, otherwise <c>false</c>.</returns>
@@ -130,7 +126,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchronously retrieves the Elo data from QLRanks API.
+        /// Asynchronously retrieves the Elo data from QLRanks API.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playersToUpdate">The players to update.</param>
@@ -152,7 +148,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchronously retrieves the Elo data from QLRanks API.
+        /// Asynchronously retrieves the Elo data from QLRanks API.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playerToUpdate">The player to update.</param>
@@ -174,7 +170,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Sets the cached elo data.
+        /// Sets the cached elo data.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="shortPlayerName">Short name of the player (excluding clan tag).</param>
@@ -188,7 +184,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Indicates where an elo update should be skipped or not.
+        /// Indicates where an elo update should be skipped or not.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="currentPlayers">The current players.</param>
@@ -204,7 +200,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchronously retrieves the player Elo information from the QLRanks API via HTTP GET request(s).
+        /// Asynchronously retrieves the player Elo information from the QLRanks API via HTTP GET request(s).
         /// </summary>
         /// <param name="players">The players.</param>
         /// <returns>QLRanks object</returns>
@@ -229,7 +225,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the elo expiration time from the configuration.
+        /// Gets the elo expiration time from the configuration.
         /// </summary>
         private uint GetExpirationFromConfig()
         {
@@ -241,8 +237,8 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchronously sends the list of players that need elo updates to the QLRanks API then sets the elo data once that
-        ///     information is retrieved.
+        /// Asynchronously sends the list of players that need elo updates to the QLRanks API then
+        /// sets the elo data once that information is retrieved.
         /// </summary>
         private async Task<QlRanks> GetQlRanksObjectAsync<T>(IEnumerable<T> playersToUpdate)
         {
@@ -252,10 +248,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Determines whether valid elo data exists for the specified player from the elo database.
+        /// Determines whether valid elo data exists for the specified player from the elo database.
         /// </summary>
         /// <param name="shortPlayerName">Short name of the player.</param>
-        /// <returns><c>true</c>if valid elo data exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if valid elo data exists, otherwise <c>false</c>.</returns>
         private bool IsValidEloDatabaseData(string shortPlayerName)
         {
             var edata = _eloDb.GetEloData(shortPlayerName);
@@ -265,7 +261,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Sets the QLRanks ELo data for the group of players.
+        /// Sets the QLRanks ELo data for the group of players.
         /// </summary>
         /// <param name="currentPlayers">The current players on the server.</param>
         /// <param name="qlr">The QlRanks object.</param>
@@ -310,7 +306,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Sets QLRanks Elo data for a single player.
+        /// Sets QLRanks Elo data for a single player.
         /// </summary>
         /// <param name="currentPlayers">The current players on the server</param>
         /// <param name="currentPlayer">The current player to update</param>

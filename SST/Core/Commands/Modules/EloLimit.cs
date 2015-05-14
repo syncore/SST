@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Elo limiter. Kick player if player does not meet elo requirements.
+    /// Module: Elo limiter. Kick player if player does not meet elo requirements.
     /// </summary>
     public class EloLimit : IModule
     {
@@ -28,7 +28,7 @@ namespace SST.Core.Commands.Modules
         private readonly DbUsers _users;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EloLimit" /> class.
+        /// Initializes a new instance of the <see cref="EloLimit"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public EloLimit(SynServerTool sst)
@@ -40,96 +40,77 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets or sets the type of the game for the server.
+        /// Gets or sets the type of the game for the server.
         /// </summary>
-        /// <value>
-        ///     The type of the game.
-        /// </value>
+        /// <value>The type of the game.</value>
         public QlGameTypes GameType
         {
             get { return _sst.ServerInfo.CurrentServerGameType; }
         }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets or sets the maximum required Elo.
+        /// Gets or sets the maximum required Elo.
         /// </summary>
-        /// <value>
-        ///     The maximum required Elo.
-        /// </value>
+        /// <value>The maximum required Elo.</value>
         public int MaximumRequiredElo { get; set; }
 
         /// <summary>
-        ///     Gets or sets the minimum required Elo.
+        /// Gets or sets the minimum required Elo.
         /// </summary>
-        /// <value>
-        ///     The minimum required Elo.
-        /// </value>
+        /// <value>The minimum required Elo.</value>
         public int MinimumRequiredElo { get; set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Removes players from server who do not meet the specified Elo
-        ///     requirements immediately after enabling the elo
-        ///     limiter.
+        /// Removes players from server who do not meet the specified Elo requirements immediately
+        /// after enabling the elo limiter.
         /// </summary>
         public async Task BatchRemoveEloPlayers()
         {
@@ -171,7 +152,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Checks to see if the player meets the elo requirement on connect.
+        /// Checks to see if the player meets the elo requirement on connect.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task CheckPlayerEloRequirement(string player)
@@ -183,7 +164,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -193,13 +174,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the elo limit command.
+        /// Evaluates the elo limit command.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -238,12 +216,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -257,7 +234,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -305,7 +282,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -316,7 +293,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -327,11 +304,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// <param name="active">
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active; otherwise it is to be
+        /// disabled when updating the configuration.
         /// </param>
         public void UpdateConfig(bool active)
         {
@@ -350,7 +327,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the elo limiter.
+        /// Disables the elo limiter.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisableEloLimiter(CmdArgs c)
@@ -366,13 +343,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the case in which a minimum and maximum elo range have been specified.
+        /// Evaluates the case in which a minimum and maximum elo range have been specified.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation was successful, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
         private async Task<bool> EvalEloRangeSpecified(CmdArgs c)
         {
             int min;
@@ -408,13 +382,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the case where only the minimum elo specified.
+        /// Evaluates the case where only the minimum elo specified.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation was successful, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
         private async Task<bool> EvalMinEloSpecified(CmdArgs c)
         {
             int min;
@@ -442,7 +413,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the elo type to compare based on the server's current gametype.
+        /// Gets the elo type to compare based on the server's current gametype.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <returns>The elo value to use based on the server's current gametype.</returns>
@@ -476,7 +447,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Kicks the player if player does not meet the server's elo requirements.
+        /// Kicks the player if player does not meet the server's elo requirements.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task KickPlayerIfEloNotMet(string player)
@@ -510,8 +481,8 @@ namespace SST.Core.Commands.Modules
                         MinimumRequiredElo,
                         hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""));
 
-                // Wait before notifying and kicking, so user's screen doesn't freeze on
-                // "awaiting snapshot", especially when connecting
+                // Wait before notifying and kicking, so user's screen doesn't freeze on "awaiting
+                // snapshot", especially when connecting
                 await
                     _sst.QlCommands.QlCmdDelayedTell(
                         string.Format(

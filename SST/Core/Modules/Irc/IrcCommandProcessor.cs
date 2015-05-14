@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    ///     Class responsible for processing IRC commands.
+    /// Class responsible for processing IRC commands.
     /// </summary>
     public class IrcCommandProcessor
     {
@@ -22,7 +22,7 @@ namespace SST.Core.Modules.Irc
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrcCommandProcessor" /> class.
+        /// Initializes a new instance of the <see cref="IrcCommandProcessor"/> class.
         /// </summary>
         /// <param name="sst">The main tool class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -35,21 +35,17 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the commands.
+        /// Gets the commands.
         /// </summary>
-        /// <value>
-        ///     The Commands.
-        /// </value>
-        /// <remarks>
-        ///     This is used by the IrcHelpCmd.
-        /// </remarks>
+        /// <value>The Commands.</value>
+        /// <remarks>This is used by the IrcHelpCmd.</remarks>
         public Dictionary<string, IIrcCommand> Cmds
         {
             get { return _ircCmds.Commands; }
         }
 
         /// <summary>
-        ///     Processes the IRC command.
+        /// Processes the IRC command.
         /// </summary>
         /// <param name="fromUser">The user who sent the command.</param>
         /// <param name="msg">The full message text.</param>
@@ -123,16 +119,16 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Determines whether the command can be executed without taking into account
-        ///     the command's requirement for server monitoring nor the argument length.
+        /// Determines whether the command can be executed without taking into account the command's
+        /// requirement for server monitoring nor the argument length.
         /// </summary>
         /// <param name="fromUser">The sender of the command..</param>
         /// <param name="commandName">Name of the command.</param>
         /// <param name="fullMessageText">The full message text.</param>
         /// <returns>
-        ///     <c>true</c> if the command can be executed, without taking into account
-        ///     the command's requirement for server monitoring nor the
-        /// required argument length of the command, otherwise <c>false</c>.
+        /// <c>true</c> if the command can be executed, without taking into account the command's
+        /// requirement for server monitoring nor the required argument length of the command,
+        /// otherwise <c>false</c>.
         /// </returns>
         private bool CheckCommand(string fromUser, string commandName, string fullMessageText)
         {
@@ -176,7 +172,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Checks whether sufficient time has elapsed since the user last issued an IRC command.
+        /// Checks whether sufficient time has elapsed since the user last issued an IRC command.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if sufficient time has elapsed, otherwise <c>false</c>.</returns>
@@ -187,12 +183,12 @@ namespace SST.Core.Modules.Irc
             {
                 return true;
             }
-            // 3.5 seconds between commands
+            // 3. 5 seconds between commands
             return _ircCommandUserTime[user].AddSeconds(3.5) < DateTime.Now;
         }
 
         /// <summary>
-        ///     Checks whether the user has the required IRC access level to issue a command.
+        /// Checks whether the user has the required IRC access level to issue a command.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="requiredLevel">The required access level.</param>

@@ -11,9 +11,9 @@ using SST.Util;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    /// IRC Command: Allow execution of various SST QL in-game commands via IRC.
-    /// Serves as an interface for commands that would typically be executed in-game,
-    /// but allow very highly privileged users to issue such commands from the IRC channel.
+    /// IRC Command: Allow execution of various SST QL in-game commands via IRC. Serves as an
+    /// interface for commands that would typically be executed in-game, but allow very highly
+    /// privileged users to issue such commands from the IRC channel.
     /// </summary>
     public class IrcQlCmd : IIrcCommand
     {
@@ -27,7 +27,7 @@ namespace SST.Core.Modules.Irc
         private bool _requiresMonitoring = true;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IrcQlCmd" /> class.
+        /// Initializes a new instance of the <see cref="IrcQlCmd"/> class.
         /// </summary>
         /// <param name="sst">The main tool class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -41,9 +41,7 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        /// The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs
         {
             get { return _ircMinArgs; }
@@ -58,12 +56,11 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets a value indicating whether this command requires
-        /// the bot to be monitoring a server before it can be used.
+        /// Gets a value indicating whether this command requires the bot to be monitoring a server
+        /// before it can be used.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command requires the bot to be monitoring
-        /// a server; otherwise, <c>false</c>.
+        /// <c>true</c> if this command requires the bot to be monitoring a server; otherwise, <c>false</c>.
         /// </value>
         public bool RequiresMonitoring
         {
@@ -73,9 +70,7 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the user level.
         /// </summary>
-        /// <value>
-        /// The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public IrcUserLevel UserLevel
         {
             get { return _userLevel; }
@@ -100,12 +95,10 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         /// <remarks>
-        ///     Not implemented for this command since it is to be run asynchronously
-        ///  via <see cref="ExecAsync" />
+        /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync"/>
         /// </remarks>
         public bool Exec(CmdArgs c)
         {
@@ -117,8 +110,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
@@ -214,10 +206,11 @@ namespace SST.Core.Modules.Irc
         /// Handles the sending of messages containing newline characters.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <param name="msg">The array containing the messages, split by a newline character.
+        /// <param name="msg">The array containing the messages, split by a newline character.</param>
+        /// <param name="toChannel">
+        /// if set to <c>true</c> then send the message to the IRC channel, otherwise send the
+        /// message as an IRC notice to the user.
         /// </param>
-        /// <param name="toChannel">if set to <c>true</c> then send the message to the IRC
-        /// channel, otherwise send the message as an IRC notice to the user.</param>
         private void SendSplitMessage(CmdArgs c, string[] msg, bool toChannel)
         {
             foreach (var m in msg)

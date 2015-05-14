@@ -16,7 +16,7 @@ using SST.Util;
 namespace SST.Core.Modules
 {
     /// <summary>
-    ///     Class responsible for managing pickup games.
+    /// Class responsible for managing pickup games.
     /// </summary>
     public class PickupManager
     {
@@ -33,7 +33,7 @@ namespace SST.Core.Modules
         private readonly DbUsers _userDb;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PickupManager" /> class.
+        /// Initializes a new instance of the <see cref="PickupManager"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public PickupManager(SynServerTool sst)
@@ -53,24 +53,20 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the active pickup players.
+        /// Gets or sets the active pickup players.
         /// </summary>
-        /// <value>
-        ///     The active pickup players.
-        /// </value>
+        /// <value>The active pickup players.</value>
         /// <remarks>
-        ///     This is used to supplement QL's actual player team tracking of those players who are
-        ///     on a team for the pickup. This is included because sometimes the game's actual team
-        ///     tracking is not reliably updated.
+        /// This is used to supplement QL's actual player team tracking of those players who are on
+        /// a team for the pickup. This is included because sometimes the game's actual team
+        /// tracking is not reliably updated.
         /// </remarks>
         public List<string> ActivePickupPlayers { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether the teams are full.
+        /// Gets a value indicating whether the teams are full.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if teams are full; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if teams are full; otherwise, <c>false</c>.</value>
         public bool AreTeamsFull
         {
             get
@@ -81,96 +77,83 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the players that are eligible to be picked for a pickup game.
+        /// Gets or sets the players that are eligible to be picked for a pickup game.
         /// </summary>
-        /// <value>
-        ///     The players that are eligible to be picked for a pickup game.
-        /// </value>
+        /// <value>The players that are eligible to be picked for a pickup game.</value>
         public List<string> AvailablePlayers { get; set; }
 
         /// <summary>
-        ///     Gets the pickup captains class.
+        /// Gets the pickup captains class.
         /// </summary>
-        /// <value>
-        ///     The pickup captains class.
-        /// </value>
+        /// <value>The pickup captains class.</value>
         public PickupCaptains Captains
         {
             get { return _captains; }
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the captain selection process has started.
+        /// Gets or sets a value indicating whether the captain selection process has started.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the captain selection process started; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the captain selection process started; otherwise, <c>false</c>.</value>
         public bool HasCaptainSelectionStarted { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the team selection process has started.
+        /// Gets or sets a value indicating whether the team selection process has started.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the team selection process started; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the team selection process started; otherwise, <c>false</c>.</value>
         public bool HasTeamSelectionStarted { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the tool is currently setting up teams (locking server down).
+        /// Gets or sets a value indicating whether the tool is currently setting up teams (locking
+        /// server down).
         /// </summary>
         /// <value>
-        ///     <c>true</c> if the bot is setting up teams (locking server down); otherwise, <c>false</c>.
+        /// <c>true</c> if the bot is setting up teams (locking server down); otherwise, <c>false</c>.
         /// </value>
         /// <remarks>
-        ///     This value indicates whether the <see cref="SetupTeams()" /> method is executing, to serve as a guard
-        ///     that indicates that the teams should not be unlocked due to no-shows, which would typically happen when an active
-        ///     player goes to SPEC or disconnects; here, the tool moves back to spec after locking the teams, which would
-        ///     otherwise trigger an unlock.
+        /// This value indicates whether the <see cref="SetupTeams()"/> method is executing, to
+        /// serve as a guard that indicates that the teams should not be unlocked due to no-shows,
+        /// which would typically happen when an active player goes to SPEC or disconnects; here,
+        /// the tool moves back to spec after locking the teams, which would otherwise trigger an unlock.
         /// </remarks>
         public bool IsBotSettingUpTeams { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the game is in intermission
-        ///     (i.e. between time/frag/roundlimit reached and the end of the end-game
-        ///     map vote, if enabled.)
+        /// Gets or sets a value indicating whether the game is in intermission (i.e. between
+        /// time/frag/roundlimit reached and the end of the end-game map vote, if enabled.)
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the game is in intermission; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the game is in intermission; otherwise, <c>false</c>.</value>
         /// <remarks>
-        ///     The primary purpose of this is to serve as a guard that will allow players to disconnect
-        ///     during this period without it counting towards their no-show count.
+        /// The primary purpose of this is to serve as a guard that will allow players to disconnect
+        /// during this period without it counting towards their no-show count.
         /// </remarks>
         public bool IsIntermission { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether a pickup in progress.
+        /// Gets or sets a value indicating whether a pickup in progress.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if a pickup in progress; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if a pickup in progress; otherwise, <c>false</c>.</value>
         /// <remarks>
-        ///     This covers the time period from when the pickup game launches until
-        ///     it is over.
+        /// This covers the time period from when the pickup game launches until it is over.
         /// </remarks>
         public bool IsPickupInProgress { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating the server is in pickup pre-game mode.
+        /// Gets or sets a value indicating the server is in pickup pre-game mode.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the server is in pickup pre-game mode; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the server is in pickup pre-game mode; otherwise, <c>false</c>.</value>
         /// <remarks>
-        ///     This covers the time period from the issuance of the pickup start command up until
-        ///     when the pickup game actually launches.
+        /// This covers the time period from the issuance of the pickup start command up until when
+        /// the pickup game actually launches.
         /// </remarks>
         public bool IsPickupPreGame { get; set; }
 
         /// <summary>
-        ///     Gets a value that indicates whether a Quake Live game is in progress.
+        /// Gets a value that indicates whether a Quake Live game is in progress.
         /// </summary>
-        /// <returns><c>true</c> if the QL game is in countdown or in-progress mode, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if the QL game is in countdown or in-progress mode, otherwise <c>false</c>.
+        /// </returns>
         public bool IsQlGameInProgress
         {
             get
@@ -181,76 +164,66 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the missing blue player count of players who leave
-        ///     prematurely without securing a substitute replacement.
+        /// Gets or sets the missing blue player count of players who leave prematurely without
+        /// securing a substitute replacement.
         /// </summary>
         /// <value>
-        ///     The missing blue player count of players who leave
-        ///     prematurely without securing a substitute replacement.
+        /// The missing blue player count of players who leave prematurely without securing a
+        /// substitute replacement.
         /// </value>
         public int MissingBluePlayerCount { get; set; }
 
         /// <summary>
-        ///     Gets or sets the missing red player count of players who leave
-        ///     prematurely without securing a substitute replacement.
+        /// Gets or sets the missing red player count of players who leave prematurely without
+        /// securing a substitute replacement.
         /// </summary>
         /// <value>
-        ///     The missing red player count of players who leave
-        ///     prematurely without securing a substitute replacement.
+        /// The missing red player count of players who leave prematurely without securing a
+        /// substitute replacement.
         /// </value>
         public int MissingRedPlayerCount { get; set; }
 
         /// <summary>
-        ///     Gets or sets the no-show players for purposes of record keeping.
+        /// Gets or sets the no-show players for purposes of record keeping.
         /// </summary>
-        /// <value>
-        ///     The no-show players for purposes of record keeping.
-        /// </value>
+        /// <value>The no-show players for purposes of record keeping.</value>
         public StringBuilder NoShows { get; set; }
 
         /// <summary>
-        ///     Gets pickup players class.
+        /// Gets pickup players class.
         /// </summary>
-        /// <value>
-        ///     The pickup players class.
-        /// </value>
+        /// <value>The pickup players class.</value>
         public PickupPlayers Players
         {
             get { return _players; }
         }
 
         /// <summary>
-        ///     Gets or sets the status message.
+        /// Gets or sets the status message.
         /// </summary>
-        /// <value>
-        ///     The status message.
-        /// </value>
+        /// <value>The status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets or sets the players who are substitute players.
+        /// Gets or sets the players who are substitute players.
         /// </summary>
-        /// <value>
-        ///     The list of players who are eligible to be subbed in.
-        /// </value>
+        /// <value>The list of players who are eligible to be subbed in.</value>
         public List<string> SubCandidates { get; set; }
 
         /// <summary>
-        ///     Gets or sets the substitite players for purposes of record keeping.
+        /// Gets or sets the substitite players for purposes of record keeping.
         /// </summary>
-        /// <value>
-        ///     The substitute players for purposes of record keeping.
-        /// </value>
+        /// <value>The substitute players for purposes of record keeping.</value>
         public StringBuilder Subs { get; set; }
 
         /// <summary>
-        ///     Adds the active pickup player.
+        /// Adds the active pickup player.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <remarks>
-        ///     This is used for <see cref="ActivePickupPlayers" />, which is the tool's internal list
-        ///     of those players who are on a team for the pickup. This is included because sometimes
-        ///     the game's actual team tracking is not reliably updated.
+        /// This is used for <see cref="ActivePickupPlayers"/>, which is the tool's internal list of
+        /// those players who are on a team for the pickup. This is included because sometimes the
+        /// game's actual team tracking is not reliably updated.
         /// </remarks>
         public void AddActivePickupPlayer(string player)
         {
@@ -264,9 +237,9 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Creates a pickup info object for the current pickup game.
+        /// Creates a pickup info object for the current pickup game.
         /// </summary>
-        /// <returns>A <see cref="PickupInfo" /> object representing the current pickup game.</returns>
+        /// <returns>A <see cref="PickupInfo"/> object representing the current pickup game.</returns>
         public PickupInfo CreatePickupInfo()
         {
             var pickupInfo = new PickupInfo();
@@ -295,7 +268,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Displays the list of eligible players, if any.
+        /// Displays the list of eligible players, if any.
         /// </summary>
         public async Task DisplayAvailablePlayers()
         {
@@ -306,12 +279,12 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evauates a departing pickup user's noshow or sub status and punishes if necessary.
+        /// Evauates a departing pickup user's noshow or sub status and punishes if necessary.
         /// </summary>
         /// <param name="player">The departing player.</param>
         /// <param name="playerWasActive">
-        ///     if set to <c>true</c> indicates that the departing player was
-        ///     active (i.e. was on the red or the blue team, thus not a spectator).
+        /// if set to <c>true</c> indicates that the departing player was active (i.e. was on the
+        /// red or the blue team, thus not a spectator).
         /// </param>
         /// <param name="outgoingTeam">The departing player's team.</param>
         /// <returns></returns>
@@ -367,11 +340,12 @@ namespace SST.Core.Modules
                     await ShowPrivUserCanCancelMsg();
                 }
             }
-            // Player either A) leaves prematurely mid-game without getting sub, or B) leaves after being
-            // picked and moved for a team, but before the game has started
+            // Player either A) leaves prematurely mid-game without getting sub, or B) leaves after
+            // being picked and moved for a team, but before the game has started
             if ((IsPickupInProgress && playerWasActive) || (IsPickupPreGame && playerWasActive))
             {
-                // Situation where departing player is moved to spec due to successful sub request. Do nothing.
+                // Situation where departing player is moved to spec due to successful sub request.
+                // Do nothing.
                 if (_sst.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest) return;
 
                 Log.Write(string.Format("Player {0} left mid-game without securing a sub.",
@@ -389,13 +363,10 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates whether the current pickup can be reset, and if so, resets it.
+        /// Evaluates whether the current pickup can be reset, and if so, resets it.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation passes;
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation passes; otherwise <c>false</c>.</returns>
         public async Task<bool> EvalPickupReset(CmdArgs c)
         {
             if (IsQlGameInProgress)
@@ -408,14 +379,11 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates whether the server can be put into pickup pre-game mode when the pickup start command is issued,
-        ///     and if it can be, then puts the servers into the pickup pre-game mode.
+        /// Evaluates whether the server can be put into pickup pre-game mode when the pickup start
+        /// command is issued, and if it can be, then puts the servers into the pickup pre-game mode.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the evaluation passes;
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the evaluation passes; otherwise <c>false</c>.</returns>
         public async Task<bool> EvalPickupStart(CmdArgs c)
         {
             if (!_sst.ServerInfo.IsATeamGame())
@@ -455,7 +423,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates whether the current pickup can be stopped, and if so, stops it.
+        /// Evaluates whether the current pickup can be stopped, and if so, stops it.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns></returns>
@@ -471,13 +439,10 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Evaluates whether a user can be removed for no-show/sub abuse.
+        /// Evaluates whether a user can be removed for no-show/sub abuse.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the user can be removed; otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the user can be removed; otherwise <c>false</c>.</returns>
         public async Task<bool> EvalPickupUnban(CmdArgs c)
         {
             if (c.Args.Length == (c.FromIrc ? 2 : 1))
@@ -514,7 +479,8 @@ namespace SST.Core.Modules
 
                     return false;
                 }
-                // Notify admins and higher that they should use timeban del command to remove non-pickup related ban
+                // Notify admins and higher that they should use timeban del command to remove
+                // non-pickup related ban
                 if (senderLevel > UserLevel.SuperUser)
                 {
                     StatusMessage = string.Format(
@@ -535,7 +501,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Handles the start of intermission (period between end of game and end of endgame map-voting)
+        /// Handles the start of intermission (period between end of game and end of endgame map-voting)
         /// </summary>
         public void HandleIntermissionStart()
         {
@@ -544,7 +510,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Handles the end of the pickup (when the QL gamestate changes to WARM_UP)
+        /// Handles the end of the pickup (when the QL gamestate changes to WARM_UP)
         /// </summary>
         public void HandlePickupEnd()
         {
@@ -552,8 +518,8 @@ namespace SST.Core.Modules
             if (!IsPickupInProgress) return;
             Log.Write("Pickup game has now officially ended. Will proceed to update database.",
                 _logClassType, _logPrefix);
-            // Update the pickup DB table to incldue any changes that occurred between the
-            // game start and the game end
+            // Update the pickup DB table to incldue any changes that occurred between the game
+            // start and the game end
             var pickupDb = new DbPickups();
             pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
             // Update the games finished count for the player in the pickup users table
@@ -566,29 +532,30 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Handles the pickup launch (when the QL gamestate changes to IN_PROGRESS)
+        /// Handles the pickup launch (when the QL gamestate changes to IN_PROGRESS)
         /// </summary>
         public void HandlePickupLaunch()
         {
             // Do not allow the game to start unless the teams are fully picked
             if (HasTeamSelectionStarted)
             {
-                // ReSharper disable once UnusedVariable
+                // ReSharper disable once UnusedVariable (synchronous)
                 var r = DoResetPickup();
                 return;
             }
 
-            // Pickup pre-game extends from !pickup start to the game actually launching
-            // So do nothing if for some reason we are not at this point
+            // Pickup pre-game extends from !pickup start to the game actually launching So do
+            // nothing if for some reason we are not at this point
             if (!IsPickupPreGame) return;
             Log.Write("Pickup game has now officially started!", _logClassType, _logPrefix);
-            
+
             // When game officially starts (IN_PROGRESS) update the pickup DB table to include
-            // actual start time, any team member changes, subs &/or no-shows that occurred after the teams
-            // were already full.
+            // actual start time, any team member changes, subs &/or no-shows that occurred after
+            // the teams were already full.
             var pickupDb = new DbPickups();
             pickupDb.UpdateMostRecentPickupGame(CreatePickupInfo());
-            // Update the games started count and last played date for the player in the pickup users table
+            // Update the games started count and last played date for the player in the pickup
+            // users table
             foreach (var player in ActivePickupPlayers)
             {
                 pickupDb.IncrementUserGamesStartedCount(player);
@@ -597,7 +564,8 @@ namespace SST.Core.Modules
             // We are now in progress
             IsPickupPreGame = false;
             IsPickupInProgress = true;
-            // Move any remaining eligible players who were not picked to the list of eligible substitutes and clear.
+            // Move any remaining eligible players who were not picked to the list of eligible
+            // substitutes and clear.
             foreach (
                 var player in
                     AvailablePlayers.Where(player => !SubCandidates.Contains(player,
@@ -612,7 +580,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Handles the score or timelimit hit event.
+        /// Handles the score or timelimit hit event.
         /// </summary>
         public void HandleScoreOrTimelimitHit()
         {
@@ -624,14 +592,14 @@ namespace SST.Core.Modules
             HandlePickupEnd();
             // Start the pickup reset timer
             StartEndGameResetTimer();
-            // ReSharper disable once UnusedVariable
+            // ReSharper disable once UnusedVariable (synchronous)
             var s = _sst.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 Pickup ENDED. New pickup to start in ^3{0}^7 seconds!",
                 (PickupResetOnEndGameLimit / 1000)));
         }
 
         /// <summary>
-        ///     Notifies the connecting user on how to sign up for next or current pickup game.
+        /// Notifies the connecting user on how to sign up for next or current pickup game.
         /// </summary>
         /// <param name="user">The user.</param>
         public async Task NotifyConnectingUser(string user)
@@ -657,7 +625,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Notifies the new player that he has been picked.
+        /// Notifies the new player that he has been picked.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team for which the player was picked.</param>
@@ -670,13 +638,13 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Processes the player and/or captain substitution.
+        /// Processes the player and/or captain substitution.
         /// </summary>
-        /// <param name="fromPlayer">The player/captain sending the substitution request (the outgoing player/captain).</param>
+        /// <param name="fromPlayer">
+        /// The player/captain sending the substitution request (the outgoing player/captain).
+        /// </param>
         /// <param name="playerToSub">The player/captain to sub in.</param>
-        /// <returns>
-        ///     <c>true</c> if the sub was successfully processed; otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the sub was successfully processed; otherwise <c>false</c>.</returns>
         public async Task<bool> ProcessSub(string fromPlayer, string playerToSub)
         {
             if (!IsPickupInProgress && !IsPickupPreGame)
@@ -720,8 +688,8 @@ namespace SST.Core.Modules
             }
             if (IsPickupPreGame && !AvailablePlayers.Contains(playerToSub))
             {
-                // use a /say here, instead of the usual /tell for errors,
-                // so new people know how to sign up
+                // use a /say here, instead of the usual /tell for errors, so new people know how to
+                // sign up
                 await
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
@@ -732,8 +700,8 @@ namespace SST.Core.Modules
             }
             if (IsPickupInProgress && !SubCandidates.Contains(playerToSub))
             {
-                // use a /say here, instead of the usual /tell for errors,
-                // so new people know how to sign up
+                // use a /say here, instead of the usual /tell for errors, so new people know how to
+                // sign up
                 await
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
@@ -796,13 +764,13 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Removes the active pickup player.
+        /// Removes the active pickup player.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <remarks>
-        ///     This is used for <see cref="ActivePickupPlayers" />, which is the tool's internal list
-        ///     of those players who are on a team for the pickup. This is included because sometimes
-        ///     the game's actual team tracking is not reliably updated.
+        /// This is used for <see cref="ActivePickupPlayers"/>, which is the tool's internal list of
+        /// those players who are on a team for the pickup. This is included because sometimes the
+        /// game's actual team tracking is not reliably updated.
         /// </remarks>
         public void RemoveActivePickupPlayer(string player)
         {
@@ -814,7 +782,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Removes the player from the list of eligible players and/or eligible sub candidates.
+        /// Removes the player from the list of eligible players and/or eligible sub candidates.
         /// </summary>
         /// <param name="player">The player to remove.</param>
         public void RemoveEligibility(string player)
@@ -833,7 +801,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Resets the pickup status. This is the overall housekeeping method.
+        /// Resets the pickup status. This is the overall housekeeping method.
         /// </summary>
         public void ResetPickupStatus()
         {
@@ -863,8 +831,8 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Shows a public message including the names of current privileged users who may cancel the
-        ///     pickup, and provides the syntax for the command that cancels the pickup.
+        /// Shows a public message including the names of current privileged users who may cancel
+        /// the pickup, and provides the syntax for the command that cancels the pickup.
         /// </summary>
         public async Task ShowPrivUserCanCancelMsg()
         {
@@ -881,8 +849,8 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Shows a public message including the names of current privileged users who may reset the
-        ///     pickup, and provides the syntax for the command that resets the pickup.
+        /// Shows a public message including the names of current privileged users who may reset the
+        /// pickup, and provides the syntax for the command that resets the pickup.
         /// </summary>
         public async Task ShowPrivUserCanResetMsg()
         {
@@ -898,8 +866,8 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Shows a public message including the names of current privileged users who may start the
-        ///     pickup, and provides the syntax for the command that starts the pickup.
+        /// Shows a public message including the names of current privileged users who may start the
+        /// pickup, and provides the syntax for the command that starts the pickup.
         /// </summary>
         public async Task ShowPrivUserCanStartMsg()
         {
@@ -915,8 +883,8 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Starts the captain selection timer, giving all eligible players a certain amount of
-        ///     time to issue the cap command to sign up as a captain for the upcoming pickup game.
+        /// Starts the captain selection timer, giving all eligible players a certain amount of time
+        /// to issue the cap command to sign up as a captain for the upcoming pickup game.
         /// </summary>
         public async Task StartCaptainSelection()
         {
@@ -940,13 +908,14 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Event handler that is called upon the expiration of the captain selection timer.
+        /// Event handler that is called upon the expiration of the captain selection timer.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private async void CaptainSelectionExpired(object sender, ElapsedEventArgs e)
         {
-            // Too many people might have removed, leaving an inadequate number of players from which to pick caps. Reset.
+            // Too many people might have removed, leaving an inadequate number of players from
+            // which to pick caps. Reset.
             if (AvailablePlayers.Count < 2)
             {
                 await ResetDueToInadequatePlayerCount();
@@ -960,7 +929,8 @@ namespace SST.Core.Modules
                 Log.Write("0 players volunteered to be captains. Randomly selecting both captains," +
                           " then proceeding to team selection.", _logClassType, _logPrefix);
 
-                // Randomly pick the two captains and move to the proper teams so that team selection can begin.
+                // Randomly pick the two captains and move to the proper teams so that team
+                // selection can begin.
 
                 await
                     _sst.QlCommands.QlCmdSay(
@@ -1020,7 +990,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Moves all of the players to spectator mode.
+        /// Moves all of the players to spectator mode.
         /// </summary>
         private async Task ClearTeams()
         {
@@ -1033,11 +1003,9 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Resets the pickup back to pre-game mode.
+        /// Resets the pickup back to pre-game mode.
         /// </summary>
-        /// <remarks>
-        ///     This is in response to the 'reset' argument passed to <see cref="PickupCmd" />.
-        /// </remarks>
+        /// <remarks>This is in response to the 'reset' argument passed to <see cref="PickupCmd"/>.</remarks>
         private async Task DoResetPickup()
         {
             await _sst.QlCommands.QlCmdSay("^3[PICKUP]^7 Attempting to reset pickup...");
@@ -1046,32 +1014,27 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Event handler that is called upon the end of the pre-defined intermission period.
+        /// Event handler that is called upon the end of the pre-defined intermission period.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         /// <remarks>
-        ///     This is a method that is used to automatically reset the pickup after a pre-determined time
-        ///     after the intermission. It is used to reset and re-setup the teams after the previous game ends
-        ///     (typically after end-of-game map voting).
+        /// This is a method that is used to automatically reset the pickup after a pre-determined
+        /// time after the intermission. It is used to reset and re-setup the teams after the
+        /// previous game ends (typically after end-of-game map voting).
         /// </remarks>
         private void EndGameResetExpired(object sender, ElapsedEventArgs e)
         {
             Log.Write("Intermission. Re-establishing pickup.", _logClassType, _logPrefix);
-            // ReSharper disable once UnusedVariable
-            // Synchronous
+            // ReSharper disable once UnusedVariable (synchronous)
             var s = StartPickupPreGame();
         }
 
         /// <summary>
-        ///     Determines whether the command was sent from the owner of
-        ///     the bot via IRC.
+        /// Determines whether the command was sent from the owner of the bot via IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the command was sent from IRC and from
-        ///     an the IRC owner.
-        /// </returns>
+        /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
         private bool IsIrcOwner(CmdArgs c)
         {
             if (!c.FromIrc) return false;
@@ -1083,19 +1046,20 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Determines whether to perform the no-show evaluation for the specified player.
+        /// Determines whether to perform the no-show evaluation for the specified player.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="wasActive">
-        ///     if set to <c>true</c> indicates that the departing player was
-        ///     active (i.e. was on the red or the blue team, thus not a spectator).
+        /// if set to <c>true</c> indicates that the departing player was active (i.e. was on the
+        /// red or the blue team, thus not a spectator).
         /// </param>
         /// <returns><c>true</c> if the evaluation is to be performed, otherwise <c>false</c>.</returns>
         private bool IsNoShowEvalApplicable(string player, bool wasActive)
         {
             // Game is in intermission (timelimit hit to end of end-game map voting); do not eval no shows
             if (IsIntermission) return false;
-            // Player signed up as a captain, but left during captain selection process; evaluation is applicable.
+            // Player signed up as a captain, but left during captain selection process; evaluation
+            // is applicable.
             if (HasCaptainSelectionStarted &&
                 (Captains.RedCaptain.Equals(player) || Captains.BlueCaptain.Equals(player)))
                 return true;
@@ -1105,16 +1069,18 @@ namespace SST.Core.Modules
                 return true;
             // Player signed up to play, but leaves during the team picking process, evaluation is applicable.
             if (HasTeamSelectionStarted && AvailablePlayers.Contains(player)) return true;
-            // Player was picked for a team and moved to team, but game has not officially started yet; evaluation is applicable.
+            // Player was picked for a team and moved to team, but game has not officially started
+            // yet; evaluation is applicable.
             if (IsPickupPreGame && wasActive) return true;
-            // Game is in progress, player was on a team (wasActive) and leaves prematurely, evaluation is applicable.
+            // Game is in progress, player was on a team (wasActive) and leaves prematurely,
+            // evaluation is applicable.
             if (IsPickupInProgress && wasActive) return true;
 
             return false;
         }
 
         /// <summary>
-        ///     Moves the captains to their proper teams so that team selection will be possible.
+        /// Moves the captains to their proper teams so that team selection will be possible.
         /// </summary>
         private async Task MoveCaptainsToTeams()
         {
@@ -1139,7 +1105,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Resets the pickup due to inadequate eligible player count.
+        /// Resets the pickup due to inadequate eligible player count.
         /// </summary>
         private async Task ResetDueToInadequatePlayerCount()
         {
@@ -1154,7 +1120,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -1165,7 +1131,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -1176,7 +1142,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Prepares the teams so that captains and players can be picked.
+        /// Prepares the teams so that captains and players can be picked.
         /// </summary>
         private async Task SetupTeams()
         {
@@ -1201,7 +1167,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Shows the in-progress error.
+        /// Shows the in-progress error.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task ShowProgressInError(CmdArgs c)
@@ -1212,7 +1178,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Starts the pickup reset timer on game's end.
+        /// Starts the pickup reset timer on game's end.
         /// </summary>
         private void StartEndGameResetTimer()
         {
@@ -1227,7 +1193,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Starts the pickup pre game mode that sets up the server for an upcoming pickup game.
+        /// Starts the pickup pre game mode that sets up the server for an upcoming pickup game.
         /// </summary>
         private async Task StartPickupPreGame()
         {
@@ -1249,13 +1215,13 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Starts the process of team selection.
+        /// Starts the process of team selection.
         /// </summary>
         private async Task StartTeamSelection()
         {
-            // We should have both captains (+2) selected at this point.
-            // However, players might have disconnected before the captain selection timer expired, so
-            // make sure we have enough players one last time, and reset if we don't.
+            // We should have both captains (+2) selected at this point. However, players might have
+            // disconnected before the captain selection timer expired, so make sure we have enough
+            // players one last time, and reset if we don't.
             if ((AvailablePlayers.Count + 2) < (_sst.Mod.Pickup.Teamsize * 2))
             {
                 await ResetDueToInadequatePlayerCount();
@@ -1279,7 +1245,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Stops (cancels) the pickup and unlocks the teams so that anyone can join.
+        /// Stops (cancels) the pickup and unlocks the teams so that anyone can join.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task StopPickup(CmdArgs c)
@@ -1295,7 +1261,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Unlocks a team due to a player's premature mid-game departure.
+        /// Unlocks a team due to a player's premature mid-game departure.
         /// </summary>
         /// <param name="player">The departing player.</param>
         /// <param name="team">The team to unlock.</param>
@@ -1326,7 +1292,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Updates the departing player's no-show/sub information in the pickup database.
+        /// Updates the departing player's no-show/sub information in the pickup database.
         /// </summary>
         /// <param name="player">The departing player.</param>
         private async Task UpdateNoShowAndSubDatabase(string player)
@@ -1335,7 +1301,8 @@ namespace SST.Core.Modules
             var pickupDb = new DbPickups();
             if (_sst.ServerInfo.CurrentPlayers[player].HasMadeSuccessfulSubRequest)
             {
-                // Check whether non-exempt user (lower than SuperUser) has exceeded the permissible number of sub requests used
+                // Check whether non-exempt user (lower than SuperUser) has exceeded the permissible
+                // number of sub requests used
                 if (_userDb.GetUserLevel(player) >= UserLevel.SuperUser) return;
                 var subsUsed = pickupDb.GetUserSubsUsedCount(player);
                 if (subsUsed > _sst.Mod.Pickup.MaxSubsPerPlayer)

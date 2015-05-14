@@ -6,7 +6,7 @@ using SST.Util;
 namespace SST.Core.Modules
 {
     /// <summary>
-    ///     Class responsible for handling the message of the day set by the motd command.
+    /// Class responsible for handling the message of the day set by the motd command.
     /// </summary>
     public class MotdHandler
     {
@@ -16,7 +16,7 @@ namespace SST.Core.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MotdHandler" /> class.
+        /// Initializes a new instance of the <see cref="MotdHandler"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public MotdHandler(SynServerTool sst)
@@ -26,19 +26,15 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the message to repeat.
+        /// Gets or sets the message to repeat.
         /// </summary>
-        /// <value>
-        ///     The message to repeat.
-        /// </value>
+        /// <value>The message to repeat.</value>
         public string Message { get; set; }
 
         /// <summary>
-        ///     Gets or sets the repeat time in minutes.
+        /// Gets or sets the repeat time in minutes.
         /// </summary>
-        /// <value>
-        ///     The repeat time in minutes.
-        /// </value>
+        /// <value>The repeat time in minutes.</value>
         public int RepeatInterval { get; set; }
 
         /// <summary>
@@ -51,7 +47,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Starts the motd timer.
+        /// Starts the motd timer.
         /// </summary>
         public void StartMotdTimer()
         {
@@ -65,7 +61,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Stops the motd timer.
+        /// Stops the motd timer.
         /// </summary>
         public void StopMotdTimer()
         {
@@ -77,10 +73,12 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Method that is executed when the MOTD timer elapses.
+        /// Method that is executed when the MOTD timer elapses.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="elapsedEventArgs">
+        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
+        /// </param>
         private async void _motdTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             // Kill it if we're no longer monitoring

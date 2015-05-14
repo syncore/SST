@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Core.Modules
 {
     /// <summary>
-    ///     Class associated with pickup captains and related methods.
+    /// Class associated with pickup captains and related methods.
     /// </summary>
     public class PickupCaptains
     {
@@ -26,19 +26,15 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the blue captain.
+        /// Gets or sets the blue captain.
         /// </summary>
-        /// <value>
-        ///     The blue captain.
-        /// </value>
+        /// <value>The blue captain.</value>
         public string BlueCaptain { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether there is a blue captain.
+        /// Gets a value indicating whether there is a blue captain.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if there is a blue captain; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if there is a blue captain; otherwise, <c>false</c>.</value>
         public bool BlueCaptainExists
         {
             get
@@ -49,35 +45,27 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether it is the blue captain's turn to pick.
+        /// Gets or sets a value indicating whether it is the blue captain's turn to pick.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if it is the blue captain's turn to pick; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if it is the blue captain's turn to pick; otherwise, <c>false</c>.</value>
         public bool IsBlueTurnToPick { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether it is the red captain's turn to pick.
+        /// Gets or sets a value indicating whether it is the red captain's turn to pick.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if it is the red captain's turn to pick; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if it is the red captain's turn to pick; otherwise, <c>false</c>.</value>
         public bool IsRedTurnToPick { get; set; }
 
         /// <summary>
-        ///     Gets or sets the red captain.
+        /// Gets or sets the red captain.
         /// </summary>
-        /// <value>
-        ///     The red captain.
-        /// </value>
+        /// <value>The red captain.</value>
         public string RedCaptain { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether there is a red captain.
+        /// Gets a value indicating whether there is a red captain.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if there is a red captain; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if there is a red captain; otherwise, <c>false</c>.</value>
         public bool RedCaptainExists
         {
             get
@@ -90,15 +78,12 @@ namespace SST.Core.Modules
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Evaluates the addition of a captain to see if it is possible to add the captain, and adds if so.
+        /// Evaluates the addition of a captain to see if it is possible to add the captain, and
+        /// adds if so.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if it is possible to add the captain; otherwise <c>false</c>.
-        /// </returns>
-        /// <remarks>
-        ///     This is called in response to input received from <see cref="PickupCapCmd" />.
-        /// </remarks>
+        /// <returns><c>true</c> if it is possible to add the captain; otherwise <c>false</c>.</returns>
+        /// <remarks>This is called in response to input received from <see cref="PickupCapCmd"/>.</remarks>
         public async Task<bool> ProcessAddCaptain(CmdArgs c)
         {
             if (_manager.IsQlGameInProgress)
@@ -147,13 +132,11 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Processes and evaluates the captain's player pick and performs it if's possible to do so.
+        /// Processes and evaluates the captain's player pick and performs it if's possible to do so.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><C>true</C> if the player could be picked, otherwise <c>false</c>.</returns>
-        /// <remarks>
-        ///     This is called in response to input received from <see cref="PickupPickCmd" />.
-        /// </remarks>
+        /// <remarks>This is called in response to input received from <see cref="PickupPickCmd"/>.</remarks>
         public async Task<bool> ProcessPlayerPick(CmdArgs c)
         {
             if (!RedCaptain.Equals(c.FromUser) && !BlueCaptain.Equals(c.FromUser))
@@ -194,13 +177,13 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Sets the captain for a given team.
+        /// Sets the captain for a given team.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team to which the captain should be moved.</param>
         /// <param name="isCaptainSub">
-        ///     if set to <c>true</c> indicates that the captain is
-        ///     being set as part of a captain substitution process.
+        /// if set to <c>true</c> indicates that the captain is being set as part of a captain
+        /// substitution process.
         /// </param>
         public async Task SetCaptain(string player, Team team, bool isCaptainSub)
         {
@@ -234,7 +217,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Sets the picking team.
+        /// Sets the picking team.
         /// </summary>
         /// <param name="team">The team.</param>
         public async Task SetPickingTeam(Team team)
@@ -264,7 +247,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Performs the captain's player pick.
+        /// Performs the captain's player pick.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="team">The team on which the player should be placed.</param>
@@ -328,7 +311,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -339,7 +322,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Displays a message indicating which captain has the turn to pick a player.
+        /// Displays a message indicating which captain has the turn to pick a player.
         /// </summary>
         /// <param name="team">The captain's team.</param>
         private async Task ShowWhosePick(Team team)

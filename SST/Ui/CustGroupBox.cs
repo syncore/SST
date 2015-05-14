@@ -13,9 +13,7 @@ namespace SST.Ui
         /// <summary>
         /// Gets or sets the color of the border.
         /// </summary>
-        /// <value>
-        /// The color of the border.
-        /// </value>
+        /// <value>The color of the border.</value>
         public Color BorderColor
         {
             get { return _borderColor; }
@@ -24,7 +22,9 @@ namespace SST.Ui
 
         /// <summary>
         /// </summary>
-        /// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data.</param>
+        /// <param name="e">
+        /// A <see cref="T:System.Windows.Forms.PaintEventArgs"/> that contains the event data.
+        /// </param>
         protected override void OnPaint(PaintEventArgs e)
         {
             //get the text size in groupbox

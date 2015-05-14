@@ -9,8 +9,8 @@ using SST.Model.QuakeLiveApi;
 namespace SST.Util
 {
     /// <summary>
-    ///     Class that remotely retrieves various details from the Quake Live API when such details are not represented by a
-    ///     console command, cvar, etc.
+    /// Class that remotely retrieves various details from the Quake Live API when such details are
+    /// not represented by a console command, cvar, etc.
     /// </summary>
     public class QlRemoteInfoRetriever
     {
@@ -18,10 +18,10 @@ namespace SST.Util
         private readonly string _logPrefix = "[API:QUAKELIVE]";
 
         /// <summary>
-        ///     Gets the server's gamestate from the QL API.
+        /// Gets the server's gamestate from the QL API.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>A <see cref="QlGameStates" /> enum containing the server's gametype.</returns>
+        /// <returns>A <see cref="QlGameStates"/> enum containing the server's gametype.</returns>
         public async Task<QlGameStates> GetGameState(string serverId)
         {
             var server = await QueryQlServer(serverId);
@@ -46,25 +46,25 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the server's gametype from the QL API.
+        /// Gets the server's gametype from the QL API.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>A <see cref="QlGameTypes" /> enum containing the server's gametype.</returns>
+        /// <returns>A <see cref="QlGameTypes"/> enum containing the server's gametype.</returns>
         public async Task<QlGameTypes> GetGameType(string serverId)
         {
             var server = await QueryQlServer(serverId);
             var gtNum = server.game_type;
-            var gametype = (QlGameTypes) gtNum;
+            var gametype = (QlGameTypes)gtNum;
 
             Log.Write("This server's gametype is: " + gametype, _logClassType, _logPrefix);
             return gametype;
         }
 
         /// <summary>
-        ///     Retrieves Quake Live server data from a public filter URL.
+        /// Retrieves Quake Live server data from a public filter URL.
         /// </summary>
         /// <param name="filter">The base64 encoded json filter.</param>
-        /// <returns>The server data as a root <see cref="FilterObject" /></returns>
+        /// <returns>The server data as a root <see cref="FilterObject"/></returns>
         public async Task<FilterObject> GetServerDataFromFilter(string filter)
         {
             if (string.IsNullOrEmpty(filter))
@@ -96,10 +96,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Queries a Quake Live server.
+        /// Queries a Quake Live server.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>The server's details as a <see cref="Server" /> object.</returns>
+        /// <returns>The server's details as a <see cref="Server"/> object.</returns>
         public async Task<Server> QueryQlServer(string serverId)
         {
             if (string.IsNullOrEmpty(serverId))
@@ -113,7 +113,8 @@ namespace SST.Util
                 var url = "http://www.quakelive.com/browser/details?ids=" + serverId;
                 var serverList = await (query.QueryRestApiAsync<IList<Server>>(url));
 
-                // QL always returns a collection no matter what. We're only querying one server so get first.
+                // QL always returns a collection no matter what. We're only querying one server so
+                // get first.
                 if (serverList.Count != 0)
                 {
                     Log.Write(string.Format("Got server information for server with id {0}",

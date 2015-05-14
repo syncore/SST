@@ -5,7 +5,7 @@ using System.Text;
 namespace SST.Util
 {
     /// <summary>
-    ///     Class that handles various functions from the Windows API
+    /// Class that handles various functions from the Windows API
     /// </summary>
     internal static class Win32Api
     {
@@ -28,7 +28,7 @@ namespace SST.Util
             string lpszWindow);
 
         // Moving the GUI window, which is a borderless form (FormBorderStyle 'None')
-        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+        // http: //stackoverflow.com/questions/1592876/make-a-borderless-form-movable
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
@@ -41,17 +41,18 @@ namespace SST.Util
         public static extern int SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         // Send text to console edit control; note don't set CharSet.Auto since using MarshalAs
-        // http://www.pinvoke.net/default.aspx/user32.sendmessage
+        // http: //www.pinvoke.net/default.aspx/user32.sendmessage
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam,
             [MarshalAs(UnmanagedType.LPStr)] string lParam);
 
-        // Get total selection length (for calculating when an auto-clear needs to be sent so buffer isn't full)
+        // Get total selection length (for calculating when an auto-clear needs to be sent so buffer
+        // isn't full)
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint msg, out int wParam, out int lParam);
 
         // Moving the GUI window, which is a borderless form (FormBorderStyle 'None')
-        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+        // http: //stackoverflow.com/questions/1592876/make-a-borderless-form-movable
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
 

@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Retrieve a player's elo information.
+    /// Command: Retrieve a player's elo information.
     /// </summary>
     public class EloCmd : IBotCommand
     {
@@ -23,7 +23,7 @@ namespace SST.Core.Commands.None
         private UserLevel _userLevel = UserLevel.None;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EloCmd" /> class.
+        /// Initializes a new instance of the <see cref="EloCmd"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public EloCmd(SynServerTool sst)
@@ -35,54 +35,44 @@ namespace SST.Core.Commands.None
         /// <summary>
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        /// The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinArgs
         {
             get { return _qlMinArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public UserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -95,13 +85,8 @@ namespace SST.Core.Commands.None
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        /// <c>true</c> if the command was successfully executed, otherwise
-        /// <c>false</c>.
-        /// </returns>
-        /// <remarks>
-        /// Helpers.GetArgVal(c, 1) if specified: user to check
-        /// </remarks>
+        /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
+        /// <remarks>Helpers.GetArgVal(c, 1) if specified: user to check</remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             if (c.Args.Length > (c.FromIrc ? 3 : 2))
@@ -155,12 +140,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -172,7 +156,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -183,7 +167,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -200,7 +184,8 @@ namespace SST.Core.Commands.None
         /// <param name="user">The user.</param>
         private async Task GetAndSayElo(CmdArgs c, string user)
         {
-            // In the case of retrieving multiple users' elo data, we're only interested in the first 3 users given.
+            // In the case of retrieving multiple users' elo data, we're only interested in the
+            // first 3 users given.
             var multiPlayers = new string[] { };
             bool hasMultiple = false;
             if (user.Contains(","))

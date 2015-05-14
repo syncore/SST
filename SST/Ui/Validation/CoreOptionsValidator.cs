@@ -3,18 +3,16 @@
 namespace SST.Ui.Validation
 {
     /// <summary>
-    ///     UI Validation class for the Core Options tab.
+    /// UI Validation class for the Core Options tab.
     /// </summary>
     public class CoreOptionsValidator
     {
         /// <summary>
-        ///     Determines whether the specified user input is a valid elo cache expiration value.
+        /// Determines whether the specified user input is a valid elo cache expiration value.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidEloCacheExpiration(string userInput, out string errorMsg)
         {
             errorMsg = "Elo cache expiration value must be a positive number.";
@@ -28,13 +26,11 @@ namespace SST.Ui.Validation
         }
 
         /// <summary>
-        ///     Determines whether the specified user input is a valid Quake Live account name.
+        /// Determines whether the specified user input is a valid Quake Live account name.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidQuakeLiveName(string userInput, out string errorMsg)
         {
             if (userInput.Length == 0)
@@ -54,14 +50,11 @@ namespace SST.Ui.Validation
         }
 
         /// <summary>
-        ///     Determines whether the specified user input is a valid time between
-        ///     user commands value.
+        /// Determines whether the specified user input is a valid time between user commands value.
         /// </summary>
         /// <param name="userInput">The user input.</param>
         /// <param name="errorMsg">The error message.</param>
-        /// <returns>
-        ///     <c>true</c> if the user input is valid, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user input is valid, otherwise <c>false</c></returns>
         public bool IsValidTimeBetweenCommands(string userInput, out string errorMsg)
         {
             errorMsg = "Time limit between user commands value must be a positive number.";

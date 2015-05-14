@@ -1,7 +1,7 @@
 ﻿namespace SST.Enums
 {
     /// <summary>
-    ///     An enumeration that represents the different types of user levels.
+    /// An enumeration that represents the different types of user levels.
     /// </summary>
     public enum UserLevel : long
     {

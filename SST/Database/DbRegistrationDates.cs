@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Class responsible for user database operations.
+    /// Class responsible for user database operations.
     /// </summary>
     public class DbRegistrationDates : CommonSqliteDb
     {
@@ -20,7 +20,7 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.AccountDateDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbRegistrationDates" /> class.
+        /// Initializes a new instance of the <see cref="DbRegistrationDates"/> class.
         /// </summary>
         public DbRegistrationDates()
         {
@@ -28,7 +28,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="registrationDate">The user's QL account registration date.</param>
@@ -71,7 +71,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         public void DeleteUserFromDb(string user)
@@ -113,7 +113,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's registration date from the database if it exists.
+        /// Gets the user's registration date from the database if it exists.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's registration date.</returns>
@@ -162,7 +162,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the registration database.
+        /// Creates the registration database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -194,16 +194,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user database exists.
+        /// Checks whether the user database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the registration database.
+        /// Deletes the registration database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -221,7 +221,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -255,7 +255,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the registration database.
+        /// Verifies the registration database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

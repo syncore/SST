@@ -13,11 +13,12 @@ using SST.Util;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Start, stop, reset, unban users from pickup, show pickup help.
+    /// Command: Start, stop, reset, unban users from pickup, show pickup help.
     /// </summary>
     /// <remarks>
-    ///     The overall access level for this command is <see cref="UserLevel" />.None to allow for general command access,
-    ///     but certain arguments to this command will require elevated access (i.e. starting/stopping a pickup game).
+    /// The overall access level for this command is <see cref="UserLevel"/>.None to allow for
+    /// general command access, but certain arguments to this command will require elevated access
+    /// (i.e. starting/stopping a pickup game).
     /// </remarks>
     public class PickupCmd : IBotCommand
     {
@@ -36,59 +37,49 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs
         {
             get { return _qlMinArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinArgs
         {
             get { return _qlMinArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public UserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -98,7 +89,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         public async Task<bool> ExecAsync(CmdArgs c)
@@ -173,12 +164,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -192,7 +182,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -203,7 +193,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -214,7 +204,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Displays the insufficient access level error.
+        /// Displays the insufficient access level error.
         /// </summary>
         private async Task DisplayInsufficientAccessError(CmdArgs c)
         {
@@ -223,17 +213,16 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Displays the pickup help (the possible pickup commands).
+        /// Displays the pickup help (the possible pickup commands).
         /// </summary>
         private async Task DisplayPickupHelp(CmdArgs c)
         {
-
             string[] msgs = {
                 string.Format(
                 "^5[PICKUP] ^7Commands: ^3{0}{1}^7 sign up, ^3{0}{2}^7 remove yourself, ^3{0}{3}^7 sign up as captain",
                 CommandList.GameCommandPrefix, CommandList.CmdPickupAdd,
                 CommandList.CmdPickupRemove, CommandList.CmdPickupCap),
-                
+
                 string.Format(
                 "^3{0}{1}^7 captains: pick a player, ^3{0}{2}^7 request a substitute for yourself, ^3{0}{3}^7 see who's signed up",
                 CommandList.GameCommandPrefix, CommandList.CmdPickupPick,
@@ -257,14 +246,10 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Determines whether the command was sent from the owner of
-        ///     the bot via IRC.
+        /// Determines whether the command was sent from the owner of the bot via IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the command was sent from IRC and from
-        ///     an the IRC owner.
-        /// </returns>
+        /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
         private bool IsIrcOwner(CmdArgs c)
         {
             if (!c.FromIrc) return false;

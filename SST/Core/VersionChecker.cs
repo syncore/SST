@@ -13,7 +13,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for checking for the latest version of SST.
+    /// Class responsible for checking for the latest version of SST.
     /// </summary>
     public class VersionChecker
     {
@@ -22,11 +22,11 @@ namespace SST.Core
         private readonly string _updateUrl = "http://sst.syncore.org/download/sstversion.json";
 
         /// <summary>
-        ///     Checks for updates.
+        /// Checks for updates.
         /// </summary>
         /// <param name="isAutoCheck">
-        ///     if set to <c>true</c> then the update check
-        ///     was launched automatically without user intervention (program start).
+        /// if set to <c>true</c> then the update check was launched automatically without user
+        /// intervention (program start).
         /// </param>
         /// <returns></returns>
         public async Task CheckForUpdates(bool isAutoCheck)
@@ -50,11 +50,9 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the latest version information from server.
+        /// Gets the latest version information from server.
         /// </summary>
-        /// <returns>
-        ///     The version informat as a <see cref="SstVersion" /> object.
-        /// </returns>
+        /// <returns>The version informat as a <see cref="SstVersion"/> object.</returns>
         private async Task<SstVersion> GetLatestVersionInfoFromServer()
         {
             Log.Write("Checking for latest version.", _logClassType, _logPrefix);
@@ -95,7 +93,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether a newer version of SST is available.
+        /// Determines whether a newer version of SST is available.
         /// </summary>
         /// <param name="versionInfo">The version information retrieved from the server.</param>
         /// <returns><c>true</c> if a newer version of SST is available, otherwise <c>false</c>.</returns>
@@ -123,7 +121,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Shows the software update message.
+        /// Shows the software update message.
         /// </summary>
         /// <param name="versionInfo">The version information.</param>
         private void ShowUpdateMessage(SstVersion versionInfo)

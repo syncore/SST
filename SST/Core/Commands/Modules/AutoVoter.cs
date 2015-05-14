@@ -13,7 +13,7 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Auto voter. Automatically pass or reject votes based on specified criteria.
+    /// Module: Auto voter. Automatically pass or reject votes based on specified criteria.
     /// </summary>
     public class AutoVoter : IModule
     {
@@ -26,7 +26,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AutoVoter" /> class.
+        /// Initializes a new instance of the <see cref="AutoVoter"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public AutoVoter(SynServerTool sst)
@@ -52,83 +52,67 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the automatic votes.
+        /// Gets the automatic votes.
         /// </summary>
-        /// <value>
-        ///     The automatic votes.
-        /// </value>
+        /// <value>The automatic votes.</value>
         public List<AutoVote> AutoVotes { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets or sets the valid callvotes.
+        /// Gets or sets the valid callvotes.
         /// </summary>
-        /// <value>
-        ///     The valid callvotes.
-        /// </value>
+        /// <value>The valid callvotes.</value>
         public List<Vote> ValidCallVotes { get; set; }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -138,13 +122,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -199,12 +180,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -217,7 +197,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -238,7 +218,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -249,7 +229,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -260,11 +240,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// <param name="active">
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active; otherwise it is to be
+        /// disabled when updating the configuration.
         /// </param>
         public void UpdateConfig(bool active)
         {
@@ -282,16 +262,15 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Adds the automatic vote with arguments
+        /// Adds the automatic vote with arguments
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     <c>true</c> if the argumented automatic vote was successfully added;
-        ///     otherwise <c>false</c>.
+        /// <c>true</c> if the argumented automatic vote was successfully added; otherwise <c>false</c>.
         /// </returns>
         /// <remarks>
-        ///     This method is for auto-votes where a second parameter is specified in addition to
-        ///     the generic type of vote. Example: 'map campgrounds'
+        /// This method is for auto-votes where a second parameter is specified in addition to the
+        /// generic type of vote. Example: 'map campgrounds'
         /// </remarks>
         private async Task<bool> AddAutoVoteWithArgs(CmdArgs c)
         {
@@ -329,16 +308,15 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Adds the no argument automatic vote.
+        /// Adds the no argument automatic vote.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     <c>true</c> if the no-argument automatic vote was successfully added;
-        ///     otherwise <c>false</c>.
+        /// <c>true</c> if the no-argument automatic vote was successfully added; otherwise <c>false</c>.
         /// </returns>
         /// <remarks>
-        ///     This method is for auto-votes where a second parameter is not specified
-        ///     in addition to the generic type of vote. Example: 'map'
+        /// This method is for auto-votes where a second parameter is not specified in addition to
+        /// the generic type of vote. Example: 'map'
         /// </remarks>
         private async Task<bool> AddNoArgAutoVote(CmdArgs c)
         {
@@ -379,11 +357,9 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the automatic voter.
+        /// Disables the automatic voter.
         /// </summary>
-        /// <param name="c">
-        ///     The command argument information.
-        /// </param>
+        /// <param name="c">The command argument information.</param>
         private async Task DisableAutoVoter(CmdArgs c)
         {
             UpdateConfig(false);
@@ -395,7 +371,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays an error indicating that the auto-vote id is not a valid numeric value.
+        /// Displays an error indicating that the auto-vote id is not a valid numeric value.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisplayNotNumError(CmdArgs c)
@@ -409,7 +385,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays an error indicating that the vote doesnt exist error.
+        /// Displays an error indicating that the vote doesnt exist error.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisplayVoteDoesntExistError(CmdArgs c)
@@ -423,13 +399,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Handles the automatic vote addition.
+        /// Handles the automatic vote addition.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the vote addition was attempted, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the vote addition was attempted, otherwise <c>false</c>.</returns>
         private async Task<bool> HandleAutoVoteAddition(CmdArgs c)
         {
             var isValidCallVote = (ValidCallVotes.Any(v => v.Name.Equals(Helpers.GetArgVal(c, 3),
@@ -465,13 +438,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Handles the automatic vote deletion.
+        /// Handles the automatic vote deletion.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the vote deletion was successful, otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the vote deletion was successful, otherwise <c>false</c>.</returns>
         private async Task<bool> HandleAutoVoteDeletion(CmdArgs c)
         {
             int voteNum;
@@ -507,7 +477,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Lists the automatic votes.
+        /// Lists the automatic votes.
         /// </summary>
         private async Task ListAutoVotes(CmdArgs c)
         {
@@ -548,7 +518,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Removes the automatic vote.
+        /// Removes the automatic vote.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="voteNum">The vote number.</param>

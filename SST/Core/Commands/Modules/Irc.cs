@@ -10,8 +10,8 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Internet Relay Chat. Enables an IRC interface for viewing real-time
-    ///     server information and issuing administrative functions from an IRC channel.
+    /// Module: Internet Relay Chat. Enables an IRC interface for viewing real-time server
+    ///         information and issuing administrative functions from an IRC channel.
     /// </summary>
     public class Irc : IModule
     {
@@ -24,7 +24,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Irc" /> class.
+        /// Initializes a new instance of the <see cref="Irc"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public Irc(SynServerTool sst)
@@ -37,86 +37,70 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the IRC manager.
+        /// Gets the IRC manager.
         /// </summary>
-        /// <value>
-        ///     The IRC manager.
-        /// </value>
+        /// <value>The IRC manager.</value>
         public IrcManager IrcManager
         {
             get { return _irc; }
         }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether the bot is connected to IRC.
+        /// Gets a value indicating whether the bot is connected to IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.</value>
         public bool IsConnectedToIrc
         {
             get { return _irc.IsConnectedToIrc; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed { get; private set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Deactivates this module.
+        /// Deactivates this module.
         /// </summary>
         public void Deactivate()
         {
@@ -124,7 +108,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -134,13 +118,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             // IRC access to the irc module command isn't allowed
@@ -183,12 +164,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -203,11 +183,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Automatically starts the module if an active flag is detected in the configuration.
+        /// Automatically starts the module if an active flag is detected in the configuration.
         /// </summary>
         /// <remarks>
-        ///     This is used after <see cref="LoadConfig" /> has been called, to connect to the IRC
-        ///     server on load, if applicable.
+        /// This is used after <see cref="LoadConfig"/> has been called, to connect to the IRC
+        /// server on load, if applicable.
         /// </remarks>
         public void Init()
         {
@@ -221,7 +201,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -246,7 +226,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -257,7 +237,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -268,7 +248,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         public void UpdateConfig(bool active)
         {
@@ -284,7 +264,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the IRC module.
+        /// Disables the IRC module.
         /// </summary>
         private async Task DisableIrc(CmdArgs c)
         {
@@ -299,7 +279,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the IRC module and makes the initial connection to the IRC server.
+        /// Enables the IRC module and makes the initial connection to the IRC server.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task EnableIrc(CmdArgs c)
@@ -328,7 +308,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Processes the "connect" argument.
+        /// Processes the "connect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task<bool> ProcessConnectArg(CmdArgs c)
@@ -367,13 +347,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Processes the "disconnect" argument.
+        /// Processes the "disconnect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the disconnect attempt was successful; otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the disconnect attempt was successful; otherwise <c>false</c>.</returns>
         private async Task<bool> ProcessDisconnectArg(CmdArgs c)
         {
             if (!Active)
@@ -401,7 +378,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Processes the "off" argument.
+        /// Processes the "off" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task ProcessOffArg(CmdArgs c)
@@ -410,13 +387,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Processes the "reconnect" argument.
+        /// Processes the "reconnect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the reconnect attempt was successful; otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the reconnect attempt was successful; otherwise <c>false</c>.</returns>
         private async Task<bool> ProcessReconnectArg(CmdArgs c)
         {
             if (!Active)

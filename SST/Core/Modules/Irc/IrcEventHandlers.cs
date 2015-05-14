@@ -4,17 +4,17 @@ using IrcDotNet;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    ///     Class that specifies various IRC-related event handlers.
+    /// Class that specifies various IRC-related event handlers.
     /// </summary>
     public class IrcEventHandlers
     {
         /// <summary>
-        ///     Handles the Connected event of the IrcClient. Occurs when the client (bot) has
-        ///     connected to the server. The <see cref="IrcClient_Registered" /> event is what actually
-        ///     occurs once the client is registered with the server.
+        /// Handles the Connected event of the IrcClient. Occurs when the client (bot) has connected
+        /// to the server. The <see cref="IrcClient_Registered"/> event is what actually occurs once
+        /// the client is registered with the server.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         public void IrcClient_Connected(object sender, EventArgs e)
         {
             var client = (IrcClient)sender;
@@ -22,11 +22,11 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the Disconnected event of the IrcClient. Occurs when the client (bot)
-        ///     has disconnected from the server.
+        /// Handles the Disconnected event of the IrcClient. Occurs when the client (bot) has
+        /// disconnected from the server.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         public void IrcClient_Disconnected(object sender, EventArgs e)
         {
             var client = (IrcClient)sender;
@@ -34,11 +34,10 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the Registered event of the Irc client. Occurs when the connection
-        ///     has been registered.
+        /// Handles the Registered event of the Irc client. Occurs when the connection has been registered.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         public void IrcClient_Registered(object sender, EventArgs e)
         {
             var client = (IrcClient)sender;
@@ -52,43 +51,51 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Called when a message is received in the channel.
+        /// Called when a message is received in the channel.
         /// </summary>
         /// <param name="channel">The channel.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnChannelMessageReceived(IrcChannel channel, IrcMessageEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when a channel-wide notice is received.
+        /// Called when a channel-wide notice is received.
         /// </summary>
         /// <param name="channel">The channel.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnChannelNoticeReceived(IrcChannel channel, IrcMessageEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when a user joins the channel in which our irc client is currently located.
+        /// Called when a user joins the channel in which our irc client is currently located.
         /// </summary>
         /// <param name="channel">The channel.</param>
-        /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelUserEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnChannelUserJoined(IrcChannel channel, IrcChannelUserEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when a user leaves the channel in which our irc client is currenty located.
+        /// Called when a user leaves the channel in which our irc client is currenty located.
         /// </summary>
         /// <param name="channel">The channel.</param>
-        /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelUserEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnChannelUserLeft(IrcChannel channel, IrcChannelUserEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when the irc client connects.
+        /// Called when the irc client connects.
         /// </summary>
         /// <param name="client">The client.</param>
         protected virtual void OnClientConnect(IrcClient client)
@@ -96,7 +103,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Called when the irc client disconnects.
+        /// Called when the irc client disconnects.
         /// </summary>
         /// <param name="client">The client.</param>
         protected virtual void OnClientDisconnect(IrcClient client)
@@ -104,7 +111,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Called when the server registers the irc client's connection.
+        /// Called when the server registers the irc client's connection.
         /// </summary>
         /// <param name="client">The client.</param>
         protected virtual void OnClientRegistered(IrcClient client)
@@ -112,47 +119,57 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Called when our irc client joins a channel.
+        /// Called when our irc client joins a channel.
         /// </summary>
         /// <param name="localUser">The local user.</param>
-        /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnLocalUserJoinedChannel(IrcLocalUser localUser, IrcChannelEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when our irc client leaves a channel.
+        /// Called when our irc client leaves a channel.
         /// </summary>
         /// <param name="localUser">The local user.</param>
-        /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnLocalUserLeftChannel(IrcLocalUser localUser, IrcChannelEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when our irc client receives a message.
+        /// Called when our irc client receives a message.
         /// </summary>
         /// <param name="localUser">The local user.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnLocalUserMessageReceived(IrcLocalUser localUser, IrcMessageEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Called when our irc client receives a notice.
+        /// Called when our irc client receives a notice.
         /// </summary>
         /// <param name="localUser">The local user.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         protected virtual void OnLocalUserNoticeReceived(IrcLocalUser localUser, IrcMessageEventArgs e)
         {
         }
 
         /// <summary>
-        ///     Event handler that handles the MessageReceived event of the channel. Occurs when a channel on which the
-        ///     client (bot) is in receives a message.
+        /// Event handler that handles the MessageReceived event of the channel. Occurs when a
+        /// channel on which the client (bot) is in receives a message.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
@@ -160,11 +177,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Event handler that handles the NoticeReceived event of the channel. Occurs when a channel on which
-        ///     the client (bot) is in receives a notice.
+        /// Event handler that handles the NoticeReceived event of the channel. Occurs when a
+        /// channel on which the client (bot) is in receives a notice.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
@@ -172,11 +191,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Event handler that handles the UserJoined event of the channel. Occurs when a user joins a channel in which the
-        ///     client (bot) is located.
+        /// Event handler that handles the UserJoined event of the channel. Occurs when a user joins
+        /// a channel in which the client (bot) is located.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelUserEventArgs"/> instance containing the event data.
+        /// </param>
         private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
         {
             var channel = (IrcChannel)sender;
@@ -184,11 +205,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Event handler that handles the UserLeft event of the channel. Occurs when a user leaves a channel in which
-        ///     the client (bot) is located.
+        /// Event handler that handles the UserLeft event of the channel. Occurs when a user leaves
+        /// a channel in which the client (bot) is located.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcChannelUserEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelUserEventArgs"/> instance containing the event data.
+        /// </param>
         private void Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
         {
             var channel = (IrcChannel)sender;
@@ -196,11 +219,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the JoinedChannel event of the LocalUser. Occurs when the client (bot)
-        ///     has joined a channel.
+        /// Handles the JoinedChannel event of the LocalUser. Occurs when the client (bot) has
+        /// joined a channel.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelEventArgs"/> instance containing the event data.
+        /// </param>
         private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
@@ -214,11 +239,12 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the LeftChannel event of the LocalUser. Occurs
-        ///     when the client (bot) leaves the channel.
+        /// Handles the LeftChannel event of the LocalUser. Occurs when the client (bot) leaves the channel.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcChannelEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcChannelEventArgs"/> instance containing the event data.
+        /// </param>
         private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
@@ -232,11 +258,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the MessageReceived event of the LocalUser. Occurs when the client (bot) receives a
-        ///     private message.
+        /// Handles the MessageReceived event of the LocalUser. Occurs when the client (bot)
+        /// receives a private message.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
@@ -244,11 +272,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Handles the NoticeReceived event of the LocalUser. Occurs when the client (bot)
-        ///     receives a notice.
+        /// Handles the NoticeReceived event of the LocalUser. Occurs when the client (bot) receives
+        /// a notice.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrcMessageEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="IrcMessageEventArgs"/> instance containing the event data.
+        /// </param>
         private void LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;

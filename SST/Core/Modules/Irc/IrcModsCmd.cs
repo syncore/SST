@@ -6,7 +6,7 @@ using SST.Model;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    ///     IRC command: display the modules that are currently active.
+    /// IRC command: display the modules that are currently active.
     /// </summary>
     public class IrcModsCmd : IIrcCommand
     {
@@ -18,7 +18,7 @@ namespace SST.Core.Modules.Irc
         private bool _requiresMonitoring = false;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrcModsCmd" /> class.
+        /// Initializes a new instance of the <see cref="IrcModsCmd"/> class.
         /// </summary>
         /// <param name="sst">The main tool class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -29,18 +29,16 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs
         {
             get { return _ircMinArgs; }
         }
 
         /// <summary>
-        ///     Gets a value that determines whether this command is to be executed asynchronously.
+        /// Gets a value that determines whether this command is to be executed asynchronously.
         /// </summary>
         public bool IsAsync
         {
@@ -48,12 +46,11 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets a value indicating whether this command requires
-        /// the bot to be monitoring a server before it can be used.
+        /// Gets a value indicating whether this command requires the bot to be monitoring a server
+        /// before it can be used.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command requires the bot to be monitoring
-        /// a server; otherwise, <c>false</c>.
+        /// <c>true</c> if this command requires the bot to be monitoring a server; otherwise, <c>false</c>.
         /// </value>
         public bool RequiresMonitoring
         {
@@ -61,23 +58,19 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public IrcUserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        /// <remarks>
-        ///     Not implemented, as this command takes no arguments.
-        /// </remarks>
+        /// <remarks>Not implemented, as this command takes no arguments.</remarks>
         public void DisplayArgLengthError(CmdArgs c)
         {
         }
@@ -87,8 +80,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         public bool Exec(CmdArgs c)
         {
@@ -115,12 +107,9 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        /// <remarks>
-        ///     Not implemented, as this is not an async command.
-        /// </remarks>
+        /// <remarks>Not implemented, as this is not an async command.</remarks>
         public Task<bool> ExecAsync(CmdArgs c)
         {
             return null;

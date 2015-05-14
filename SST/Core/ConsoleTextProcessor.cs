@@ -8,7 +8,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for handling the QL console text.
+    /// Class responsible for handling the QL console text.
     /// </summary>
     public class ConsoleTextProcessor
     {
@@ -22,7 +22,7 @@ namespace SST.Core
         private volatile int _oldWholeConsoleLineLength;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ConsoleTextProcessor" /> class.
+        /// Initializes a new instance of the <see cref="ConsoleTextProcessor"/> class.
         /// </summary>
         public ConsoleTextProcessor(SynServerTool sst)
         {
@@ -32,11 +32,9 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets or sets the old length of the last line.
+        /// Gets or sets the old length of the last line.
         /// </summary>
-        /// <value>
-        ///     The old length of the last line.
-        /// </value>
+        /// <value>The old length of the last line.</value>
         public int OldLastLineLength
         {
             get { return _oldLastLineLength; }
@@ -44,11 +42,9 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets or sets the old length of the whole console text.
+        /// Gets or sets the old length of the whole console text.
         /// </summary>
-        /// <value>
-        ///     The old length of the whole console text.
-        /// </value>
+        /// <value>The old length of the whole console text.</value>
         public int OldWholeConsoleLineLength
         {
             get { return _oldWholeConsoleLineLength; }
@@ -56,7 +52,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Returns the value of a parsed cvar with the quotes removed.
+        /// Returns the value of a parsed cvar with the quotes removed.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>The value of a parsed cvar with the quotes removed.</returns>
@@ -66,7 +62,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Strips the specified text.
+        /// Strips the specified text.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>A trimmed string with newline characters removed.</returns>
@@ -76,7 +72,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Processes all of the text currently in the QL console.
+        /// Processes all of the text currently in the QL console.
         /// </summary>
         /// <param name="text">All of the text in the QL console.</param>
         /// <param name="length">The length of all of the text in the QL console.</param>
@@ -91,7 +87,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles small lines of console text
+        /// Handles small lines of console text
         /// </summary>
         /// <param name="msg">The text of the incoming message.</param>
         public void ProcessShortConsoleLines(string msg)
@@ -109,15 +105,18 @@ namespace SST.Core
             //Debug.WriteLine(string.Format("Received console text: {0}", msg));
 
             // Batch process, as there will sometimes be multiple lines.
-            var arr = msg.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            var arr = msg.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             DetectConsoleEvent(arr);
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of an accuracy server command and handles it if it does.
+        /// Determines whether the text matches that of an accuracy server command and handles it if
+        /// it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if the text matches that of accuracy server command info, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if the text matches that of accuracy server command info, otherwise <c>false</c>.
+        /// </returns>
         private bool AccuracyInfoDetected(string text)
         {
             if (!_sst.Parser.ScmdAccuracy.IsMatch(text)) return false;
@@ -127,12 +126,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a player chat message and handles it if it does.
+        /// Determines whether the text matches that of a player chat message and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <remarks>
-        ///     First, make sure the player is detected in the internal list of the server's current players,
-        ///     if not, then do nothing. Use the full clan tag (if any) and name for the determination.
+        /// First, make sure the player is detected in the internal list of the server's current
+        /// players, if not, then do nothing. Use the full clan tag (if any) and name for the determination.
         /// </remarks>
         private bool ChatMessageDetected(string text)
         {
@@ -143,14 +142,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a cvar request that has been
-        ///     made either by SST or the user, and handles it if it does.
+        /// Determines whether the text matches that of a cvar request that has been made either by
+        /// SST or the user, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>
-        ///     <c>true</c> if a cvar request was detected and handled,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if a cvar request was detected and handled, otherwise <c>false</c>.</returns>
         private bool CvarRequestDetected(string text)
         {
             if (!_sst.Parser.CvarNameAndValue.IsMatch(text)) return false;
@@ -171,8 +167,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Detects various events (such as connections, disconnections, chat messages, etc.)
-        ///     that occur as a single line of text within the console.
+        /// Detects various events (such as connections, disconnections, chat messages, etc.) that
+        /// occur as a single line of text within the console.
         /// </summary>
         /// <param name="events">The events.</param>
         private void DetectConsoleEvent(string[] events)
@@ -180,10 +176,10 @@ namespace SST.Core
             // Most of time the text will include multiple lines. Iterate and process.
             foreach (var text in events)
             {
-                // Server connection detection events (i.e. cvar requests (ui_mainmenu), "not connected" messages
-                // need to be evaluated even if we're not monitoring the server, to see if server monitoring can begin
-                // when the user makes the request for it to do so.
-                // -----------------------------------------------------------------
+                // Server connection detection events (i.e. cvar requests (ui_mainmenu), "not
+                // connected" messages need to be evaluated even if we're not monitoring the server,
+                // to see if server monitoring can begin when the user makes the request for it to
+                // do so. 
                 // cvar request
                 if (CvarRequestDetected(text)) continue;
                 // 'Not connected to a server.' message detected
@@ -204,7 +200,8 @@ namespace SST.Core
                 if (GameTypeCfgStringDetected(text)) continue;
                 // player configstring info detected (servercommand)
                 if (PlayerConfigStringSrvCmdDetected(text)) continue;
-                // 'player disconnected' detected, 'player was kicked' detected, or 'player ragequits' detected
+                // 'player disconnected' detected, 'player was kicked' detected, or 'player
+                // ragequits' detected
                 if (OutgoingPlayerDetected(text)) continue;
                 // 'player joined the spectators' detected
                 if (PlayerJoinedSpectatorsDetected(text)) continue;
@@ -238,15 +235,11 @@ namespace SST.Core
             }
         }
 
-        /// <summary>
-        ///     Detects important QL events that occur over multiple lines of the console.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <remarks>
-        ///     This method generally detects events contained within
-        ///     large blocks of text related to crucial server information that we manually request
-        ///     such as player names & ids via 'players' cmd, 'configstrings' cmd, 'serverinfo' cmd, map changes.
-        /// </remarks>
+        /// <summary> Detects important QL events that occur over multiple lines of the console.
+        /// </summary> <param name="text">The text.</param> <remarks> This method generally detects
+        /// events contained within large blocks of text related to crucial server information that
+        /// we manually request such as player names & ids via 'players' cmd, 'configstrings' cmd,
+        /// 'serverinfo' cmd, map changes. </remarks>
         private void DetectMultiLineEvent(string text)
         {
             // Avoid event detection if user hasn't initiated monitoring.
@@ -310,18 +303,16 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether a gamestate change was detected using the \time\# format.
+        /// Determines whether a gamestate change was detected using the \time\# format.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        ///     <c>true</c> if a gamestate change was detected with the time info, otherwise
-        ///     <c>false</c>.
+        /// <c>true</c> if a gamestate change was detected with the time info, otherwise <c>false</c>.
         /// </returns>
         /// <remarks>
-        ///     Occassionally, this text is not printed or is missed for whatever reason, so the more accurate
-        ///     method of detecting gamestate changes is through the the appropriate conditional in the
-        ///     <see cref="DetectMultiLineEvent" />
-        ///     method which is also performed.
+        /// Occassionally, this text is not printed or is missed for whatever reason, so the more
+        /// accurate method of detecting gamestate changes is through the the appropriate
+        /// conditional in the <see cref="DetectMultiLineEvent"/> method which is also performed.
         /// </remarks>
         private bool GameStateTimeChangeDetected(string text)
         {
@@ -345,8 +336,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of the gametype information returned from the configstrings
-        ///     command, and handles it if it does.
+        /// Determines whether the text matches that of the gametype information returned from the
+        /// configstrings command, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the gametype was detected via configstrings, otherwise <c>false</c>.</returns>
@@ -363,12 +354,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the user's own console commands.
+        /// Handles the user's own console commands.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <remarks>
-        ///     This is used in rare circumstances when we want to actually
-        ///     analyze what the user is sending to the game.
+        /// This is used in rare circumstances when we want to actually analyze what the user is
+        /// sending to the game.
         /// </remarks>
         private void HandleOwnCommand(string text)
         {
@@ -383,28 +374,33 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of an incoming player and handles it if it does.
+        /// Determines whether the text matches that of an incoming player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a player connection was detected and handled, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if a player connection was detected and handled, otherwise <c>false</c>.
+        /// </returns>
         private bool IncomingPlayerDetected(string text)
         {
             // 'player connected' detected.
             if (!_sst.Parser.ScmdPlayerConnected.IsMatch(text)) return false;
             var m = _sst.Parser.ScmdPlayerConnected.Match(text);
-            // Synchronous
-            // ReSharper disable once UnusedVariable
+            // ReSharper disable once UnusedVariable (synchronous)
             var p = _playerEventProcessor.HandleIncomingPlayerConnection(m.Groups["player"].Value);
             return true;
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of the start of an intermission (game end) and handles it if it does.
+        /// Determines whether the text matches that of the start of an intermission (game end) and
+        /// handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if an intermission start (game end) was detected, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if an intermission start (game end) was detected, otherwise <c>false</c>.
+        /// </returns>
         /// <remarks>
-        ///     This is the period that begins after the game has ended, typically during end-game map voting (if enabled).
+        /// This is the period that begins after the game has ended, typically during end-game map
+        /// voting (if enabled).
         /// </remarks>
         private bool IntermissionStartDetected(string text)
         {
@@ -418,7 +414,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a match abortion.
+        /// Determines whether the text matches that of a match abortion.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the text matches that of a match abortion, otherwise <c>false</c>.</returns>
@@ -431,13 +427,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of the "Not connected to a server." message
-        ///     and handles it if it does.
+        /// Determines whether the text matches that of the "Not connected to a server." message and
+        /// handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        ///     <c>true</c> if the text matches that of the "not connected to a server"
-        ///     message; otherwise <c>false</c>.
+        /// <c>true</c> if the text matches that of the "not connected to a server" message;
+        /// otherwise <c>false</c>.
         /// </returns>
         private bool NotConnectedMsgDetected(string text)
         {
@@ -448,10 +444,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of an outgoing player and handles it if it does.
+        /// Determines whether the text matches that of an outgoing player and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if a outgoing player disconnection was detected and handled, otherwise <c>false</c>.
+        /// </returns>
         /// <remarks>This handles disconnections, kicks, and ragequits.</remarks>
         private bool OutgoingPlayerDetected(string text)
         {
@@ -487,18 +485,19 @@ namespace SST.Core
                 m = _sst.Parser.ScmdPlayerInvalidPasswordDisconnect.Match(text);
                 outgoingPlayer = m.Groups["player"].Value;
             }
-            // Synchronous
-            // ReSharper disable once UnusedVariable
+            // ReSharper disable once UnusedVariable (synchronous)
             var p = _playerEventProcessor.HandleOutgoingPlayerConnection(outgoingPlayer);
             return true;
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a player's config string (via configstrings cmd)
-        ///     and handles it if it does.
+        /// Determines whether the text matches that of a player's config string (via configstrings
+        /// cmd) and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.
+        /// </returns>
         private bool PlayerConfigStringCsDetected(string text)
         {
             if (!_sst.Parser.CfgStringPlayerInfo.IsMatch(text)) return false;
@@ -512,19 +511,21 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a player's config string (via serverCommand)
-        ///     and handles it if it does.
+        /// Determines whether the text matches that of a player's config string (via serverCommand)
+        /// and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if a player's configstring was detected and handled, otherwise <c>false</c>.
+        /// </returns>
         private bool PlayerConfigStringSrvCmdDetected(string text)
         {
             if (!_sst.Parser.ScmdPlayerConfigString.IsMatch(text)) return false;
             var m = _sst.Parser.ScmdPlayerConfigString.Match(text);
             if (m.Groups["playerinfo"].Value.Equals(@"""", StringComparison.InvariantCultureIgnoreCase))
             {
-                // Ignore parsing of empty player configstring on disconnect,
-                // which would otherwise re-create the outgoing user.
+                // Ignore parsing of empty player configstring on disconnect, which would otherwise
+                // re-create the outgoing user.
                 return false;
             }
             _playerEventProcessor.HandlePlayerConfigString(m);
@@ -532,22 +533,24 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a player who has joined the spectators and handle it if it does.
+        /// Determines whether the text matches that of a player who has joined the spectators and
+        /// handle it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns><c>true</c> if a player joined specs was detected and handled, otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if a player joined specs was detected and handled, otherwise <c>false</c>.
+        /// </returns>
         private bool PlayerJoinedSpectatorsDetected(string text)
         {
             if (!_sst.Parser.ScmdPlayerJoinedSpectators.IsMatch(text)) return false;
             var m = _sst.Parser.ScmdPlayerJoinedSpectators.Match(text);
-            // Synchronous
-            // ReSharper disable once UnusedVariable
+            // ReSharper disable once UnusedVariable (synchronous)
             var p = _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
             return true;
         }
 
         /// <summary>
-        ///     Processes the command.
+        /// Processes the command.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="cmdType">Type of the command.</param>
@@ -557,8 +560,7 @@ namespace SST.Core
             switch (cmdType)
             {
                 case QlCommandType.Players:
-                    // Synchronous
-                    // ReSharper disable once UnusedVariable
+                    // ReSharper disable once UnusedVariable (synchronous)
                     var g =
                         _sst.ServerEventProcessor.HandlePlayersFromPlayersCmd(t as IEnumerable<string>);
                     break;
@@ -586,13 +588,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a message that would indicate
-        ///     that the client running SST has left the server, and handles it if it does.
+        /// Determines whether the text matches that of a message that would indicate that the
+        /// client running SST has left the server, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>
-        ///     <c>true</c> if a disconnect message was detected, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if a disconnect message was detected, otherwise <c>false</c></returns>
         private bool QuakeLiveDisconnectedDetected(string text)
         {
             if (!_sst.Parser.CvarSetQlDisconnected.IsMatch(text) &&
@@ -611,13 +611,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a message that signals
-        ///     renderer initlization, and handles it if it does.
+        /// Determines whether the text matches that of a message that signals renderer
+        /// initlization, and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        ///     <c>true</c> if the renderer initilization message was detected,
-        ///     otherwise <c>false</c>.
+        /// <c>true</c> if the renderer initilization message was detected, otherwise <c>false</c>.
         /// </returns>
         private bool RenderInitDetected(string text)
         {
@@ -634,12 +633,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of the game's end due to the score/frag/roundlimit
-        ///     being reached and handles it if it does.
+        /// Determines whether the text matches that of the game's end due to the
+        /// score/frag/roundlimit being reached and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        ///     <c>true</c> if the 'score/frag/roundlimit' message was detected, otherwise <c>false</c>.
+        /// <c>true</c> if the 'score/frag/roundlimit' message was detected, otherwise <c>false</c>.
         /// </returns>
         private bool ScorelimitReachedDetected(string text)
         {
@@ -649,13 +648,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a change in a team's score, and handles it if
-        ///     it does.
+        /// Determines whether the text matches that of a change in a team's score, and handles it
+        /// if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns>
-        ///     <c>true</c> if the team score change serverCommand was detected, otherwise
-        ///     <c>false</c>.
+        /// <c>true</c> if the team score change serverCommand was detected, otherwise <c>false</c>.
         /// </returns>
         private bool TeamScoreChangeDetected(string text)
         {
@@ -684,8 +682,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of the game's end due to the timelimit being reached
-        ///     and handles it if it does.
+        /// Determines whether the text matches that of the game's end due to the timelimit being
+        /// reached and handles it if it does.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the 'timelimit hit' message was detected, otherwise <c>false</c>.</returns>
@@ -697,7 +695,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the details of the vote were detected.
+        /// Determines whether the details of the vote were detected.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the details of the vote were detected, otherwise <c>false</c>.</returns>
@@ -709,7 +707,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the end result of a vote was detected.
+        /// Determines whether the end result of a vote was detected.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the end result of the vote was detected, otherwise <c>false</c>.</returns>
@@ -722,7 +720,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the start of a vote was detected.
+        /// Determines whether the start of a vote was detected.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns><c>true</c> if the state of a vote was detected, otherwise <c>false</c>.</returns>
@@ -737,13 +735,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the text matches that of a message that indicates that QL has
-        ///     crashed due to the infamous (and yet unfixed 15+ year old memory allocation problem).
+        /// Determines whether the text matches that of a message that indicates that QL has crashed
+        /// due to the infamous (and yet unfixed 15+ year old memory allocation problem).
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>
-        ///     <c>true</c> if the ZMalloc crash text was detected, otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the ZMalloc crash text was detected, otherwise <c>false</c>.</returns>
         private bool ZmallocCrashDetected(string text)
         {
             if (!_sst.Parser.MsgZmallocCrash.IsMatch(text)) return false;

@@ -81,9 +81,7 @@ namespace SST.Core
         /// <summary>
         /// Gets the commands.
         /// </summary>
-        /// <value>
-        /// The commands.
-        /// </value>
+        /// <value>The commands.</value>
         public Dictionary<string, IBotCommand> Commands { get; private set; }
 
         /// <summary>

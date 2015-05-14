@@ -27,8 +27,8 @@ namespace SST.Core.Modules.Irc
 
         private readonly string _logPrefix = "[MOD:IRC]";
 
-        // Regex for testing validity of IRC nick according to IRC RFC specification;
-        // currently set from 2-15 max length
+        // Regex for testing validity of IRC nick according to IRC RFC specification; currently set
+        // from 2-15 max length
         private readonly Regex _validIrcNick;
 
         private StandardIrcClient _client;
@@ -52,25 +52,19 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the IRC configuration settings.
         /// </summary>
-        /// <value>
-        /// The IRC configuration settings.
-        /// </value>
+        /// <value>The IRC configuration settings.</value>
         public IrcOptions IrcSettings { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the bot is connected to IRC.
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the bot is connected to irc; otherwise, <c>false</c>.</value>
         public bool IsConnectedToIrc { get; set; }
 
         /// <summary>
         /// Gets the Irc client registration information.
         /// </summary>
-        /// <value>
-        /// The Irc client registration information.
-        /// </value>
+        /// <value>The Irc client registration information.</value>
         public IrcRegistrationInfo RegistrationInfo
         {
             get
@@ -88,9 +82,7 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Gets the valid IRC nickname regex.
         /// </summary>
-        /// <value>
-        /// The valid IRC nickname regex.
-        /// </value>
+        /// <value>The valid IRC nickname regex.</value>
         public Regex ValidIrcNickRegex
         {
             get { return _validIrcNick; }
@@ -99,10 +91,10 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Attempts to reconnect to the IRC server if the connection initially fails.
         /// </summary>
-        /// <param name="isManualReconnection">if set to <c>true</c> then the
-        /// reconnection attempt was user-issued; if set to <c>false</c>
-        /// then the reconnection attempt was the result of being unable to initially
-        /// connect.</param>
+        /// <param name="isManualReconnection">
+        /// if set to <c>true</c> then the reconnection attempt was user-issued; if set to
+        /// <c>false</c> then the reconnection attempt was the result of being unable to initially connect.
+        /// </param>
         public void AttemptReconnection(bool isManualReconnection)
         {
             if (_reconnectTries >= MaxReconnectionTries && !isManualReconnection)
@@ -139,11 +131,9 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Checks whether the information necessary for IRC nickname service
-        /// authentication is complete.
+        /// Checks whether the information necessary for IRC nickname service authentication is complete.
         /// </summary>
-        /// <returns><c>true</c> if the information is complete, otherwise
-        /// <c>false</c>.</returns>
+        /// <returns><c>true</c> if the information is complete, otherwise <c>false</c>.</returns>
         public bool AuthInfoIsValid()
         {
             return !string.IsNullOrEmpty(IrcSettings.ircNickServiceBot) &&
@@ -238,8 +228,9 @@ namespace SST.Core.Modules.Irc
         /// Gets the IRC user level of a user in the main channel.
         /// </summary>
         /// <param name="nickname">The user's nickname.</param>
-        /// <returns>The user's IRC user level as an <see cref="IrcUserLevel"/>
-        /// enum value, if it exists.</returns>
+        /// <returns>
+        /// The user's IRC user level as an <see cref="IrcUserLevel"/> enum value, if it exists.
+        /// </returns>
         public IrcUserLevel GetIrcUserLevel(string nickname)
         {
             if (_client.Channels.Count == 0) return IrcUserLevel.None;
@@ -272,8 +263,8 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <returns><c>true</c> if the required settings are valid, otherwise <c>false</c>.</returns>
         /// <remarks>
-        /// Optional settings (i.e. Nickserv auto-auth, admin nickname) are not checked here.
-        /// As with any other module, invalid settings will cause a default configuration to be loaded
+        /// Optional settings (i.e. Nickserv auto-auth, admin nickname) are not checked here. As
+        /// with any other module, invalid settings will cause a default configuration to be loaded
         /// when the configuration is read.
         /// </remarks>
         public bool RequiredIrcSettingsAreValid()
@@ -295,8 +286,9 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Sends a specified IRC message to the specified target.
         /// </summary>
-        /// <param name="target">The target (nickname or channel)
-        ///  to which the message should be sent.</param>
+        /// <param name="target">
+        /// The target (nickname or channel) to which the message should be sent.
+        /// </param>
         /// <param name="message">The message.</param>
         public void SendIrcMessage(string target, string message)
         {
@@ -306,8 +298,9 @@ namespace SST.Core.Modules.Irc
         /// <summary>
         /// Sends a specified IRC notice to the specified target.
         /// </summary>
-        /// <param name="target">The target (nickname or channel)
-        ///  to which the notice should be sent.</param>
+        /// <param name="target">
+        /// The target (nickname or channel) to which the notice should be sent.
+        /// </param>
         /// <param name="message">The message.</param>
         public void SendIrcNotice(string target, string message)
         {
@@ -315,7 +308,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Starts the console read thread.
+        /// Starts the console read thread.
         /// </summary>
         public void StartIrcThread()
         {
@@ -326,7 +319,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Stops the console read thread.
+        /// Stops the console read thread.
         /// </summary>
         public void StopIrcThread()
         {
@@ -346,8 +339,7 @@ namespace SST.Core.Modules.Irc
         /// Gets the user in the channel.
         /// </summary>
         /// <param name="nickname">The nickname.</param>
-        /// <returns>The specified nickname as an <see cref="IrcChannelUser"/> object.
-        /// </returns>
+        /// <returns>The specified nickname as an <see cref="IrcChannelUser"/> object.</returns>
         private IrcChannelUser GetUserInChannel(string nickname)
         {
             if (_client.Channels.Count == 0) return null;
@@ -361,13 +353,10 @@ namespace SST.Core.Modules.Irc
             return user;
         }
 
-        /// <summary>
-        /// Determines whether the specified user is a channel admin (&)
-        /// </summary>
-        /// <param name="nickname">The nickname to check.</param>
-        /// <returns><c>true</c> if the user is a channel admin.</returns>
-        /// <remarks>This usermode (&) is inapplicable to QuakeNet's IRCD, on which
-        /// operator (@) is the highest possible user mode in a channel.</remarks>
+        /// <summary> Determines whether the specified user is a channel admin (&) </summary> <param
+        /// name="nickname">The nickname to check.</param> <returns><c>true</c> if the user is a
+        /// channel admin.</returns> <remarks>This usermode (&) is inapplicable to QuakeNet's IRCD,
+        /// on which operator (@) is the highest possible user mode in a channel.</remarks>
         private bool IsUserChannelAdmin(string nickname)
         {
             var user = GetUserInChannel(nickname);
@@ -379,8 +368,10 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="nickname">The nickname to check.</param>
         /// <returns><c>true</c> if the user is a channel owner.</returns>
-        /// <remarks>This usermode (~) is inapplicable to QuakeNet's IRCD, on which
-        /// operator (@) is the highest possible user mode in a channel.</remarks>
+        /// <remarks>
+        /// This usermode (~) is inapplicable to QuakeNet's IRCD, on which operator (@) is the
+        /// highest possible user mode in a channel.
+        /// </remarks>
         private bool IsUserChannelOwner(string nickname)
         {
             var user = GetUserInChannel(nickname);
@@ -402,7 +393,7 @@ namespace SST.Core.Modules.Irc
         /// Determines whether the specified user is voiced in the channel.
         /// </summary>
         /// <param name="nickname">The nickname to check.</param>
-        /// <returns><c>true</c>if the user is voiced in the channel, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user is voiced in the channel, otherwise <c>false</c>.</returns>
         private bool IsUserVoicedInChannel(string nickname)
         {
             var user = GetUserInChannel(nickname);

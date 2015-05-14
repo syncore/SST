@@ -13,7 +13,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for handling various server events.
+    /// Class responsible for handling various server events.
     /// </summary>
     public class ServerEventProcessor
     {
@@ -25,7 +25,7 @@ namespace SST.Core
         private Timer _disconnectScanTimer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerEventProcessor" /> class.
+        /// Initializes a new instance of the <see cref="ServerEventProcessor"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public ServerEventProcessor(SynServerTool sst)
@@ -37,7 +37,7 @@ namespace SST.Core
 
         /// <summary>
         /// Automatically gives operator status using QL's internal op system to the specified
-        ///  player who is currently on the server and is an SST user with userlevel Admin or higher.
+        /// player who is currently on the server and is an SST user with userlevel Admin or higher.
         /// </summary>
         public async Task AutoOpActiveAdmin(string player)
         {
@@ -64,8 +64,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Automatically gives operator status using QL's internal op system to all of the
-        ///  server's current players who are SST users with userlevel Admin or higher.
+        /// Automatically gives operator status using QL's internal op system to all of the server's
+        /// current players who are SST users with userlevel Admin or higher.
         /// </summary>
         public async Task AutoOpActiveAdmins()
         {
@@ -89,8 +89,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Attempts to retrieve a given player's player id (clientnum) from our internal
-        ///     player list.
+        /// Attempts to retrieve a given player's player id (clientnum) from our internal player list.
         /// </summary>
         /// <param name="player">The player whose id needs to be retrieved.</param>
         /// <returns>The player</returns>
@@ -106,12 +105,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the player name from the player identifier.
+        /// Gets the player name from the player identifier.
         /// </summary>
         /// <param name="id">The player identifier.</param>
         /// <returns>
-        ///     The player name as a string if the id matches the id parameter,
-        ///     otherwise a blank string.
+        /// The player name as a string if the id matches the id parameter, otherwise a blank string.
         /// </returns>
         public string GetPlayerNameFromId(int id)
         {
@@ -127,7 +125,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the scan to check to see if SST is still connected to a Quake Live server.
+        /// Handles the scan to check to see if SST is still connected to a Quake Live server.
         /// </summary>
         public void HandleDisconnectionScan()
         {
@@ -141,7 +139,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the map load or change.
+        /// Handles the map load or change.
         /// </summary>
         /// <param name="text">The text.</param>
         public void HandleMapLoad(string text)
@@ -150,14 +148,14 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the player information from the 'players' command and performs various
-        ///     actions based on the data.
+        /// Handles the player information from the 'players' command and performs various actions
+        /// based on the data.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="playersText">The players text.</param>
         /// <remarks>
-        ///     playersText is sent as an IEnumerable, with each element representing a line of
-        ///     the text containing the player information from the /players command.
+        /// playersText is sent as an IEnumerable, with each element representing a line of the text
+        /// containing the player information from the /players command.
         /// </remarks>
         public async Task HandlePlayersFromPlayersCmd<T>(
             IEnumerable<T> playersText)
@@ -190,19 +188,17 @@ namespace SST.Core
                     qlranksHelper.RetrieveEloDataFromApiAsync(
                         _sst.ServerInfo.CurrentPlayers, _qlranksToUpdateFromPlayers);
             }
-            // If any players should be kicked (i.e. due to a module), then do so, but wait a
-            // few (10) seconds since we might have to hit network for retrieval (i.e. QLRanks)
+            // If any players should be kicked (i.e. due to a module), then do so, but wait a few
+            // (10) seconds since we might have to hit network for retrieval (i.e. QLRanks)
             await Task.Delay(10000);
             await DoRequiredPlayerKicks();
         }
 
         /// <summary>
-        ///     Detects whether the Quake Live client is currently on a server.
+        /// Detects whether the Quake Live client is currently on a server.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>
-        ///     <c>true</c> if the client is on a server, otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the client is on a server, otherwise <c>false</c>.</returns>
         public bool QlServerConnectionExists(string text)
         {
             // ui_mainmenu "1", result of /cmd, or result of a command requiring connection.
@@ -224,7 +220,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the current server address.
+        /// Sets the current server address.
         /// </summary>
         /// <param name="text">The text.</param>
         public void SetCurrentServerAddress(string text)
@@ -236,7 +232,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the end of game (frag/time/roundlimit reached)
+        /// Sets the end of game (frag/time/roundlimit reached)
         /// </summary>
         public void SetEndOfGameLimitReached()
         {
@@ -258,7 +254,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the start of the game intermission (period between game's end and end of endgame map-voting)
+        /// Handles the start of the game intermission (period between game's end and end of endgame map-voting)
         /// </summary>
         public void SetIntermissionStart()
         {
@@ -279,17 +275,18 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the current server's gamestate.
+        /// Sets the current server's gamestate.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>The current server's gamestate as a <see cref="QlGameStates" />enum value.</returns>
+        /// <returns>The current server's gamestate as a <see cref="QlGameStates"/> enum value.</returns>
         /// <remarks>
-        ///     This method sets the server's gamestate received through either the serverinfo command or a bcs0/cs
-        ///     configstring.
+        /// This method sets the server's gamestate received through either the serverinfo command
+        /// or a bcs0/cs configstring.
         /// </remarks>
         public QlGameStates SetServerGameState(string text)
         {
-            // Large text: Clear, just as if this was a manually-issued command, which is very important in the case of bcs0/cs
+            // Large text: Clear, just as if this was a manually-issued command, which is very
+            // important in the case of bcs0/cs
             _sst.QlCommands.ClearQlWinConsole();
             var stateText = text.Trim();
             var gameState = QlGameStates.Unspecified;
@@ -319,10 +316,10 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the current server's gametype.
+        /// Sets the current server's gametype.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>The current server's gametype as a <see cref="QlGameTypes" />enum value.</returns>
+        /// <returns>The current server's gametype as a <see cref="QlGameTypes"/> enum value.</returns>
         public QlGameTypes SetServerGameType(string text)
         {
             var gtText = text.Trim();
@@ -345,7 +342,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the server identifier (public_id)
+        /// Sets the server identifier (public_id)
         /// </summary>
         /// <param name="text">The text from which to receive the server id.</param>
         /// <returns>The server's id (public_id) as a string.</returns>
@@ -360,7 +357,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the team score.
+        /// Sets the team score.
         /// </summary>
         /// <param name="team">The team.</param>
         /// <param name="score">The score.</param>
@@ -379,7 +376,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks the player's account registration date against date limit, if date limit is active.
+        /// Checks the player's account registration date against date limit, if date limit is active.
         /// </summary>
         /// <param name="players">The players.</param>
         private async Task CheckAccountDateAgainstLimit(
@@ -394,7 +391,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks the player Elo against Elo limit, if Elo limiter is active.
+        /// Checks the player Elo against Elo limit, if Elo limiter is active.
         /// </summary>
         /// <param name="players">The players.</param>
         private async Task CheckEloAgainstLimit(
@@ -411,12 +408,10 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Creates the player from the players command text.
+        /// Creates the player from the players command text.
         /// </summary>
         /// <param name="playerText">The player text.</param>
-        /// <returns>
-        ///     <c>true</c> if the playerinfo could be created, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the playerinfo could be created, otherwise <c>false</c></returns>
         private bool CreatePlayerFromPlayersText(string playerText)
         {
             var playerNameOnly =
@@ -446,19 +441,18 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Method that is executed when the disconnection scan timer elapses.
+        /// Method that is executed when the disconnection scan timer elapses.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">
-        ///     The <see cref="ElapsedEventArgs" /> instance containing the
-        ///     event data.
+        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
         /// </param>
         private async void DisconnectScanElapsed(object sender, ElapsedEventArgs e)
         {
             await _sst.CheckQlServerConnectionExists();
 
-            // If connection no longer exists then we need to stop
-            // monitoring the non-existent server and shutdown all console reading.
+            // If connection no longer exists then we need to stop monitoring the non-existent
+            // server and shutdown all console reading.
             if (!_sst.ServerInfo.IsQlConnectedToServer)
             {
                 Log.Write("Determined that QL server connection no longer exists; Will stop all" +
@@ -474,7 +468,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Kicks any of the current players if an active, imposed module requires it.
+        /// Kicks any of the current players if an active, imposed module requires it.
         /// </summary>
         private async Task DoRequiredPlayerKicks()
         {
@@ -488,7 +482,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the setting or updating of Elo from the players command text.
+        /// Handles the setting or updating of Elo from the players command text.
         /// </summary>
         /// <param name="qlranksHelper">The QLRanks helper.</param>
         /// <param name="player">The player.</param>
@@ -526,7 +520,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the pickup game events (game start, game end) for the pickup module, if active.
+        /// Handles the pickup game events (game start, game end) for the pickup module, if active.
         /// </summary>
         /// <param name="gameState">State of the game.</param>
         private void HandlePickupEvents(QlGameStates gameState)
@@ -545,7 +539,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sets the end of game teams.
+        /// Sets the end of game teams.
         /// </summary>
         private void SetEndOfGameTeams()
         {

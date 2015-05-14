@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    ///     IRC command: display the current server's status.
+    /// IRC command: display the current server's status.
     /// </summary>
     public class IrcStatusCmd : IIrcCommand
     {
@@ -26,7 +26,7 @@ namespace SST.Core.Modules.Irc
         private bool _requiresMonitoring = true;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrcStatusCmd" /> class.
+        /// Initializes a new instance of the <see cref="IrcStatusCmd"/> class.
         /// </summary>
         /// <param name="sst">The main tool class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -37,15 +37,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the IRC command.
+        /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs { get { return _ircMinArgs; } }
 
         /// <summary>
-        ///     Gets a value that determines whether this command is to be executed asynchronously.
+        /// Gets a value that determines whether this command is to be executed asynchronously.
         /// </summary>
         public bool IsAsync
         {
@@ -53,12 +51,11 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        /// Gets a value indicating whether this command requires
-        /// the bot to be monitoring a server before it can be used.
+        /// Gets a value indicating whether this command requires the bot to be monitoring a server
+        /// before it can be used.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this command requires the bot to be monitoring
-        /// a server; otherwise, <c>false</c>.
+        /// <c>true</c> if this command requires the bot to be monitoring a server; otherwise, <c>false</c>.
         /// </value>
         public bool RequiresMonitoring
         {
@@ -66,23 +63,19 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public IrcUserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        /// <remarks>
-        ///     Not implemented, as this command takes no arguments.
-        /// </remarks>
+        /// <remarks>Not implemented, as this command takes no arguments.</remarks>
         public void DisplayArgLengthError(CmdArgs c)
         {
         }
@@ -92,12 +85,9 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        /// <remarks>
-        /// Not implemented, as this is an async command.
-        /// </remarks>
+        /// <remarks>Not implemented, as this is an async command.</remarks>
         public bool Exec(CmdArgs c)
         {
             return true;
@@ -108,8 +98,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <returns>
-        /// <c>true</c> if the command was successfully executed,
-        /// otherwise returns <c>false</c>.
+        /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
@@ -136,7 +125,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Formats the status message for non-team games.
+        /// Formats the status message for non-team games.
         /// </summary>
         /// <param name="serverDetails">The server details.</param>
         /// <returns>The formatted status message for non-team games as a string.</returns>
@@ -165,7 +154,7 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Formats the status message for team games.
+        /// Formats the status message for team games.
         /// </summary>
         /// <param name="serverDetails">The server details.</param>
         /// <returns>The formatted status message for team games as a string.</returns>
@@ -215,10 +204,10 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the server details from the QL API.
+        /// Gets the server details from the QL API.
         /// </summary>
         /// <param name="serverId">The server identifier.</param>
-        /// <returns>The server as a <see cref="Server" /> object.</returns>
+        /// <returns>The server as a <see cref="Server"/> object.</returns>
         private async Task<Server> GetServerDetails(string serverId)
         {
             if (string.IsNullOrEmpty(serverId)) return null;

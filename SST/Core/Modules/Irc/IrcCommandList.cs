@@ -5,7 +5,7 @@ using SST.Interfaces;
 namespace SST.Core.Modules.Irc
 {
     /// <summary>
-    ///     Class that contains the IRC commands.
+    /// Class that contains the IRC commands.
     /// </summary>
     public class IrcCommandList
     {
@@ -25,7 +25,7 @@ namespace SST.Core.Modules.Irc
         private readonly string IrcCmdWho = "who";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CommandList" /> class.
+        /// Initializes a new instance of the <see cref="CommandList"/> class.
         /// </summary>
         /// <param name="sst">The main tool class.</param>
         /// <param name="irc">The IRC interface.</param>
@@ -38,15 +38,13 @@ namespace SST.Core.Modules.Irc
         }
 
         /// <summary>
-        ///     Gets the IRC commands.
+        /// Gets the IRC commands.
         /// </summary>
-        /// <value>
-        ///     The IRC commands.
-        /// </value>
+        /// <value>The IRC commands.</value>
         public Dictionary<string, IIrcCommand> Commands { get; private set; }
 
         /// <summary>
-        ///     Initializes the IRC commands.
+        /// Initializes the IRC commands.
         /// </summary>
         private void InitializeCommands()
         {

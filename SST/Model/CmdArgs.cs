@@ -1,7 +1,7 @@
 ﻿namespace SST.Model
 {
     /// <summary>
-    ///     Struct for bot commands.
+    /// Struct for bot commands.
     /// </summary>
     public struct CmdArgs
     {
@@ -12,7 +12,7 @@
         public string Text;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CmdArgs" /> struct.
+        /// Initializes a new instance of the <see cref="CmdArgs"/> struct.
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <param name="cmdName">Name of the command.</param>

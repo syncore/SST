@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Database class responsible for tracking pickup games and users' pickup games.
+    /// Database class responsible for tracking pickup games and users' pickup games.
     /// </summary>
     public class DbPickups : CommonSqliteDb
     {
@@ -22,19 +22,16 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.PickupGameDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbPickups" /> class.
+        /// Initializes a new instance of the <see cref="DbPickups"/> class.
         /// </summary>
         public DbPickups()
         {
             VerifyDb();
         }
 
-        /// <summary>
-        ///     Adds the pickup game to the database.
-        /// </summary>
-        /// <param name="pInfo">The pickup game information.</param>
-        /// <remarks>Note: The game is not added to the database until both red & blue teams are full after
-        /// captains have picked players.</remarks>
+        /// <summary> Adds the pickup game to the database. </summary> <param name="pInfo">The
+        /// pickup game information.</param> <remarks>Note: The game is not added to the database
+        /// until both red & blue teams are full after captains have picked players.</remarks>
         public void AddPickupGame(PickupInfo pInfo)
         {
             if (VerifyDb())
@@ -90,11 +87,13 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="lastPlayedDate">The date and time of the user's last played pickup game</param>
-        /// <returns>The result of the addition operation as an <see cref="UserDbResult" /> enum value.</returns>
+        /// <returns>
+        /// The result of the addition operation as an <see cref="UserDbResult"/> enum value.
+        /// </returns>
         public UserDbResult AddUserToDb(string user, DateTime lastPlayedDate)
         {
             var result = UserDbResult.Unspecified;
@@ -142,7 +141,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         public void DeleteUserFromDb(string user)
@@ -184,7 +183,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the information for the last pickup played.
+        /// Gets the information for the last pickup played.
         /// </summary>
         /// <returns>The information for the last pickup game played, if any.</returns>
         public PickupInfo GetLastPickupInfo()
@@ -242,7 +241,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the ten users with the most played games.
+        /// Gets the ten users with the most played games.
         /// </summary>
         /// <returns>The ten users with the most played games as comma-separated string.</returns>
         public string GetTopTenUsers()
@@ -290,7 +289,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's games played count.
+        /// Gets the user's games played count.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's games played count.</returns>
@@ -343,7 +342,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's no show count.
+        /// Gets the user's no show count.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's no show count.</returns>
@@ -395,7 +394,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's pickup information.
+        /// Gets the user's pickup information.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's pickup information as a string.</returns>
@@ -468,7 +467,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's subs used count.
+        /// Gets the user's subs used count.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's subs used count.</returns>
@@ -650,7 +649,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Increments the user's no-show count.
+        /// Increments the user's no-show count.
         /// </summary>
         /// <param name="user">The user.</param>
         public void IncrementUserNoShowCount(string user)
@@ -694,7 +693,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Increments the user's subs used count.
+        /// Increments the user's subs used count.
         /// </summary>
         /// <param name="user">The user.</param>
         public void IncrementUserSubsUsedCount(string user)
@@ -738,7 +737,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Initializes the database.
+        /// Initializes the database.
         /// </summary>
         public void InitDb()
         {
@@ -833,7 +832,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Updates the most recent pickup game.
+        /// Updates the most recent pickup game.
         /// </summary>
         /// <param name="pInfo">The pickup information.</param>
         public void UpdateMostRecentPickupGame(PickupInfo pInfo)
@@ -882,7 +881,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Updates the last pickup game's end time.
+        /// Updates the last pickup game's end time.
         /// </summary>
         /// <param name="endDate">The end date.</param>
         public void UpdatePickupEndTime(DateTime endDate)
@@ -966,7 +965,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user already exists, otherwise <c>false</c>.</returns>
@@ -976,7 +975,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the database.
+        /// Creates the database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -1017,16 +1016,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the ban database exists.
+        /// Checks whether the ban database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the pickup users database.
+        /// Deletes the pickup users database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -1044,7 +1043,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -1079,7 +1078,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the pickup database.
+        /// Verifies the pickup database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

@@ -11,7 +11,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for handling vote events on a QL server.
+    /// Class responsible for handling vote events on a QL server.
     /// </summary>
     public class VoteHandler
     {
@@ -22,7 +22,7 @@ namespace SST.Core
         private Match _voteDetails;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="VoteHandler" /> class.
+        /// Initializes a new instance of the <see cref="VoteHandler"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public VoteHandler(SynServerTool sst)
@@ -32,34 +32,29 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Gets or sets the vote caller; this is the short name with the clan stripped
-        /// away if it existed, which corresponds to an internal tool player name;
+        /// Gets or sets the vote caller; this is the short name with the clan stripped away if it
+        /// existed, which corresponds to an internal tool player name;
         /// </summary>
-        /// <value>
-        /// The vote caller.
-        /// </value>
+        /// <value>The vote caller.</value>
         public string VoteCaller { get; set; }
 
         /// <summary>
-        ///     Gets or sets the vote details.
+        /// Gets or sets the vote details.
         /// </summary>
-        /// <value>
-        ///     The vote details.
-        /// </value>
+        /// <value>The vote details.</value>
         public Match VoteDetails
         {
             get { return _voteDetails; }
             set
             {
                 _voteDetails = value;
-                // Synchronous
-                // ReSharper disable once UnusedVariable
+                // ReSharper disable once UnusedVariable (synchronous)
                 Task v = VoteDetailsSet(value);
             }
         }
 
         /// <summary>
-        ///     Handles the end of the vote.
+        /// Handles the end of the vote.
         /// </summary>
         public void HandleVoteEnd()
         {
@@ -68,7 +63,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the start of the vote.
+        /// Handles the start of the vote.
         /// </summary>
         /// <param name="text">The text.</param>
         public void HandleVoteStart(string text)
@@ -77,7 +72,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Denies the attempted kick of the administrator.
+        /// Denies the attempted kick of the administrator.
         /// </summary>
         /// <param name="details">The matched vote details.</param>
         private async Task DenyAdminKick(Match details)
@@ -118,7 +113,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Evaluates the current vote with the auto-voter module if active.
+        /// Evaluates the current vote with the auto-voter module if active.
         /// </summary>
         /// <param name="details">The vote details.</param>
         private async Task EvalVoteWithAutoVote(Match details)
@@ -126,9 +121,10 @@ namespace SST.Core
             string votetype = details.Groups["votetype"].Value;
             string votearg = details.Groups["votearg"].Value;
             string fullVote = string.Format("{0} {1}", votetype, votearg);
-            // Some votes by their nature if called properly (i.e. shuffle) will not have args.
-            // But sometimes people might try to get clever and call shuffle with joke args (seen it done before)
-            // so might want to handle. But better option is to inform admins to just specify shuffle as a no arg vote rule when adding.
+            // Some votes by their nature if called properly (i.e. shuffle) will not have args. But
+            // sometimes people might try to get clever and call shuffle with joke args (seen it
+            // done before) so might want to handle. But better option is to inform admins to just
+            // specify shuffle as a no arg vote rule when adding.
             bool hasArg = !string.IsNullOrEmpty(votearg);
 
             // Vote with args -- match exactly
@@ -149,11 +145,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the vote is an attempted clientkick of an administrator.
+        /// Determines whether the vote is an attempted clientkick of an administrator.
         /// </summary>
         /// <param name="details">The vote details.</param>
         /// <returns>
-        ///     <c>true</c> if the attempted clientkick is a kick of an administrator, otherwise <c>false</c>.
+        /// <c>true</c> if the attempted clientkick is a kick of an administrator, otherwise <c>false</c>.
         /// </returns>
         private bool IsAdminClientKickAttempt(Match details)
         {
@@ -169,11 +165,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the vote is an attempted kick of an administrator.
+        /// Determines whether the vote is an attempted kick of an administrator.
         /// </summary>
         /// <param name="details">The vote details.</param>
         /// <returns>
-        ///     <c>true</c> if the attempted kick is a kick of an administrator, otherwise <c>false</c>.
+        /// <c>true</c> if the attempted kick is a kick of an administrator, otherwise <c>false</c>.
         /// </returns>
         private bool IsAdminKickAttempt(Match details)
         {
@@ -188,12 +184,14 @@ namespace SST.Core
         /// Determines whether the speci.
         /// </summary>
         /// <param name="details">The details.</param>
-        /// <returns><c>true</c> if the vote is one that is not allowed in pickup mode; otherwise
-        /// <c>false</c></returns>
+        /// <returns>
+        /// <c>true</c> if the vote is one that is not allowed in pickup mode; otherwise <c>false</c>
+        /// </returns>
         private bool IsDisallowedPickupModeVote(Match details)
         {
             string type = details.Groups["votetype"].Value;
-            // Ignore cases when the bot calls the vote, i.e. setting the teamsize when setting up the pickup teams.
+            // Ignore cases when the bot calls the vote, i.e. setting the teamsize when setting up
+            // the pickup teams.
             if (VoteCaller.Equals(_sst.AccountName)) return false;
             // Shuffle votes are not allowed in pickup mode
             if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
@@ -206,8 +204,7 @@ namespace SST.Core
         /// Determines whether a shuffle vote occurs while the teams are uneven.
         /// </summary>
         /// <param name="details">The details.</param>
-        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c></returns>
         private bool IsUnevenShuffle(Match details)
         {
             string type = details.Groups["votetype"].Value;
@@ -216,7 +213,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Performs the automatic vote action based on the type of vote.
+        /// Performs the automatic vote action based on the type of vote.
         /// </summary>
         /// <param name="vote">The vote.</param>
         private async Task PerformAutoVoteAction(AutoVote vote)
@@ -238,17 +235,16 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Method called when the vote details property has been set.
+        /// Method called when the vote details property has been set.
         /// </summary>
         /// <param name="details">The vote details.</param>
         private async Task VoteDetailsSet(Match details)
         {
             if (IsAdminKickAttempt(details) || IsAdminClientKickAttempt(details))
             {
-                
                 Log.Write(string.Format("Detected attempted kick of admin: {0}",
                     details.Groups["votearg"].Value), _logClassType, _logPrefix);
-                
+
                 await DenyAdminKick(details);
             }
             if (IsUnevenShuffle(details))

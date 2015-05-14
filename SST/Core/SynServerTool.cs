@@ -16,7 +16,7 @@ using Timer = System.Timers.Timer;
 namespace SST.Core
 {
     /// <summary>
-    ///     The main class for SST.
+    /// The main class for SST.
     /// </summary>
     public class SynServerTool
     {
@@ -30,26 +30,29 @@ namespace SST.Core
         private Timer _qlProcessDetectionTimer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SynServerTool" /> main class.
+        /// Initializes a new instance of the <see cref="SynServerTool"/> main class.
         /// </summary>
         /// <remarks>
-        ///     Some notes/thoughts:
-        ///     All of the core functions of the bot including console text processing, player/server
-        ///     event processing, modules, command processing, vote management, parsing, etc. are initialized in
-        ///     this constructor and set as properties in this main class. The bot only allows one instance of itself
-        ///     for the explicit reason that Quake Live can only have one running copy open at a time.
-        ///     For this reason, this initilizated <see cref="SynServerTool" /> object is frequently passed around
-        ///     the rest of the code almost entirely through constructor injection and the properties are
-        ///     directly accessed rather than constantly instantiating new classes. In this application,
-        ///     access to state among most parts is crucial, and unfortunately that leads to some unavoidable tight coupling.
-        ///     Once intilizated, the bot will then call the <see cref="CheckForAutoMonitoring" /> method which
-        ///     reads the configuration to see if the user has specified whether server monitoring should begin on application
-        ///     start. If Quake Live is running, we will check to see if the client is connected to a server. If connected, we will
-        ///     retrieve the server information and players using built in QL commands. After that, we will start a timer that
-        ///     waits for ~6.5s to perform any final initlization tasks to make sure all necessary information is present.
-        ///     This project initially started as a VERY simple proof of concept and expanded dramatically from there, so
-        ///     refactoring in various places is almost certainly in order. For example, a user interface was not initially planned
-        ///     (the tool was going to only be command-driven in-game), but was later added during development for ease of use.
+        /// Some notes/thoughts: All of the core functions of the bot including console text
+        /// processing, player/server event processing, modules, command processing, vote
+        /// management, parsing, etc. are initialized in this constructor and set as properties in
+        /// this main class. The bot only allows one instance of itself for the explicit reason that
+        /// Quake Live can only have one running copy open at a time. For this reason, this
+        /// initilizated <see cref="SynServerTool"/> object is frequently passed around the rest of
+        /// the code almost entirely through constructor injection and the properties are directly
+        /// accessed rather than constantly instantiating new classes. In this application, access
+        /// to state among most parts is crucial, and unfortunately that leads to some unavoidable
+        /// tight coupling. Once intilizated, the bot will then call the
+        /// <see cref="CheckForAutoMonitoring"/> method which reads the configuration to see if the
+        /// user has specified whether server monitoring should begin on application start. If Quake
+        /// Live is running, we will check to see if the client is connected to a server. If
+        /// connected, we will retrieve the server information and players using built in QL
+        /// commands. After that, we will start a timer that waits for ~6.5s to perform any final
+        /// initlization tasks to make sure all necessary information is present. This project
+        /// initially started as a VERY simple proof of concept and expanded dramatically from
+        /// there, so refactoring in various places is almost certainly in order. For example, a
+        /// user interface was not initially planned (the tool was going to only be command-driven
+        /// in-game), but was later added during development for ease of use.
         /// </remarks>
         public SynServerTool()
         {
@@ -74,51 +77,39 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets or sets the name of the account that is running the bot.
+        /// Gets or sets the name of the account that is running the bot.
         /// </summary>
-        /// <value>
-        ///     The name of the account that is running the bot.
-        /// </value>
+        /// <value>The name of the account that is running the bot.</value>
         public string AccountName { get; set; }
 
         /// <summary>
-        ///     Gets the command processor.
+        /// Gets the command processor.
         /// </summary>
-        /// <value>
-        ///     The command processor.
-        /// </value>
+        /// <value>The command processor.</value>
         public CommandProcessor CommandProcessor { get; private set; }
 
         /// <summary>
-        ///     Gets the console text processor.
+        /// Gets the console text processor.
         /// </summary>
-        /// <value>
-        ///     The console text processor.
-        /// </value>
+        /// <value>The console text processor.</value>
         public ConsoleTextProcessor ConsoleTextProcessor { get; private set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether a server disconnection scan is pending.
+        /// Gets or sets a value indicating whether a server disconnection scan is pending.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> a server disconnection scan is pending; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> a server disconnection scan is pending; otherwise, <c>false</c>.</value>
         public bool IsDisconnectionScanPending { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether initialization has completed.
+        /// Gets or sets a value indicating whether initialization has completed.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if initialization has completed; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if initialization has completed; otherwise, <c>false</c>.</value>
         public bool IsInitComplete { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether SST is currently monitoring a QL server.
+        /// Gets or sets a value indicating whether SST is currently monitoring a QL server.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if SST is monitoring a QL server; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if SST is monitoring a QL server; otherwise, <c>false</c>.</value>
         public bool IsMonitoringServer
         {
             get { return _isMonitoringServer; }
@@ -132,11 +123,9 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is reading the console.
+        /// Gets or sets a value indicating whether this instance is reading the console.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is reading console; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this instance is reading console; otherwise, <c>false</c>.</value>
         public bool IsReadingConsole
         {
             get { return _isReadingConsole; }
@@ -144,72 +133,56 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the module manager.
+        /// Gets the module manager.
         /// </summary>
-        /// <value>
-        ///     The module manager.
-        /// </value>
+        /// <value>The module manager.</value>
         public ModuleManager Mod { get; private set; }
 
         /// <summary>
-        ///     Gets the Parser.
+        /// Gets the Parser.
         /// </summary>
-        /// <value>
-        ///     The text parser.
-        /// </value>
+        /// <value>The text parser.</value>
         public Parser Parser { get; private set; }
 
         /// <summary>
-        ///     Gets the QlCommands.
+        /// Gets the QlCommands.
         /// </summary>
-        /// <value>
-        ///     The QlCommands.
-        /// </value>
+        /// <value>The QlCommands.</value>
         public QlCommands QlCommands { get; private set; }
 
         /// <summary>
-        ///     Gets the QlWindowUtils
+        /// Gets the QlWindowUtils
         /// </summary>
-        /// <value>
-        ///     The QL window utils.
-        /// </value>
+        /// <value>The QL window utils.</value>
         public QlWindowUtils QlWindowUtils { get; private set; }
 
         /// <summary>
-        ///     Gets the server event processor.
+        /// Gets the server event processor.
         /// </summary>
-        /// <value>
-        ///     The server event processor.
-        /// </value>
+        /// <value>The server event processor.</value>
         public ServerEventProcessor ServerEventProcessor { get; private set; }
 
         /// <summary>
-        ///     Gets the server information.
+        /// Gets the server information.
         /// </summary>
-        /// <value>
-        ///     The server information.
-        /// </value>
+        /// <value>The server information.</value>
         public ServerInfo ServerInfo { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the user interface.
+        /// Gets or sets the user interface.
         /// </summary>
-        /// <value>
-        ///     The user interface.
-        /// </value>
+        /// <value>The user interface.</value>
         public UserInterface UserInterface { get; set; }
 
         /// <summary>
-        ///     Gets the vote manager.
+        /// Gets the vote manager.
         /// </summary>
-        /// <value>
-        ///     The vote manager.
-        /// </value>
+        /// <value>The vote manager.</value>
         public VoteManager VoteManager { get; private set; }
 
         /// <summary>
-        ///     Attempts to automatically start server monitoring on application launch,
-        ///     if the user has this option specified in the SST configuration file.
+        /// Attempts to automatically start server monitoring on application launch, if the user has
+        /// this option specified in the SST configuration file.
         /// </summary>
         public async Task AttemptAutoMonitorStart()
         {
@@ -228,15 +201,14 @@ namespace SST.Core
             await BeginMonitoring();
         }
 
-
         /// <summary>
-        ///     Attempt to start monitoring the server, per the user's request.
+        /// Attempt to start monitoring the server, per the user's request.
         /// </summary>
         public async Task BeginMonitoring()
         {
             IsInitComplete = false;
-            // We might've been previously monitoring without restarting the application,
-            // so also reset any server information.
+            // We might've been previously monitoring without restarting the application, so also
+            // reset any server information.
             ServerInfo.Reset();
             // Start timer to continuously detect if QL process is running
             StartProcessDetectionTimer();
@@ -269,7 +241,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends commands to Quake Live to verify that a server connection exists.
+        /// Sends commands to Quake Live to verify that a server connection exists.
         /// </summary>
         public async Task CheckQlServerConnectionExists()
         {
@@ -280,7 +252,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the server address.
+        /// Gets the server address.
         /// </summary>
         public void CheckServerAddress()
         {
@@ -289,8 +261,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the situation where the user disables developer mode
-        ///     while the server is being monitored.
+        /// Handles the situation where the user disables developer mode while the server is being monitored.
         /// </summary>
         public void HandleDevModeDisabled()
         {
@@ -302,11 +273,9 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Reloads the initialization step.
+        /// Reloads the initialization step.
         /// </summary>
-        /// <remarks>
-        ///     This is primarily designed to be accessed via an admin command from QL.
-        /// </remarks>
+        /// <remarks>This is primarily designed to be accessed via an admin command from QL.</remarks>
         public async Task ReloadInit()
         {
             if (Mod.Pickup.Active)
@@ -314,7 +283,7 @@ namespace SST.Core
                 Mod.Pickup.Manager.ResetPickupStatus();
             }
             Mod.Pickup.Active = false;
-            
+
             IsInitComplete = false;
             StopMonitoring();
             QlCommands.ClearQlWinConsole();
@@ -322,7 +291,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Starts the console read thread.
+        /// Starts the console read thread.
         /// </summary>
         public void StartConsoleReadThread()
         {
@@ -334,7 +303,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Hook up the process up the detection timer.
+        /// Hook up the process up the detection timer.
         /// </summary>
         public void StartProcessDetectionTimer()
         {
@@ -346,7 +315,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Stops the console read thread.
+        /// Stops the console read thread.
         /// </summary>
         public void StopConsoleReadThread()
         {
@@ -355,7 +324,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Stops the monitoring of a server.
+        /// Stops the monitoring of a server.
         /// </summary>
         public void StopMonitoring()
         {
@@ -367,7 +336,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Terminates on zmalloc crash.
+        /// Terminates on zmalloc crash.
         /// </summary>
         public void TerminateOnZmallocCrash()
         {
@@ -401,9 +370,8 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Checks the user's configuration to see if automatic server monitoring
-        ///     should occur on application launch, and attempts to automatically monitor
-        ///     the server if possible.
+        /// Checks the user's configuration to see if automatic server monitoring should occur on
+        /// application launch, and attempts to automatically monitor the server if possible.
         /// </summary>
         private void CheckForAutoMonitoring()
         {
@@ -415,24 +383,24 @@ namespace SST.Core
                 "User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
                 _logClassType, _logPrefix);
 
-            // ReSharper disable once UnusedVariable
-            // Synchronous
+            // ReSharper disable once UnusedVariable (synchronous)
             var a = AttemptAutoMonitorStart();
         }
 
         /// <summary>
-        ///     Method that is executed to finalize the delayed initilization tasks.
+        /// Method that is executed to finalize the delayed initilization tasks.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private async void DelayedInitTaskTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             QlCommands.ClearQlWinConsole();
-            // Synchronous
-            // ReSharper disable once UnusedVariable
+            
             // Request the configstrings after the current players have already been gathered in order
-            // to get an accurate listing of the teams. This will also take care of any players that might have
-            // been initially missed by the 'players' command.
+            // to get an accurate listing of the teams. This will also take care of any players that
+            // might have been initially missed by the 'players' command.
+
+            // ReSharper disable once UnusedVariable (synchronous)
             var c = QlCommands.QlCmdConfigStrings();
 
             Log.Write("Performing delayed initilization tasks.", _logClassType, _logPrefix);
@@ -457,7 +425,7 @@ namespace SST.Core
 
             // Auto-op admins if necessary
             await ServerEventProcessor.AutoOpActiveAdmins();
-            
+
             // Let the server's players know
             await
                 QlCommands.QlCmdSay(
@@ -465,10 +433,12 @@ namespace SST.Core
                         "^7SST ^3v{0}^7 by syncore is now loaded on this server. ^3{1}{2}^7 for help.",
                         Helpers.GetVersion(),
                         CommandList.GameCommandPrefix, CommandList.CmdHelp));
+
+            Log.Write("SST is now loaded on the server.", _logClassType, _logPrefix);
         }
 
         /// <summary>
-        ///     Gets the bot's name from the configuration file.
+        /// Gets the bot's name from the configuration file.
         /// </summary>
         private string GetAccountNameFromConfig()
         {
@@ -479,7 +449,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the server information.
+        /// Gets the server information.
         /// </summary>
         private void GetServerInformation()
         {
@@ -503,10 +473,12 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Method that runs when the QL Process Detection Timer has elapsed.
+        /// Method that runs when the QL Process Detection Timer has elapsed.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="elapsedEventArgs">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="elapsedEventArgs">
+        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
+        /// </param>
         private void QlProcessDetectionTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             var qlWindExists = QlWindowUtils.QlWindowHandle != IntPtr.Zero;
@@ -524,7 +496,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Reads the QL console window.
+        /// Reads the QL console window.
         /// </summary>
         private void ReadQlConsole()
         {
@@ -573,10 +545,10 @@ namespace SST.Core
                         ConsoleTextProcessor.ProcessShortConsoleLines(diffBuilder.ToString());
                     }
 
-                    // Detect when buffer is about to be full, in order to auto-clear.
-                    // Win Edit controls can have a max of 30,000 characters, see:
-                    // "Limits of Edit Controls" - http://msdn.microsoft.com/en-us/library/ms997530.aspx
-                    // More info: Q3 source (win_syscon.c), Conbuf_AppendText
+                    // Detect when buffer is about to be full, in order to auto-clear. Win Edit
+                    // controls can have a max of 30,000 characters, see: "Limits of Edit Controls"
+                    // - http://msdn.microsoft.com/en-us/library/ms997530.aspx More info: Q3 source
+                    // (win_syscon.c), Conbuf_AppendText
                     int begin, end;
                     Win32Api.SendMessage(cText, Win32Api.EM_GETSEL, out begin, out end);
                     if ((begin >= 29300) && (end >= 29300))
@@ -597,7 +569,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Starts the delayed initialization steps.
+        /// Starts the delayed initialization steps.
         /// </summary>
         /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
         private void StartDelayedInitTasks(double seconds)

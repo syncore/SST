@@ -9,27 +9,21 @@ namespace SST.Model
     public class User
     {
         /// <summary>
-        ///     Gets or sets the player's user (access) level.
+        /// Gets or sets the player's user (access) level.
         /// </summary>
-        /// <value>
-        ///     The player's user (access) level.
-        /// </value>
+        /// <value>The player's user (access) level.</value>
         public UserLevel AccessLevel { get; set; }
 
         /// <summary>
-        ///     Gets or sets the name of the player.
+        /// Gets or sets the name of the player.
         /// </summary>
-        /// <value>
-        ///     The name of the player.
-        /// </value>
+        /// <value>The name of the player.</value>
         public string Name { get; set; }
 
         /// <summary>
         /// Gets the user format display.
         /// </summary>
-        /// <value>
-        /// The user format display.
-        /// </value>
+        /// <value>The user format display.</value>
         public string UserFormatDisplay
         {
             get

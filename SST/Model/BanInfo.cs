@@ -12,25 +12,19 @@ namespace SST.Model
         /// <summary>
         /// Gets or sets the date and time on which the ban was added.
         /// </summary>
-        /// <value>
-        /// The date and time on which the ban was added.
-        /// </value>
+        /// <value>The date and time on which the ban was added.</value>
         public DateTime BanAddedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the ban expiration date and time.
         /// </summary>
-        /// <value>
-        /// The ban expiration date and time.
-        /// </value>
+        /// <value>The ban expiration date and time.</value>
         public DateTime BanExpirationDate { get; set; }
 
         /// <summary>
         /// Gets the ban format display.
         /// </summary>
-        /// <value>
-        /// The ban format display.
-        /// </value>
+        /// <value>The ban format display.</value>
         public string BanFormatDisplay
         {
             get
@@ -44,25 +38,19 @@ namespace SST.Model
         /// <summary>
         /// Gets or sets the name of the admin who set the ban.
         /// </summary>
-        /// <value>
-        /// The name of the admin who set the ban.
-        /// </value>
+        /// <value>The name of the admin who set the ban.</value>
         public string BannedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the type of ban.
         /// </summary>
-        /// <value>
-        /// The type of ban.
-        /// </value>
+        /// <value>The type of ban.</value>
         public BanType BanType { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the banned player.
         /// </summary>
-        /// <value>
-        /// The name of the banned player.
-        /// </value>
+        /// <value>The name of the banned player.</value>
         public string PlayerName { get; set; }
     }
 }

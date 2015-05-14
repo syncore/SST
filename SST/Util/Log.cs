@@ -13,7 +13,7 @@ using log4net.Repository.Hierarchy;
 namespace SST.Util
 {
     /// <summary>
-    ///     Logger utility class.
+    /// Logger utility class.
     /// </summary>
     public static class Log
     {
@@ -25,7 +25,7 @@ namespace SST.Util
         public static readonly ILog Logger = LogManager.GetLogger(LogClassType);
 
         /// <summary>
-        ///     Initializes the <see cref="Log" /> class.
+        /// Initializes the <see cref="Log"/> class.
         /// </summary>
         static Log()
         {
@@ -34,12 +34,11 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether log events should be written to
-        ///     the activity log in the UI.
+        /// Gets or sets a value indicating whether log events should be written to the activity log
+        /// in the UI.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if log events should be written to the activity log in the UI,
-        ///     otherwise <c>false</c>.
+        /// <c>true</c> if log events should be written to the activity log in the UI, otherwise <c>false</c>.
         /// </value>
         public static bool LogToSstConsole
         {
@@ -61,11 +60,9 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether log events should be written to disk.
+        /// Gets or sets a value indicating whether log events should be written to disk.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if log events should be written to disk, otherwise <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if log events should be written to disk, otherwise <c>false</c>.</value>
         public static bool LogToDisk
         {
             get { return _logToDisk; }
@@ -86,15 +83,13 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets or sets the UI console activity log.
+        /// Gets or sets the UI console activity log.
         /// </summary>
-        /// <value>
-        ///     The UI console activityl og.
-        /// </value>
+        /// <value>The UI console activityl og.</value>
         public static TextBox LogUiConsole { get; set; }
 
         /// <summary>
-        ///     Writes the specified message to various loggers.
+        /// Writes the specified message to various loggers.
         /// </summary>
         /// <param name="msg">The message to log.</param>
         /// <param name="type">The type of class that initiated the log request.</param>
@@ -124,16 +119,18 @@ namespace SST.Util
             if (LogToSstConsole)
             {
                 LogUiConsole.InvokeIfRequired(
-                    c => { c.AppendText(string.Format("{0} [{1}] {2} {3}",
-                        Environment.NewLine, DateTime.Now.ToString("G",
-                    DateTimeFormatInfo.InvariantInfo), prefix, msg)); });
+                    c =>
+                    {
+                        c.AppendText(string.Format("{0} [{1}] {2} {3}",
+                            Environment.NewLine, DateTime.Now.ToString("G",
+                            DateTimeFormatInfo.InvariantInfo), prefix, msg));
+                    });
             }
         }
 
         /// <summary>
-        ///     Writes a critical message that bypasses the user's 'log to disk' setting.
-        ///     Typically used for logging high priority messages such as exceptions
-        ///     and/or fatal errors.
+        /// Writes a critical message that bypasses the user's 'log to disk' setting. Typically used
+        /// for logging high priority messages such as exceptions and/or fatal errors.
         /// </summary>
         /// <param name="msg">The message.</param>
         /// <param name="type">The type.</param>
@@ -159,8 +156,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Shows the deferred messages that accrued prior
-        ///     to initilization of the UI log console.
+        /// Shows the deferred messages that accrued prior to initilization of the UI log console.
         /// </summary>
         public static void ShowDeferredMessages()
         {
@@ -179,13 +175,13 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Programatically sets up the logger without using an XML configuration file on disk.
+        /// Programatically sets up the logger without using an XML configuration file on disk.
         /// </summary>
         private static void Configure()
         {
             var dirCreated = Filepaths.CreateLogDirectory();
 
-            var hierarchy = (Hierarchy) LogManager.GetRepository();
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
 
             var rollingPatternLayout = new PatternLayout
             {
@@ -229,7 +225,7 @@ namespace SST.Util
                 LevelMax = Level.Debug
             };
 
-            var debugAppender = new DebugAppender {Layout = debugPatternLayout};
+            var debugAppender = new DebugAppender { Layout = debugPatternLayout };
             debugAppender.AddFilter(debugLevelRangeFilter);
             debugAppender.ActivateOptions();
             hierarchy.Root.AddAppender(debugAppender);

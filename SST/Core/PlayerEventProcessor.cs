@@ -12,7 +12,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class responsible for handling player events.
+    /// Class responsible for handling player events.
     /// </summary>
     public class PlayerEventProcessor
     {
@@ -24,7 +24,7 @@ namespace SST.Core
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PlayerEventProcessor" /> class.
+        /// Initializes a new instance of the <see cref="PlayerEventProcessor"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public PlayerEventProcessor(SynServerTool sst)
@@ -36,7 +36,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the player connection.
+        /// Handles the player connection.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task HandleIncomingPlayerConnection(string player)
@@ -92,7 +92,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the outgoing player connection, either by disconnect or kick.
+        /// Handles the outgoing player connection, either by disconnect or kick.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task HandleOutgoingPlayerConnection(string player)
@@ -145,7 +145,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the player accuracy data.
+        /// Handles the player accuracy data.
         /// </summary>
         /// <param name="m">The match.</param>
         public void HandlePlayerAccuracyData(Match m)
@@ -210,13 +210,13 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the player chat message.
+        /// Handles the player chat message.
         /// </summary>
         /// <param name="text">The text.</param>
         public void HandlePlayerChatMessage(string text)
         {
-            // Typically we'd normalize using ToUpperInvariant() but QL doesn't allow accented characters,
-            // so it doesn't matter
+            // Typically we'd normalize using ToUpperInvariant() but QL doesn't allow accented
+            // characters, so it doesn't matter
             var msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
                     .ToLowerInvariant();
@@ -248,14 +248,13 @@ namespace SST.Core
             // Check to see if chat message is a valid command
             if (msgContent.StartsWith(CommandList.GameCommandPrefix))
             {
-                // Synchronous
-                // ReSharper disable once UnusedVariable
+                // ReSharper disable once UnusedVariable (synchronous)
                 var s = _sst.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
             }
         }
 
         /// <summary>
-        ///     Handles the player's configuration string.
+        /// Handles the player's configuration string.
         /// </summary>
         /// <param name="m">The match.</param>
         public void HandlePlayerConfigString(Match m)
@@ -263,7 +262,8 @@ namespace SST.Core
             if (m.Groups["playerinfo"].Value.Equals("\"\"", StringComparison.InvariantCultureIgnoreCase))
             {
                 // Player has been kicked or otherwise leaves; the playerinfo which is normally
-                // n\name\t#\model... will just be ""; which would be treated as a new player connecting, ignore.
+                // n\name\t#\model... will just be ""; which would be treated as a new player
+                // connecting, ignore.
                 return;
             }
 
@@ -303,7 +303,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the situation when a player joins the spectators.
+        /// Handles the situation when a player joins the spectators.
         /// </summary>
         /// <param name="player">The player.</param>
         public async Task HandlePlayerWentToSpec(string player)
@@ -341,14 +341,14 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the corresponding value associated with a player's configstring.
+        /// Gets the corresponding value associated with a player's configstring.
         /// </summary>
         /// <param name="term">The term to find.</param>
         /// <param name="arr">The array containing the playerinfo.</param>
         /// <returns>
-        ///     The corresponding value associated with a player's config string. i.e. Using 'n' as the term
-        ///     will return the player's name, using 'cn' as the term will return the clan tag, if any. If not found,
-        ///     then an empty string will be returned.
+        /// The corresponding value associated with a player's config string. i.e. Using 'n' as the
+        /// term will return the player's name, using 'cn' as the term will return the clan tag, if
+        /// any. If not found, then an empty string will be returned.
         /// </returns>
         private static string GetCsValue(string term, string[] arr)
         {
@@ -364,7 +364,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Creates the new player from the configuration string.
+        /// Creates the new player from the configuration string.
         /// </summary>
         /// <param name="idText">The player id as a string.</param>
         /// <param name="pi">The player info array.</param>
@@ -409,7 +409,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Handles the QLRanks Elo update if necessary.
+        /// Handles the QLRanks Elo update if necessary.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task HandleEloUpdate(string player)
@@ -442,7 +442,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Removes the player from the current in-game players.
+        /// Removes the player from the current in-game players.
         /// </summary>
         /// <param name="player">The player to remove.</param>
         private void RemovePlayer(string player)
@@ -463,7 +463,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Sends a general delayed information message to connecting players.
+        /// Sends a general delayed information message to connecting players.
         /// </summary>
         /// <param name="player">The player.</param>
         private async Task SendConnectionInfoMessage(string player)
@@ -479,7 +479,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Updates the player's ready status.
+        /// Updates the player's ready status.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="status">The status.</param>
@@ -491,7 +491,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Updates the player's team.
+        /// Updates the player's team.
         /// </summary>
         /// <param name="player">The player.</param>
         /// <param name="team">The team.</param>

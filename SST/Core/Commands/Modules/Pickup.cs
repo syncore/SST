@@ -11,7 +11,8 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: enable or disable the ability to start pick-up games and specify no-show/excessive sub use ban lengths.
+    /// Module: enable or disable the ability to start pick-up games and specify no-show/excessive
+    ///         sub use ban lengths.
     /// </summary>
     public class Pickup : IModule
     {
@@ -27,7 +28,7 @@ namespace SST.Core.Commands.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Pickup" /> class.
+        /// Initializes a new instance of the <see cref="Pickup"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public Pickup(SynServerTool sst)
@@ -39,165 +40,138 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets or sets a numeric value representing the time to ban excessive substitutes.
+        /// Gets or sets a numeric value representing the time to ban excessive substitutes.
         /// </summary>
-        /// <value>
-        ///     A numeric value representing the time to ban excessive substitutes.
-        /// </value>
+        /// <value>A numeric value representing the time to ban excessive substitutes.</value>
         /// <remarks>
-        ///     <see cref="ExcessiveNoShowBanTimeScale" /> for the scale that is to be combined with this setting.
+        /// <see cref="ExcessiveNoShowBanTimeScale"/> for the scale that is to be combined with this setting.
         /// </remarks>
         public double ExcessiveNoShowBanTime { get; set; }
 
         /// <summary>
-        ///     Gets or sets the scale that is combined with <see cref="ExcessiveNoShowBanTime" /> that specifies the duration of
-        ///     the ban.
+        /// Gets or sets the scale that is combined with <see cref="ExcessiveNoShowBanTime"/> that
+        /// specifies the duration of the ban.
         /// </summary>
         /// <value>
-        ///     The scale that is combined with <see cref="ExcessiveNoShowBanTime" /> that specifies the duration of the ban.
+        /// The scale that is combined with <see cref="ExcessiveNoShowBanTime"/> that specifies the
+        /// duration of the ban.
         /// </value>
         public string ExcessiveNoShowBanTimeScale { get; set; }
 
         /// <summary>
-        ///     Gets or sets the index of the excessive no show ban time scale.
+        /// Gets or sets the index of the excessive no show ban time scale.
         /// </summary>
-        /// <value>
-        ///     The index of the excessive no show ban time scale.
-        /// </value>
+        /// <value>The index of the excessive no show ban time scale.</value>
         public int ExcessiveNoShowBanTimeScaleIndex { get; set; }
 
         /// <summary>
-        ///     Gets or sets a numeric value representing the time to ban early quitters.
+        /// Gets or sets a numeric value representing the time to ban early quitters.
         /// </summary>
-        /// <value>
-        ///     A numeric value representing the time to ban early quitters.
-        /// </value>
+        /// <value>A numeric value representing the time to ban early quitters.</value>
         /// <remarks>
-        ///     <see cref="ExcessiveSubUseBanTimeScale" /> for the scale that is to be combined with this setting.
+        /// <see cref="ExcessiveSubUseBanTimeScale"/> for the scale that is to be combined with this setting.
         /// </remarks>
         public double ExcessiveSubUseBanTime { get; set; }
 
         /// <summary>
-        ///     Gets or sets the scale that is combined with <see cref="ExcessiveSubUseBanTime" /> that specifies the duration of
-        ///     the ban.
+        /// Gets or sets the scale that is combined with <see cref="ExcessiveSubUseBanTime"/> that
+        /// specifies the duration of the ban.
         /// </summary>
         /// <value>
-        ///     The scale that is combined with <see cref="ExcessiveSubUseBanTime" /> that specifies the duration of the ban.
+        /// The scale that is combined with <see cref="ExcessiveSubUseBanTime"/> that specifies the
+        /// duration of the ban.
         /// </value>
         public string ExcessiveSubUseBanTimeScale { get; set; }
 
         /// <summary>
-        ///     Gets or sets the index of the excessive sub use ban time scale.
+        /// Gets or sets the index of the excessive sub use ban time scale.
         /// </summary>
-        /// <value>
-        ///     The index of the excessive sub use ban time scale.
-        /// </value>
+        /// <value>The index of the excessive sub use ban time scale.</value>
         public int ExcessiveSubUseBanTimeScaleIndex { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the pickup manager.
+        /// Gets the pickup manager.
         /// </summary>
-        /// <value>
-        ///     The pickup manager.
-        /// </value>
+        /// <value>The pickup manager.</value>
         public PickupManager Manager
         {
             get { return _pickupManager; }
         }
 
         /// <summary>
-        ///     Gets or sets the maximum no-shows (leaving a pickup early) without securing a sub,
-        ///     that a player can have before being banned for
-        ///     <see cref="ExcessiveNoShowBanTime" /> and <see cref="ExcessiveNoShowBanTimeScale" />
+        /// Gets or sets the maximum no-shows (leaving a pickup early) without securing a sub, that
+        /// a player can have before being banned for <see cref="ExcessiveNoShowBanTime"/> and <see cref="ExcessiveNoShowBanTimeScale"/>
         /// </summary>
-        /// <value>
-        ///     The maximum sub requests that a player can make before being banned.
-        /// </value>
+        /// <value>The maximum sub requests that a player can make before being banned.</value>
         public int MaxNoShowsPerPlayer { get; set; }
 
         /// <summary>
-        ///     Gets or sets the maximum sub requests that a player can make before being banned for
-        ///     <see cref="ExcessiveSubUseBanTime" /> and <see cref="ExcessiveSubUseBanTimeScale" />
+        /// Gets or sets the maximum sub requests that a player can make before being banned for
+        /// <see cref="ExcessiveSubUseBanTime"/> and <see cref="ExcessiveSubUseBanTimeScale"/>
         /// </summary>
-        /// <value>
-        ///     The maximum sub requests that a player can make before being banned.
-        /// </value>
+        /// <value>The maximum sub requests that a player can make before being banned.</value>
         /// <remarks>
-        ///     Note: this refers to the sub requests that are successfully fulfilled, not the use of the sub
-        ///     command itself.
+        /// Note: this refers to the sub requests that are successfully fulfilled, not the use of
+        ///       the sub command itself.
         /// </remarks>
         public int MaxSubsPerPlayer { get; set; }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets or sets the teamsize.
+        /// Gets or sets the teamsize.
         /// </summary>
-        /// <value>
-        ///     The teamsize.
-        /// </value>
+        /// <value>The teamsize.</value>
         public int Teamsize { get; set; }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -207,13 +181,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Executes the specified module command asynchronously.
+        /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -256,12 +227,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -274,7 +244,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -333,7 +303,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -344,7 +314,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -355,11 +325,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         /// <param name="active">
-        ///     if set to <c>true</c> then the module is to remain active; otherwise it is to be disabled when
-        ///     updating the configuration.
+        /// if set to <c>true</c> then the module is to remain active; otherwise it is to be
+        /// disabled when updating the configuration.
         /// </param>
         public void UpdateConfig(bool active)
         {
@@ -387,7 +357,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the pickup module.
+        /// Disables the pickup module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         private async Task DisablePickup(CmdArgs c)
@@ -405,15 +375,15 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the pickup module.
+        /// Enables the pickup module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="teamsize">The teamsize.</param>
         private async Task EnablePickup(CmdArgs c, int teamsize)
         {
-            // Note: notice the missing ban settings here.
-            // The configuration has some pretty sane defaults, so unless the admin specifically
-            // overrides the defaults with noshows/subbans args, then we will just use those.
+            // Note: notice the missing ban settings here. The configuration has some pretty sane
+            // defaults, so unless the admin specifically overrides the defaults with
+            // noshows/subbans args, then we will just use those.
             UsePickupDefaults();
             // Set the specified teamsize to override the default teamsize, keeping other default settings
             Teamsize = teamsize;
@@ -432,13 +402,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates whether the noshow or sub ban settings can be set based on the user's input.
+        /// Evaluates whether the noshow or sub ban settings can be set based on the user's input.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the noshow or sub ban settings could be set; otherwise
-        ///     <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the noshow or sub ban settings could be set; otherwise <c>false</c>.</returns>
         private async Task<bool> EvalSetBanSettings(CmdArgs c)
         {
             var settingsType = string.Empty;
@@ -491,7 +458,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sets the no-show or excessive subs ban settings.
+        /// Sets the no-show or excessive subs ban settings.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="bType">Type of ban to set (noshows or subs).</param>
@@ -542,7 +509,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Uses the pickup defaults when enabling the pickup module.
+        /// Uses the pickup defaults when enabling the pickup module.
         /// </summary>
         private void UsePickupDefaults()
         {

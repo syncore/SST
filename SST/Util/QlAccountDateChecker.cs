@@ -10,7 +10,7 @@ using SST.Database;
 namespace SST.Util
 {
     /// <summary>
-    ///     Class responsible for scraping the QL website for a user's account registration date.
+    /// Class responsible for scraping the QL website for a user's account registration date.
     /// </summary>
     public class QlAccountDateChecker
     {
@@ -22,7 +22,7 @@ namespace SST.Util
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1003.1 Safari/535.19 Awesomium/1.7.1";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="QlAccountDateChecker" /> class.
+        /// Initializes a new instance of the <see cref="QlAccountDateChecker"/> class.
         /// </summary>
         public QlAccountDateChecker()
         {
@@ -30,7 +30,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the user's registration date.
+        /// Gets the user's registration date.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's registration date as a DateTime object.</returns>
@@ -50,11 +50,11 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Asynchrounously scrapes the Quakelive.com site to retrieve the player's registration date.
+        /// Asynchrounously scrapes the Quakelive.com site to retrieve the player's registration date.
         /// </summary>
         /// <returns><c>true</c> if the player was found on QL site, otherwise <c>false</c>.</returns>
         /// <remarks>
-        ///     Unfortunately, this is the best way to do this, since there is no exposed QL API for this.
+        /// Unfortunately, this is the best way to do this, since there is no exposed QL API for this.
         /// </remarks>
         private async Task<DateTime> GetUserRegistrationDateFromQl(string user)
         {

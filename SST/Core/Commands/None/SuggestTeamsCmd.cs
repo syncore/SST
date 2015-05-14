@@ -15,7 +15,7 @@ using SST.Util;
 namespace SST.Core.Commands.None
 {
     /// <summary>
-    ///     Command: Suggest balanced teams based on player Elo data.
+    /// Command: Suggest balanced teams based on player Elo data.
     /// </summary>
     public class SuggestTeamsCmd : IBotCommand
     {
@@ -33,7 +33,7 @@ namespace SST.Core.Commands.None
         private int _qlMinArgs = 0;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SuggestTeamsCmd" /> class.
+        /// Initializes a new instance of the <see cref="SuggestTeamsCmd"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public SuggestTeamsCmd(SynServerTool sst)
@@ -50,54 +50,44 @@ namespace SST.Core.Commands.None
         /// <summary>
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
-        /// <value>
-        /// The minimum arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum arguments for the IRC command.</value>
         public int IrcMinArgs { get { return _qlMinArgs + 1; } }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinArgs
         {
             get { return _qlMinArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Gets the user level.
+        /// Gets the user level.
         /// </summary>
-        /// <value>
-        ///     The user level.
-        /// </value>
+        /// <value>The user level.</value>
         public UserLevel UserLevel
         {
             get { return _userLevel; }
         }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -107,12 +97,10 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Executes the specified command asynchronously.
+        /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <remarks>
-        ///     Helpers.GetArgVal(c, 1) if specified: user to check
-        /// </remarks>
+        /// <remarks>Helpers.GetArgVal(c, 1) if specified: user to check</remarks>
         public async Task<bool> ExecAsync(CmdArgs c)
         {
             // Must be a team gametype that is supported by QLRanks
@@ -216,12 +204,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -229,7 +216,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -240,7 +227,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -251,13 +238,13 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Gets and displays the results.
+        /// Gets and displays the results.
         /// </summary>
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>
         /// <remarks>
-        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
-        /// is requested via IRC, the players on the server can actually see it.
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
+        /// requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task DisplayBalanceResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue)
         {
@@ -284,16 +271,17 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Initiates the balance process.
+        /// Initiates the balance process.
         /// </summary>
         /// <param name="redTeam">The red team.</param>
         /// <param name="blueTeam">The blue team.</param>
         /// <param name="isForcedBalance">
-        ///     if set to <c>true</c> then a user with required permissions is forcing balance; vote will
-        ///     be bypassed.
+        /// if set to <c>true</c> then a user with required permissions is forcing balance; vote
+        /// will be bypassed.
         /// </param>
-        /// <remarks> Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
-        /// is requested via IRC, the players on the server can actually see it.
+        /// <remarks>
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
+        /// requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task InitiateBalance(List<PlayerInfo> redTeam, List<PlayerInfo> blueTeam,
             bool isForcedBalance)
@@ -333,14 +321,10 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Determines whether the command was sent from the owner of
-        ///     the bot via IRC.
+        /// Determines whether the command was sent from the owner of the bot via IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c> if the command was sent from IRC and from
-        ///     an the IRC owner.
-        /// </returns>
+        /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
         private bool IsIrcOwner(CmdArgs c)
         {
             if (!c.FromIrc) return false;
@@ -352,11 +336,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Moves the players to the suggested teams.
+        /// Moves the players to the suggested teams.
         /// </summary>
         /// <remarks>
-        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
-        /// is requested via IRC, the players on the server can actually see it.
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
+        /// requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task MovePlayersToBalancedTeams()
         {
@@ -374,11 +358,11 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Starts the team suggestion vote and associated timer.
+        /// Starts the team suggestion vote and associated timer.
         /// </summary>
         /// <remarks>
-        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
-        /// is requested via IRC, the players on the server can actually see it.
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
+        /// requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task StartTeamSuggestionVote()
         {
@@ -402,13 +386,13 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Method called when the teams suggestion vote timer has elapsed.
+        /// Method called when the teams suggestion vote timer has elapsed.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         /// <remarks>
-        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it
-        /// is requested via IRC, the players on the server can actually see it.
+        /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
+        /// requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
         {
@@ -450,7 +434,7 @@ namespace SST.Core.Commands.None
         }
 
         /// <summary>
-        ///     Verify all player elo data.
+        /// Verify all player elo data.
         /// </summary>
         /// <param name="players">The players.</param>
         /// <returns></returns>

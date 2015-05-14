@@ -10,7 +10,7 @@ using SST.Util;
 namespace SST.Database
 {
     /// <summary>
-    ///     Class responsible for tracking dates and times of users seen on the server.
+    /// Class responsible for tracking dates and times of users seen on the server.
     /// </summary>
     public class DbSeenDates : CommonSqliteDb
     {
@@ -20,7 +20,7 @@ namespace SST.Database
         private readonly string _sqlDbPath = Filepaths.SeenDateDatabaseFilePath;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DbSeenDates" /> class.
+        /// Initializes a new instance of the <see cref="DbSeenDates"/> class.
         /// </summary>
         public DbSeenDates()
         {
@@ -28,7 +28,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Adds the user to the database.
+        /// Adds the user to the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="seenDate">The date and time the user was last seen on the server.</param>
@@ -71,7 +71,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Deletes the user from database.
+        /// Deletes the user from database.
         /// </summary>
         /// <param name="user">The user to delete.</param>
         public void DeleteUserFromDb(string user)
@@ -113,7 +113,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Gets the user's last seen date and time from the database if it exists.
+        /// Gets the user's last seen date and time from the database if it exists.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>The user's last seen date and time.</returns>
@@ -163,7 +163,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Updates the last seen date.
+        /// Updates the last seen date.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="lastSeenDate">The last seen date.</param>
@@ -213,7 +213,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Creates the database.
+        /// Creates the database.
         /// </summary>
         protected override void CreateDb()
         {
@@ -245,16 +245,16 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user database exists.
+        /// Checks whether the user database exists.
         /// </summary>
-        /// <returns><c>true</c>if the user database exists, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> if the user database exists, otherwise <c>false</c>.</returns>
         protected override bool DbExists()
         {
             return (File.Exists(_sqlDbPath));
         }
 
         /// <summary>
-        ///     Deletes the registration database.
+        /// Deletes the registration database.
         /// </summary>
         protected override void DeleteDb()
         {
@@ -272,7 +272,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Checks whether the user already exists in the database.
+        /// Checks whether the user already exists in the database.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns><c>true</c> if the user exists, otherwise <c>false</c>.</returns>
@@ -306,7 +306,7 @@ namespace SST.Database
         }
 
         /// <summary>
-        ///     Verifies the registration database.
+        /// Verifies the registration database.
         /// </summary>
         protected override sealed bool VerifyDb()
         {

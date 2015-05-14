@@ -14,23 +14,23 @@ using SST.Util;
 namespace SST.Core.Commands.Modules
 {
     /// <summary>
-    ///     Module: Account date limiter. Kick player if player does not meet account registration date requirements.
+    /// Module: Account date limiter. Kick player if player does not meet account registration date requirements.
     /// </summary>
     public class AccountDateLimit : IModule
     {
         public const string NameModule = "accountdate";
         private readonly ConfigHandler _configHandler;
-        private readonly DbUsers _userDb;
         private readonly bool _isIrcAccessAllowed = true;
+        private readonly int _kickDelaySecs = 5;
+        private readonly int _kickTellDelaySecs = 20;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[MOD:ACCOUNTDATE]";
         private readonly int _qlMinModuleArgs = 3;
         private readonly SynServerTool _sst;
-        private readonly int _kickTellDelaySecs = 20;
-        private readonly int _kickDelaySecs = 5;
+        private readonly DbUsers _userDb;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AccountDateLimit" /> class.
+        /// Initializes a new instance of the <see cref="AccountDateLimit"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         public AccountDateLimit(SynServerTool sst)
@@ -42,75 +42,61 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets or sets the minimum days that an account must be registered.
+        /// Gets or sets the minimum days that an account must be registered.
         /// </summary>
-        /// <value>
-        ///     The minimum days that an account must be registered.
-        /// </value>
+        /// <value>The minimum days that an account must be registered.</value>
         public static uint MinimumDaysRequired { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="IModule" /> is active.
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if active; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public bool Active { get; set; }
 
         /// <summary>
-        ///     Gets the minimum module arguments for the IRC command.
+        /// Gets the minimum module arguments for the IRC command.
         /// </summary>
-        /// <value>
-        ///     The minimum module arguments for the IRC command.
-        /// </value>
+        /// <value>The minimum module arguments for the IRC command.</value>
         public int IrcMinModuleArgs
         {
             get { return _qlMinModuleArgs + 1; }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this command can be accessed from IRC.
+        /// Gets a value indicating whether this command can be accessed from IRC.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if this command can be accessed from IRC; otherwise, <c>false</c>.</value>
         public bool IsIrcAccessAllowed
         {
             get { return _isIrcAccessAllowed; }
         }
 
         /// <summary>
-        ///     Gets the name of the module.
+        /// Gets the name of the module.
         /// </summary>
-        /// <value>
-        ///     The name of the module.
-        /// </value>
+        /// <value>The name of the module.</value>
         public string ModuleName
         {
             get { return NameModule; }
         }
 
         /// <summary>
-        ///     Gets the minimum arguments for the QL command.
+        /// Gets the minimum arguments for the QL command.
         /// </summary>
-        /// <value>
-        ///     The minimum arguments for the QL command.
-        /// </value>
+        /// <value>The minimum arguments for the QL command.</value>
         public int QlMinModuleArgs
         {
             get { return _qlMinModuleArgs; }
         }
 
         /// <summary>
-        ///     Gets the command's status message.
+        /// Gets the command's status message.
         /// </summary>
-        /// <value>
-        ///     The command's status message.
-        /// </value>
+        /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
 
         /// <summary>
-        ///     Displays the argument length error.
+        /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
         public async Task DisplayArgLengthError(CmdArgs c)
@@ -120,11 +106,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the account date limiter.
+        /// Enables the account date limiter.
         /// </summary>
         /// <param name="days">The days.</param>
         /// <remarks>
-        ///     This is for use with the auto Init() method and the UI and does not produce a message.
+        /// This is for use with the auto Init() method and the UI and does not produce a message.
         /// </remarks>
         public async Task EnableAccountDateLimiter(uint days)
         {
@@ -134,13 +120,10 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Evaluates the account date limit command.
+        /// Evaluates the account date limit command.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        /// <returns>
-        ///     <c>true</c>if the command evaluation was successful,
-        ///     otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
         public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
@@ -168,12 +151,11 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Gets the argument length error message.
+        /// Gets the argument length error message.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns>
-        ///     The argument length error message, correctly color-formatted
-        ///     depending on its destination.
+        /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
         public string GetArgLengthErrorMessage(CmdArgs c)
         {
@@ -187,7 +169,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Loads the configuration.
+        /// Loads the configuration.
         /// </summary>
         public void LoadConfig()
         {
@@ -202,7 +184,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Runs the user date check on all current players.
+        /// Runs the user date check on all current players.
         /// </summary>
         /// <param name="players">The players.</param>
         public async Task RunUserDateCheck(Dictionary<string, PlayerInfo> players)
@@ -216,7 +198,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Runs the user date check on a given player.
+        /// Runs the user date check on a given player.
         /// </summary>
         /// <param name="user">The user.</param>
         public async Task RunUserDateCheck(string user)
@@ -227,7 +209,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL say message if the command was not sent from IRC.
+        /// Sends a QL say message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -238,7 +220,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Sends a QL tell message if the command was not sent from IRC.
+        /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
@@ -249,7 +231,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Updates the configuration.
+        /// Updates the configuration.
         /// </summary>
         public void UpdateConfig(bool active)
         {
@@ -266,7 +248,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Disables the account date limiter.
+        /// Disables the account date limiter.
         /// </summary>
         private async Task DisableAccountDateLimiter(CmdArgs c)
         {
@@ -279,7 +261,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Enables the account date limiter.
+        /// Enables the account date limiter.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="days">The minimum amount of days.</param>
@@ -299,7 +281,7 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        ///     Verifies the user's registration date and kicks the user if the requirement is not met.
+        /// Verifies the user's registration date and kicks the user if the requirement is not met.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="regDate">The user's registration date.</param>
@@ -307,7 +289,7 @@ namespace SST.Core.Commands.Modules
         {
             if (regDate == default(DateTime)) return;
             if (_userDb.GetUserLevel(user) >= UserLevel.SuperUser) return;
-            
+
             if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
                 await _sst.QlCommands.QlCmdSay(string.Format(
@@ -320,7 +302,6 @@ namespace SST.Core.Commands.Modules
                         "^3You will be kicked because your account is too new (^1{0}^3) and doesn't meet this server's limit of ^1{1}^3 days.",
                         regDate.ToString("d"), MinimumDaysRequired), user, _kickTellDelaySecs);
                 await _sst.QlCommands.CustCmdDelayedKickban(user, _kickDelaySecs);
-
 
                 Log.Write(string.Format(
                     "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Kicking player.",

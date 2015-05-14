@@ -1,12 +1,12 @@
 ﻿namespace SST.Util
 {
     /// <summary>
-    ///     Class for Quake Live location names.
+    /// Class for Quake Live location names.
     /// </summary>
     public class QlLocations
     {
         /// <summary>
-        ///     Gets the location name from the location_id identifier.
+        /// Gets the location name from the location_id identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>The coutnry name as a string.</returns>

@@ -9,7 +9,7 @@ using SST.Util;
 namespace SST.Core
 {
     /// <summary>
-    ///     Class that contains important information about the server on which the bot is loaded.
+    /// Class that contains important information about the server on which the bot is loaded.
     /// </summary>
     public class ServerInfo
     {
@@ -17,7 +17,7 @@ namespace SST.Core
         private readonly string _logPrefix = "[CORE]";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerInfo" /> class.
+        /// Initializes a new instance of the <see cref="ServerInfo"/> class.
         /// </summary>
         public ServerInfo()
         {
@@ -29,99 +29,77 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the current players.
+        /// Gets the current players.
         /// </summary>
-        /// <value>
-        ///     The current players.
-        /// </value>
+        /// <value>The current players.</value>
         public Dictionary<string, PlayerInfo> CurrentPlayers { get; private set; }
 
         /// <summary>
         /// Gets or sets the current server address.
         /// </summary>
-        /// <value>
-        /// The current server address.
-        /// </value>
+        /// <value>The current server address.</value>
         public string CurrentServerAddress { get; set; }
 
         /// <summary>
-        ///     Gets or sets the server's current game state.
+        /// Gets or sets the server's current game state.
         /// </summary>
-        /// <value>
-        ///     The server's current gamestate.
-        /// </value>
+        /// <value>The server's current gamestate.</value>
         public QlGameStates CurrentServerGameState { get; set; }
 
         /// <summary>
-        ///     Gets or sets the type of game for the current server.
+        /// Gets or sets the type of game for the current server.
         /// </summary>
-        /// <value>
-        ///     The type of game for the current server.
-        /// </value>
+        /// <value>The type of game for the current server.</value>
         public QlGameTypes CurrentServerGameType { get; set; }
 
         /// <summary>
-        ///     Gets or sets the current server identifier.
+        /// Gets or sets the current server identifier.
         /// </summary>
-        /// <value>
-        ///     The current server identifier.
-        /// </value>
+        /// <value>The current server identifier.</value>
         public string CurrentServerId { get; set; }
 
         /// <summary>
         /// Gets or sets the blue team at game's end.
         /// </summary>
-        /// <value>
-        /// The blue team at game's end.
-        /// </value>
+        /// <value>The blue team at game's end.</value>
         public List<string> EndOfGameBlueTeam { get; set; }
 
         /// <summary>
         /// Gets or sets the red team at game's end.
         /// </summary>
-        /// <value>
-        /// The red team at game's end.
-        /// </value>
+        /// <value>The red team at game's end.</value>
         public List<string> EndOfGameRedTeam { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the Quake Live client is actually
-        ///     connected to a server or not.
+        /// Gets or sets a value indicating whether the Quake Live client is actually connected to a
+        /// server or not.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if the Quake Live client is connected to server; otherwise, <c>false</c>.
-        /// </value>
+        /// <value><c>true</c> if the Quake Live client is connected to server; otherwise, <c>false</c>.</value>
         public bool IsQlConnectedToServer { get; set; }
 
         /// <summary>
-        ///     Gets or sets the player the bot is currently following (spectating), if any.
+        /// Gets or sets the player the bot is currently following (spectating), if any.
         /// </summary>
-        /// <value>
-        ///     The player the bot is currently following (spectating), if any.
-        /// </value>
+        /// <value>The player the bot is currently following (spectating), if any.</value>
         public string PlayerCurrentlyFollowing { get; set; }
 
         /// <summary>
-        ///     Gets or sets the blue team's score.
+        /// Gets or sets the blue team's score.
         /// </summary>
-        /// <value>
-        ///     The blue team's score.
-        /// </value>
+        /// <value>The blue team's score.</value>
         public int ScoreBlueTeam { get; set; }
 
         /// <summary>
-        ///     Gets or sets the red team's score.
+        /// Gets or sets the red team's score.
         /// </summary>
-        /// <value>
-        ///     The red team's score.
-        /// </value>
+        /// <value>The red team's score.</value>
         public int ScoreRedTeam { get; set; }
 
         /// <summary>
-        ///     Gets the team.
+        /// Gets the team.
         /// </summary>
         /// <param name="t">The Team enum.</param>
-        /// <returns>A list of <see cref="PlayerInfo" />objects for a given Team enum.</returns>
+        /// <returns>A list of <see cref="PlayerInfo"/> objects for a given Team enum.</returns>
         public List<PlayerInfo> GetTeam(Team t)
         {
             return
@@ -131,11 +109,11 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the active player count on the server is an even number.
+        /// Determines whether the active player count on the server is an even number.
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if the server's active (team red or team blue) player count is
-        ///     an even number; otherwise <c>false</c>.
+        /// <c>true</c> if the server's active (team red or team blue) player count is an even
+        /// number; otherwise <c>false</c>.
         /// </returns>
         public bool HasEvenTeams()
         {
@@ -145,7 +123,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the specified player is an active player (on red or blue team).
+        /// Determines whether the specified player is an active player (on red or blue team).
         /// </summary>
         /// <param name="player">The player.</param>
         /// <returns><c>true</c> if the specified player is an active player, otherwise <c>false</c></returns>
@@ -160,7 +138,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Determines whether the current gametype is a team-based game.
+        /// Determines whether the current gametype is a team-based game.
         /// </summary>
         /// <returns><c>true</c> if the current gametype is a team-based game; otherwise <c>false</c></returns>
         public bool IsATeamGame()
@@ -169,7 +147,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Resets the server information.
+        /// Resets the server information.
         /// </summary>
         public void Reset()
         {

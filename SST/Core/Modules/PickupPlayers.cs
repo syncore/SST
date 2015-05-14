@@ -6,7 +6,7 @@ using SST.Enums;
 namespace SST.Core.Modules
 {
     /// <summary>
-    ///     Class associated with standard pickup players and related methods.
+    /// Class associated with standard pickup players and related methods.
     /// </summary>
     public class PickupPlayers
     {
@@ -14,7 +14,7 @@ namespace SST.Core.Modules
         private readonly SynServerTool _sst;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PickupPlayers" /> class.
+        /// Initializes a new instance of the <see cref="PickupPlayers"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
         /// <param name="manager">The pickup manager.</param>
@@ -25,7 +25,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Performs the substituion for a regular player.
+        /// Performs the substituion for a regular player.
         /// </summary>
         /// <param name="outPlayer">The player to sub out.</param>
         /// <param name="team">The team to move the sub to (outPlayer's team).</param>
@@ -57,15 +57,11 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Processes the addition of a player to the eligible player list.
+        /// Processes the addition of a player to the eligible player list.
         /// </summary>
         /// <param name="player">The player.</param>
-        /// <returns>
-        ///     <c>true</c> if the player could be added, otherwise <c>false</c>.
-        /// </returns>
-        /// <remarks>
-        ///     This is called in response to input received from <see cref="PickupAddCmd" />.
-        /// </remarks>
+        /// <returns><c>true</c> if the player could be added, otherwise <c>false</c>.</returns>
+        /// <remarks>This is called in response to input received from <see cref="PickupAddCmd"/>.</remarks>
         public async Task<bool> ProcessAddPlayer(string player)
         {
             if (_manager.AvailablePlayers.Contains(player) || _manager.SubCandidates.Contains(player))
@@ -76,8 +72,8 @@ namespace SST.Core.Modules
                         player);
                 return false;
             }
-            // Deny player who is already on red or blue (i.e. already set to play this pickup) who tries
-            // to get a head start for adding to the next pickup.
+            // Deny player who is already on red or blue (i.e. already set to play this pickup) who
+            // tries to get a head start for adding to the next pickup.
             if (_sst.ServerInfo.IsActivePlayer(player) ||
                 _manager.ActivePickupPlayers.Contains(player))
             {
@@ -130,8 +126,8 @@ namespace SST.Core.Modules
 
                 return true;
             }
-            // Someone adds after teams have been picked (thus are full), but before everyone has readied up to launch game
-            // Add as a substitute
+            // Someone adds after teams have been picked (thus are full), but before everyone has
+            // readied up to launch game Add as a substitute
             if (_manager.IsPickupPreGame && _manager.AreTeamsFull)
             {
                 _manager.SubCandidates.Add(player);
@@ -150,28 +146,26 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Processes the removal of a player from the eligible player list.
+        /// Processes the removal of a player from the eligible player list.
         /// </summary>
         /// <param name="player">The player.</param>
-        /// <returns>
-        ///     <c>true</c> if the player could be removed, otherwise <c>false</c>.
-        /// </returns>
-        /// <remarks>
-        ///     This is called in response to input received from <see cref="PickupRemoveCmd" />.
-        /// </remarks>
+        /// <returns><c>true</c> if the player could be removed, otherwise <c>false</c>.</returns>
+        /// <remarks>This is called in response to input received from <see cref="PickupRemoveCmd"/>.</remarks>
         public async Task<bool> ProcessRemovePlayer(string player)
         {
             if (!_manager.AvailablePlayers.Contains(player) && !_manager.SubCandidates.Contains(player))
             {
-                // NOTE: it might be a captain, in which case he would not be contained in either of these groups, therefore send
-                // a generic error instead of (you can't remove since not added) rather than having another messy conditional
+                // NOTE: it might be a captain, in which case he would not be contained in either of
+                //       these groups, therefore send a generic error instead of (you can't remove
+                // since not added) rather than having another messy conditional
                 await
                     _sst.QlCommands.QlCmdTell(
                         "^1[ERROR]^3 You cannot remove now. You weren't added or it is too late to remove.",
                         player);
                 return false;
             }
-            // Players can remove either before captains have started to pick players, or after the picking process is over.
+            // Players can remove either before captains have started to pick players, or after the
+            // picking process is over.
             if (!_manager.HasTeamSelectionStarted)
             {
                 // This will also remove the player from the substitutes, if applicable
@@ -191,7 +185,7 @@ namespace SST.Core.Modules
         }
 
         /// <summary>
-        ///     Shows the numbers of players signed up and needed.
+        /// Shows the numbers of players signed up and needed.
         /// </summary>
         private async Task ShowNumPlayers()
         {

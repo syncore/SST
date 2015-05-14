@@ -11,7 +11,7 @@ using SST.Model;
 namespace SST.Util
 {
     /// <summary>
-    ///     Class containing general helper methods.
+    /// Class containing general helper methods.
     /// </summary>
     public static class Helpers
     {
@@ -23,16 +23,15 @@ namespace SST.Util
         };
 
         /// <summary>
-        ///     Gets the argument value.
+        /// Gets the argument value.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="argNum">The argument's index.</param>
         /// <returns>The string value at a given index.</returns>
         /// <remarks>
-        ///     This method shifts the value to the right by one if the
-        ///     command was initiated from IRC, to take into account the fact
-        ///     that IRC commands will always have a first value, c[0], of the
-        ///     IrcToQl command name (i.e. c[0] = "!ql")
+        /// This method shifts the value to the right by one if the command was initiated from IRC,
+        /// to take into account the fact that IRC commands will always have a first value, c[0], of
+        /// the IrcToQl command name (i.e. c[0] = "!ql")
         /// </remarks>
         public static string GetArgVal(CmdArgs c, int argNum)
         {
@@ -40,13 +39,14 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the name of player with the clan tag stripped away, if it exists.
+        /// Gets the name of player with the clan tag stripped away, if it exists.
         /// </summary>
         /// <param name="name">The input name.</param>
         /// <returns>The name as a string, with the clan tag stripped away, if it exists.</returns>
         /// <remarks>
-        ///     This is necessary because certain events, namely player connections and when the player spectates,
-        ///     use the full name with the clan tag included, but internally the tool always uses the short name.
+        /// This is necessary because certain events, namely player connections and when the player
+        /// spectates, use the full name with the clan tag included, but internally the tool always
+        /// uses the short name.
         /// </remarks>
         public static string GetStrippedName(string name)
         {
@@ -56,12 +56,10 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the array index of a given scale from the time scale array.
+        /// Gets the array index of a given scale from the time scale array.
         /// </summary>
         /// <param name="scale">The scale.</param>
-        /// <returns>
-        ///     The array index of a given scale from the time scale array.
-        /// </returns>
+        /// <returns>The array index of a given scale from the time scale array.</returns>
         public static int GetTimeScaleIndex(string scale)
         {
             var index = 0;
@@ -77,21 +75,21 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Gets the version of SST currently running.
+        /// Gets the version of SST currently running.
         /// </summary>
         /// <returns>The version number as a string.</returns>
         public static string GetVersion()
         {
             // Version includes the major, minor, build, and revision numbers of the assembly, i.e. 1.0.0.0
-            var v = typeof (EntryPoint).Assembly.GetName().Version.ToString();
+            var v = typeof(EntryPoint).Assembly.GetName().Version.ToString();
             var version = v.Split('.');
             // Only interested in the major and minor numbers (1.0), not the build and revision numbers
             return string.Format("{0}.{1}", version[0], version[1]);
         }
 
         /// <summary>
-        ///     Invokes a method when making calls, if necessary, to a control because the caller is on a different
-        ///     thread than the one on which the control was created.
+        /// Invokes a method when making calls, if necessary, to a control because the caller is on
+        /// a different thread than the one on which the control was created.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="c">The control.</param>
@@ -109,12 +107,9 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Determines whether the specified gametype is a team-based game.
+        /// Determines whether the specified gametype is a team-based game.
         /// </summary>
-        /// <returns>
-        ///     <c>true</c> if the specified gametype is a team-based game; otherwise
-        ///     <c>false</c>
-        /// </returns>
+        /// <returns><c>true</c> if the specified gametype is a team-based game; otherwise <c>false</c></returns>
         public static bool IsQuakeLiveTeamGame(QlGameTypes gametype)
         {
             switch (gametype)
@@ -140,26 +135,24 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Determines whether the specified user's name is valid per QL requirements.
+        /// Determines whether the specified user's name is valid per QL requirements.
         /// </summary>
         /// <param name="user">The user to check.</param>
         /// <param name="allowMultipleUsers">
-        ///     if set to <c>true</c> then also allow
-        ///     commas to be included in the regular expression (for things requiring multiple users
-        ///     separated by commas).
+        /// if set to <c>true</c> then also allow commas to be included in the regular expression
+        /// (for things requiring multiple users separated by commas).
         /// </param>
-        /// <returns>
-        ///     <c>true</c> if the user name is valid, otherwise <c>false.</c>
-        /// </returns>
+        /// <returns><c>true</c> if the user name is valid, otherwise <c>false.</c></returns>
         /// <remarks>
-        ///     Note: this does not check whether the user actually exists in QL, only whether the
-        ///     username does not invalid characters.
+        /// Note: this does not check whether the user actually exists in QL, only whether the
+        ///       username does not invalid characters.
         /// </remarks>
         public static bool IsValidQlUsernameFormat(string user, bool allowMultipleUsers)
         {
             if (allowMultipleUsers)
             {
-                // Only A-Z, 0-9, and underscore (with comma as separator for multiple names) allowed by QL
+                // Only A-Z, 0-9, and underscore (with comma as separator for multiple names)
+                // allowed by QL
                 return !Regex.IsMatch(user, "[^a-zA-Z0-9_,]");
             }
 
@@ -168,15 +161,13 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Checks whether a key is present in a given dictionary.
+        /// Checks whether a key is present in a given dictionary.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TVal">The type of the value.</typeparam>
         /// <param name="key">The key.</param>
         /// <param name="dictionary">The dictionary.</param>
-        /// <returns>
-        ///     <c>true</c> if the key is present, otherwise <c>false</c>.
-        /// </returns>
+        /// <returns><c>true</c> if the key is present, otherwise <c>false</c>.</returns>
         public static bool KeyExists<TKey, TVal>(TKey key, Dictionary<TKey, TVal> dictionary)
         {
             TVal val;
@@ -184,7 +175,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Launches the URL in the user's web browser.
+        /// Launches the URL in the user's web browser.
         /// </summary>
         /// <param name="url">The URL.</param>
         public static void LaunchUrlInBrowser(string url)
@@ -213,15 +204,15 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Find the n-th occurrence of a substring s.
+        /// Find the n-th occurrence of a substring s.
         /// </summary>
         /// <param name="input">The input string</param>
         /// <param name="value">The value to find</param>
         /// <param name="n">The n-th occurrence.</param>
         /// <returns>The position of the n-th occurrence of the value.</returns>
         /// <remarks>
-        ///     Taken from Alexander Prokofyev's answer at:
-        ///     http://stackoverflow.com/a/187394
+        /// Taken from Alexander Prokofyev's answer at:
+        /// http: //stackoverflow.com/a/187394
         /// </remarks>
         public static int NthIndexOf(string input, string value, int n)
         {
@@ -235,7 +226,7 @@ namespace SST.Util
         }
 
         /// <summary>
-        ///     Removes the QL color characters from the input string.
+        /// Removes the QL color characters from the input string.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>A string with the QL color characters removed.</returns>
