@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
+using SST.Config;
 using SST.Database;
 using SST.Enums;
 using SST.Model;
@@ -32,6 +33,59 @@ namespace SST.Core
             _sst = sst;
             _seenDb = new DbSeenDates();
             _qlranksToUpdateFromPlayers = new List<string>();
+        }
+
+        /// <summary>
+        /// Automatically gives operator status using QL's internal op system to the specified
+        ///  player who is currently on the server and is an SST user with userlevel Admin or higher.
+        /// </summary>
+        public async Task AutoOpActiveAdmin(string player)
+        {
+            if (!_sst.IsMonitoringServer) return;
+
+            var cfgHandler = new ConfigHandler();
+            var cfg = cfgHandler.ReadConfiguration();
+
+            if (!cfg.CoreOptions.autoOpAdmins) return;
+
+            var userDb = new DbUsers();
+            var userLevel = userDb.GetUserLevel(player);
+
+            if (userLevel <= UserLevel.SuperUser) return;
+            if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(player)) return;
+
+            var id = GetPlayerId(player);
+            if (id == -1) return;
+
+            await _sst.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
+
+            Log.Write(string.Format("Auto-opping {0} (user level: {1})",
+                    player, userLevel), _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Automatically gives operator status using QL's internal op system to all of the
+        ///  server's current players who are SST users with userlevel Admin or higher.
+        /// </summary>
+        public async Task AutoOpActiveAdmins()
+        {
+            if (!_sst.IsMonitoringServer) return;
+            var cfgHandler = new ConfigHandler();
+            var cfg = cfgHandler.ReadConfiguration();
+            if (!cfg.CoreOptions.autoOpAdmins) return;
+
+            var userDb = new DbUsers();
+            var allUsers = userDb.GetAllUsers();
+
+            foreach (var u in allUsers.Where(u => _sst.ServerInfo.CurrentPlayers.ContainsKey(u.Name)))
+            {
+                if (u.AccessLevel <= UserLevel.SuperUser) continue;
+                var id = GetPlayerId(u.Name);
+                if (id == -1) continue;
+                await _sst.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
+                Log.Write(string.Format("Auto-opping {0} (user level: {1})",
+                    u.Name, u.AccessLevel), _logClassType, _logPrefix);
+            }
         }
 
         /// <summary>

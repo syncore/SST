@@ -40,6 +40,16 @@ namespace SST.Config.Core
         public bool autoMonitorServerOnStart { get; set; }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether users with userlevel of Admin or higher should
+        ///     be automatically opped using QL's internal op system.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if users with userlevel of Admin or higher should be automatically
+        ///     opped; otherwise, <c>false</c>.
+        /// </value>
+        public bool autoOpAdmins { get; set; }
+
+        /// <summary>
         ///     Gets or sets a value indicating whether SST should check for application
         ///     updates on program start.
         /// </summary>
@@ -119,6 +129,7 @@ namespace SST.Config.Core
             accountName = defaultUnsetAccountName;
             appendToActivityLog = true;
             autoMonitorServerOnStart = false;
+            autoOpAdmins = true;
             checkForUpdatesOnStart = true;
             owner = defaultUnsetOwnerName;
             requiredTimeBetweenCommands = 6.5;

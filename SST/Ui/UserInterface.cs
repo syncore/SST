@@ -807,7 +807,7 @@ namespace SST.Ui
             await HandleEloLimitModActivation(cfg.EloLimitOptions.isActive);
             await HandlePickupModActivation(cfg.PickupOptions.isActive);
 
-            HandleCoreSettingsUpdate(cfg.CoreOptions);
+            await HandleCoreSettingsUpdate(cfg.CoreOptions);
 
             HandleMotdModActivation(cfg.MotdOptions.isActive);
             HandleIrcModActivation(cfg.IrcOptions.isActive);
@@ -835,13 +835,13 @@ namespace SST.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreResetSettingsPictureBox_Click(object sender, EventArgs e)
+        private async void coreResetSettingsPictureBox_Click(object sender, EventArgs e)
         {
             var cfg = _cfgHandler.ReadConfiguration();
             cfg.CoreOptions.SetDefaults();
             _cfgHandler.WriteConfiguration(cfg);
             PopulateCoreOptionsUi();
-            HandleCoreSettingsUpdate(cfg.CoreOptions);
+            await HandleCoreSettingsUpdate(cfg.CoreOptions);
             Log.Write("Core settings were reset to their default values",
                 _logClassType, _logPrefix);
             ShowInfoMessage("Core settings were reset to their default values.",
@@ -853,13 +853,14 @@ namespace SST.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void coreSaveSettingsPictureBox_Click(object sender, EventArgs e)
+        private async void coreSaveSettingsPictureBox_Click(object sender, EventArgs e)
         {
             if (ValidateChildren())
             {
                 var cfg = _cfgHandler.ReadConfiguration();
                 cfg.CoreOptions.accountName = coreAccountNameTextBox.Text;
                 cfg.CoreOptions.appendToActivityLog = coreAppendEventsCheckBox.Checked;
+                cfg.CoreOptions.autoOpAdmins = coreAutoOpAdminsCheckBox.Checked;
                 cfg.CoreOptions.autoMonitorServerOnStart = coreAutoMonitorStartCheckBox.Checked;
                 cfg.CoreOptions.checkForUpdatesOnStart = coreCheckForUpdatesCheckBox.Checked;
                 cfg.CoreOptions.eloCacheExpiration = uint.Parse(coreEloCacheTextBox.Text);
@@ -869,7 +870,7 @@ namespace SST.Ui
                 cfg.CoreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
                 cfg.CoreOptions.owner = coreOwnerNameTextBox.Text;
                 _cfgHandler.WriteConfiguration(cfg);
-                HandleCoreSettingsUpdate(cfg.CoreOptions);
+                await HandleCoreSettingsUpdate(cfg.CoreOptions);
                 Log.Write("Core settings saved.", _logClassType, _logPrefix);
                 ShowInfoMessage("Core settings saved.", "Settings Saved");
             }
@@ -931,7 +932,7 @@ namespace SST.Ui
         ///     Handles the core settings update.
         /// </summary>
         /// <param name="coreOptions">The core options.</param>
-        private void HandleCoreSettingsUpdate(CoreOptions coreOptions)
+        private async Task HandleCoreSettingsUpdate(CoreOptions coreOptions)
         {
             // Go into effect now
             _sst.AccountName = coreOptions.accountName;
@@ -958,6 +959,9 @@ namespace SST.Ui
                 userDb.AddUserToDb(coreOptions.accountName, UserLevel.Owner, "AUTO",
                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             }
+            // Auto-op admins
+            await _sst.ServerEventProcessor.AutoOpActiveAdmins();
+
         }
 
         /// <summary>
@@ -2684,6 +2688,7 @@ namespace SST.Ui
             var cfg = _cfgHandler.ReadConfiguration();
             coreAccountNameTextBox.Text = cfg.CoreOptions.accountName;
             coreAppendEventsCheckBox.Checked = cfg.CoreOptions.appendToActivityLog;
+            coreAutoOpAdminsCheckBox.Checked = cfg.CoreOptions.autoOpAdmins;
             coreAutoMonitorStartCheckBox.Checked = cfg.CoreOptions.autoMonitorServerOnStart;
             coreCheckForUpdatesCheckBox.Checked = cfg.CoreOptions.checkForUpdatesOnStart;
             coreEloCacheTextBox.Text = cfg.CoreOptions.eloCacheExpiration.ToString();
@@ -2973,7 +2978,7 @@ namespace SST.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void usrMAddUserButton_Click(object sender, EventArgs e)
+        private async void  usrMAddUserButton_Click(object sender, EventArgs e)
         {
             if (usrMUserQlNameTextBox.Text.Length == 0 ||
                 !Helpers.IsValidQlUsernameFormat(usrMUserQlNameTextBox.Text, false))
@@ -3010,6 +3015,12 @@ namespace SST.Ui
             Log.Write(
                 string.Format("Owner {0} added user {1} with access level {2} to user database.",
                     owner, user, accessLevel), _logClassType, _logPrefix);
+
+            // Auto-op if necessary
+            if (accessLevel > UserLevel.SuperUser)
+            {
+                await _sst.ServerEventProcessor.AutoOpActiveAdmin(user);
+            }
         }
 
         /// <summary>
@@ -3017,7 +3028,7 @@ namespace SST.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void usrMDelAllUsersButton_Click(object sender, EventArgs e)
+        private async void usrMDelAllUsersButton_Click(object sender, EventArgs e)
         {
             var cfg = _cfgHandler.ReadConfiguration();
             var owner = cfg.CoreOptions.owner;
@@ -3038,6 +3049,14 @@ namespace SST.Ui
             foreach (var user in allUsers)
             {
                 userDb.DeleteUserFromDb(user.Name, owner, UserLevel.Owner);
+                if (!_sst.IsMonitoringServer) break;
+                if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(user.Name)) continue;
+                var id = _sst.ServerEventProcessor.GetPlayerId(user.Name);
+                if (id != -1)
+                {
+                    // doesn't matter if not opped, since QL shows no error message
+                    await _sst.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+                }
             }
 
             usrMCurUsersListBox.SelectedIndex = ((usrMCurrentUserBindingSource.Count > 0)
@@ -3054,7 +3073,7 @@ namespace SST.Ui
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void usrMDelUserButton_Click(object sender, EventArgs e)
+        private async void usrMDelUserButton_Click(object sender, EventArgs e)
         {
             if (usrMCurrentUserBindingSource.Count == 0 ||
                 usrMCurUsersListBox.SelectedIndex == -1) return;
@@ -3062,7 +3081,6 @@ namespace SST.Ui
             var cfg = _cfgHandler.ReadConfiguration();
             var userDb = new DbUsers();
             var selectedUser = (User) usrMCurUsersListBox.SelectedItem;
-
             usrMCurrentUserBindingSource.Remove(selectedUser);
             userDb.DeleteUserFromDb(selectedUser.Name, cfg.CoreOptions.owner, UserLevel.Owner);
 
@@ -3075,6 +3093,16 @@ namespace SST.Ui
                 string.Format("Owner {0} removed user {1} with access level {2} from user database.",
                     cfg.CoreOptions.owner, selectedUser.Name, selectedUser.AccessLevel), _logClassType,
                 _logPrefix);
+
+            // De-op
+            if (!_sst.IsMonitoringServer) return;
+            if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(selectedUser.Name)) return;
+            var id = _sst.ServerEventProcessor.GetPlayerId(selectedUser.Name);
+            if (id != -1)
+            {
+                // doesn't matter if not opped, since QL shows no error message
+                await _sst.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+            }
         }
     }
 }

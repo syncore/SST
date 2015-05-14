@@ -109,6 +109,16 @@ namespace SST.Core.Commands.Admin
                 // UI: reflect changes
                 _sst.UserInterface.RefreshCurrentSstUsersDataSource();
 
+                // de-op
+                if (!_sst.IsMonitoringServer) return true;
+                if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(Helpers.GetArgVal(c, 1))) return true;
+                var id = _sst.ServerEventProcessor.GetPlayerId(Helpers.GetArgVal(c, 1));
+                if (id != -1)
+                {
+                    // doesn't matter if not opped, since QL shows no error message
+                    await _sst.QlCommands.SendToQlAsync(string.Format("deop {0}", id), false);
+                }
+
                 return true;
             }
 

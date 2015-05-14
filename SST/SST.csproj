@@ -361,7 +361,7 @@
     <Copy SourceFiles="@(SQLitex86InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\SST\x86" />
     <Copy SourceFiles="@(SQLitex64InteropFile)" DestinationFolder="$(SolutionDir)$(AssemblyName)\$(MergedExePath)\SST\x64" />
     <!--Zip the merged exe directory-->
-    <Message Importance="high" Text="Packaging version $(AppVersion) release as zip file: $(DistributionPackagePath)\sst-v$(AppVersion).zip" />
+    <Message Importance="high" Text="Packaging version $(AppVersion) release as zip file: $(SolutionDir)$(AssemblyName)\$(DistributionPackagePath)\sst-v$(AppVersion).zip" />
     <ItemGroup>
       <FilesToZip Include="$(MergedExePath)\**\*.*" />
     </ItemGroup>

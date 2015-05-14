@@ -327,6 +327,7 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
+            this.coreAutoOpAdminsCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.sstLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -848,6 +849,7 @@
             // coreInterfaceGroupBox
             // 
             this.coreInterfaceGroupBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(201)))), ((int)(((byte)(225)))));
+            this.coreInterfaceGroupBox.Controls.Add(this.coreAutoOpAdminsCheckBox);
             this.coreInterfaceGroupBox.Controls.Add(this.coreCheckForUpdatesCheckBox);
             this.coreInterfaceGroupBox.Controls.Add(this.coreHideQlConsoleCheckBox);
             this.coreInterfaceGroupBox.Controls.Add(this.coreMinimizeToTrayCheckBox);
@@ -861,12 +863,12 @@
             this.coreInterfaceGroupBox.Size = new System.Drawing.Size(692, 161);
             this.coreInterfaceGroupBox.TabIndex = 30;
             this.coreInterfaceGroupBox.TabStop = false;
-            this.coreInterfaceGroupBox.Text = "Interface and Debugging";
+            this.coreInterfaceGroupBox.Text = "Options";
             // 
             // coreCheckForUpdatesCheckBox
             // 
             this.coreCheckForUpdatesCheckBox.AutoSize = true;
-            this.coreCheckForUpdatesCheckBox.Location = new System.Drawing.Point(256, 114);
+            this.coreCheckForUpdatesCheckBox.Location = new System.Drawing.Point(256, 21);
             this.coreCheckForUpdatesCheckBox.Name = "coreCheckForUpdatesCheckBox";
             this.coreCheckForUpdatesCheckBox.Size = new System.Drawing.Size(225, 18);
             this.coreCheckForUpdatesCheckBox.TabIndex = 15;
@@ -924,7 +926,7 @@
             // coreLogEventsDiskCheckBox
             // 
             this.coreLogEventsDiskCheckBox.AutoSize = true;
-            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(256, 21);
+            this.coreLogEventsDiskCheckBox.Location = new System.Drawing.Point(256, 114);
             this.coreLogEventsDiskCheckBox.Name = "coreLogEventsDiskCheckBox";
             this.coreLogEventsDiskCheckBox.Size = new System.Drawing.Size(154, 18);
             this.coreLogEventsDiskCheckBox.TabIndex = 7;
@@ -4165,6 +4167,19 @@
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
             // 
+            // coreAutoOpAdminsCheckBox
+            // 
+            this.coreAutoOpAdminsCheckBox.AutoSize = true;
+            this.coreAutoOpAdminsCheckBox.Location = new System.Drawing.Point(523, 21);
+            this.coreAutoOpAdminsCheckBox.Name = "coreAutoOpAdminsCheckBox";
+            this.coreAutoOpAdminsCheckBox.Size = new System.Drawing.Size(142, 18);
+            this.coreAutoOpAdminsCheckBox.TabIndex = 16;
+            this.coreAutoOpAdminsCheckBox.Text = "Auto-OP SST Admins";
+            this.coreToolTip.SetToolTip(this.coreAutoOpAdminsCheckBox, "Select whether you want users with the Admin access level to\r\nbe automatically op" +
+        "ped on the server when server monitoring\r\nbegins and when such users connect to " +
+        "the server.");
+            this.coreAutoOpAdminsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // UserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4658,5 +4673,6 @@
         private System.Windows.Forms.Button abtCheckUpdateButton;
         private System.Windows.Forms.CheckBox coreCheckForUpdatesCheckBox;
         private System.Windows.Forms.Button abtCommandList;
+        private System.Windows.Forms.CheckBox coreAutoOpAdminsCheckBox;
     }
 }

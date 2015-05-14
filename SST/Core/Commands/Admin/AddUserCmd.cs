@@ -135,6 +135,12 @@ namespace SST.Core.Commands.Admin
                 // UI: reflect changes
                 _sst.UserInterface.RefreshCurrentSstUsersDataSource();
 
+                // Auto-op if necessary
+                if ((UserLevel) Convert.ToInt32(Helpers.GetArgVal(c, 2)) > UserLevel.SuperUser)
+                {
+                    await _sst.ServerEventProcessor.AutoOpActiveAdmin(Helpers.GetArgVal(c, 1));
+                }
+
                 return true;
             }
 
@@ -144,6 +150,8 @@ namespace SST.Core.Commands.Admin
             await SendServerTell(c, StatusMessage);
             return false;
         }
+
+        
 
         /// <summary>
         ///     Gets the argument length error message.

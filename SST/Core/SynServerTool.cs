@@ -228,6 +228,7 @@ namespace SST.Core
             await BeginMonitoring();
         }
 
+
         /// <summary>
         ///     Attempt to start monitoring the server, per the user's request.
         /// </summary>
@@ -288,30 +289,6 @@ namespace SST.Core
         }
 
         /// <summary>
-        ///     Gets the server information.
-        /// </summary>
-        public void GetServerInformation()
-        {
-            // First and foremost, clear the console and get the player listing.
-            QlCommands.ClearQlWinConsole();
-            // Re-focus the window
-            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
-            // Disable developer mode if it's already set, so we can get accurate player listing.
-            QlCommands.DisableDeveloperMode();
-            // Initially get the player listing when we start. Synchronous since initilization.
-            // ReSharper disable once UnusedVariable
-            var q = QlCommands.QlCmdPlayers();
-            // Get the server's id
-            QlCommands.SendToQl("serverinfo", true);
-            // Enable developer mode
-            QlCommands.EnableDeveloperMode();
-            // Delay some initilization tasks and complete initilization
-            StartDelayedInitTasks(InitDelay);
-            QlCommands.ClearQlWinConsole();
-            Log.Write("Requesting server information.", _logClassType, _logPrefix);
-        }
-
-        /// <summary>
         ///     Handles the situation where the user disables developer mode
         ///     while the server is being monitored.
         /// </summary>
@@ -332,6 +309,12 @@ namespace SST.Core
         /// </remarks>
         public async Task ReloadInit()
         {
+            if (Mod.Pickup.Active)
+            {
+                Mod.Pickup.Manager.ResetPickupStatus();
+            }
+            Mod.Pickup.Active = false;
+            
             IsInitComplete = false;
             StopMonitoring();
             QlCommands.ClearQlWinConsole();
@@ -472,6 +455,9 @@ namespace SST.Core
             _delayedInitTaskTimer.Enabled = false;
             _delayedInitTaskTimer = null;
 
+            // Auto-op admins if necessary
+            await ServerEventProcessor.AutoOpActiveAdmins();
+            
             // Let the server's players know
             await
                 QlCommands.QlCmdSay(
@@ -490,6 +476,30 @@ namespace SST.Core
             var cfg = cfgHandler.ReadConfiguration();
 
             return cfg.CoreOptions.accountName;
+        }
+
+        /// <summary>
+        ///     Gets the server information.
+        /// </summary>
+        private void GetServerInformation()
+        {
+            // First and foremost, clear the console and get the player listing.
+            QlCommands.ClearQlWinConsole();
+            // Re-focus the window
+            Win32Api.SwitchToThisWindow(QlWindowUtils.QlWindowHandle, true);
+            // Disable developer mode if it's already set, so we can get accurate player listing.
+            QlCommands.DisableDeveloperMode();
+            // Initially get the player listing when we start. Synchronous since initilization.
+            // ReSharper disable once UnusedVariable
+            var q = QlCommands.QlCmdPlayers();
+            // Get the server's id
+            QlCommands.SendToQl("serverinfo", true);
+            // Enable developer mode
+            QlCommands.EnableDeveloperMode();
+            // Delay some initilization tasks and complete initilization
+            StartDelayedInitTasks(InitDelay);
+            QlCommands.ClearQlWinConsole();
+            Log.Write("Requesting server information.", _logClassType, _logPrefix);
         }
 
         /// <summary>

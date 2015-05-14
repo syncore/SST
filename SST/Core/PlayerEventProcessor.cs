@@ -64,6 +64,9 @@ namespace SST.Core
                     string.Format("{0} has connected to my QL server.", player));
             }
 
+            // Auto-op if applicable
+            await _sst.ServerEventProcessor.AutoOpActiveAdmin(player);
+
             // Elo limiter kick, if active
             if (_sst.Mod.EloLimit.Active)
             {
