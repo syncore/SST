@@ -23,7 +23,7 @@ namespace SST.Core.Commands.None
         private readonly string _logPrefix = "[CMD:SUGGEST]";
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerTool _sst;
-        private readonly Timer _suggestionTimer;
+        private Timer _suggestionTimer;
         private readonly TeamBalancer _teamBalancer;
         private readonly UserLevel _userLevel = UserLevel.None;
         private readonly DbUsers _users;
@@ -135,21 +135,20 @@ namespace SST.Core.Commands.None
 
             var blueTeam = _sst.ServerInfo.GetTeam(Team.Blue);
             var redTeam = _sst.ServerInfo.GetTeam(Team.Red);
-            var redAndBlueTotalPlayers = (blueTeam.Count + redTeam.Count);
 
-            if ((redAndBlueTotalPlayers) % 2 != 0)
+            if ((blueTeam.Count + redTeam.Count) % 2 != 0)
             {
                 StatusMessage = "^1[ERROR]^3 Teams can only be suggested if there are a total even number of red and blue players!";
                 // send to everyone (/say; success)
                 await SendServerSay(c, StatusMessage);
 
                 Log.Write(string.Format(
-                    "{0} attempted to request team balance suggestion, but teams are uneven. Ignoring.",
-                    c.FromUser), _logClassType, _logPrefix);
+                    "{0} attempted to request team balance suggestion, but teams are uneven. Red ({1}), Blue ({2}), Rem ({3}). Ignoring.",
+                    c.FromUser, blueTeam.Count, redTeam.Count, ((blueTeam.Count + redTeam.Count) % 2)), _logClassType, _logPrefix);
 
                 return false;
             }
-            if ((redAndBlueTotalPlayers) < 4)
+            if ((blueTeam.Count + redTeam.Count) < 4)
             {
                 StatusMessage = "^1[ERROR]^3 There must be at least 4 total players for the team suggestion!";
                 // send to everyone (/say; success)
@@ -375,6 +374,11 @@ namespace SST.Core.Commands.None
                         " the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
                         (interval / 1000), CommandList.GameCommandPrefix,
                         CommandList.CmdAcceptTeamSuggestion, CommandList.CmdRejectTeamSuggestion));
+
+            if (_suggestionTimer == null)
+            {
+                _suggestionTimer = new Timer();
+            }
             _suggestionTimer.Interval = interval;
             _suggestionTimer.Elapsed += TeamSuggestionTimerElapsed;
             _suggestionTimer.AutoReset = false;
@@ -383,6 +387,7 @@ namespace SST.Core.Commands.None
 
             Log.Write(string.Format("Started team suggestion vote. {0} seconds until results are known.",
                 (interval / 1000)), _logClassType, _logPrefix);
+
         }
 
         /// <summary>
@@ -426,6 +431,8 @@ namespace SST.Core.Commands.None
 
                 // Reset votes
                 _sst.VoteManager.ResetTeamSuggestionVote();
+                _suggestionTimer.Enabled = false;
+                _suggestionTimer = null;
             }
             catch (Exception)
             {

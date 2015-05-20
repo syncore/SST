@@ -8,6 +8,8 @@ using SST.Util;
 
 namespace SST.Core
 {
+    using System.Text;
+
     /// <summary>
     /// Class that contains important information about the server on which the bot is loaded.
     /// </summary>
@@ -102,10 +104,20 @@ namespace SST.Core
         /// <returns>A list of <see cref="PlayerInfo"/> objects for a given Team enum.</returns>
         public List<PlayerInfo> GetTeam(Team t)
         {
-            return
-                CurrentPlayers.Where(player => player.Value.Team.Equals(t))
+            var team = CurrentPlayers.Where(player => player.Value.Team.Equals(t))
                     .Select(player => player.Value)
                     .ToList();
+            var sb = new StringBuilder();
+            
+            foreach (var player in team)
+            {
+                sb.Append(string.Format("{0}, ", player.ShortName));
+            }
+            
+            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", t, team.Count, 
+                sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
+            
+            return team;
         }
 
         /// <summary>
@@ -117,9 +129,7 @@ namespace SST.Core
         /// </returns>
         public bool HasEvenTeams()
         {
-            var red = GetTeam(Team.Red);
-            var blue = GetTeam(Team.Blue);
-            return (red.Count + blue.Count) % 2 == 0;
+            return (((GetTeam(Team.Red).Count) + (GetTeam(Team.Blue).Count))) % 2 == 0;
         }
 
         /// <summary>

@@ -311,6 +311,7 @@ namespace SST.Core
             if ((text.Length) > MaxChatlineLength)
             {
                 // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -383,6 +384,7 @@ namespace SST.Core
             if ((text.Length) > MaxChatlineLength)
             {
                 // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -468,6 +470,7 @@ namespace SST.Core
             if ((text.Length) > MaxTellLineLength)
             {
                 // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction
                 var l = ((text.Length / MaxTellLineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try

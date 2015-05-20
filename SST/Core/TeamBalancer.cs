@@ -64,7 +64,11 @@ namespace SST.Core
                 }
             }
 
-            DisplayResults(redTeam, blueTeam, gametype);
+            if (desiredTeam == Team.Blue)
+            {
+                // Only show once
+                DisplayStats(redTeam, blueTeam, gametype);
+            }
             return (desiredTeam == Team.Red ? redTeam : blueTeam);
         }
 
@@ -175,7 +179,7 @@ namespace SST.Core
         /// <param name="teamRed">The red team.</param>
         /// <param name="teamBlue">The blue team.</param>
         /// <param name="gametype">The gametype.</param>
-        private void DisplayResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue,
+        private void DisplayStats(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue,
             QlGameTypes gametype)
         {
             var redTeamElo = teamRed.Sum(player => player.EloData.GetEloFromGameType(gametype));

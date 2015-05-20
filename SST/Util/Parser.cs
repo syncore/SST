@@ -36,6 +36,7 @@ namespace SST.Util
             ScmdPlayerInvalidPasswordDisconnect = new scmdPlayerInvalidPasswordDisconnect();
             ScmdPlayerDisconnected = new scmdPlayerDisconnected();
             ScmdPlayerJoinedSpectators = new scmdPlayerJoinedSpectators();
+            ScmdPlayerJoinedTeam = new scmdPlayerJoinedTeam();
             ScmdPlayerRageQuits = new scmdPlayerRagequits();
             ScmdTinfo = new scmdTinfo();
             ScmdVoteCalledDetails = new scmdVoteCalledDetails();
@@ -328,6 +329,18 @@ namespace SST.Util
         /// This contains a named group 'player' that has the name of the player who joined the spectators.
         /// </remarks>
         public Regex ScmdPlayerJoinedSpectators { get; private set; }
+
+        /// <summary>
+        /// Regex for finding a player who has joined a team (red or blue) as issued in a servercommand.
+        /// </summary>
+        /// <value>
+        /// Regex for finding a player who has joined a team (red or blue) as issued in a servercommand.
+        /// </value>
+        /// <remarks>
+        /// This contains a named group 'player' that has the name of the player (including the clan tag)
+        /// and a named group 'team' that includes the team color (Red or Blue).
+        /// </remarks>
+        public Regex ScmdPlayerJoinedTeam { get; private set; }
 
         /// <summary>
         /// Regex for finding a player who was kicked as issued in a servercommand.

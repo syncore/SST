@@ -1,26 +1,25 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Forms;
-using SST.Config;
-using SST.Core.Commands.Modules;
-using SST.Ui;
-using SST.Util;
-using Timer = System.Timers.Timer;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Timers;
+    using System.Windows.Forms;
+    using SST.Config;
+    using SST.Core.Commands.Modules;
+    using SST.Ui;
+    using SST.Util;
+    using Timer = System.Timers.Timer;
+
     /// <summary>
     /// The main class for SST.
     /// </summary>
     public class SynServerTool
     {
-        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _delayedInitTaskTimer;
@@ -28,6 +27,7 @@ namespace SST.Core
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
+        public double InitDelay = 6.5;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SynServerTool"/> main class.
@@ -295,7 +295,10 @@ namespace SST.Core
         /// </summary>
         public void StartConsoleReadThread()
         {
-            if (IsReadingConsole) return;
+            if (IsReadingConsole)
+            {
+                return;
+            }
             Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
             IsReadingConsole = true;
             var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
@@ -307,7 +310,10 @@ namespace SST.Core
         /// </summary>
         public void StartProcessDetectionTimer()
         {
-            if (_qlProcessDetectionTimer != null) return;
+            if (_qlProcessDetectionTimer != null)
+            {
+                return;
+            }
             _qlProcessDetectionTimer = new Timer(15000);
             _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
             _qlProcessDetectionTimer.Enabled = true;
@@ -377,7 +383,10 @@ namespace SST.Core
         {
             var cfgHandler = new ConfigHandler();
             var cfg = cfgHandler.ReadConfiguration();
-            if (!cfg.CoreOptions.autoMonitorServerOnStart) return;
+            if (!cfg.CoreOptions.autoMonitorServerOnStart)
+            {
+                return;
+            }
 
             Log.Write(
                 "User has 'auto monitor on start' specified. Attempting to start monitoring if possible.",
@@ -394,16 +403,14 @@ namespace SST.Core
         /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private async void DelayedInitTaskTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            QlCommands.ClearQlWinConsole();
-            
-            // Request the configstrings after the current players have already been gathered in order
-            // to get an accurate listing of the teams. This will also take care of any players that
-            // might have been initially missed by the 'players' command.
-
-            // ReSharper disable once UnusedVariable (synchronous)
-            var c = QlCommands.QlCmdConfigStrings();
-
             Log.Write("Performing delayed initilization tasks.", _logClassType, _logPrefix);
+
+            QlCommands.ClearQlWinConsole();
+
+            // Wait briefly prior to requesting the configstrings after the current players have already been
+            //gathered in order to get an accurate listing of the teams.
+            await Task.Delay(1 * 1000);
+            await QlCommands.QlCmdConfigStrings();
 
             // Initiate modules such as MOTD and others that can't be started until after we're live
             Mod.Motd.Init();
@@ -411,7 +418,7 @@ namespace SST.Core
             // Get IP
             CheckServerAddress();
 
-            // Wait 2 sec then clear the internal console
+            // Wait then clear the internal console
             await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();
 
@@ -427,12 +434,14 @@ namespace SST.Core
             await ServerEventProcessor.AutoOpActiveAdmins();
 
             // Let the server's players know
+            /*
             await
                 QlCommands.QlCmdSay(
                     string.Format(
                         "^7SST ^3v{0}^7 by syncore is now loaded on this server. ^3{1}{2}^7 for help.",
                         Helpers.GetVersion(),
                         CommandList.GameCommandPrefix, CommandList.CmdHelp));
+             */
 
             Log.Write("SST is now loaded on the server.", _logClassType, _logPrefix);
         }
@@ -510,7 +519,9 @@ namespace SST.Core
                     var textLength = Win32Api.SendMessage(cText, Win32Api.WM_GETTEXTLENGTH, IntPtr.Zero,
                         IntPtr.Zero);
                     if ((textLength == 0) || (ConsoleTextProcessor.OldWholeConsoleLineLength == textLength))
+                    {
                         continue;
+                    }
 
                     // Entire console window text
                     var entireBuffer = new StringBuilder(textLength + 1);

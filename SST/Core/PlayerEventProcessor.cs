@@ -1,16 +1,16 @@
-﻿using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using SST.Config;
-using SST.Core.Modules;
-using SST.Database;
-using SST.Enums;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Core.Modules;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Class responsible for handling player events.
     /// </summary>
@@ -42,7 +42,10 @@ namespace SST.Core
         public async Task HandleIncomingPlayerConnection(string player)
         {
             // "/?" command, regex would otherwise match, so ignore
-            if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase)) return;
+            if (player.Equals("players show currently", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
 
             Log.Write("Detected incoming connection for " + player, _logClassType, _logPrefix);
 
@@ -132,12 +135,21 @@ namespace SST.Core
             }
 
             // Evaluate player's early quit situation if that module is active
-            if (!_sst.Mod.EarlyQuit.Active) return;
-            if (!outgoingWasActive) return;
+            if (!_sst.Mod.EarlyQuit.Active)
+            {
+                return;
+            }
+            if (!outgoingWasActive)
+            {
+                return;
+            }
 
             // Do not increase player's early quit count if already banned.
             var banDb = new DbBans();
-            if (banDb.UserAlreadyBanned(player)) return;
+            if (banDb.UserAlreadyBanned(player))
+            {
+                return;
+            }
 
             var eqh = new EarlyQuitHandler(_sst);
             await eqh.EvalCountdownQuitter(player);
@@ -182,21 +194,21 @@ namespace SST.Core
                 accs[k] = n;
             }
             var playerAccInfo = new AccuracyInfo
-            {
-                MachineGun = accs[2],
-                ShotGun = accs[3],
-                GrenadeLauncher = accs[4],
-                RocketLauncher = accs[5],
-                LightningGun = accs[6],
-                RailGun = accs[7],
-                PlasmaGun = accs[8],
-                Bfg = accs[9],
-                GrapplingHook = accs[10],
-                NailGun = accs[11],
-                ProximityMineLauncher = accs[12],
-                ChainGun = accs[13],
-                HeavyMachineGun = accs[14]
-            };
+                                {
+                                    MachineGun = accs[2],
+                                    ShotGun = accs[3],
+                                    GrenadeLauncher = accs[4],
+                                    RocketLauncher = accs[5],
+                                    LightningGun = accs[6],
+                                    RailGun = accs[7],
+                                    PlasmaGun = accs[8],
+                                    Bfg = accs[9],
+                                    GrapplingHook = accs[10],
+                                    NailGun = accs[11],
+                                    ProximityMineLauncher = accs[12],
+                                    ChainGun = accs[13],
+                                    HeavyMachineGun = accs[14]
+                                };
             // Set
             _sst.ServerInfo.CurrentPlayers[player].Acc = playerAccInfo;
             Log.Write(string.Format(
@@ -219,12 +231,15 @@ namespace SST.Core
             // characters, so it doesn't matter
             var msgContent =
                 ConsoleTextProcessor.Strip(text.Substring(text.IndexOf(": ", StringComparison.Ordinal) + 1))
-                    .ToLowerInvariant();
+                                    .ToLowerInvariant();
 
             var name = text.Substring(0, text.LastIndexOf('\u0019'));
 
             // teamchat is already ignored, so also ignore 'tell' messages which would crash bot
-            if (name.StartsWith("\u0019[")) return;
+            if (name.StartsWith("\u0019["))
+            {
+                return;
+            }
 
             var msgFrom = Helpers.GetStrippedName(name);
 
@@ -239,7 +254,9 @@ namespace SST.Core
             {
                 // Don't show
                 if (msgContent.StartsWith("[irc]", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return;
+                }
 
                 _sst.Mod.Irc.IrcManager.SendIrcMessage(_sst.Mod.Irc.IrcManager.IrcSettings.ircChannel,
                     string.Format("[{0} @ QL]: {1}", msgFrom, msgContent));
@@ -276,7 +293,7 @@ namespace SST.Core
                 Log.Write("Received invalid player info array length.", _logClassType, _logPrefix);
                 return;
             }
-            var playername = GetCsValue("n", pi);
+            var playername = GetCsValue("n", pi).ToLowerInvariant();
             int status;
             int tm;
             int.TryParse(GetCsValue("t", pi), out tm);
@@ -287,19 +304,40 @@ namespace SST.Core
             // Player already exists... Update if necessary.
             if (_sst.ServerInfo.CurrentPlayers.TryGetValue(playername, out p))
             {
-                if (p.Ready != ready)
-                {
-                    UpdatePlayerReadyStatus(playername, ready);
-                }
-                if (p.Team != team)
-                {
-                    UpdatePlayerTeam(playername, team);
-                }
+                //if (p.Ready != ready)
+                //{
+                UpdatePlayerReadyStatus(playername, ready);
+                //}
+                //if (p.Team != team)
+                //{
+                UpdatePlayerTeam(playername, team);
+                //}
             }
             else
             {
                 CreateNewPlayerFromConfigString(idMatchText, pi);
             }
+        }
+
+        /// <summary>
+        /// Handles the situation when a player joins the red/blue team.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="team">The team.</param>
+        public void HandlePlayerJoinedTeam(string player, string team)
+        {
+            player = Helpers.GetStrippedName(player);
+            var tm = (team.Equals("Red", StringComparison.InvariantCultureIgnoreCase)) ? Team.Red : Team.Blue;
+            // Player should've already been created at this point
+            if (!Helpers.KeyExists(player, _sst.ServerInfo.CurrentPlayers))
+            {
+                Log.Write(
+                    string.Format("Player {0} joining team {1} doesn't exist in internal list. Team not updated.", player,
+                        team), _logClassType, _logPrefix);
+
+                return;
+            }
+            UpdatePlayerTeam(player, tm);
         }
 
         /// <summary>
@@ -333,8 +371,14 @@ namespace SST.Core
             }
 
             // Evaluate player's early quit situation if that module is active
-            if (!_sst.Mod.EarlyQuit.Active) return;
-            if (!outgoingWasActive) return;
+            if (!_sst.Mod.EarlyQuit.Active)
+            {
+                return;
+            }
+            if (!outgoingWasActive)
+            {
+                return;
+            }
             var eqh = new EarlyQuitHandler(_sst);
             await eqh.EvalCountdownQuitter(player);
             await eqh.EvalInProgressQuitter(player);
@@ -370,7 +414,10 @@ namespace SST.Core
         /// <param name="pi">The player info array.</param>
         private void CreateNewPlayerFromConfigString(string idText, string[] pi)
         {
-            if (pi.Length <= 1) return;
+            if (pi.Length <= 1)
+            {
+                return;
+            }
             int id;
             if (!int.TryParse(idText, out id))
             {
@@ -415,7 +462,10 @@ namespace SST.Core
         private async Task HandleEloUpdate(string player)
         {
             PlayerInfo p;
-            if (!_sst.ServerInfo.CurrentPlayers.TryGetValue(player, out p)) return;
+            if (!_sst.ServerInfo.CurrentPlayers.TryGetValue(player, out p))
+            {
+                return;
+            }
             if (_qlRanksHelper.DoesCachedEloExist(player))
             {
                 if (!_qlRanksHelper.IsCachedEloDataOutdated(player))
@@ -486,7 +536,7 @@ namespace SST.Core
         private void UpdatePlayerReadyStatus(string player, ReadyStatus status)
         {
             _sst.ServerInfo.CurrentPlayers[player].Ready = status;
-            Log.Write(string.Format("Updated {0}'s player status to: {1}",
+            Log.Write(string.Format("{0}'s player status: {1}",
                 player, status), _logClassType, _logPrefix);
         }
 
@@ -499,15 +549,34 @@ namespace SST.Core
         {
             _sst.ServerInfo.CurrentPlayers[player].Team = team;
 
-            Log.Write(string.Format("Updated {0}'s team to: {1}",
+            Log.Write(string.Format("{0}'s team: {1}",
                 player, team), _logClassType, _logPrefix);
 
+            /*
+            var sb = new StringBuilder();
+
+            var t = _sst.ServerInfo.GetTeam(team);
+            foreach (var p in t)
+            {
+                sb.Append(string.Format("{0}, ", p.ShortName));
+            }
+
+            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", team, t.Count,
+                sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
+            */
+
             // Pickup module
-            if (_sst.Mod == null) return;
+            if (_sst.Mod == null)
+            {
+                return;
+            }
             if (_sst.Mod.Pickup.Active && (team == Team.Red || team == Team.Blue))
             {
                 if (!_sst.Mod.Pickup.Manager.IsPickupPreGame &&
-                    !_sst.Mod.Pickup.Manager.IsPickupInProgress) return;
+                    !_sst.Mod.Pickup.Manager.IsPickupInProgress)
+                {
+                    return;
+                }
 
                 _sst.Mod.Pickup.Manager.AddActivePickupPlayer(player.ToLowerInvariant());
             }

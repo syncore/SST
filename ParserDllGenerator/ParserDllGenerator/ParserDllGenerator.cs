@@ -169,6 +169,13 @@ namespace ParserDllGenerator
                 true);
             compilationList.Add(expr);
 
+            //servercommand: player joined a team
+            // note: team joins include the clan tag
+            expr = new RegexCompilationInfo(@"serverCommand: \d+ : cp ""(?<player>.+) joined the (?<team>.+) Team",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, "scmdPlayerJoinedTeam", "SST.External.Parser",
+                true);
+            compilationList.Add(expr);
+
             //servercommand: player ragequits
             // note: ragequit does not include the clan tag
             expr = new RegexCompilationInfo(@"serverCommand: \d+ : print ""(?<player>.+) ragequits",

@@ -201,14 +201,14 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Determines whether a shuffle vote occurs while the teams are uneven.
+        /// Determines whether a shuffle vote occurs while the teams are even.
         /// </summary>
         /// <param name="details">The details.</param>
-        /// <returns><c>true</c> if shuffle vote occurred with uneven teams, otherwise <c>false</c></returns>
-        private bool IsUnevenShuffle(Match details)
+        /// <returns><c>true</c> if shuffle vote occurred with even teams, otherwise <c>false</c></returns>
+        private bool IsEvenShuffle(Match details)
         {
             string type = details.Groups["votetype"].Value;
-            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return false;
+            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
             return _sst.ServerInfo.HasEvenTeams();
         }
 
@@ -247,13 +247,13 @@ namespace SST.Core
 
                 await DenyAdminKick(details);
             }
-            if (IsUnevenShuffle(details))
-            {
-                await DenyUnevenShuffle();
-            }
             if (_sst.Mod.AutoVoter.Active)
             {
                 await EvalVoteWithAutoVote(details);
+            }
+            if (!IsEvenShuffle(details))
+            {
+                await DenyUnevenShuffle();
             }
             if (_sst.Mod.Pickup.Active && (_sst.Mod.Pickup.Manager.IsPickupPreGame ||
                 _sst.Mod.Pickup.Manager.IsPickupInProgress))

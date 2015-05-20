@@ -692,7 +692,14 @@ namespace SST.Ui
         {
             if (logConsoleTextBox.TextLength != 0)
             {
-                Clipboard.SetText(logConsoleTextBox.Text);
+                try
+                {
+                    Clipboard.SetText(logConsoleTextBox.Text);
+                }
+                catch (Exception)
+                {
+                    Log.WriteCritical("Unable to copy log to clipboard", _logClassType, _logPrefix);
+                }
                 ShowInfoMessage("Copied SST event log to clipboard.", "Copied");
             }
         }

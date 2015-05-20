@@ -27,7 +27,7 @@ namespace SST.Core
         public ConsoleTextProcessor(SynServerTool sst)
         {
             _sst = sst;
-            _playerEventProcessor = new PlayerEventProcessor(sst);
+            _playerEventProcessor = new PlayerEventProcessor(_sst);
             _voteHandler = new VoteHandler(_sst);
         }
 
@@ -205,6 +205,8 @@ namespace SST.Core
                 if (OutgoingPlayerDetected(text)) continue;
                 // 'player joined the spectators' detected
                 if (PlayerJoinedSpectatorsDetected(text)) continue;
+                // 'player joined the Red/Blue team' detected
+                if (PlayerJoinedTeamDetected(text)) continue;
                 // player accuracy data detected
                 if (AccuracyInfoDetected(text)) continue;
                 // match aborted
@@ -546,6 +548,23 @@ namespace SST.Core
             var m = _sst.Parser.ScmdPlayerJoinedSpectators.Match(text);
             // ReSharper disable once UnusedVariable (synchronous)
             var p = _playerEventProcessor.HandlePlayerWentToSpec(m.Groups["player"].Value);
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether the text matches that of a player who has joined either the red or blue
+        /// team and handles it if it does.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>
+        /// <c>true</c> if a player joined red/blue was detected and handled, otherwise <c>false</c>.
+        /// </returns>
+        private bool PlayerJoinedTeamDetected(string text)
+        {
+            if (!_sst.Parser.ScmdPlayerJoinedTeam.IsMatch(text)) return false;
+            var m = _sst.Parser.ScmdPlayerJoinedTeam.Match(text);
+            _playerEventProcessor.HandlePlayerJoinedTeam(m.Groups["player"].Value,
+                m.Groups["team"].Value);
             return true;
         }
 
