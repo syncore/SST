@@ -75,7 +75,7 @@ namespace SST.Core.Commands.None
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -87,7 +87,7 @@ namespace SST.Core.Commands.None
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
         /// <remarks>Helpers.GetArgVal(c, 1) if specified: user to check</remarks>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (c.Args.Length > (c.FromIrc ? 3 : 2))
             {
@@ -146,7 +146,7 @@ namespace SST.Core.Commands.None
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} [name1,name2,name3] ^7- Comma separated list of" +
@@ -160,7 +160,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -171,7 +171,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -182,7 +182,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="user">The user.</param>
-        private async Task GetAndSayElo(CmdArgs c, string user)
+        private async Task GetAndSayElo(Cmd c, string user)
         {
             // In the case of retrieving multiple users' elo data, we're only interested in the
             // first 3 users given.
@@ -223,7 +223,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="failedUsers">The failed users.</param>
-        private async Task ShowEloRetrievalError(CmdArgs c, string failedUsers)
+        private async Task ShowEloRetrievalError(Cmd c, string failedUsers)
         {
             StatusMessage = string.Format("^1[ERROR]^3 Unable to retrieve Elo data for ^1{0}",
                     failedUsers);

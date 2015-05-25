@@ -111,7 +111,7 @@ namespace SST.Core.Commands.Modules
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -122,7 +122,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
+        public async Task<bool> EvalModuleCmdAsync(Cmd c)
         {
             // IRC access to the irc module command isn't allowed
             if (c.FromIrc)
@@ -170,7 +170,7 @@ namespace SST.Core.Commands.Modules
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <connect|disconnect|reconnect> ^7 - you must" +
@@ -230,7 +230,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -241,7 +241,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -266,7 +266,7 @@ namespace SST.Core.Commands.Modules
         /// <summary>
         /// Disables the IRC module.
         /// </summary>
-        private async Task DisableIrc(CmdArgs c)
+        private async Task DisableIrc(Cmd c)
         {
             _irc.Disconnect();
             UpdateConfig(false);
@@ -282,7 +282,7 @@ namespace SST.Core.Commands.Modules
         /// Enables the IRC module and makes the initial connection to the IRC server.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task EnableIrc(CmdArgs c)
+        private async Task EnableIrc(Cmd c)
         {
             var cfg = _configHandler.ReadConfiguration();
 
@@ -311,7 +311,7 @@ namespace SST.Core.Commands.Modules
         /// Processes the "connect" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task<bool> ProcessConnectArg(CmdArgs c)
+        private async Task<bool> ProcessConnectArg(Cmd c)
         {
             // Active check: prevent another IRC client from being instantiated
             if (Active)
@@ -351,7 +351,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the disconnect attempt was successful; otherwise <c>false</c>.</returns>
-        private async Task<bool> ProcessDisconnectArg(CmdArgs c)
+        private async Task<bool> ProcessDisconnectArg(Cmd c)
         {
             if (!Active)
             {
@@ -381,7 +381,7 @@ namespace SST.Core.Commands.Modules
         /// Processes the "off" argument.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task ProcessOffArg(CmdArgs c)
+        private async Task ProcessOffArg(Cmd c)
         {
             await DisableIrc(c);
         }
@@ -391,7 +391,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the reconnect attempt was successful; otherwise <c>false</c>.</returns>
-        private async Task<bool> ProcessReconnectArg(CmdArgs c)
+        private async Task<bool> ProcessReconnectArg(Cmd c)
         {
             if (!Active)
             {

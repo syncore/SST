@@ -75,7 +75,7 @@ namespace SST.Core.Modules.Irc
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public void DisplayArgLengthError(Cmd c)
         {
             _irc.SendIrcNotice(c.FromUser,
                 string.Format("\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002 message",
@@ -92,7 +92,7 @@ namespace SST.Core.Modules.Irc
         /// <remarks>
         /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync"/>
         /// </remarks>
-        public bool Exec(CmdArgs c)
+        public bool Exec(Cmd c)
         {
             return true;
         }
@@ -104,7 +104,7 @@ namespace SST.Core.Modules.Irc
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             var msg = c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1);
             await _sst.QlCommands.QlCmdSayTeam(string.Format("^4[IRC]^3 {0}:^7 {1}", c.FromUser, msg));

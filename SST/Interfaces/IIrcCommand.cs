@@ -42,7 +42,7 @@ namespace SST.Interfaces
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        void DisplayArgLengthError(CmdArgs c);
+        void DisplayArgLengthError(Cmd c);
 
         /// <summary>
         /// Executes the specified command.
@@ -51,7 +51,7 @@ namespace SST.Interfaces
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        bool Exec(CmdArgs c);
+        bool Exec(Cmd c);
 
         /// <summary>
         /// Executes the specified command asynchronously.
@@ -60,6 +60,6 @@ namespace SST.Interfaces
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        Task<bool> ExecAsync(CmdArgs c);
+        Task<bool> ExecAsync(Cmd c);
     }
 }

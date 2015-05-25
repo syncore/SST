@@ -82,7 +82,7 @@ namespace SST.Core.Commands.None
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -93,7 +93,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (!_sst.Mod.EarlyQuit.Active)
             {
@@ -142,7 +142,7 @@ namespace SST.Core.Commands.None
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <list> <check>",
@@ -158,7 +158,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -169,7 +169,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -179,7 +179,7 @@ namespace SST.Core.Commands.None
         /// Checks the amount of early quits that a given user has.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task CheckQuits(CmdArgs c)
+        private async Task CheckQuits(Cmd c)
         {
             var totalQuits = _quitDb.GetUserQuitCount(Helpers.GetArgVal(c, 2));
             var qStr = totalQuits > 0
@@ -197,7 +197,7 @@ namespace SST.Core.Commands.None
         /// Evaluates the quit check command.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task<bool> EvalCheckQuits(CmdArgs c)
+        private async Task<bool> EvalCheckQuits(Cmd c)
         {
             if (c.Args.Length != (c.FromIrc ? 4 : 3))
             {
@@ -219,7 +219,7 @@ namespace SST.Core.Commands.None
         /// Lists all early quits, if any.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task ListQuits(CmdArgs c)
+        private async Task ListQuits(Cmd c)
         {
             var quits = _quitDb.GetAllQuitters();
             // First 25 quits (also, avoiding multiple enumeration)

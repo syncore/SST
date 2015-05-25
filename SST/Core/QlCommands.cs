@@ -12,7 +12,7 @@ namespace SST.Core
     /// </summary>
     public class QlCommands
     {
-        private const int DefaultCommandDelayMsec = 500;
+        private const int DefaultCommandDelayMsec = 600;
         private const int MaxChatlineLength = 134;
         private const int MaxTellLineLength = 106;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
@@ -258,7 +258,8 @@ namespace SST.Core
         /// </summary>
         public async Task QlCmdConfigStrings()
         {
-            await SendToQlAsync("configstrings", true);
+            //await SendToQlAsync("configstrings", true);
+            await SendToQlAsync("configstrings", false);
             QlCmdClear();
         }
 
@@ -310,8 +311,7 @@ namespace SST.Core
             // However, QL actually supports sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
-                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
-                // ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -349,10 +349,9 @@ namespace SST.Core
                                 text.Substring(startPos, MaxChatlineLength));
                         }
 
-                        // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
-                        Action<string> say = DoSay;
-                        say(multiLine[i]);
+                        // QL drops any server command that exceeds 500 ms threshold
+                        await Task.Delay(DefaultCommandDelayMsec);
+                        DoSay(multiLine[i]);
                         startPos += MaxChatlineLength;
                     }
                 }
@@ -365,8 +364,7 @@ namespace SST.Core
             else
             {
                 await Task.Delay(DefaultCommandDelayMsec);
-                Action<string> say = DoSay;
-                say(text);
+                DoSay(text);
             }
         }
 
@@ -383,8 +381,7 @@ namespace SST.Core
             // However, QL actually supports sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
-                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
-                // ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -422,10 +419,9 @@ namespace SST.Core
                                 text.Substring(startPos, MaxChatlineLength));
                         }
 
-                        // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
-                        Action<string> sayTeam = DoSayTeam;
-                        sayTeam(multiLine[i]);
+                        // QL drops any server command that exceeds 500 ms threshold
+                        await Task.Delay(DefaultCommandDelayMsec);
+                        DoSayTeam(multiLine[i]);
                         startPos += MaxChatlineLength;
                     }
                 }
@@ -438,8 +434,7 @@ namespace SST.Core
             else
             {
                 await Task.Delay(DefaultCommandDelayMsec);
-                Action<string> sayTeam = DoSayTeam;
-                sayTeam(text);
+                DoSayTeam(text);
             }
         }
 
@@ -469,8 +464,7 @@ namespace SST.Core
             // characters, which is shorter than for chat.
             if ((text.Length) > MaxTellLineLength)
             {
-                // .5 ensures we always round up to next int, no matter size ReSharper disable once PossibleLossOfFraction
-                // ReSharper disable once PossibleLossOfFraction
+                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
                 var l = ((text.Length / MaxTellLineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -508,10 +502,9 @@ namespace SST.Core
                                 text.Substring(startPos, MaxTellLineLength));
                         }
 
-                        // Double the usual delay when sending multiple lines.
-                        await Task.Delay(DefaultCommandDelayMsec * 2);
-                        Action<int, string> tell = DoTell;
-                        tell(playerId, multiLine[i]);
+                        // QL drops any server command that exceeds 500 ms threshold
+                        await Task.Delay(DefaultCommandDelayMsec);
+                        DoTell(playerId, multiLine[i]);
                         startPos += MaxTellLineLength;
                     }
                 }
@@ -524,8 +517,7 @@ namespace SST.Core
             else
             {
                 await Task.Delay(DefaultCommandDelayMsec);
-                Action<int, string> tell = DoTell;
-                tell(playerId, text);
+                DoTell(playerId, text);
             }
         }
 
@@ -562,8 +554,7 @@ namespace SST.Core
         public async Task SendToQlAsync(string toSend, bool delay)
         {
             await Task.Delay(DefaultCommandDelayMsec);
-            Action<string, bool> sendQl = SendQlCommand;
-            sendQl(toSend, delay);
+            SendQlCommand(toSend, delay);
         }
 
         /// <summary>
@@ -582,8 +573,7 @@ namespace SST.Core
         public async Task SendToQlDelayedAsync(string toSend, bool delay, int runCmdInSeconds)
         {
             await Task.Delay(runCmdInSeconds * 1000);
-            Action<string, bool> sendQl = SendQlCommand;
-            sendQl(toSend, delay);
+            SendQlCommand(toSend, delay);
         }
 
         /// <summary>

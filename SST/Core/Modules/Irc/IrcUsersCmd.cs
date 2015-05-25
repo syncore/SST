@@ -69,7 +69,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
         /// <remarks>Not implemented, as this command takes no arguments.</remarks>
-        public void DisplayArgLengthError(CmdArgs c)
+        public void DisplayArgLengthError(Cmd c)
         {
         }
 
@@ -80,7 +80,7 @@ namespace SST.Core.Modules.Irc
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        public bool Exec(CmdArgs c)
+        public bool Exec(Cmd c)
         {
             if (_sst.ServerInfo.CurrentPlayers.Count == 0)
             {
@@ -112,7 +112,7 @@ namespace SST.Core.Modules.Irc
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         /// <remarks>Not implemented, as this is not an async command.</remarks>
-        public Task<bool> ExecAsync(CmdArgs c)
+        public Task<bool> ExecAsync(Cmd c)
         {
             return null;
         }

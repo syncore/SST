@@ -84,7 +84,7 @@ namespace SST.Core.Modules
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if it is possible to add the captain; otherwise <c>false</c>.</returns>
         /// <remarks>This is called in response to input received from <see cref="PickupCapCmd"/>.</remarks>
-        public async Task<bool> ProcessAddCaptain(CmdArgs c)
+        public async Task<bool> ProcessAddCaptain(Cmd c)
         {
             if (_manager.IsQlGameInProgress)
             {
@@ -137,7 +137,7 @@ namespace SST.Core.Modules
         /// <param name="c">The command argument information.</param>
         /// <returns><C>true</C> if the player could be picked, otherwise <c>false</c>.</returns>
         /// <remarks>This is called in response to input received from <see cref="PickupPickCmd"/>.</remarks>
-        public async Task<bool> ProcessPlayerPick(CmdArgs c)
+        public async Task<bool> ProcessPlayerPick(Cmd c)
         {
             if (!RedCaptain.Equals(c.FromUser) && !BlueCaptain.Equals(c.FromUser))
             {
@@ -252,7 +252,7 @@ namespace SST.Core.Modules
         /// <param name="c">The command argument information.</param>
         /// <param name="team">The team on which the player should be placed.</param>
         /// <returns></returns>
-        private async Task DoPlayerPick(CmdArgs c, Team team)
+        private async Task DoPlayerPick(Cmd c, Team team)
         {
             if (!_manager.AvailablePlayers.Contains(Helpers.GetArgVal(c, 1)))
             {
@@ -315,7 +315,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        private async Task SendServerTell(CmdArgs c, string message)
+        private async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);

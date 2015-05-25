@@ -73,7 +73,7 @@ namespace SST.Core.Modules.Irc
         /// </summary>
         /// <param name="c">The cmd args.</param>
 
-        public void DisplayArgLengthError(CmdArgs c)
+        public void DisplayArgLengthError(Cmd c)
         {
         }
 
@@ -84,7 +84,7 @@ namespace SST.Core.Modules.Irc
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        public bool Exec(CmdArgs c)
+        public bool Exec(Cmd c)
         {
             if (!c.FromUser.Equals(_irc.IrcSettings.ircAdminNickname, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -113,7 +113,7 @@ namespace SST.Core.Modules.Irc
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
         /// <remarks>Not implemented, as this is not an async command.</remarks>
-        public Task<bool> ExecAsync(CmdArgs c)
+        public Task<bool> ExecAsync(Cmd c)
         {
             return null;
         }

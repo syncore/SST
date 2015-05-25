@@ -68,7 +68,7 @@ namespace SST.Core.Commands.SuperUser
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -78,7 +78,7 @@ namespace SST.Core.Commands.SuperUser
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             await _sst.QlCommands.CustCmdPutPlayer(Helpers.GetArgVal(c, 1), Team.Spec);
             StatusMessage = string.Format("^2[SUCCESS]^7 Attempted to force player ^3{0}^7 to ^6SPECTATORS.",
@@ -94,7 +94,7 @@ namespace SST.Core.Commands.SuperUser
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name - name is without clantag.",
@@ -108,7 +108,7 @@ namespace SST.Core.Commands.SuperUser
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -119,7 +119,7 @@ namespace SST.Core.Commands.SuperUser
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);

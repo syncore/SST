@@ -89,7 +89,7 @@ namespace SST.Core.Commands.None
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -100,7 +100,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (!_sst.Mod.Servers.Active)
             {
@@ -178,7 +178,7 @@ namespace SST.Core.Commands.None
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <gametype> <region>",
@@ -191,7 +191,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (c.FromIrc)
                 return;
@@ -220,7 +220,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (c.FromIrc)
                 return;
@@ -336,7 +336,7 @@ namespace SST.Core.Commands.None
         /// Lists the active servers.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task ListActiveServers(CmdArgs c)
+        private async Task ListActiveServers(Cmd c)
         {
             // StringBuilder so we can send multiple servers to IRC
             var gameTypeInfo = GetGameTypesFromAbreviation(Helpers.GetArgVal(c, 1));

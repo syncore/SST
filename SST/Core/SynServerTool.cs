@@ -407,31 +407,31 @@
 
             QlCommands.ClearQlWinConsole();
 
-            // Wait briefly prior to requesting the configstrings after the current players have already been
-            //gathered in order to get an accurate listing of the teams.
-            await Task.Delay(1 * 1000);
-            await QlCommands.QlCmdConfigStrings();
-
             // Initiate modules such as MOTD and others that can't be started until after we're live
             Mod.Motd.Init();
 
             // Get IP
             CheckServerAddress();
 
+            // Update UI status bar with IP
+            await Task.Delay(2 * 1000);
+            UserInterface.UpdateMonitoringStatusUi(true, ServerInfo.CurrentServerAddress);
+
+            // Wait for configstrings request to complete in order to get an accurate listing of the teams.
+            await Task.Delay(2 * 1000);
+            await QlCommands.QlCmdConfigStrings();
+
+            // Auto-op admins if necessary
+            await ServerEventProcessor.AutoOpActiveAdmins();
+
             // Wait then clear the internal console
             await Task.Delay(2 * 1000);
             QlCommands.ClearQlWinConsole();
-
-            // Update UI status bar with IP
-            UserInterface.UpdateMonitoringStatusUi(true, ServerInfo.CurrentServerAddress);
 
             // Initialization is fully complete, we can accept user commands now.
             IsInitComplete = true;
             _delayedInitTaskTimer.Enabled = false;
             _delayedInitTaskTimer = null;
-
-            // Auto-op admins if necessary
-            await ServerEventProcessor.AutoOpActiveAdmins();
 
             // Let the server's players know
             /*
@@ -477,7 +477,7 @@
             QlCommands.EnableDeveloperMode();
             // Delay some initilization tasks and complete initilization
             StartDelayedInitTasks(InitDelay);
-            QlCommands.ClearQlWinConsole();
+            //QlCommands.ClearQlWinConsole();
             Log.Write("Requesting server information.", _logClassType, _logPrefix);
         }
 

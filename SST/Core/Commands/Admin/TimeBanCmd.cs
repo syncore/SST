@@ -83,7 +83,7 @@ namespace SST.Core.Commands.Admin
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c"></param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -94,7 +94,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if ((!Helpers.GetArgVal(c, 1).Equals("add")) && (!Helpers.GetArgVal(c, 1).Equals("del")) &&
                 (!Helpers.GetArgVal(c, 1).Equals("check")) &&
@@ -131,7 +131,7 @@ namespace SST.Core.Commands.Admin
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} <add> <del> <check> <list>",
@@ -144,7 +144,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -155,7 +155,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -166,7 +166,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the ban was successfully added, otherwise <c>false</c>.</returns>
-        private async Task<bool> AddBan(CmdArgs c)
+        private async Task<bool> AddBan(Cmd c)
         {
             // Kickban user immediately using internal QL command
             await _sst.QlCommands.CustCmdKickban(Helpers.GetArgVal(c, 2));
@@ -241,7 +241,7 @@ namespace SST.Core.Commands.Admin
         /// Checks a specific user's ban information, if it exists.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task CheckBan(CmdArgs c)
+        private async Task CheckBan(Cmd c)
         {
             var deleted = await DeleteIfExpired(Helpers.GetArgVal(c, 2));
             if (deleted)
@@ -271,7 +271,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the ban deletion was successful, otherwise <c>false</c>.</returns>
-        private async Task<bool> DelBan(CmdArgs c)
+        private async Task<bool> DelBan(Cmd c)
         {
             try
             {
@@ -331,7 +331,7 @@ namespace SST.Core.Commands.Admin
         /// <returns>
         /// <c>true</c> if the ban addition evaluation successfully passed, otherwise <c>false</c>.
         /// </returns>
-        private async Task<bool> EvalBanAddition(CmdArgs c)
+        private async Task<bool> EvalBanAddition(Cmd c)
         {
             // !timeban add user # scale
             if (c.Args.Length != (c.FromIrc ? 6 : 5))
@@ -384,7 +384,7 @@ namespace SST.Core.Commands.Admin
         /// <returns>
         /// <c>true</c> if the ban check evaluation successfully passed, otherwise <c>false</c>.
         /// </returns>
-        private async Task<bool> EvalBanCheck(CmdArgs c)
+        private async Task<bool> EvalBanCheck(Cmd c)
         {
             if (c.Args.Length != (c.FromIrc ? 4 : 3))
             {
@@ -407,7 +407,7 @@ namespace SST.Core.Commands.Admin
         /// <returns>
         /// <c>true</c> if the ban deletion check evaluation successfully passed, otherwise <c>false</c>.
         /// </returns>
-        private async Task<bool> EvalBanDeletion(CmdArgs c)
+        private async Task<bool> EvalBanDeletion(Cmd c)
         {
             if (c.Args.Length != (c.FromIrc ? 4 : 3))
             {
@@ -433,7 +433,7 @@ namespace SST.Core.Commands.Admin
         /// Lists all of the bans, if they exist.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task ListBans(CmdArgs c)
+        private async Task ListBans(Cmd c)
         {
             // First remove expired bans
             var bans = _banDb.GetAllBans();

@@ -80,7 +80,7 @@ namespace SST.Core.Modules.Irc
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public void DisplayArgLengthError(Cmd c)
         {
             _irc.SendIrcNotice(c.FromUser, string.Format("\u0002[ERROR]\u0002 The correct usage is: \u0002{0}{1}\u0002" +
                                                          " <sst command> <sst command args>",
@@ -100,7 +100,7 @@ namespace SST.Core.Modules.Irc
         /// <remarks>
         /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync"/>
         /// </remarks>
-        public bool Exec(CmdArgs c)
+        public bool Exec(Cmd c)
         {
             return true;
         }
@@ -112,7 +112,7 @@ namespace SST.Core.Modules.Irc
         /// <returns>
         /// <c>true</c> if the command was successfully executed, otherwise returns <c>false</c>.
         /// </returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (!Helpers.KeyExists(c.Args[1], _cmdList))
             {
@@ -211,7 +211,7 @@ namespace SST.Core.Modules.Irc
         /// if set to <c>true</c> then send the message to the IRC channel, otherwise send the
         /// message as an IRC notice to the user.
         /// </param>
-        private void SendSplitMessage(CmdArgs c, string[] msg, bool toChannel)
+        private void SendSplitMessage(Cmd c, string[] msg, bool toChannel)
         {
             foreach (var m in msg)
             {

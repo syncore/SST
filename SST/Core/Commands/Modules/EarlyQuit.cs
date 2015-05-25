@@ -116,7 +116,7 @@ namespace SST.Core.Commands.Modules
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -127,7 +127,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
+        public async Task<bool> EvalModuleCmdAsync(Cmd c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
@@ -158,7 +158,7 @@ namespace SST.Core.Commands.Modules
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] [clear] [forgive] <# of early quits> <time> <scale> ^7 - time is a " +
@@ -214,7 +214,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -225,7 +225,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -261,7 +261,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="qdb">The quit database.</param>
-        private async Task ClearEarlyQuits(CmdArgs c, DbQuits qdb)
+        private async Task ClearEarlyQuits(Cmd c, DbQuits qdb)
         {
             qdb.DeleteUserFromDb(Helpers.GetArgVal(c, 3));
 
@@ -282,7 +282,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns></returns>
-        private async Task DisableEarlyQuit(CmdArgs c)
+        private async Task DisableEarlyQuit(Cmd c)
         {
             UpdateConfig(false);
             StatusMessage = "^2[SUCCESS]^7 Early quit tracker ^1disabled^7. Players may quit" +
@@ -302,7 +302,7 @@ namespace SST.Core.Commands.Modules
         /// <param name="time">The time to ban for if max quits is exceeded.</param>
         /// <param name="scale">The time scale to be used with the time.</param>
         /// <returns></returns>
-        private async Task EnableEarlyQuit(CmdArgs c, uint maxQuits, double time, string scale)
+        private async Task EnableEarlyQuit(Cmd c, uint maxQuits, double time, string scale)
         {
             MaxQuitsAllowed = maxQuits;
             BanTime = time;
@@ -325,7 +325,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
-        private async Task<bool> EvalEarlyQuitClear(CmdArgs c)
+        private async Task<bool> EvalEarlyQuitClear(Cmd c)
         {
             if (c.Args.Length != (c.FromIrc ? 5 : 4))
             {
@@ -358,7 +358,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
-        private async Task<bool> EvalEarlyQuitEnable(CmdArgs c)
+        private async Task<bool> EvalEarlyQuitEnable(Cmd c)
         {
             // !mod earlyquit numquits time scale [0] [1] [2] [3] [4]
             if (c.Args.Length != (c.FromIrc ? 6 : 5))
@@ -417,7 +417,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation was successful, otherwise <c>false</c>.</returns>
-        private async Task<bool> EvalEarlyQuitForgive(CmdArgs c)
+        private async Task<bool> EvalEarlyQuitForgive(Cmd c)
         {
             if (c.Args.Length != (c.FromIrc ? 6 : 5))
             {
@@ -479,7 +479,7 @@ namespace SST.Core.Commands.Modules
         /// <param name="num">The number of quits to forgive.</param>
         /// <param name="player">The player.</param>
         /// <param name="qdb">The quit database.</param>
-        private async Task ForgiveEarlyQuits(CmdArgs c, int num, string player, DbQuits qdb)
+        private async Task ForgiveEarlyQuits(Cmd c, int num, string player, DbQuits qdb)
         {
             qdb.DecrementUserQuitCount(player, num);
 

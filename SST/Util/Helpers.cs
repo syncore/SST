@@ -33,7 +33,7 @@ namespace SST.Util
         /// to take into account the fact that IRC commands will always have a first value, c[0], of
         /// the IrcToQl command name (i.e. c[0] = "!ql")
         /// </remarks>
-        public static string GetArgVal(CmdArgs c, int argNum)
+        public static string GetArgVal(Cmd c, int argNum)
         {
             return c.FromIrc ? c.Args[argNum + 1] : c.Args[argNum];
         }

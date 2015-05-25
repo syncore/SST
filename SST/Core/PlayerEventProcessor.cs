@@ -266,7 +266,7 @@
             if (msgContent.StartsWith(CommandList.GameCommandPrefix))
             {
                 // ReSharper disable once UnusedVariable (synchronous)
-                var s = _sst.CommandProcessor.ProcessBotCommand(msgFrom, msgContent);
+                var s = _sst.CommandProcessor.HandleBotCommand(msgFrom, msgContent);
             }
         }
 

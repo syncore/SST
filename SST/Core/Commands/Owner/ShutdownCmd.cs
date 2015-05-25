@@ -72,7 +72,7 @@ namespace SST.Core.Commands.Owner
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -82,7 +82,7 @@ namespace SST.Core.Commands.Owner
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             Log.Write("Quitting Quake Live", _logClassType, _logPrefix);
             StatusMessage = "^2[SUCCESS]^7 Quitting Quake Live...";
@@ -98,7 +98,7 @@ namespace SST.Core.Commands.Owner
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Empty;
         }
@@ -108,7 +108,7 @@ namespace SST.Core.Commands.Owner
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -119,7 +119,7 @@ namespace SST.Core.Commands.Owner
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);

@@ -72,7 +72,7 @@ namespace SST.Core.Modules.Irc
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public void DisplayArgLengthError(CmdArgs c)
+        public void DisplayArgLengthError(Cmd c)
         {
             _irc.SendIrcNotice(c.FromUser,
                 string.Format(
@@ -90,7 +90,7 @@ namespace SST.Core.Modules.Irc
         /// <remarks>
         /// Not implemented for this command since it is to be run asynchronously via <see cref="ExecAsync"/>
         /// </remarks>
-        public bool Exec(CmdArgs c)
+        public bool Exec(Cmd c)
         {
             return true;
         }
@@ -99,7 +99,7 @@ namespace SST.Core.Modules.Irc
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The cmd args.</param>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (!c.Args[1].Equals("start") &&
                 !c.Args[1].Equals("stop") && !c.Args[1].Equals("reset")

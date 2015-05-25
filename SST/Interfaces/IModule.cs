@@ -47,14 +47,14 @@ namespace SST.Interfaces
         /// <summary>
         /// Displays the argument length error.
         /// </summary>
-        Task DisplayArgLengthError(CmdArgs c);
+        Task DisplayArgLengthError(Cmd c);
 
         /// <summary>
         /// Executes the specified module command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
-        Task<bool> EvalModuleCmdAsync(CmdArgs c);
+        Task<bool> EvalModuleCmdAsync(Cmd c);
 
         /// <summary>
         /// Gets the argument length error message.
@@ -63,7 +63,7 @@ namespace SST.Interfaces
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        string GetArgLengthErrorMessage(CmdArgs c);
+        string GetArgLengthErrorMessage(Cmd c);
 
         /// <summary>
         /// Loads the configuration.
@@ -75,14 +75,14 @@ namespace SST.Interfaces
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        Task SendServerSay(CmdArgs c, string message);
+        Task SendServerSay(Cmd c, string message);
 
         /// <summary>
         /// Sends a QL tell message if the command was not sent from IRC.
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        Task SendServerTell(CmdArgs c, string message);
+        Task SendServerTell(Cmd c, string message);
 
         /// <summary>
         /// Updates the configuration.

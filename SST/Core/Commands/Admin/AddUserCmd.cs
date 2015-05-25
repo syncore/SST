@@ -76,7 +76,7 @@ namespace SST.Core.Commands.Admin
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -87,7 +87,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             if (!Helpers.GetArgVal(c, 2).Equals("1") && !Helpers.GetArgVal(c, 2).Equals("2") &&
                 !Helpers.GetArgVal(c, 2).Equals("3"))
@@ -145,7 +145,7 @@ namespace SST.Core.Commands.Admin
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} name access# - name is without clantag. access #s are: 1(user), 2(superuser), 3(admin)",
@@ -158,7 +158,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -169,7 +169,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -180,7 +180,7 @@ namespace SST.Core.Commands.Admin
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
-        private bool IsIrcOwner(CmdArgs c)
+        private bool IsIrcOwner(Cmd c)
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();

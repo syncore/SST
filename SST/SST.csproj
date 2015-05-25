@@ -204,7 +204,7 @@
     <Compile Include="Model\AccuracyInfo.cs" />
     <Compile Include="Model\AutoVote.cs" />
     <Compile Include="Model\BanInfo.cs" />
-    <Compile Include="Model\CmdArgs.cs" />
+    <Compile Include="Model\Cmd.cs" />
     <Compile Include="Model\CommonSqliteDb.cs" />
     <Compile Include="Model\EarlyQuitter.cs" />
     <Compile Include="Model\PickupInfo.cs" />

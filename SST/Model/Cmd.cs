@@ -3,7 +3,7 @@
     /// <summary>
     /// Struct for bot commands.
     /// </summary>
-    public struct CmdArgs
+    public struct Cmd
     {
         public string[] Args;
         public string CmdName;
@@ -12,14 +12,14 @@
         public string Text;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CmdArgs"/> struct.
+        /// Initializes a new instance of the <see cref="Cmd"/> struct.
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <param name="cmdName">Name of the command.</param>
         /// <param name="fromUser">The user who sent the command.</param>
         /// <param name="text">The full text.</param>
         /// <param name="fromIrc">if set to <c>true</c> then the message was sent from IRC.</param>
-        public CmdArgs(string[] args, string cmdName, string fromUser, string text, bool fromIrc)
+        public Cmd(string[] args, string cmdName, string fromUser, string text, bool fromIrc)
         {
             Args = args;
             CmdName = cmdName;

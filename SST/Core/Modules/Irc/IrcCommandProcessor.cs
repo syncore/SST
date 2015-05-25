@@ -58,7 +58,7 @@ namespace SST.Core.Modules.Irc
             if (!CheckCommand(fromUser, cmdName, msg)) return;
 
             // See if command requires active server monitoring
-            var c = new CmdArgs(args, cmdName, fromUser, msg, true);
+            var c = new Cmd(args, cmdName, fromUser, msg, true);
             if (_ircCmds.Commands[cmdName].RequiresMonitoring &&
                 (((!_sst.IsMonitoringServer && !_sst.IsInitComplete))))
             {

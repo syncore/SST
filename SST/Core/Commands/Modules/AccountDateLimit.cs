@@ -99,7 +99,7 @@ namespace SST.Core.Commands.Modules
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -124,7 +124,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
+        public async Task<bool> EvalModuleCmdAsync(Cmd c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
@@ -157,7 +157,7 @@ namespace SST.Core.Commands.Modules
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return (string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <days> ^7 - days must be >0",
@@ -213,7 +213,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -224,7 +224,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -250,7 +250,7 @@ namespace SST.Core.Commands.Modules
         /// <summary>
         /// Disables the account date limiter.
         /// </summary>
-        private async Task DisableAccountDateLimiter(CmdArgs c)
+        private async Task DisableAccountDateLimiter(Cmd c)
         {
             UpdateConfig(false);
             StatusMessage =
@@ -265,7 +265,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="days">The minimum amount of days.</param>
-        private async Task EnableAccountDateLimiter(CmdArgs c, uint days)
+        private async Task EnableAccountDateLimiter(Cmd c, uint days)
         {
             MinimumDaysRequired = days;
             UpdateConfig(true);

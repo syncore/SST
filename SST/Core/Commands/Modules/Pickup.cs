@@ -174,7 +174,7 @@ namespace SST.Core.Commands.Modules
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -185,7 +185,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command evaluation was successful, otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalModuleCmdAsync(CmdArgs c)
+        public async Task<bool> EvalModuleCmdAsync(Cmd c)
         {
             if (c.Args.Length < (c.FromIrc ? IrcMinModuleArgs : _qlMinModuleArgs))
             {
@@ -233,7 +233,7 @@ namespace SST.Core.Commands.Modules
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Format(
                 "^1[ERROR]^3 Usage: {0}{1} {2} [off] <teamsize> [noshowbans] [subbans] - teamsize is a number",
@@ -307,7 +307,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -318,7 +318,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -360,7 +360,7 @@ namespace SST.Core.Commands.Modules
         /// Disables the pickup module.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task DisablePickup(CmdArgs c)
+        private async Task DisablePickup(Cmd c)
         {
             UpdateConfig(false);
             // Unlock the teams and clear eligible players if any
@@ -379,7 +379,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="teamsize">The teamsize.</param>
-        private async Task EnablePickup(CmdArgs c, int teamsize)
+        private async Task EnablePickup(Cmd c, int teamsize)
         {
             // Note: notice the missing ban settings here. The configuration has some pretty sane
             // defaults, so unless the admin specifically overrides the defaults with
@@ -406,7 +406,7 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the noshow or sub ban settings could be set; otherwise <c>false</c>.</returns>
-        private async Task<bool> EvalSetBanSettings(CmdArgs c)
+        private async Task<bool> EvalSetBanSettings(Cmd c)
         {
             var settingsType = string.Empty;
             if (Helpers.GetArgVal(c, 2).Equals("noshowbans"))
@@ -466,7 +466,7 @@ namespace SST.Core.Commands.Modules
         /// <param name="timeToBan">The time to ban.</param>
         /// <param name="scaleToBan">The scale to ban.</param>
         /// <returns></returns>
-        private async Task SetBanSettings(CmdArgs c, string bType, int maxNum, double timeToBan,
+        private async Task SetBanSettings(Cmd c, string bType, int maxNum, double timeToBan,
             string scaleToBan)
         {
             if (bType.Equals("noshows"))

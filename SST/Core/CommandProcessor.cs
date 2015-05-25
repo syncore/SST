@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-using SST.Config;
-using SST.Database;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Class responsible for processing bot commands.
     /// </summary>
@@ -47,46 +47,46 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Processes the bot command.
+        /// Handles the given bot command.
         /// </summary>
         /// <param name="fromUser">The user who sent the command.</param>
         /// <param name="msg">The full message text.</param>
-        public async Task ProcessBotCommand(string fromUser, string msg)
+        public async Task HandleBotCommand(string fromUser, string msg)
         {
-            char[] sep = { ' ' };
-            var args = msg.Split(sep);
-            var cmdName = args[0].Substring(1);
-
+            var args = msg.Split(' ');
             // Verify command
-            if (!await CheckCommand(fromUser, cmdName, msg)) return;
+            if (await CheckCommand(fromUser, args[0].Substring(1), msg))
+            {
+                // Wait for completion so multiple commands are not dropped.
+                ProcessCommand(new Cmd(args, args[0].Substring(1), fromUser, msg, false)).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Processes the bot command.
+        /// </summary>
+        /// <param name="cmd">The command.</param>
+        private async Task ProcessCommand(Cmd cmd)
+        {
+            Log.Write(string.Format("Processing {0}'s {1} cmd.",
+                cmd.FromUser, cmd.Text), _logClassType, _logPrefix);
 
             // Verify argument length
-            var c = new CmdArgs(args, cmdName, fromUser, msg, false);
-            var minArgs = _cmdList.Commands[cmdName].QlMinArgs;
-
-            if (args.Length < minArgs)
+            if (cmd.Args.Length >= _cmdList.Commands[cmd.CmdName].QlMinArgs)
             {
-                await _cmdList.Commands[cmdName].DisplayArgLengthError(c);
-                Log.Write(string.Format(
-                    "Player {0} specified invalid # of args for {1}{2} command. Required: {3}," +
-                    " specified: {4}, received: {5}. Ignoring.",
-                    fromUser, CommandList.GameCommandPrefix, cmdName, minArgs, args.Length, msg),
-                    _logClassType, _logPrefix);
-
-                return;
-            }
-            // Execute
-            if (await _cmdList.Commands[cmdName].ExecAsync(c))
-            {
-                Log.Write(string.Format(
-                    "Successfully executed player {0}'s {1} command: {2}", fromUser, cmdName, msg),
-                    _logClassType, _logPrefix);
+                // Execute
+                var success = await _cmdList.Commands[cmd.CmdName].ExecAsync(cmd);
+                Log.Write(string.Format("{0} execution of player {1}'s {2} command: {3}",
+                    ((success) ? "Successful" : "Unsuccessful"), cmd.FromUser, cmd.CmdName,
+                    cmd.Text), _logClassType, _logPrefix);
             }
             else
             {
+                await _cmdList.Commands[cmd.CmdName].DisplayArgLengthError(cmd);
                 Log.Write(string.Format(
-                    "Unsuccessful execution of player {0}'s {1} command: {2}", fromUser,
-                    cmdName, msg), _logClassType, _logPrefix);
+                    "Player {0} specified invalid # of args for {1}{2} command. Required: {3} specified: {4}, received: {5}. Ignoring.",
+                    cmd.FromUser, CommandList.GameCommandPrefix, cmd.CmdName, _cmdList.Commands[cmd.CmdName].QlMinArgs,
+                    cmd.Args.Length, cmd.Text), _logClassType, _logPrefix);
             }
         }
 

@@ -72,7 +72,7 @@ namespace SST.Core.Commands.None
         /// Displays the argument length error.
         /// </summary>
         /// <param name="c">The command args</param>
-        public async Task DisplayArgLengthError(CmdArgs c)
+        public async Task DisplayArgLengthError(Cmd c)
         {
             StatusMessage = GetArgLengthErrorMessage(c);
             await SendServerTell(c, StatusMessage);
@@ -83,7 +83,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
-        public async Task<bool> ExecAsync(CmdArgs c)
+        public async Task<bool> ExecAsync(Cmd c)
         {
             var userDb = new DbUsers();
             var senderLevel = userDb.GetUserLevel(c.FromUser);
@@ -91,16 +91,15 @@ namespace SST.Core.Commands.None
             var cmds = new StringBuilder();
             foreach (var cmd in _sst.CommandProcessor.Commands.Where(cmd => cmd.Value.UserLevel <= senderLevel))
             {
-                cmds.Append(string.Format("{0}, ", cmd.Key));
+                cmds.Append(string.Format("^3{0}^5{1} ", CommandList.GameCommandPrefix, cmd.Key));
             }
+           
             StatusMessage = string.Format(
-                    "^7Your user level - ^3{0}^7 - has access to these commands (put ^3{1}^7 in front): ^5{2}",
-                    (senderLevelName ?? "NONE"), CommandList.GameCommandPrefix, cmds.ToString().TrimEnd(',', ' '));
-
+                    "^7Your user level - ^3{0}^7 - has access to these commands: {1}," +
+                    " ^7More help @ ^3sst.syncore.org^7, or ^3#sst^7 on QuakeNet.",
+                    (senderLevelName ?? "NONE"), cmds.ToString().TrimEnd(' '));
             await SendServerTell(c, StatusMessage);
-
-            StatusMessage = "^7For detailed help visit the website at ^3sst.syncore.org^7, or ^3#sst_ql^7 on QuakeNet.";
-            await SendServerTell(c, StatusMessage);
+             
             return true;
         }
 
@@ -111,7 +110,7 @@ namespace SST.Core.Commands.None
         /// <returns>
         /// The argument length error message, correctly color-formatted depending on its destination.
         /// </returns>
-        public string GetArgLengthErrorMessage(CmdArgs c)
+        public string GetArgLengthErrorMessage(Cmd c)
         {
             return string.Empty;
         }
@@ -121,7 +120,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerSay(CmdArgs c, string message)
+        public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -132,7 +131,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        public async Task SendServerTell(CmdArgs c, string message)
+        public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);

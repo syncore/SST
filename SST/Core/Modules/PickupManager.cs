@@ -367,7 +367,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation passes; otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalPickupReset(CmdArgs c)
+        public async Task<bool> EvalPickupReset(Cmd c)
         {
             if (IsQlGameInProgress)
             {
@@ -384,7 +384,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the evaluation passes; otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalPickupStart(CmdArgs c)
+        public async Task<bool> EvalPickupStart(Cmd c)
         {
             if (!_sst.ServerInfo.IsATeamGame())
             {
@@ -427,7 +427,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns></returns>
-        public async Task<bool> EvalPickupStop(CmdArgs c)
+        public async Task<bool> EvalPickupStop(Cmd c)
         {
             if (IsQlGameInProgress)
             {
@@ -443,7 +443,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the user can be removed; otherwise <c>false</c>.</returns>
-        public async Task<bool> EvalPickupUnban(CmdArgs c)
+        public async Task<bool> EvalPickupUnban(Cmd c)
         {
             if (c.Args.Length == (c.FromIrc ? 2 : 1))
             {
@@ -1035,7 +1035,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
-        private bool IsIrcOwner(CmdArgs c)
+        private bool IsIrcOwner(Cmd c)
         {
             if (!c.FromIrc) return false;
             var cfgHandler = new ConfigHandler();
@@ -1124,7 +1124,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        private async Task SendServerSay(CmdArgs c, string message)
+        private async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdSay(message);
@@ -1135,7 +1135,7 @@ namespace SST.Core.Modules
         /// </summary>
         /// <param name="c">The command argument information.</param>
         /// <param name="message">The message.</param>
-        private async Task SendServerTell(CmdArgs c, string message)
+        private async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
@@ -1170,7 +1170,7 @@ namespace SST.Core.Modules
         /// Shows the in-progress error.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task ShowProgressInError(CmdArgs c)
+        private async Task ShowProgressInError(Cmd c)
         {
             StatusMessage =
                 "^1[ERROR]^3 Pickup games can only be started, stopped or reset from warm-up mode!";
@@ -1248,7 +1248,7 @@ namespace SST.Core.Modules
         /// Stops (cancels) the pickup and unlocks the teams so that anyone can join.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task StopPickup(CmdArgs c)
+        private async Task StopPickup(Cmd c)
         {
             StatusMessage = string.Format(
                 "^3[PICKUP]^7 Canceling pickup. Teams unlocked so anyone can join. ^2{0}{1} start^7 to start another.",
