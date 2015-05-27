@@ -195,7 +195,7 @@ namespace SST.Core.Modules
                     _manager.RemoveEligibility(player);
                     await
                         _sst.QlCommands.QlCmdSay(
-                            string.Format("^5[PICKUP]^1 {0}^7 is now the ^1RED^7 captain", player));
+                            string.Format("^5[PICKUP]^1 {0}^7 is now the ^1RED^7 captain", player), false);
                     break;
 
                 case Team.Blue:
@@ -204,7 +204,7 @@ namespace SST.Core.Modules
                     _manager.RemoveEligibility(player);
                     await
                         _sst.QlCommands.QlCmdSay(
-                            string.Format("^5[PICKUP]^5 {0}^7 is now the ^5BLUE^7 captain", player));
+                            string.Format("^5[PICKUP]^5 {0}^7 is now the ^5BLUE^7 captain", player), false);
                     break;
             }
             if (RedCaptainExists && BlueCaptainExists)
@@ -212,7 +212,7 @@ namespace SST.Core.Modules
                 await
                     _sst.QlCommands.QlCmdSay(string.Format(
                         "^5[PICKUP]^7 Both captains have been selected! Team selection will {0}.",
-                        ((isCaptainSub) ? "continue. Please wait..." : "begin. Please wait...")));
+                        ((isCaptainSub) ? "continue. Please wait..." : "begin. Please wait...")), false);
             }
         }
 
@@ -265,7 +265,7 @@ namespace SST.Core.Modules
             }
             await _sst.QlCommands.QlCmdSay(string.Format("^5[PICKUP] {0} ^7({1}{2}^7) picked {1}{3}",
                 ((team == Team.Red) ? "^1RED" : "^5BLUE"), ((team == Team.Red) ? "^1" : "^5"),
-                ((team == Team.Red) ? RedCaptain : BlueCaptain), Helpers.GetArgVal(c, 1)));
+                ((team == Team.Red) ? RedCaptain : BlueCaptain), Helpers.GetArgVal(c, 1)), false);
 
             if (team == Team.Red)
             {
@@ -301,10 +301,11 @@ namespace SST.Core.Modules
                 _manager.HasTeamSelectionStarted = false;
                 await
                     _sst.QlCommands.QlCmdSay(
-                        "^5[PICKUP]^4 *** ^7TEAMS ARE ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME! ^4***");
+                        "^5[PICKUP]^4 *** ^7TEAMS ARE ^3FULL.^7 PLEASE ^2*READY UP (F3)*^7 TO START THE GAME! ^4***", false);
                 await
                     _sst.QlCommands.QlCmdSay(
-                        "^5[PICKUP]^7 Any unpicked players or late-adders will be automatically added to the substitutes list when the game starts!");
+                        "^5[PICKUP]^7 Any unpicked players or late-adders will be automatically added to the substitutes list when the game starts!",
+                         false);
 
                 Log.Write("Teams are now full!", _logClassType, _logPrefix);
             }
@@ -333,7 +334,7 @@ namespace SST.Core.Modules
                         "^5[PICKUP]^7 It's the {0}^7 captain ({1}{2}^7)'s pick. Type ^2!pick <name>^7 to pick a player.",
                         ((team == Team.Red) ? "^1RED" : "^5BLUE"),
                         ((team == Team.Red) ? "^1" : "^5"),
-                        ((team == Team.Red) ? RedCaptain : BlueCaptain)));
+                        ((team == Team.Red) ? RedCaptain : BlueCaptain)), false);
         }
     }
 }

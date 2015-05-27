@@ -275,7 +275,7 @@ namespace SST.Core.Modules
             await _sst.QlCommands.QlCmdSay(string.Format("^7Eligible players: {0}",
                 ((AvailablePlayers.Count != 0)
                     ? "^3" + string.Join(",", AvailablePlayers)
-                    : "^1NO eligible players!")));
+                    : "^1NO eligible players!")), false);
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace SST.Core.Modules
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
                             "^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...",
-                            player));
+                            player), false);
                 await DoResetPickup();
             }
             // The captain left during the team selection process... Reset.
@@ -322,7 +322,7 @@ namespace SST.Core.Modules
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
                             "^5[PICKUP]^7 Captain ^3{0}^7 has no-showed the game. Resetting pickup...",
-                            player));
+                            player), false);
                 await DoResetPickup();
             }
             // Team selection started and an eligible player leaves, notify of cancelation possibility
@@ -333,10 +333,11 @@ namespace SST.Core.Modules
                     await
                         _sst.QlCommands.QlCmdSay(string.Format(
                             "^5[PICKUP]^7 There might not be enough players to start because of ^3{0}^7's early quit",
-                            player));
+                            player), false);
                     await
                         _sst.QlCommands.QlCmdSay(
-                            "^5[PICKUP]^7 You can wait for more players to connect and sign up or the game can be canceled.");
+                            "^5[PICKUP]^7 You can wait for more players to connect and sign up or the game can be canceled.",
+                             false);
                     await ShowPrivUserCanCancelMsg();
                 }
             }
@@ -595,7 +596,7 @@ namespace SST.Core.Modules
             // ReSharper disable once UnusedVariable (synchronous)
             var s = _sst.QlCommands.QlCmdSay(string.Format(
                 "^5[PICKUP]^7 Pickup ENDED. New pickup to start in ^3{0}^7 seconds!",
-                (PickupResetOnEndGameLimit / 1000)));
+                (PickupResetOnEndGameLimit / 1000)), false);
         }
 
         /// <summary>
@@ -695,7 +696,7 @@ namespace SST.Core.Modules
                         string.Format(
                             "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
                             playerToSub,
-                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd), false);
                 return false;
             }
             if (IsPickupInProgress && !SubCandidates.Contains(playerToSub))
@@ -707,7 +708,7 @@ namespace SST.Core.Modules
                         string.Format(
                             "^1[ERROR]^3 {0} has not signed up with: ^7{1}{2}^3 yet!",
                             playerToSub,
-                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd));
+                            CommandList.GameCommandPrefix, CommandList.CmdPickupAdd), false);
                 return false;
             }
             if (!_sst.ServerInfo.IsActivePlayer(fromPlayer) && !ActivePickupPlayers.Contains(fromPlayer))
@@ -845,7 +846,7 @@ namespace SST.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup), false);
         }
 
         /// <summary>
@@ -862,7 +863,7 @@ namespace SST.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup), false);
         }
 
         /// <summary>
@@ -879,7 +880,7 @@ namespace SST.Core.Modules
                         (string.IsNullOrEmpty(superUsers)
                             ? "A super-user or higher"
                             : superUsers.TrimEnd(',', ' ')),
-                        CommandList.GameCommandPrefix, CommandList.CmdPickup));
+                        CommandList.GameCommandPrefix, CommandList.CmdPickup), false);
         }
 
         /// <summary>
@@ -895,13 +896,13 @@ namespace SST.Core.Modules
             HasCaptainSelectionStarted = true;
             await
                 _sst.QlCommands.QlCmdSay(
-                    "^5[PICKUP]^7 Captain selection has started. **^22^7** captains are needed!");
+                    "^5[PICKUP]^7 Captain selection has started. **^22^7** captains are needed!", false);
             await
                 _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[PICKUP]^7 You have ^5{0}^7 seconds to type^2 {1}{2}^7 to become a captain!",
                         (CaptainSelectionTimeLimit / 1000), CommandList.GameCommandPrefix,
-                        CommandList.CmdPickupCap));
+                        CommandList.CmdPickupCap), false);
 
             Log.Write(string.Format("Captain selection countdown started. Will last for {0} seconds",
                 (CaptainSelectionTimeLimit / 1000)), _logClassType, _logPrefix);
@@ -934,7 +935,7 @@ namespace SST.Core.Modules
 
                 await
                     _sst.QlCommands.QlCmdSay(
-                        "^5[PICKUP]^7 No one signed up to be captain! Randomly selecting 2 captains...");
+                        "^5[PICKUP]^7 No one signed up to be captain! Randomly selecting 2 captains...", false);
                 var rand = new Random();
                 var captains = AvailablePlayers.OrderBy(x => rand.Next()).Take(2).ToArray();
                 await _captains.SetCaptain(captains[0], Team.Red, false);
@@ -956,7 +957,7 @@ namespace SST.Core.Modules
                 {
                     await
                         _sst.QlCommands.QlCmdSay(
-                            "^5[PICKUP]^7 No ^5BLUE^7 captain found. Randomly selecting ^5BLUE^7 captain.");
+                            "^5[PICKUP]^7 No ^5BLUE^7 captain found. Randomly selecting ^5BLUE^7 captain.", false);
                     var rand = new Random();
                     var captain = AvailablePlayers.OrderBy(x => rand.Next()).Take(1).ToArray();
                     await _captains.SetCaptain(captain[0], Team.Blue, false);
@@ -969,7 +970,7 @@ namespace SST.Core.Modules
                 {
                     await
                         _sst.QlCommands.QlCmdSay(
-                            "^5[PICKUP]^7 No ^1RED^7 captain found. Randomly selecting ^1RED^7 captain.");
+                            "^5[PICKUP]^7 No ^1RED^7 captain found. Randomly selecting ^1RED^7 captain.", false);
                     var rand = new Random();
                     var captain = AvailablePlayers.OrderBy(x => rand.Next()).Take(1).ToArray();
                     await _captains.SetCaptain(captain[0], Team.Red, false);
@@ -1008,7 +1009,7 @@ namespace SST.Core.Modules
         /// <remarks>This is in response to the 'reset' argument passed to <see cref="PickupCmd"/>.</remarks>
         private async Task DoResetPickup()
         {
-            await _sst.QlCommands.QlCmdSay("^3[PICKUP]^7 Attempting to reset pickup...");
+            await _sst.QlCommands.QlCmdSay("^3[PICKUP]^7 Attempting to reset pickup...", false);
             ResetPickupStatus();
             await StartPickupPreGame();
         }
@@ -1114,7 +1115,7 @@ namespace SST.Core.Modules
 
             await
                 _sst.QlCommands.QlCmdSay(
-                    "^1[ERROR]^3 There are no longer enough eligible players. Resetting...");
+                    "^1[ERROR]^3 There are no longer enough eligible players. Resetting...", false);
             await ShowPrivUserCanCancelMsg();
             await DoResetPickup();
         }
@@ -1127,7 +1128,7 @@ namespace SST.Core.Modules
         private async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>
@@ -1285,7 +1286,7 @@ namespace SST.Core.Modules
                 _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[PICKUP]^7 Unlocking {0}^7 because ^3{1}^7 no-showed the game.",
-                        ((team == Team.Blue) ? "^5BLUE" : "^1RED"), player));
+                        ((team == Team.Blue) ? "^5BLUE" : "^1RED"), player), false);
 
             Log.Write(string.Format("Unlocked {0} team due to player {1}'s premature departue.",
                 ((team == Team.Blue) ? "^5BLUE" : "^1RED"), player), _logClassType, _logPrefix);
@@ -1323,7 +1324,7 @@ namespace SST.Core.Modules
                             string.Format(
                                 "^5[PICKUP]^3 {0}^7 has requested too many subs, banning until ^1{1}",
                                 player,
-                                expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+                                expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), false);
 
                     // UI: reflect changes
                     _sst.UserInterface.RefreshCurrentBansDataSource();
@@ -1354,7 +1355,7 @@ namespace SST.Core.Modules
                             string.Format(
                                 "^5[PICKUP]^3 {0}^7 has no-showed too many games, banning until ^1{1}",
                                 player,
-                                expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+                                expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), false);
 
                     // UI: reflect changes
                     _sst.UserInterface.RefreshCurrentBansDataSource();

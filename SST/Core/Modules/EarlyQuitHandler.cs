@@ -87,7 +87,7 @@ namespace SST.Core.Modules
                 _sst.QlCommands.QlCmdSay(
                     string.Format(
                         "^5[EARLYQUIT]^7 ^3{0}^7 has quit too many games early and is now banned until:^1 {1}",
-                        player, expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)));
+                        player, expirationDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), false);
 
             // The player might have not actually disconnected but spectated instead, so kickban(QL) immediately
             await _sst.QlCommands.CustCmdKickban(player);
@@ -167,7 +167,7 @@ namespace SST.Core.Modules
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
                             "^3{0}'s^7 penalty was doubled for unbalancing teams during match start!",
-                            player));
+                            player), false);
 
                 Log.Write(string.Format("Active player {0} left during count-down. Penalty will be doubled.",
                     player), _logClassType, _logPrefix);
@@ -179,7 +179,7 @@ namespace SST.Core.Modules
                 await
                     _sst.QlCommands.QlCmdSay(
                         string.Format("^5[EARLYQUIT]^7 Early quit detected and logged for player ^3{0}",
-                            player));
+                            player), false);
             }
         }
     }

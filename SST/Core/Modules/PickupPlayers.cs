@@ -44,7 +44,7 @@ namespace SST.Core.Modules
             await
                 _sst.QlCommands.QlCmdSay(string.Format(
                     "^5[PICKUP]^7 Subbed out old {0} ^7player: {1} for new {0} ^7player: {2}",
-                    ((team == Team.Red) ? "^1RED" : "^5BLUE"), outPlayer, inPlayer));
+                    ((team == Team.Red) ? "^1RED" : "^5BLUE"), outPlayer, inPlayer), false);
 
             // Tell the player the rules
             await _manager.NotifyNewPlayer(inPlayer, team);
@@ -94,7 +94,7 @@ namespace SST.Core.Modules
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
                             "^5[PICKUP] ^3{0} ^7has signed up as a substitute player for the current game.",
-                            player));
+                            player), false);
                 return true;
             }
             // Someone adds and teams are not yet full, i.e. a regular add situation OR a late add.
@@ -135,7 +135,7 @@ namespace SST.Core.Modules
                     _sst.QlCommands.QlCmdSay(
                         string.Format(
                             "^5[PICKUP]^3 {0} ^7has signed up as a substitute player for the current game.",
-                            player));
+                            player), false);
                 return true;
             }
             await
@@ -214,7 +214,7 @@ namespace SST.Core.Modules
             if (activePlayers.Length + availPlayers.Length + subPlayers.Length > 0)
             {
                 await _sst.QlCommands.QlCmdSay(string.Format("^5[PICKUP] ^1[Size: {0}v{0}] {1} {2} {3}",
-                    _sst.Mod.Pickup.Teamsize, activePlayers, availPlayers, subPlayers));
+                    _sst.Mod.Pickup.Teamsize, activePlayers, availPlayers, subPlayers), false);
             }
         }
     }

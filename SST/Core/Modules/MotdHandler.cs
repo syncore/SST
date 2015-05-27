@@ -90,7 +90,7 @@ namespace SST.Core.Modules
 
             try
             {
-                await _sst.QlCommands.QlCmdSay(string.Format("^7{0}", Message));
+                await _sst.QlCommands.QlCmdSay(string.Format("^7{0}", Message), false);
             }
             catch (Exception)
             {

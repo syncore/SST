@@ -107,7 +107,7 @@
             {
                 await
                     _sst.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Initilization has not completed yet. Command ignored.");
+                        "^1[ERROR]^3 Initilization has not completed yet. Command ignored.", false);
 
                 Log.Write(
                     string.Format("Initilization not yet completed; ignoring command from player {0}.",
@@ -153,13 +153,13 @@
                     string.Format(
                         "^1[ERROR]^7 {0},^3 please give the bot time to sync your user info and then" +
                         " retry your {1} request in a few secs.",
-                        fromUser, commandName));
+                        fromUser, commandName), false);
 
                 return false;
             }
             if (!UserHasReqLevel(fromUser, _cmdList.Commands[commandName].UserLevel))
             {
-                await _sst.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.");
+                await _sst.QlCommands.QlCmdSay("^1[ERROR]^3 You do not have permission to use that command.", false);
                 Log.Write(
                     string.Format(
                         "Player {0} sent {1}{2} command but has permission less than {3} needed for {2}. Ingoring.",

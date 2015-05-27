@@ -225,7 +225,7 @@ namespace SST.Core.Commands.Modules
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace SST.Core.Commands.Modules
                 CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
                     ? (string.Format("{0} {1}", c.Args[1],
                         NameModule))
-                    : NameModule)));
+                    : NameModule)), false);
         }
 
         /// <summary>
@@ -395,7 +395,7 @@ namespace SST.Core.Commands.Modules
                 CommandList.GameCommandPrefix, c.CmdName, ((c.FromIrc)
                     ? (string.Format("{0} {1}", c.Args[1],
                         NameModule))
-                    : NameModule)));
+                    : NameModule)), false);
         }
 
         /// <summary>

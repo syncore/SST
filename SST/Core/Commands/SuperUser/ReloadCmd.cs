@@ -84,7 +84,7 @@ namespace SST.Core.Commands.SuperUser
         /// <param name="c">The command argument information.</param>
         public async Task<bool> ExecAsync(Cmd c)
         {
-            await _sst.QlCommands.QlCmdSay("^3[ATTENTION] ^2Attempt to reload SST...please wait 10-15 seconds.");
+            await _sst.QlCommands.QlCmdSay("^3[ATTENTION] ^2Attempt to reload SST...please wait 10-15 seconds.", false);
             StatusMessage = "^2[SUCCESS]^7 Attempting to reload server information";
             await SendServerTell(c, StatusMessage);
             Log.Write("Will attempt to restart server monitoring.", _logClassType, _logPrefix);
@@ -112,7 +112,7 @@ namespace SST.Core.Commands.SuperUser
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>

@@ -222,7 +222,7 @@ namespace SST.Core.Commands.None
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>
@@ -259,14 +259,14 @@ namespace SST.Core.Commands.None
                 blue.Append(string.Format("^5{0}^7, ", player.ShortName));
             }
 
-            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:");
+            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Suggested ^2balanced^7 teams are:", false);
             await
                 _sst.QlCommands.QlCmdSay(string.Format(
-                    "^1[RED]: {0}", red.ToString().TrimEnd(',', ' ')));
+                    "^1[RED]: {0}", red.ToString().TrimEnd(',', ' ')), false);
 
             await
                 _sst.QlCommands.QlCmdSay(string.Format(
-                    "^5[BLUE]: {0}", blue.ToString().TrimEnd(',', ' ')));
+                    "^5[BLUE]: {0}", blue.ToString().TrimEnd(',', ' ')), false);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace SST.Core.Commands.None
             else
             {
                 _sst.VoteManager.IsTeamSuggestionVotePending = true;
-                await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Forcing team balance.");
+                await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Forcing team balance.", false);
                 await MovePlayersToBalancedTeams();
                 _sst.VoteManager.IsTeamSuggestionVotePending = false;
             }
@@ -345,7 +345,7 @@ namespace SST.Core.Commands.None
         {
             Log.Write("Attempting to move players to balanced teams.", _logClassType, _logPrefix);
 
-            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....");
+            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Balancing teams, please wait....", false);
             foreach (var player in _balancedBlueTeam)
             {
                 await _sst.QlCommands.CustCmdPutPlayer(player.ShortName, Team.Blue);
@@ -373,7 +373,7 @@ namespace SST.Core.Commands.None
                         "^2[TEAMBALANCE]^7 You have {0} seconds to vote. Type ^2{1}{2}^7 to accept" +
                         " the team suggestion, ^1{1}{3}^7 to reject the suggestion.",
                         (interval / 1000), CommandList.GameCommandPrefix,
-                        CommandList.CmdAcceptTeamSuggestion, CommandList.CmdRejectTeamSuggestion));
+                        CommandList.CmdAcceptTeamSuggestion, CommandList.CmdRejectTeamSuggestion), false);
 
             if (_suggestionTimer == null)
             {
@@ -412,7 +412,7 @@ namespace SST.Core.Commands.None
                             ((_sst.VoteManager.TeamSuggestionYesVoteCount >
                               _sst.VoteManager.TeamSuggestionNoVoteCount)
                                 ? ("Teams will be balanced.")
-                                : "Teams will remain unchanged.")));
+                                : "Teams will remain unchanged.")), false);
 
                 if (_sst.VoteManager.TeamSuggestionYesVoteCount > _sst.VoteManager.TeamSuggestionNoVoteCount)
                 {
@@ -459,7 +459,7 @@ namespace SST.Core.Commands.None
                 if (qlrData == null)
                 {
                     await _sst.QlCommands.QlCmdSay(
-                        "^1[ERROR]^3 Unable to verify player data. Try again in a few seconds.");
+                        "^1[ERROR]^3 Unable to verify player data. Try again in a few seconds.", false);
 
                     Log.WriteCritical("Unable to verify player Elo data.", _logClassType, _logPrefix);
                     throw new Exception("Unable to verify player Elo data");

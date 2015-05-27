@@ -129,7 +129,7 @@ namespace SST.Core.Commands.Modules
                 if (qlr == null)
                 {
                     await _sst.QlCommands.QlCmdSay(
-                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.");
+                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.", false);
 
                     Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
                         _logClassType, _logPrefix);
@@ -289,7 +289,7 @@ namespace SST.Core.Commands.Modules
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace SST.Core.Commands.Modules
                         "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
                         player, GameType.ToString().ToUpper(), playerElo,
                         MinimumRequiredElo,
-                        hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""));
+                        hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""), false);
 
                 // Wait before notifying and kicking, so user's screen doesn't freeze on "awaiting
                 // snapshot", especially when connecting
@@ -505,7 +505,7 @@ namespace SST.Core.Commands.Modules
                 string.Format(
                     "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} ^7Max:^1 {4}",
                     player, GameType.ToString().ToUpper(), playerElo,
-                    MinimumRequiredElo, MaximumRequiredElo));
+                    MinimumRequiredElo, MaximumRequiredElo), false);
 
             await
                 _sst.QlCommands.QlCmdDelayedTell(

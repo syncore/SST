@@ -216,7 +216,7 @@ namespace SST.Core.Commands.Modules
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace SST.Core.Commands.Modules
             {
                 await _sst.QlCommands.QlCmdSay(string.Format(
                     "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of ^2{2} ^7days",
-                    user, regDate.ToString("d"), MinimumDaysRequired));
+                    user, regDate.ToString("d"), MinimumDaysRequired), false);
 
                 // Inform the user as a courtesy
                 await _sst.QlCommands.QlCmdDelayedTell(

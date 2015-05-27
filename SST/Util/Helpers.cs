@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using SST.Enums;
-using SST.Model;
-
-namespace SST.Util
+﻿namespace SST.Util
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+    using SST.Enums;
+    using SST.Model;
+
     /// <summary>
     /// Class containing general helper methods.
     /// </summary>

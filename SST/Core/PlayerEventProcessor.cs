@@ -552,19 +552,6 @@
             Log.Write(string.Format("{0}'s team: {1}",
                 player, team), _logClassType, _logPrefix);
 
-            /*
-            var sb = new StringBuilder();
-
-            var t = _sst.ServerInfo.GetTeam(team);
-            foreach (var p in t)
-            {
-                sb.Append(string.Format("{0}, ", p.ShortName));
-            }
-
-            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", team, t.Count,
-                sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
-            */
-
             // Pickup module
             if (_sst.Mod == null)
             {

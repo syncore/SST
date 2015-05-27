@@ -7,7 +7,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Timers;
     using System.Windows.Forms;
     using SST.Config;
     using SST.Core.Commands.Modules;
@@ -252,15 +251,6 @@
         }
 
         /// <summary>
-        /// Gets the server address.
-        /// </summary>
-        public void CheckServerAddress()
-        {
-            QlCommands.RequestServerAddress();
-            QlCommands.QlCmdClear();
-        }
-
-        /// <summary>
         /// Handles the situation where the user disables developer mode while the server is being monitored.
         /// </summary>
         public void HandleDevModeDisabled()
@@ -288,45 +278,6 @@
             StopMonitoring();
             QlCommands.ClearQlWinConsole();
             await BeginMonitoring();
-        }
-
-        /// <summary>
-        /// Starts the console read thread.
-        /// </summary>
-        public void StartConsoleReadThread()
-        {
-            if (IsReadingConsole)
-            {
-                return;
-            }
-            Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
-            IsReadingConsole = true;
-            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
-            readConsoleThread.Start();
-        }
-
-        /// <summary>
-        /// Hook up the process up the detection timer.
-        /// </summary>
-        public void StartProcessDetectionTimer()
-        {
-            if (_qlProcessDetectionTimer != null)
-            {
-                return;
-            }
-            _qlProcessDetectionTimer = new Timer(15000);
-            _qlProcessDetectionTimer.Elapsed += QlProcessDetectionTimerOnElapsed;
-            _qlProcessDetectionTimer.Enabled = true;
-            Log.Write("Process detection timer did not exist; enabling.", _logClassType, _logPrefix);
-        }
-
-        /// <summary>
-        /// Stops the console read thread.
-        /// </summary>
-        public void StopConsoleReadThread()
-        {
-            IsReadingConsole = false;
-            Log.Write("Terminating QL console read thread.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -376,6 +327,68 @@
         }
 
         /// <summary>
+        /// Gets the server address.
+        /// </summary>
+        private void CheckServerAddress()
+        {
+            QlCommands.RequestServerAddress();
+            QlCommands.QlCmdClear();
+        }
+
+        /// <summary>
+        /// Starts the console read thread.
+        /// </summary>
+        private void StartConsoleReadThread()
+        {
+            if (IsReadingConsole)
+            {
+                return;
+            }
+            Log.Write("Starting QL console read thread.", _logClassType, _logPrefix);
+            IsReadingConsole = true;
+            var readConsoleThread = new Thread(ReadQlConsole) { IsBackground = true };
+            readConsoleThread.Start();
+        }
+
+        /// <summary>
+        /// Hook up the process up the detection timer.
+        /// </summary>
+        private void StartProcessDetectionTimer()
+        {
+            if (_qlProcessDetectionTimer != null)
+            {
+                return;
+            }
+            _qlProcessDetectionTimer = new Timer(15000);
+            _qlProcessDetectionTimer.Elapsed += (sender, args) =>
+            {
+                var qlWindExists = QlWindowUtils.QlWindowHandle != IntPtr.Zero;
+                // Quake Live not found
+                if (!qlWindExists)
+                {
+                    Log.Write(
+                        "Instance of Quake Live no longer found. Will terminate all server monitoring and process detection.",
+                        _logClassType, _logPrefix);
+
+                    StopMonitoring();
+                    _qlProcessDetectionTimer.Enabled = false;
+                    _qlProcessDetectionTimer = null;
+                }
+            };
+            _qlProcessDetectionTimer.Enabled = true;
+            Log.Write("Process detection timer did not exist; enabling.", _logClassType, _logPrefix);
+        }
+
+        /// <summary>
+        /// Stops the console read thread.
+        /// </summary>
+        private void StopConsoleReadThread()
+        {
+            IsReadingConsole = false;
+            Log.Write("Terminating QL console read thread.", _logClassType, _logPrefix);
+        }
+
+        /// <summary>
         /// Checks the user's configuration to see if automatic server monitoring should occur on
         /// application launch, and attempts to automatically monitor the server if possible.
         /// </summary>
@@ -394,56 +407,6 @@
 
             // ReSharper disable once UnusedVariable (synchronous)
             var a = AttemptAutoMonitorStart();
-        }
-
-        /// <summary>
-        /// Method that is executed to finalize the delayed initilization tasks.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
-        private async void DelayedInitTaskTimerOnElapsed(object sender, ElapsedEventArgs e)
-        {
-            Log.Write("Performing delayed initilization tasks.", _logClassType, _logPrefix);
-
-            QlCommands.ClearQlWinConsole();
-
-            // Initiate modules such as MOTD and others that can't be started until after we're live
-            Mod.Motd.Init();
-
-            // Get IP
-            CheckServerAddress();
-
-            // Update UI status bar with IP
-            await Task.Delay(2 * 1000);
-            UserInterface.UpdateMonitoringStatusUi(true, ServerInfo.CurrentServerAddress);
-
-            // Wait for configstrings request to complete in order to get an accurate listing of the teams.
-            await Task.Delay(2 * 1000);
-            await QlCommands.QlCmdConfigStrings();
-
-            // Auto-op admins if necessary
-            await ServerEventProcessor.AutoOpActiveAdmins();
-
-            // Wait then clear the internal console
-            await Task.Delay(2 * 1000);
-            QlCommands.ClearQlWinConsole();
-
-            // Initialization is fully complete, we can accept user commands now.
-            IsInitComplete = true;
-            _delayedInitTaskTimer.Enabled = false;
-            _delayedInitTaskTimer = null;
-
-            // Let the server's players know
-            /*
-            await
-                QlCommands.QlCmdSay(
-                    string.Format(
-                        "^7SST ^3v{0}^7 by syncore is now loaded on this server. ^3{1}{2}^7 for help.",
-                        Helpers.GetVersion(),
-                        CommandList.GameCommandPrefix, CommandList.CmdHelp));
-             */
-
-            Log.Write("SST is now loaded on the server.", _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -476,32 +439,9 @@
             // Enable developer mode
             QlCommands.EnableDeveloperMode();
             // Delay some initilization tasks and complete initilization
-            StartDelayedInitTasks(InitDelay);
-            //QlCommands.ClearQlWinConsole();
+            PerformDelayedInitTasks(InitDelay);
+
             Log.Write("Requesting server information.", _logClassType, _logPrefix);
-        }
-
-        /// <summary>
-        /// Method that runs when the QL Process Detection Timer has elapsed.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="elapsedEventArgs">
-        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
-        /// </param>
-        private void QlProcessDetectionTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
-        {
-            var qlWindExists = QlWindowUtils.QlWindowHandle != IntPtr.Zero;
-            // Quake Live not found
-            if (!qlWindExists)
-            {
-                Log.Write(
-                    "Instance of Quake Live no longer found. Will terminate all server monitoring and process detection.",
-                    _logClassType, _logPrefix);
-
-                StopMonitoring();
-                _qlProcessDetectionTimer.Enabled = false;
-                _qlProcessDetectionTimer = null;
-            }
         }
 
         /// <summary>
@@ -580,13 +520,48 @@
         }
 
         /// <summary>
-        /// Starts the delayed initialization steps.
+        /// Performs the delayed initialization steps.
         /// </summary>
-        /// <param name="seconds">The number of seconds the timer should wait before executing.</param>
-        private void StartDelayedInitTasks(double seconds)
+        /// <param name="secondsToWait">The number of seconds the timer should wait before executing.</param>
+        private void PerformDelayedInitTasks(double secondsToWait)
         {
-            _delayedInitTaskTimer = new Timer(seconds * 1000) { AutoReset = false, Enabled = true };
-            _delayedInitTaskTimer.Elapsed += DelayedInitTaskTimerOnElapsed;
+            _delayedInitTaskTimer = new Timer(secondsToWait * 1000) { AutoReset = false, Enabled = true };
+
+            // Finalize the delayed initilization tasks
+            _delayedInitTaskTimer.Elapsed += async (sender, args) =>
+            {
+                Log.Write("Performing delayed initilization tasks.", _logClassType, _logPrefix);
+
+                QlCommands.ClearQlWinConsole();
+
+                // Initiate modules such as MOTD and others that can't be started until after we're live
+                Mod.Motd.Init();
+
+                // Get IP
+                CheckServerAddress();
+
+                // Send configstrings request in order to get an accurate listing of the teams.
+                // Strangely, this appears to not register w/ QL at various times, so send it a few
+                // different times.
+                for (var i = 1; i < 4; i++)
+                {
+                    await QlCommands.SendToQlDelayedAsync("configstrings", true, (i * 3));
+                }
+
+                // Update UI status bar with IP
+                await Task.Delay(2000);
+                UserInterface.UpdateMonitoringStatusUi(true, ServerInfo.CurrentServerAddress);
+                QlCommands.QlCmdClear();
+
+                // Done
+                QlCommands.ClearBothQlConsoles();
+                QlCommands.SendToQl("echo ^4***^5SST is now ^2LOADED^4***", false);
+                QlCommands.SendToQl("print ^4***^5SST is now ^2LOADED^4***", false);
+                Log.Write("SST is now loaded on the server.", _logClassType, _logPrefix);
+                IsInitComplete = true;
+                _delayedInitTaskTimer.Enabled = false;
+                _delayedInitTaskTimer = null;
+            };
         }
     }
 }

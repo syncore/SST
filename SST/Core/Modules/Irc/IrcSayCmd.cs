@@ -106,7 +106,7 @@ namespace SST.Core.Modules.Irc
         public async Task<bool> ExecAsync(Cmd c)
         {
             var msg = c.Text.Substring((IrcCommandList.IrcCommandPrefix.Length + c.CmdName.Length) + 1);
-            await _sst.QlCommands.QlCmdSay(string.Format("^4[IRC]^3 {0}:^7 {1}", c.FromUser, msg));
+            await _sst.QlCommands.QlCmdSay(string.Format("^4[IRC]^3 {0}:^7 {1}", c.FromUser, msg), false);
 
             Log.Write(string.Format("Sent {0}'s message ({1}) to QL client from IRC.",
                 c.FromUser, msg), _logClassType, _logPrefix);

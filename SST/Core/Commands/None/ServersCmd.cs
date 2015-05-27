@@ -206,12 +206,12 @@ namespace SST.Core.Commands.None
                     StringSplitOptions.RemoveEmptyEntries);
                 foreach (var m in msg)
                 {
-                    await _sst.QlCommands.QlCmdSay(m);
+                    await _sst.QlCommands.QlCmdSay(m, false);
                 }
             }
             else
             {
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
             }
         }
 

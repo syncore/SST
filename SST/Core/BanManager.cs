@@ -68,7 +68,7 @@ namespace SST.Core
                             _kickDelaySecs, player,
                             banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo),
                             banInfo.BanExpirationDate.ToString("G",
-                                DateTimeFormatInfo.InvariantInfo), reason));
+                                DateTimeFormatInfo.InvariantInfo), reason), false);
 
                 // Wait prior to kicking, so recipient's screen doesn't freeze on 'awaiting snapshot'
                 await _sst.QlCommands.QlCmdDelayedTell(string.Format(

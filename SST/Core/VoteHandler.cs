@@ -83,7 +83,7 @@ namespace SST.Core
             await
                 _sst.QlCommands.QlCmdSay(
                     string.Format("^1[ATTEMPTED ADMIN KICK]^7 {0} is an admin and cannot be kicked.",
-                        (int.TryParse(admin, out id) ? "User with id " + id : admin)));
+                        (int.TryParse(admin, out id) ? "User with id " + id : admin)), false);
 
             Log.Write(string.Format("Denied admin kick of {0}",
                 (int.TryParse(admin, out id) ? "id: " + id + ", who is an admin" : admin)), _logClassType, _logPrefix);
@@ -96,7 +96,7 @@ namespace SST.Core
         {
             await _sst.QlCommands.SendToQlAsync("vote no", false);
             await
-                _sst.QlCommands.QlCmdSay("^3This type of vote is not allowed when pickup module is active!");
+                _sst.QlCommands.QlCmdSay("^3This type of vote is not allowed when pickup module is active!", false);
 
             Log.Write("Denied vote this type of vote (shuffle or teamsize) because pickup module is active" +
                       " and in pre-game or in progress.", _logClassType, _logPrefix);
@@ -108,7 +108,7 @@ namespace SST.Core
         private async Task DenyUnevenShuffle()
         {
             await _sst.QlCommands.SendToQlAsync("vote no", false);
-            await _sst.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.");
+            await _sst.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.", false);
             Log.Write("Denied shuffle vote because teams are uneven.", _logClassType, _logPrefix);
         }
 
@@ -227,7 +227,7 @@ namespace SST.Core
                         "^7[{0}^7] ^3{1}^7 matches {0}^7 rule set by ^3{2}. {3}",
                         (vote.IntendedResult == IntendedVoteResult.Yes ? "^2AUTO YES" : "^1AUTO NO"),
                         vote.VoteText, vote.AddedBy,
-                        (vote.IntendedResult == IntendedVoteResult.Yes ? "^2Passing..." : "^1Rejecting...")));
+                        (vote.IntendedResult == IntendedVoteResult.Yes ? "^2Passing..." : "^1Rejecting...")), false);
 
             Log.Write(string.Format("Automatically {0} matched vote: {1} (added by: {2})",
                 (vote.IntendedResult == IntendedVoteResult.Yes ? "passing" : "rejecting..."),

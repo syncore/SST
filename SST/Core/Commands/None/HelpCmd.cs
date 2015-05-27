@@ -93,13 +93,13 @@ namespace SST.Core.Commands.None
             {
                 cmds.Append(string.Format("^3{0}^5{1} ", CommandList.GameCommandPrefix, cmd.Key));
             }
-           
+
             StatusMessage = string.Format(
                     "^7Your user level - ^3{0}^7 - has access to these commands: {1}," +
                     " ^7More help @ ^3sst.syncore.org^7, or ^3#sst^7 on QuakeNet.",
                     (senderLevelName ?? "NONE"), cmds.ToString().TrimEnd(' '));
             await SendServerTell(c, StatusMessage);
-             
+
             return true;
         }
 
@@ -123,7 +123,7 @@ namespace SST.Core.Commands.None
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message);
+                await _sst.QlCommands.QlCmdSay(message, false);
         }
 
         /// <summary>

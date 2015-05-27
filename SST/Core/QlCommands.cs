@@ -1,12 +1,12 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using SST.Enums;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using SST.Enums;
+    using SST.Util;
+
     /// <summary>
     /// Class responsible for sending various commands to the QL game instance.
     /// </summary>
@@ -31,7 +31,6 @@ namespace SST.Core
         public async Task CheckCmdStatus()
         {
             await SendToQlAsync("cmd", false);
-            //QlCmdClear();
             Log.Write("Checking status of server connection (cmd).", _logClassType, _logPrefix);
         }
 
@@ -258,9 +257,10 @@ namespace SST.Core
         /// </summary>
         public async Task QlCmdConfigStrings()
         {
-            //await SendToQlAsync("configstrings", true);
-            await SendToQlAsync("configstrings", false);
-            QlCmdClear();
+            Log.Write("Requesting cstr", _logClassType, _logPrefix);
+            await SendToQlAsync("configstrings", true);
+            //SendToQl("configstrings", true);
+            //ClearBothQlConsoles();
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace SST.Core
         public async Task QlCmdDelayedSay(string text, int runCmdInSeconds)
         {
             await Task.Delay(runCmdInSeconds * 1000);
-            await QlCmdSay(text);
+            await QlCmdSay(text, false);
         }
 
         /// <summary>
@@ -299,19 +299,23 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Sends the 'say' command to QL. If too much text is received then issue 'say' command
-        /// over multiple lines.
+        /// Sends the 'say' or 'say_team' command to QL. If too much text is received then issue the
+        /// command over multiple lines.
         /// </summary>
         /// <param name="text">The text to say.</param>
+        /// <param name="isTeamMessage">
+        /// if set to <c>true</c> then the message is to be sent via say_team as a team message.
+        /// </param>
         /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
-        public async Task QlCmdSay(string text)
+        public async Task QlCmdSay(string text, bool isTeamMessage)
         {
             // Text to send might be too long, so send over multiple lines. Line length of between
             // 98 & 115 chars is probably optimal for lower resolutions based on guestimate.
             // However, QL actually supports sending up to 135 characters at a time.
             if ((text.Length) > MaxChatlineLength)
             {
-                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
+                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to
+                // next int, no matter size
                 var l = ((text.Length / MaxChatlineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
@@ -351,7 +355,14 @@ namespace SST.Core
 
                         // QL drops any server command that exceeds 500 ms threshold
                         await Task.Delay(DefaultCommandDelayMsec);
-                        DoSay(multiLine[i]);
+                        if (!isTeamMessage)
+                        {
+                            DoSay(multiLine[i]);
+                        }
+                        else
+                        {
+                            DoSayTeam(multiLine[i]);
+                        }
                         startPos += MaxChatlineLength;
                     }
                 }
@@ -364,77 +375,14 @@ namespace SST.Core
             else
             {
                 await Task.Delay(DefaultCommandDelayMsec);
-                DoSay(text);
-            }
-        }
-
-        /// <summary>
-        /// Sends the 'say_team' command to QL. If too much text is received then issue 'say_team'
-        /// command over multiple lines.
-        /// </summary>
-        /// <param name="text">The text to say.</param>
-        /// <remarks>This requires a delay, otherwise the command is not sent.</remarks>
-        public async Task QlCmdSayTeam(string text)
-        {
-            // Text to send might be too long, so send over multiple lines. Line length of between
-            // 98 & 115 chars is probably optimal for lower resolutions based on guestimate.
-            // However, QL actually supports sending up to 135 characters at a time.
-            if ((text.Length) > MaxChatlineLength)
-            {
-                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
-                var l = ((text.Length / MaxChatlineLength) + .5);
-                var linesRoundUp = Math.Ceiling(l);
-                try
+                if (!isTeamMessage)
                 {
-                    var numLines = Convert.ToInt32(linesRoundUp);
-                    var multiLine = new string[numLines];
-                    var startPos = 0;
-                    var lastColor = string.Empty;
-                    Log.Write(string.Format(
-                        "Must process very large text of length {0} characters for team chat message. Will send to QL over {1} lines.",
-                        text.Length, numLines), _logClassType, _logPrefix);
-                    for (var i = 0; i <= multiLine.Length - 1; i++)
-                    {
-                        if (i != 0)
-                        {
-                            // Keep the text colors consistent across multiple lines of text.
-                            if (_sst.Parser.UtilCaretColor.IsMatch(multiLine[i - 1]))
-                            {
-                                var m = _sst.Parser.UtilCaretColor.Matches(multiLine[i - 1]);
-                                lastColor = m[m.Count - 1].Value;
-                            }
-                            if (multiLine[i - 1].EndsWith("^"))
-                            {
-                                lastColor = "^";
-                            }
-                        }
-                        if (i == multiLine.Length - 1)
-                        {
-                            // last iteration; string length cannot be specified
-                            multiLine[i] = string.Format("{0}{1}", lastColor, text.Substring(startPos));
-                        }
-                        else
-                        {
-                            multiLine[i] = string.Format("{0}{1}", lastColor,
-                                text.Substring(startPos, MaxChatlineLength));
-                        }
-
-                        // QL drops any server command that exceeds 500 ms threshold
-                        await Task.Delay(DefaultCommandDelayMsec);
-                        DoSayTeam(multiLine[i]);
-                        startPos += MaxChatlineLength;
-                    }
+                    DoSay(text);
                 }
-                catch (Exception ex)
+                else
                 {
-                    Log.WriteCritical("Unable send team chat message text to QL: " + ex.Message,
-                        _logClassType, _logPrefix);
+                    DoSayTeam(text);
                 }
-            }
-            else
-            {
-                await Task.Delay(DefaultCommandDelayMsec);
-                DoSayTeam(text);
             }
         }
 
@@ -456,7 +404,10 @@ namespace SST.Core
         public async Task QlCmdTell(string text, string player)
         {
             // tell command uses the players id
-            if (!Helpers.KeyExists(player, _sst.ServerInfo.CurrentPlayers)) return;
+            if (!Helpers.KeyExists(player, _sst.ServerInfo.CurrentPlayers))
+            {
+                return;
+            }
 
             var playerId = _sst.ServerInfo.CurrentPlayers[player].Id;
 
@@ -464,7 +415,8 @@ namespace SST.Core
             // characters, which is shorter than for chat.
             if ((text.Length) > MaxTellLineLength)
             {
-                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to next int, no matter size
+                // ReSharper disable once PossibleLossOfFraction : .5 ensures we always round up to
+                // next int, no matter size
                 var l = ((text.Length / MaxTellLineLength) + .5);
                 var linesRoundUp = Math.Ceiling(l);
                 try
