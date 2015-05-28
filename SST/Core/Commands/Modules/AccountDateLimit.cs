@@ -301,10 +301,10 @@ namespace SST.Core.Commands.Modules
                     string.Format(
                         "^3You will be kicked because your account is too new (^1{0}^3) and doesn't meet this server's limit of ^1{1}^3 days.",
                         regDate.ToString("d"), MinimumDaysRequired), user, _kickTellDelaySecs);
-                await _sst.QlCommands.CustCmdDelayedKickban(user, _kickDelaySecs);
+                await _sst.QlCommands.CustCmdDelayedKickban(user, (_kickDelaySecs+2));
 
                 Log.Write(string.Format(
-                    "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Kicking player.",
+                    "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Will attempt to kick player.",
                     user, MinimumDaysRequired,
                     regDate.ToString("G", DateTimeFormatInfo.InvariantInfo)), _logClassType, _logPrefix);
             }

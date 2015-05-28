@@ -928,7 +928,10 @@ namespace SST.Ui
                 _logClassType, _logPrefix);
 
             if (!_sst.IsMonitoringServer) return;
-            await _sst.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
+            if (isActiveInUi)
+            {
+                await _sst.Mod.AccountDateLimit.EnableAccountDateLimiter(minAccountAge);
+            }
         }
 
         /// <summary>
@@ -981,7 +984,10 @@ namespace SST.Ui
                 _logClassType, _logPrefix);
 
             if (!_sst.IsMonitoringServer) return;
-            await _sst.Mod.EloLimit.BatchRemoveEloPlayers();
+            if (isActiveInUi)
+            {
+                await _sst.Mod.EloLimit.BatchRemoveEloPlayers();
+            }
         }
 
         /// <summary>
@@ -1185,12 +1191,21 @@ namespace SST.Ui
                 cfg.AccountDateOptions.isActive = modAccDateEnableCheckBox.Checked;
                 cfg.AccountDateOptions.minimumDaysRequired = uint.Parse(modAccDateAccAgeTextBox.Text);
                 _cfgHandler.WriteConfiguration(cfg);
+                if (cfg.AccountDateOptions.isActive && _sst.IsMonitoringServer)
+                {
+                    ShowInfoMessage("Account date limiter settings saved. Account date check will now run.",
+                        "Settings Saved");
+                }
+                else
+                {
+                    ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
+                }
                 await
                     HandleAccountDateModActivation(cfg.AccountDateOptions.isActive,
                         cfg.AccountDateOptions.minimumDaysRequired);
                 UpdateActiveModulesStatusText();
                 Log.Write("Account date limiter settings saved.", _logClassType, _logPrefix);
-                ShowInfoMessage("Account date limiter settings saved.", "Settings Saved");
+                
             }
             else
             {
@@ -1774,10 +1789,19 @@ namespace SST.Ui
                 _sst.Mod.EloLimit.MinimumRequiredElo = cfg.EloLimitOptions.minimumRequiredElo;
                 _sst.Mod.EloLimit.MaximumRequiredElo = cfg.EloLimitOptions.maximumRequiredElo;
 
+                if (cfg.EloLimitOptions.isActive && _sst.IsMonitoringServer)
+                {
+                    ShowInfoMessage("Elo limiter settings saved. Elo check will now run.",
+                        "Settings Saved");
+                }
+                else
+                {
+                    ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
+                }
                 await HandleEloLimitModActivation(cfg.EloLimitOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Elo limiter settings saved.", _logClassType, _logPrefix);
-                ShowInfoMessage("Elo limiter settings saved.", "Settings Saved");
+                
             }
             else
             {
@@ -2463,6 +2487,15 @@ namespace SST.Ui
                     cfg.PickupOptions.excessiveNoShowBanTimeScaleIndex;
                 _sst.Mod.Pickup.Teamsize = cfg.PickupOptions.teamSize;
 
+                if (cfg.PickupOptions.isActive && _sst.IsMonitoringServer)
+                {
+                    ShowInfoMessage("Pickup settings saved. Pickup mode will be enabled.",
+                        "Settings Saved");
+                }
+                else
+                {
+                    ShowInfoMessage("Pickup settings saved.", "Settings Saved");
+                }
                 await HandlePickupModActivation(cfg.PickupOptions.isActive);
                 UpdateActiveModulesStatusText();
                 Log.Write("Pickup settings saved.", _logClassType, _logPrefix);

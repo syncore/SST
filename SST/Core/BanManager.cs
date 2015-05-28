@@ -76,7 +76,7 @@ namespace SST.Core
                     banInfo.BanAddedDate.ToString("G", DateTimeFormatInfo.InvariantInfo), reason,
                     banInfo.BanExpirationDate.ToString("G",
                         DateTimeFormatInfo.InvariantInfo)), player, _kickTellDelaySecs);
-                await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
+                await _sst.QlCommands.CustCmdDelayedKickban(player, (_kickDelaySecs + 2));
             }
             else
             {

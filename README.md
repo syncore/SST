@@ -22,8 +22,6 @@ Some, but not all of the key features include:
   - Pick-up game mode
   - Multiple administration interfaces (in-game, Internet Relay Chat, GUI)
 
-### Version
-[1.0](http://sst.syncore.org/download/)
 
 ### Installation/Using SST
 

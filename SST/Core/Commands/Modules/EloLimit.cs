@@ -490,7 +490,7 @@ namespace SST.Core.Commands.Modules
                             GameType.ToString().ToUpper(), playerElo, MinimumRequiredElo,
                         hasMaxEloSpecified ? string.Format("^3Max:^1 {0}", MaximumRequiredElo) : ""), player, _kickTellDelaySecs);
 
-                await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
+                await _sst.QlCommands.CustCmdDelayedKickban(player, (_kickDelaySecs + 2));
                 return;
             }
             // Handle range
@@ -513,7 +513,7 @@ namespace SST.Core.Commands.Modules
                         "^3You will be kicked because your {0} QLRanks Elo (^1{1}^3) doesn't meet this server's requirements. Min: ^1{2}^3 Max: ^1{3}",
                         GameType.ToString().ToUpper(), playerElo, MinimumRequiredElo, MaximumRequiredElo), player, _kickTellDelaySecs);
 
-            await _sst.QlCommands.CustCmdDelayedKickban(player, _kickDelaySecs);
+            await _sst.QlCommands.CustCmdDelayedKickban(player, (_kickDelaySecs + 2));
         }
     }
 }
