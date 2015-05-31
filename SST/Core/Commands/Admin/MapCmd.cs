@@ -11,6 +11,8 @@ namespace SST.Core.Commands.Admin
 {
     /// <summary>
     /// Command: Call an admin-forced vote to change the map.
+    /// Note: if the bot is in spec then this basically requires that the server be spawned with 'allow spectator voting'
+    /// otherwise an admin will have to manually join the bot to a team in order to use this command.
     /// </summary>
     public class MapCmd : IBotCommand
     {
@@ -117,7 +119,7 @@ namespace SST.Core.Commands.Admin
 
             StatusMessage = string.Format("^2[SUCCESS]^7 Attempting to change map to: ^2{0}",
                 Helpers.GetArgVal(c, 1));
-            await SendServerSay(c, StatusMessage);
+            await SendServerTell(c, StatusMessage);
             await _sst.QlCommands.SendToQlAsync(string.Format("cv map {0}", Helpers.GetArgVal(c, 1)), false);
 
             Log.Write(string.Format("Attempting to send map change command to QL, to change to {0}",

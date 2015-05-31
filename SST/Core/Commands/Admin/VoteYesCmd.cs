@@ -10,6 +10,8 @@ namespace SST.Core.Commands.Admin
 {
     /// <summary>
     /// Command: Forces a yes vote.
+    /// Note: if the bot is in spec then this basically requires that the server be spawned with 'allow spectator voting'
+    /// otherwise an admin will have to manually join the bot to a team in order to use this command.
     /// </summary>
     public class VoteYesCmd : IBotCommand
     {
