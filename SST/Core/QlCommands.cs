@@ -197,10 +197,9 @@
         }
 
         /// <summary>
-        /// Disables in-game console printing. <remarks> With this set (con_noprint 1) no text will
+        /// Disables in-game console printing. <remarks>With this set (con_noprint 1) no text will
         /// be shown in the in-game console. This is the preferred mode when developer mode is
-        /// enabled. Note, text will ALWAYS be appended to the winconsole, regardless of this
-        /// setting. </remarks>
+        /// enabled. Note, text will ALWAYS be appended to the winconsole, regardless of this setting.</remarks>
         /// </summary>
         public void DisableConsolePrinting()
         {

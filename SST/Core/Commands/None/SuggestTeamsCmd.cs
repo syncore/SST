@@ -23,10 +23,10 @@ namespace SST.Core.Commands.None
         private readonly string _logPrefix = "[CMD:SUGGEST]";
         private readonly QlRanksHelper _qlrHelper;
         private readonly SynServerTool _sst;
-        private Timer _suggestionTimer;
         private readonly TeamBalancer _teamBalancer;
         private readonly UserLevel _userLevel = UserLevel.None;
         private readonly DbUsers _users;
+        private Timer _suggestionTimer;
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
         private bool _isIrcAccessAllowed = true;

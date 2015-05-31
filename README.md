@@ -54,6 +54,14 @@ the SST channel, #SST. [Click here to connect.](http://irc.lc/quakenet/sst)
 The preferable method of contact would be for you to open up an [issue] on
 GitHub.
 
+### Notes, misc, etc.
+
+I originally created this tool as a proof of concept and as a .NET learning experience prior
+to a similar tool, minqlbot, being open sourced. I was not aware that that tool would be open sourced
+when I made this; that tool is probably more actively developed, etc.
+I make no claims about this tool's reliability, accuracy, or anything else, so take it for what it's worth :smiley:
+Any suggestions are welcome.
+
 
 License
 ----

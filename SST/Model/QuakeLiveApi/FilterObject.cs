@@ -6,7 +6,7 @@ namespace SST.Model.QuakeLiveApi
 {
     /// <summary>
     /// Model class representing the outer container object returned by a
-    /// http://www.quakelive.com/browser/list/filter= URL
+    /// http: //www.quakelive.com/browser/list/filter= URL
     /// </summary>
     public class FilterObject
     {

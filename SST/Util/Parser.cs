@@ -63,9 +63,7 @@ namespace SST.Util
         /// <summary>
         /// Regex for matching the gametype number returned by the 'configstrings' command.
         /// </summary>
-        /// <value>
-        /// Regex for matching the gametype number returned by the 'configstrings' command.
-        /// </value>
+        /// <value>Regex for matching the gametype number returned by the 'configstrings' command.</value>
         /// <remarks>
         /// Named group: 'gametype' contains the gametype number (i.e. 4 for ca, 5 for ctf, etc.)
         /// </remarks>
@@ -322,9 +320,7 @@ namespace SST.Util
         /// <summary>
         /// Regex for finding a player who has joined the spectators as issued in a servercommand.
         /// </summary>
-        /// <value>
-        /// Regex for finding a player who has joined the spectators as issued in a servercommand.
-        /// </value>
+        /// <value>Regex for finding a player who has joined the spectators as issued in a servercommand.</value>
         /// <remarks>
         /// This contains a named group 'player' that has the name of the player who joined the spectators.
         /// </remarks>
@@ -337,8 +333,8 @@ namespace SST.Util
         /// Regex for finding a player who has joined a team (red or blue) as issued in a servercommand.
         /// </value>
         /// <remarks>
-        /// This contains a named group 'player' that has the name of the player (including the clan tag)
-        /// and a named group 'team' that includes the team color (Red or Blue).
+        /// This contains a named group 'player' that has the name of the player (including the clan
+        /// tag) and a named group 'team' that includes the team color (Red or Blue).
         /// </remarks>
         public Regex ScmdPlayerJoinedTeam { get; private set; }
 
@@ -430,9 +426,7 @@ namespace SST.Util
         /// <summary>
         /// Regex for getting the number of players who have voted no to the current vote.
         /// </summary>
-        /// <value>
-        /// Regex for getting the number of players who have voted no to the current vote.
-        /// </value>
+        /// <value>Regex for getting the number of players who have voted no to the current vote.</value>
         /// <remarks>
         /// This contains a named group called 'novotes' which simply contains the number of no
         /// votes as a string with the quotation marks already removed.
@@ -442,9 +436,7 @@ namespace SST.Util
         /// <summary>
         /// Regex for getting the number of players who have voted yes to the current vote.
         /// </summary>
-        /// <value>
-        /// Regex for getting the number of players who have voted yes to the current vote.
-        /// </value>
+        /// <value>Regex for getting the number of players who have voted yes to the current vote.</value>
         /// <remarks>
         /// This contains a named group called 'yesvotes' which simply contains the number of yes
         /// votes as a string with the quotation marks already removed.

@@ -108,15 +108,15 @@ namespace SST.Core
                     .Select(player => player.Value)
                     .ToList();
             var sb = new StringBuilder();
-            
+
             foreach (var player in team)
             {
                 sb.Append(string.Format("{0}, ", player.ShortName));
             }
-            
-            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", t, team.Count, 
+
+            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", t, team.Count,
                 sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
-            
+
             return team;
         }
 

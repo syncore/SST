@@ -444,9 +444,7 @@ namespace SST.Core
         /// Method that is executed when the disconnection scan timer elapses.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">
-        /// The <see cref="ElapsedEventArgs"/> instance containing the event data.
-        /// </param>
+        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private async void DisconnectScanElapsed(object sender, ElapsedEventArgs e)
         {
             await _sst.CheckQlServerConnectionExists();
