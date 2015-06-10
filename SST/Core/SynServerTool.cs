@@ -19,7 +19,6 @@
     /// </summary>
     public class SynServerTool
     {
-        public double InitDelay = 6.5;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CORE]";
         private Timer _delayedInitTaskTimer;
@@ -27,6 +26,8 @@
         private volatile bool _isReadingConsole;
         private volatile int _oldLength;
         private Timer _qlProcessDetectionTimer;
+        public double InitDelay = 6.5;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SynServerTool"/> main class.
         /// </summary>

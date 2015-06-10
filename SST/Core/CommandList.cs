@@ -24,6 +24,7 @@ namespace SST.Core
         public const string CmdDeOp = "deop";
         public const string CmdEarlyQuit = "earlyquit";
         public const string CmdElo = "elo";
+        public const string CmdElos = "elos";
         public const string CmdFindPlayer = "findplayer";
         public const string CmdForceJoinBlue = "blue";
         public const string CmdForceJoinRed = "red";
@@ -55,6 +56,7 @@ namespace SST.Core
         public const string CmdShutdown = "shutdown";
         public const string CmdStopServer = "stopserver";
         public const string CmdSuggestTeams = "suggest";
+        public const string CmdTeamSize = "ts";
         public const string CmdTimeBan = "timeban";
         public const string CmdUnban = "unban";
         public const string CmdUnlock = "unlock";
@@ -101,6 +103,7 @@ namespace SST.Core
             Commands.Add(CmdDeOp, new DeOpCmd(_sst));
             Commands.Add(CmdEarlyQuit, new EarlyQuitCmd(_sst));
             Commands.Add(CmdElo, new EloCmd(_sst));
+            Commands.Add(CmdElos, new ElosCmd(_sst));
             Commands.Add(CmdHelp, new HelpCmd(_sst));
             Commands.Add(CmdInvite, new InviteCmd(_sst));
             Commands.Add(CmdMap, new MapCmd(_sst));
@@ -126,6 +129,7 @@ namespace SST.Core
             Commands.Add(CmdRestoreTeams, new RestoreTeamsCmd(_sst));
             Commands.Add(CmdServers, new ServersCmd(_sst));
             Commands.Add(CmdSuggestTeams, new SuggestTeamsCmd(_sst));
+            Commands.Add(CmdTeamSize, new TeamsizeCmd(_sst));
             Commands.Add(CmdTimeBan, new TimeBanCmd(_sst));
             Commands.Add(CmdUnban, new UnbanCmd(_sst));
             Commands.Add(CmdUnlock, new UnlockCmd(_sst));

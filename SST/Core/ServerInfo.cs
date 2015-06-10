@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using SST.Enums;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Text;
+    using SST.Enums;
+    using SST.Model;
+    using SST.Util;
 
     /// <summary>
     /// Class that contains important information about the server on which the bot is loaded.
@@ -105,8 +104,8 @@ namespace SST.Core
         public List<PlayerInfo> GetTeam(Team t)
         {
             var team = CurrentPlayers.Where(player => player.Value.Team.Equals(t))
-                    .Select(player => player.Value)
-                    .ToList();
+                                     .Select(player => player.Value)
+                                     .ToList();
             var sb = new StringBuilder();
 
             foreach (var player in team)
@@ -114,8 +113,8 @@ namespace SST.Core
                 sb.Append(string.Format("{0}, ", player.ShortName));
             }
 
-            Log.Write(string.Format("Retrieving {0} team's {1} players: {2}", t, team.Count,
-                sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
+            Log.Write(string.Format("Internally retrieving {0} stored players for {1} team: {2}",
+                team.Count, t, sb.ToString().TrimEnd(',', ' ')), _logClassType, _logPrefix);
 
             return team;
         }
@@ -154,6 +153,21 @@ namespace SST.Core
         public bool IsATeamGame()
         {
             return Helpers.IsQuakeLiveTeamGame(CurrentServerGameType);
+        }
+
+        /// <summary>
+        /// Determines whether the server's current game type is a type supported by QLRanks.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if the server's current gametype is supported by QLRanks, otherwise <c>false</c>.
+        /// </returns>
+        public bool IsQlRanksGameType()
+        {
+            return CurrentServerGameType == QlGameTypes.Ca
+                   || CurrentServerGameType == QlGameTypes.Ctf
+                   || CurrentServerGameType == QlGameTypes.Duel
+                   || CurrentServerGameType == QlGameTypes.Ffa
+                   || CurrentServerGameType == QlGameTypes.Tdm;
         }
 
         /// <summary>

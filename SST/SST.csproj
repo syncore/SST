@@ -98,6 +98,7 @@
     <Compile Include="Core\Commands\Admin\AbortCmd.cs" />
     <Compile Include="Core\Commands\Admin\MapCmd.cs" />
     <Compile Include="Core\Commands\Admin\RestoreTeamsCmd.cs" />
+    <Compile Include="Core\Commands\SuperUser\TeamsizeCmd.cs" />
     <Compile Include="Core\Commands\Admin\TimeBanCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteNoCmd.cs" />
     <Compile Include="Core\Commands\Admin\VoteYesCmd.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Core\Commands\None\AccountDateCmd.cs" />
     <Compile Include="Core\Commands\None\EarlyQuitCmd.cs" />
     <Compile Include="Core\Commands\None\EloCmd.cs" />
+    <Compile Include="Core\Commands\None\ElosCmd.cs" />
     <Compile Include="Core\Commands\None\FindPlayerCmd.cs" />
     <Compile Include="Core\Commands\None\PickupAddCmd.cs" />
     <Compile Include="Core\Commands\None\PickupCapCmd.cs" />

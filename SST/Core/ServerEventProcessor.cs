@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Timers;
-using SST.Config;
-using SST.Database;
-using SST.Enums;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using System.Timers;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Class responsible for handling various server events.
     /// </summary>
@@ -41,26 +41,41 @@ namespace SST.Core
         /// </summary>
         public async Task AutoOpActiveAdmin(string player)
         {
-            if (!_sst.IsMonitoringServer) return;
+            if (!_sst.IsMonitoringServer)
+            {
+                return;
+            }
 
             var cfgHandler = new ConfigHandler();
             var cfg = cfgHandler.ReadConfiguration();
 
-            if (!cfg.CoreOptions.autoOpAdmins) return;
+            if (!cfg.CoreOptions.autoOpAdmins)
+            {
+                return;
+            }
 
             var userDb = new DbUsers();
             var userLevel = userDb.GetUserLevel(player);
 
-            if (userLevel <= UserLevel.SuperUser) return;
-            if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(player)) return;
+            if (userLevel <= UserLevel.SuperUser)
+            {
+                return;
+            }
+            if (!_sst.ServerInfo.CurrentPlayers.ContainsKey(player))
+            {
+                return;
+            }
 
             var id = GetPlayerId(player);
-            if (id == -1) return;
+            if (id == -1)
+            {
+                return;
+            }
 
             await _sst.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
 
             Log.Write(string.Format("Auto-opping {0} (user level: {1})",
-                    player, userLevel), _logClassType, _logPrefix);
+                player, userLevel), _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -69,19 +84,31 @@ namespace SST.Core
         /// </summary>
         public async Task AutoOpActiveAdmins()
         {
-            if (!_sst.IsMonitoringServer) return;
+            if (!_sst.IsMonitoringServer)
+            {
+                return;
+            }
             var cfgHandler = new ConfigHandler();
             var cfg = cfgHandler.ReadConfiguration();
-            if (!cfg.CoreOptions.autoOpAdmins) return;
+            if (!cfg.CoreOptions.autoOpAdmins)
+            {
+                return;
+            }
 
             var userDb = new DbUsers();
             var allUsers = userDb.GetAllUsers();
 
             foreach (var u in allUsers.Where(u => _sst.ServerInfo.CurrentPlayers.ContainsKey(u.Name)))
             {
-                if (u.AccessLevel <= UserLevel.SuperUser) continue;
+                if (u.AccessLevel <= UserLevel.SuperUser)
+                {
+                    continue;
+                }
                 var id = GetPlayerId(u.Name);
-                if (id == -1) continue;
+                if (id == -1)
+                {
+                    continue;
+                }
                 await _sst.QlCommands.SendToQlAsync(string.Format("op {0}", id), false);
                 Log.Write(string.Format("Auto-opping {0} (user level: {1})",
                     u.Name, u.AccessLevel), _logClassType, _logPrefix);
@@ -129,12 +156,40 @@ namespace SST.Core
         /// </summary>
         public void HandleDisconnectionScan()
         {
-            if (_sst.IsDisconnectionScanPending) return;
-            if (!_sst.IsInitComplete) return;
-            _disconnectScanTimer = new Timer(10000) { AutoReset = false, Enabled = true };
-            _disconnectScanTimer.Elapsed += DisconnectScanElapsed;
+            if (_sst.IsDisconnectionScanPending)
+            {
+                return;
+            }
+            if (!_sst.IsInitComplete)
+            {
+                return;
+            }
+            _disconnectScanTimer = new Timer(12000) { AutoReset = false, Enabled = true };
+            _disconnectScanTimer.Elapsed += async (sender, args) =>
+            {
+                await _sst.CheckQlServerConnectionExists();
+
+                // If connection no longer exists then we need to stop monitoring the non-existent
+                // server and shutdown all console reading.
+                if (!_sst.ServerInfo.IsQlConnectedToServer)
+                {
+                    Log.Write("Determined that QL server connection no longer exists; Will stop all" +
+                              " server monitoring.", _logClassType, _logPrefix);
+
+                    // Stop monitoring, stop reading console, set server as disconnected.
+                    _sst.StopMonitoring();
+                }
+
+                // Verify teams (TEST)
+                await _sst.QlCommands.QlCmdDelayedConfigStrings(3, 2);
+
+                _sst.IsDisconnectionScanPending = false;
+                _disconnectScanTimer.Enabled = false;
+                _disconnectScanTimer = null;
+            };
+
             _sst.IsDisconnectionScanPending = true;
-            Log.Write("Will check if server connection still exists in 10 seconds.",
+            Log.Write("Will check if server connection still exists in 12 seconds.",
                 _logClassType, _logPrefix);
         }
 
@@ -172,7 +227,10 @@ namespace SST.Core
                         .ToLowerInvariant();
 
                 // Try to create the player info (name, clan, id)
-                if (!CreatePlayerFromPlayersText(text)) return;
+                if (!CreatePlayerFromPlayersText(text))
+                {
+                    return;
+                }
                 // Set the cached Elo for a player or add to list to be updated
                 HandleEloFromPlayersText(qlranksHelper, playerNameOnly);
                 // Store user's last seen date
@@ -417,7 +475,7 @@ namespace SST.Core
             var playerNameOnly =
                 playerText.Substring(
                     playerText.LastIndexOf(" ", StringComparison.Ordinal) + 1)
-                    .ToLowerInvariant();
+                          .ToLowerInvariant();
             var sndspace = (Helpers.NthIndexOf(playerText, " ", 2));
             var clanLength =
                 ((playerText.LastIndexOf(" ", StringComparison.Ordinal) - sndspace));
@@ -438,31 +496,6 @@ namespace SST.Core
             _sst.ServerInfo.CurrentPlayers[playerNameOnly] = new PlayerInfo(playerNameOnly,
                 clan, Team.None, id);
             return true;
-        }
-
-        /// <summary>
-        /// Method that is executed when the disconnection scan timer elapses.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
-        private async void DisconnectScanElapsed(object sender, ElapsedEventArgs e)
-        {
-            await _sst.CheckQlServerConnectionExists();
-
-            // If connection no longer exists then we need to stop monitoring the non-existent
-            // server and shutdown all console reading.
-            if (!_sst.ServerInfo.IsQlConnectedToServer)
-            {
-                Log.Write("Determined that QL server connection no longer exists; Will stop all" +
-                          " server monitoring.", _logClassType, _logPrefix);
-
-                // Stop monitoring, stop reading console, set server as disconnected.
-                _sst.StopMonitoring();
-            }
-
-            _sst.IsDisconnectionScanPending = false;
-            _disconnectScanTimer.Enabled = false;
-            _disconnectScanTimer = null;
         }
 
         /// <summary>
@@ -518,7 +551,7 @@ namespace SST.Core
         }
 
         /// <summary>
-        /// Handles the pickup game events (game start, game end) for the pickup module, if active.
+        /// `` Handles the pickup game events (game start, game end) for the pickup module, if active.
         /// </summary>
         /// <param name="gameState">State of the game.</param>
         private void HandlePickupEvents(QlGameStates gameState)
@@ -541,7 +574,10 @@ namespace SST.Core
         /// </summary>
         private void SetEndOfGameTeams()
         {
-            if (!_sst.ServerInfo.IsATeamGame()) return;
+            if (!_sst.ServerInfo.IsATeamGame())
+            {
+                return;
+            }
             _sst.ServerInfo.EndOfGameRedTeam.Clear();
             _sst.ServerInfo.EndOfGameBlueTeam.Clear();
 

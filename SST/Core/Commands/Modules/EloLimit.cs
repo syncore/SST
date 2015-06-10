@@ -157,7 +157,7 @@ namespace SST.Core.Commands.Modules
         /// <param name="player">The player.</param>
         public async Task CheckPlayerEloRequirement(string player)
         {
-            var playerElo = GetEloTypeToCompare(player);
+            var playerElo = QlRanksHelper.GetEloForGameType(_sst.ServerInfo, player);
             // Likely invalid, skip.
             if (playerElo == 0) return;
             await KickPlayerIfEloNotMet(player);
@@ -413,40 +413,6 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets the elo type to compare based on the server's current gametype.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        /// <returns>The elo value to use based on the server's current gametype.</returns>
-        private long GetEloTypeToCompare(string player)
-        {
-            if (!Helpers.KeyExists(player, _sst.ServerInfo.CurrentPlayers)) return 0;
-            long elo = 0;
-            switch (_sst.ServerInfo.CurrentServerGameType)
-            {
-                case QlGameTypes.Ca:
-                    elo = _sst.ServerInfo.CurrentPlayers[player].EloData.CaElo;
-                    break;
-
-                case QlGameTypes.Ctf:
-                    elo = _sst.ServerInfo.CurrentPlayers[player].EloData.CtfElo;
-                    break;
-
-                case QlGameTypes.Duel:
-                    elo = _sst.ServerInfo.CurrentPlayers[player].EloData.DuelElo;
-                    break;
-
-                case QlGameTypes.Ffa:
-                    elo = _sst.ServerInfo.CurrentPlayers[player].EloData.FfaElo;
-                    break;
-
-                case QlGameTypes.Tdm:
-                    elo = _sst.ServerInfo.CurrentPlayers[player].EloData.CaElo;
-                    break;
-            }
-            return elo;
-        }
-
-        /// <summary>
         /// Kicks the player if player does not meet the server's elo requirements.
         /// </summary>
         /// <param name="player">The player.</param>
@@ -463,7 +429,7 @@ namespace SST.Core.Commands.Modules
             // Can't kick ourselves, though QL doesn't allow it anyway, don't show kick msg.
             if (player.Equals(_sst.AccountName, StringComparison.InvariantCultureIgnoreCase)) return;
             // Get Elo for the current gametype
-            var playerElo = GetEloTypeToCompare(player);
+            var playerElo = QlRanksHelper.GetEloForGameType(_sst.ServerInfo, player);
             // Player Elo is either invalid or we're not in a QLRanks-supported gametype. Abort.
             if (playerElo == 0) return;
             // Handle minimum

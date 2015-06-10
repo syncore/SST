@@ -378,25 +378,25 @@ ______________________________________________________
 
 Force a player to join the blue team in team games:
 Usage: !blue <name>
-<p>Notes: Name is without clan tag.
+Notes: Name is without clan tag.
 Example: !blue SomePlayer
 ______________________________________________________
 
 Force a player to join the red team in team games:
 Usage: !red <name>
-<p>Notes: Name is without clan tag.
+Notes: Name is without clan tag.
 Example: !red SomePlayer
 ______________________________________________________
 
 Force a player to join the spectators in team games:
 Usage: !spec <name>
-<p>Notes: Name is without clan tag.
+Notes: Name is without clan tag.
 Example: !spec SomePlayer
 ______________________________________________________
 
 Invite a player to the server:
 Usage: !invite <name>
-<p>Notes: Name is without clan tag.
+Notes: Name is without clan tag.
 Example: !invite SomePlayer
 ______________________________________________________
 
@@ -415,6 +415,12 @@ ______________________________________________________
 Force a team balance (bypass the suggestion vote):
 Usage: !suggest force
 Example: !suggest force
+______________________________________________________
+
+Force and pass a teamsize vote:
+Usage: !ts <playersPerTeam>
+Notes: playersPerTeam is a number greater than 0 and less than 9.
+Example: !ts 5
 ______________________________________________________
 
 Unlock the specified team:
@@ -471,6 +477,11 @@ Usage: !elo [name1,name2,name3]
 Notes: Names are without clan tags. No spaces after commas. Leave name blank to check your own Elo information.
 Example: !elo SomePlayer1,SomePlayer2,SomePlayer3
 Example: !elo
+______________________________________________________
+
+Show the QLRanks Elo data for all players on the current server:
+Usage: !elos
+Example: !elos
 ______________________________________________________
 
 Find a player on all world-wide QL servers:

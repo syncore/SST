@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using SST.Config;
-using SST.Database;
-using SST.Model;
-using SST.Model.QlRanks;
-
-namespace SST.Util
+﻿namespace SST.Util
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Core;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Model;
+    using SST.Model.QlRanks;
+
     /// <summary>
     /// Helper class for various QlRanks-related functions.
     /// </summary>
@@ -29,13 +31,52 @@ namespace SST.Util
         }
 
         /// <summary>
+        /// Gets the player's Elo value based on the server's current gametype.
+        /// </summary>
+        /// <param name="sinfo">The server info.</param>
+        /// <param name="player">The player.</param>
+        /// <returns>
+        /// The player's Elo value based on the server's current gametype. Returns 0 if the player
+        /// doesn't exist or the server is not running a QLRanks-supported gametype.
+        /// </returns>
+        public static long GetEloForGameType(ServerInfo sinfo, string player)
+        {
+            if (!Helpers.KeyExists(player, sinfo.CurrentPlayers))
+            {
+                return 0;
+            }
+
+            switch (sinfo.CurrentServerGameType)
+            {
+                case QlGameTypes.Ca:
+                    return sinfo.CurrentPlayers[player].EloData.CaElo;
+
+                case QlGameTypes.Ctf:
+                    return sinfo.CurrentPlayers[player].EloData.CtfElo;
+
+                case QlGameTypes.Duel:
+                    return sinfo.CurrentPlayers[player].EloData.DuelElo;
+
+                case QlGameTypes.Ffa:
+                    return sinfo.CurrentPlayers[player].EloData.FfaElo;
+
+                case QlGameTypes.Tdm:
+                    return sinfo.CurrentPlayers[player].EloData.CaElo;
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Creates the new player elo data.
         /// </summary>
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="player">The player.</param>
         public void CreateNewPlayerEloData(Dictionary<string, PlayerInfo> currentPlayers, string player)
         {
-            if (!Helpers.KeyExists(player, currentPlayers)) return;
+            if (!Helpers.KeyExists(player, currentPlayers))
+            {
+                return;
+            }
             currentPlayers[player].EloData = new EloData();
             Log.Write(string.Format("Created new player Elo data for {0}. Will attempt to populate shortly.",
                 player), _logClassType, _logPrefix);
@@ -102,7 +143,10 @@ namespace SST.Util
         /// <returns><c>true</c> if the cached elo data is outdated, otherwise <c>false</c>.</returns>
         public bool IsCachedEloDataOutdated(string user)
         {
-            if (!DoesCachedEloExist(user)) return true;
+            if (!DoesCachedEloExist(user))
+            {
+                return true;
+            }
             var edata = _eloDb.GetEloData(user);
             return DateTime.Now > edata.LastUpdatedDate.AddMinutes(GetExpirationFromConfig());
         }
@@ -114,7 +158,10 @@ namespace SST.Util
         /// <returns><c>true</c> if the player has invalid elo data, otherwise <c>false</c>.</returns>
         public bool PlayerHasInvalidEloData(PlayerInfo pinfo)
         {
-            if (pinfo.EloData == null) return true;
+            if (pinfo.EloData == null)
+            {
+                return true;
+            }
             if (pinfo.EloData.CaElo == 0 && pinfo.EloData.CtfElo == 0 && pinfo.EloData.DuelElo == 0 &&
                 pinfo.EloData.FfaElo == 0 && pinfo.EloData.TdmElo == 0)
             {
@@ -131,9 +178,12 @@ namespace SST.Util
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playersToUpdate">The players to update.</param>
         public async Task<QlRanks> RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers,
-            List<string> playersToUpdate)
+                                                               List<string> playersToUpdate)
         {
-            if (playersToUpdate.Count == 0) return null;
+            if (playersToUpdate.Count == 0)
+            {
+                return null;
+            }
 
             var d = await DoQlRanksRetrievalAsync(playersToUpdate);
             if (d != null)
@@ -153,9 +203,12 @@ namespace SST.Util
         /// <param name="currentPlayers">The current players.</param>
         /// <param name="playerToUpdate">The player to update.</param>
         public async Task<QlRanks> RetrieveEloDataFromApiAsync(Dictionary<string, PlayerInfo> currentPlayers,
-            string playerToUpdate)
+                                                               string playerToUpdate)
         {
-            if (string.IsNullOrEmpty(playerToUpdate)) return null;
+            if (string.IsNullOrEmpty(playerToUpdate))
+            {
+                return null;
+            }
 
             var d = await DoQlRanksRetrievalAsync(playerToUpdate);
             if (d != null)
@@ -176,7 +229,10 @@ namespace SST.Util
         /// <param name="shortPlayerName">Short name of the player (excluding clan tag).</param>
         public void SetCachedEloData(Dictionary<string, PlayerInfo> currentPlayers, string shortPlayerName)
         {
-            if (!DoesCachedEloExist(shortPlayerName)) return;
+            if (!DoesCachedEloExist(shortPlayerName))
+            {
+                return;
+            }
             currentPlayers[shortPlayerName].EloData = _eloDb.GetEloData(shortPlayerName);
 
             Log.Write(string.Format("Setting non-expired cached Elo data for {0} from database",
@@ -312,7 +368,7 @@ namespace SST.Util
         /// <param name="currentPlayer">The current player to update</param>
         /// <param name="qlr">The QlRanks object.</param>
         private void SetQlRanksInfo(Dictionary<string, PlayerInfo> currentPlayers, string currentPlayer,
-            QlRanks qlr)
+                                    QlRanks qlr)
         {
             foreach (
                 var qp in

@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using SST.Config;
-using SST.Database;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core.Commands.None
+﻿namespace SST.Core.Commands.None
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Timers;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Command: Suggest balanced teams based on player Elo data.
     /// </summary>
     public class SuggestTeamsCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = true;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
         private readonly string _logPrefix = "[CMD:SUGGEST]";
         private readonly QlRanksHelper _qlrHelper;
@@ -26,11 +27,9 @@ namespace SST.Core.Commands.None
         private readonly TeamBalancer _teamBalancer;
         private readonly UserLevel _userLevel = UserLevel.None;
         private readonly DbUsers _users;
-        private Timer _suggestionTimer;
         private List<PlayerInfo> _balancedBlueTeam;
         private List<PlayerInfo> _balancedRedTeam;
-        private bool _isIrcAccessAllowed = true;
-        private int _qlMinArgs = 0;
+        private Timer _suggestionTimer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SuggestTeamsCmd"/> class.
@@ -38,6 +37,7 @@ namespace SST.Core.Commands.None
         /// <param name="sst">The main class.</param>
         public SuggestTeamsCmd(SynServerTool sst)
         {
+            QlMinArgs = 0;
             _sst = sst;
             _qlrHelper = new QlRanksHelper();
             _teamBalancer = new TeamBalancer();
@@ -51,7 +51,10 @@ namespace SST.Core.Commands.None
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>The minimum arguments for the IRC command.</value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return QlMinArgs + 1; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this command can be accessed from IRC.
@@ -66,10 +69,7 @@ namespace SST.Core.Commands.None
         /// Gets the minimum arguments for the QL command.
         /// </summary>
         /// <value>The minimum arguments for the QL command.</value>
-        public int QlMinArgs
-        {
-            get { return _qlMinArgs; }
-        }
+        public int QlMinArgs { get; private set; }
 
         /// <summary>
         /// Gets the command's status message.
@@ -104,9 +104,7 @@ namespace SST.Core.Commands.None
         public async Task<bool> ExecAsync(Cmd c)
         {
             // Must be a team gametype that is supported by QLRanks
-            if (_sst.ServerInfo.CurrentServerGameType != QlGameTypes.Ca &&
-                _sst.ServerInfo.CurrentServerGameType != QlGameTypes.Ctf &&
-                _sst.ServerInfo.CurrentServerGameType != QlGameTypes.Tdm)
+            if (!_sst.ServerInfo.IsQlRanksGameType())
             {
                 StatusMessage = "^1[ERROR]^3 Team balancing is not available on this server!";
                 // send to everyone (/say; success)
@@ -132,6 +130,10 @@ namespace SST.Core.Commands.None
 
                 return false;
             }
+
+            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Please wait...", false);
+            // Verify the teams (TEST)
+            await _sst.QlCommands.QlCmdDelayedConfigStrings(2, 1);
 
             var blueTeam = _sst.ServerInfo.GetTeam(Team.Blue);
             var redTeam = _sst.ServerInfo.GetTeam(Team.Red);
@@ -184,8 +186,8 @@ namespace SST.Core.Commands.None
                     StatusMessage = "^1[ERROR]^7 You do not have permission to use that command.";
 
                     Log.Write(string.Format(
-                    "{0} tried to force team balance suggestion, but has an insufficient access level. Ignoring.",
-                    c.FromUser), _logClassType, _logPrefix);
+                        "{0} tried to force team balance suggestion, but has an insufficient access level. Ignoring.",
+                        c.FromUser), _logClassType, _logPrefix);
 
                     return false;
                 }
@@ -222,7 +224,9 @@ namespace SST.Core.Commands.None
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdSay(message, false);
+            }
         }
 
         /// <summary>
@@ -233,7 +237,9 @@ namespace SST.Core.Commands.None
         public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+            }
         }
 
         /// <summary>
@@ -243,7 +249,7 @@ namespace SST.Core.Commands.None
         /// <param name="teamBlue">The blue team.</param>
         /// <remarks>
         /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
-        /// requested via IRC, the players on the server can actually see it.
+        ///       requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task DisplayBalanceResults(IList<PlayerInfo> teamRed, IList<PlayerInfo> teamBlue)
         {
@@ -280,10 +286,10 @@ namespace SST.Core.Commands.None
         /// </param>
         /// <remarks>
         /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
-        /// requested via IRC, the players on the server can actually see it.
+        ///       requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task InitiateBalance(List<PlayerInfo> redTeam, List<PlayerInfo> blueTeam,
-            bool isForcedBalance)
+                                           bool isForcedBalance)
         {
             try
             {
@@ -293,7 +299,7 @@ namespace SST.Core.Commands.None
             catch (Exception ex)
             {
                 Log.WriteCritical("Could not verify all players' Elo data. Will skip team suggestion." +
-                                ex.Message, _logClassType, _logPrefix);
+                                  ex.Message, _logClassType, _logPrefix);
                 StatusMessage =
                     "^1[ERROR]^3 Couldn't verify player data. Team suggestion is not possible at this time.";
                 return;
@@ -326,7 +332,10 @@ namespace SST.Core.Commands.None
         /// <returns><c>true</c> if the command was sent from IRC and from an the IRC owner.</returns>
         private bool IsIrcOwner(Cmd c)
         {
-            if (!c.FromIrc) return false;
+            if (!c.FromIrc)
+            {
+                return false;
+            }
             var cfgHandler = new ConfigHandler();
             var cfg = cfgHandler.ReadConfiguration();
             return
@@ -339,7 +348,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <remarks>
         /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
-        /// requested via IRC, the players on the server can actually see it.
+        ///       requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task MovePlayersToBalancedTeams()
         {
@@ -361,7 +370,7 @@ namespace SST.Core.Commands.None
         /// </summary>
         /// <remarks>
         /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
-        /// requested via IRC, the players on the server can actually see it.
+        ///       requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async Task StartTeamSuggestionVote()
         {
@@ -387,7 +396,6 @@ namespace SST.Core.Commands.None
 
             Log.Write(string.Format("Started team suggestion vote. {0} seconds until results are known.",
                 (interval / 1000)), _logClassType, _logPrefix);
-
         }
 
         /// <summary>
@@ -397,7 +405,7 @@ namespace SST.Core.Commands.None
         /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         /// <remarks>
         /// Note: I purposefully did not touch the QlCmdSay stuff in this method, so if it is
-        /// requested via IRC, the players on the server can actually see it.
+        ///       requested via IRC, the players on the server can actually see it.
         /// </remarks>
         private async void TeamSuggestionTimerElapsed(object sender, ElapsedEventArgs e)
         {
@@ -450,8 +458,8 @@ namespace SST.Core.Commands.None
         {
             var update =
                 (from player in players
-                 where _qlrHelper.PlayerHasInvalidEloData(player.Value)
-                 select player.Key).ToList();
+                    where _qlrHelper.PlayerHasInvalidEloData(player.Value)
+                    select player.Key).ToList();
             if (update.Any())
             {
                 var qlrData =

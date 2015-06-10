@@ -179,7 +179,8 @@ namespace SST.Core
                 // Server connection detection events (i.e. cvar requests (ui_mainmenu), "not
                 // connected" messages need to be evaluated even if we're not monitoring the server,
                 // to see if server monitoring can begin when the user makes the request for it to
-                // do so. cvar request
+                // do so.
+                // cvar request
                 if (CvarRequestDetected(text)) continue;
                 // 'Not connected to a server.' message detected
                 if (NotConnectedMsgDetected(text)) continue;
@@ -187,11 +188,11 @@ namespace SST.Core
                 if (RenderInitDetected(text)) continue;
                 // QL Z_Malloc crash detected
                 if (ZmallocCrashDetected(text)) continue;
-                // ----------------------------------------------------------------- Avoid event
-                // detection below if there's no connection to a server
+                // -----------------------------------------------------------------
+                // Avoid event detection below if there's no connection to a server
                 if (!_sst.IsMonitoringServer) return;
-                // ----------------------------------------------------------------- 'player
-                // connected' detected.
+                // -----------------------------------------------------------------
+                // 'player connected' detected.
                 if (IncomingPlayerDetected(text)) continue;
                 // player configstring info detected (configstrings command)
                 if (PlayerConfigStringCsDetected(text)) continue;
