@@ -1,6 +1,6 @@
 # SynServerTool (SST)
 
-![SST Screenshot](screenshot.png "SST Screenshot")
+![SST Screenshot](SST/screenshot.png "SST Screenshot")
 
 **Official SST website: [http://sst.syncore.org](http://sst.syncore.org)**
 
