@@ -5,6 +5,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using SST.Config;
+    using SST.Core.Commands.None;
     using SST.Core.Modules;
     using SST.Database;
     using SST.Enums;
@@ -121,10 +122,10 @@
             RemovePlayer(player);
 
             // If player was/is currently being spectated, clear the internal tracker
-            if (!string.IsNullOrEmpty(_sst.ServerInfo.PlayerCurrentlyFollowing)
-                && _sst.ServerInfo.PlayerCurrentlyFollowing.Equals(player))
+            if (!string.IsNullOrEmpty(_sst.ServerInfo.PlayerFollowedForAccuracy)
+                && _sst.ServerInfo.PlayerFollowedForAccuracy.Equals(player))
             {
-                _sst.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
+                _sst.ServerInfo.PlayerFollowedForAccuracy = string.Empty;
             }
 
             // If IRC module is active, send the message to the IRC channel
@@ -162,16 +163,15 @@
         /// <param name="m">The match.</param>
         public void HandlePlayerAccuracyData(Match m)
         {
-            var player = _sst.ServerInfo.PlayerCurrentlyFollowing;
-            if (string.IsNullOrEmpty(player))
+            if (string.IsNullOrEmpty(_sst.ServerInfo.PlayerFollowedForAccuracy))
             {
                 Log.Write(
-                    "Accuracy data detected but is of no use because no player is currently being followed. Ignoring.",
+                    "Accuracy data detected but is of no use player last followed is not set. Ignoring.",
                     _logClassType, _logPrefix);
 
                 return;
             }
-            if (!Helpers.KeyExists(player, _sst.ServerInfo.CurrentPlayers))
+            if (!Helpers.KeyExists(_sst.ServerInfo.PlayerFollowedForAccuracy, _sst.ServerInfo.CurrentPlayers))
             {
                 Log.Write(
                     "Player currently being followed is no longer on the server/doesn't exist in internal list. Ignoring.",
@@ -195,30 +195,31 @@
             }
             var playerAccInfo = new AccuracyInfo
                                 {
-                                    MachineGun = accs[2],
-                                    ShotGun = accs[3],
-                                    GrenadeLauncher = accs[4],
-                                    RocketLauncher = accs[5],
-                                    LightningGun = accs[6],
-                                    RailGun = accs[7],
-                                    PlasmaGun = accs[8],
-                                    Bfg = accs[9],
-                                    GrapplingHook = accs[10],
-                                    NailGun = accs[11],
-                                    ProximityMineLauncher = accs[12],
-                                    ChainGun = accs[13],
-                                    HeavyMachineGun = accs[14]
+                                    MachineGun = accs[2], ShotGun = accs[3], GrenadeLauncher = accs[4], RocketLauncher = accs[5],
+                                    LightningGun = accs[6], RailGun = accs[7], PlasmaGun = accs[8], Bfg = accs[9], GrapplingHook = accs[10],
+                                    NailGun = accs[11], ProximityMineLauncher = accs[12], ChainGun = accs[13], HeavyMachineGun = accs[14]
                                 };
             // Set
-            _sst.ServerInfo.CurrentPlayers[player].Acc = playerAccInfo;
+            _sst.ServerInfo.CurrentPlayers[_sst.ServerInfo.PlayerFollowedForAccuracy].Acc = playerAccInfo;
             Log.Write(string.Format(
                 "Set accuracy data for currently followed player: {0}. Data: (MG) {1} | (SG) {2}" +
                 " | (GL) {3} | (RL) {4} | (LG) {5} | (RG) {6} | (PG) {7} | (BFG) {8} | (GH) {9} |" +
-                " (NG) {10} | (PRX) {11} | (CG) {12} | (HMG) {13}", player, playerAccInfo.MachineGun,
-                playerAccInfo.ShotGun, playerAccInfo.GrenadeLauncher, playerAccInfo.RocketLauncher,
-                playerAccInfo.LightningGun, playerAccInfo.RailGun, playerAccInfo.PlasmaGun, playerAccInfo.Bfg,
-                playerAccInfo.GrapplingHook, playerAccInfo.NailGun, playerAccInfo.ProximityMineLauncher,
-                playerAccInfo.ChainGun, playerAccInfo.HeavyMachineGun), _logClassType, _logPrefix);
+                " (NG) {10} | (PRX) {11} | (CG) {12} | (HMG) {13}", _sst.ServerInfo.PlayerFollowedForAccuracy,
+                playerAccInfo.MachineGun, playerAccInfo.ShotGun, playerAccInfo.GrenadeLauncher,
+                playerAccInfo.RocketLauncher, playerAccInfo.LightningGun, playerAccInfo.RailGun,
+                playerAccInfo.PlasmaGun, playerAccInfo.Bfg, playerAccInfo.GrapplingHook, playerAccInfo.NailGun,
+                playerAccInfo.ProximityMineLauncher, playerAccInfo.ChainGun, playerAccInfo.HeavyMachineGun),
+                _logClassType, _logPrefix);
+
+            // Announce (new cmd because command queue is synchronous)
+            if (_sst.Mod.Accuracy.Active)
+            {
+                var a = new AccCmd(_sst);
+                // ReSharper disable once UnusedVariable (synchronous)
+                var s = a.ShowAccuracy();
+            }
+            // Reset
+            _sst.ServerInfo.PlayerFollowedForAccuracy = string.Empty;
         }
 
         /// <summary>

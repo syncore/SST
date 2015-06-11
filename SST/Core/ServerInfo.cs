@@ -79,10 +79,13 @@
         public bool IsQlConnectedToServer { get; set; }
 
         /// <summary>
-        /// Gets or sets the player the bot is currently following (spectating), if any.
+        /// Gets or sets the player the bot has last followed (spectated), when determining accuracy
+        /// data, if any.
         /// </summary>
-        /// <value>The player the bot is currently following (spectating), if any.</value>
-        public string PlayerCurrentlyFollowing { get; set; }
+        /// <value>
+        /// The player the bot has last followed (spectated), if any, when determining accuract data.
+        /// </value>
+        public string PlayerFollowedForAccuracy { get; set; }
 
         /// <summary>
         /// Gets or sets the blue team's score.
@@ -181,7 +184,7 @@
             CurrentServerId = string.Empty;
             CurrentServerAddress = string.Empty;
             IsQlConnectedToServer = false;
-            PlayerCurrentlyFollowing = string.Empty;
+            PlayerFollowedForAccuracy = string.Empty;
             ScoreBlueTeam = 0;
             ScoreRedTeam = 0;
             Log.Write("Reset server information.", _logClassType, _logPrefix);

@@ -1,5 +1,7 @@
 # SynServerTool (SST)
 
+![SST Screenshot](screenshot.png "SST Screenshot")
+
 **Official SST website: [http://sst.syncore.org](http://sst.syncore.org)**
 
 SynServerTool is a game server administration tool for id software's

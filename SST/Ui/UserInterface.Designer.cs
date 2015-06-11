@@ -59,6 +59,7 @@
             this.coreOwnerNameLabel = new System.Windows.Forms.Label();
             this.coreEloCacheLabel = new System.Windows.Forms.Label();
             this.coreInterfaceGroupBox = new SST.Ui.CustGroupBox();
+            this.coreAutoOpAdminsCheckBox = new System.Windows.Forms.CheckBox();
             this.coreCheckForUpdatesCheckBox = new System.Windows.Forms.CheckBox();
             this.coreHideQlConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.coreMinimizeToTrayCheckBox = new System.Windows.Forms.CheckBox();
@@ -327,7 +328,6 @@
             this.moduleIconPictureBox = new System.Windows.Forms.PictureBox();
             this.monitorStatusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.coreAutoOpAdminsCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.sstLogo)).BeginInit();
             this.UiTabCtl.SuspendLayout();
             this.logTab.SuspendLayout();
@@ -864,6 +864,19 @@
             this.coreInterfaceGroupBox.TabIndex = 30;
             this.coreInterfaceGroupBox.TabStop = false;
             this.coreInterfaceGroupBox.Text = "Options";
+            // 
+            // coreAutoOpAdminsCheckBox
+            // 
+            this.coreAutoOpAdminsCheckBox.AutoSize = true;
+            this.coreAutoOpAdminsCheckBox.Location = new System.Drawing.Point(523, 21);
+            this.coreAutoOpAdminsCheckBox.Name = "coreAutoOpAdminsCheckBox";
+            this.coreAutoOpAdminsCheckBox.Size = new System.Drawing.Size(142, 18);
+            this.coreAutoOpAdminsCheckBox.TabIndex = 16;
+            this.coreAutoOpAdminsCheckBox.Text = "Auto-OP SST Admins";
+            this.coreToolTip.SetToolTip(this.coreAutoOpAdminsCheckBox, "Select whether you want users with the Admin access level to\r\nbe automatically op" +
+        "ped on the server when server monitoring\r\nbegins and when such users connect to " +
+        "the server.");
+            this.coreAutoOpAdminsCheckBox.UseVisualStyleBackColor = true;
             // 
             // coreCheckForUpdatesCheckBox
             // 
@@ -4166,19 +4179,6 @@
             this.statusPanel.Size = new System.Drawing.Size(738, 44);
             this.statusPanel.TabIndex = 13;
             this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
-            // 
-            // coreAutoOpAdminsCheckBox
-            // 
-            this.coreAutoOpAdminsCheckBox.AutoSize = true;
-            this.coreAutoOpAdminsCheckBox.Location = new System.Drawing.Point(523, 21);
-            this.coreAutoOpAdminsCheckBox.Name = "coreAutoOpAdminsCheckBox";
-            this.coreAutoOpAdminsCheckBox.Size = new System.Drawing.Size(142, 18);
-            this.coreAutoOpAdminsCheckBox.TabIndex = 16;
-            this.coreAutoOpAdminsCheckBox.Text = "Auto-OP SST Admins";
-            this.coreToolTip.SetToolTip(this.coreAutoOpAdminsCheckBox, "Select whether you want users with the Admin access level to\r\nbe automatically op" +
-        "ped on the server when server monitoring\r\nbegins and when such users connect to " +
-        "the server.");
-            this.coreAutoOpAdminsCheckBox.UseVisualStyleBackColor = true;
             // 
             // UserInterface
             // 

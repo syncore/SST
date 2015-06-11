@@ -1,19 +1,26 @@
-﻿using System;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using SST.Core.Commands.Admin;
-using SST.Core.Modules.Irc;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core.Commands.None
+﻿namespace SST.Core.Commands.None
 {
+    using System;
+    using System.Reflection;
+    using System.Text;
+    using System.Threading.Tasks;
+    using SST.Core.Commands.Admin;
+    using SST.Core.Modules.Irc;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Command: retrieve players' accuracy information.
     /// </summary>
+    /// <remarks>
+    /// Because the bot command queue is processed synchronously, the PlayerEventProcessor never
+    /// sets the player's accuracy data before the command is finished executing, only after. For
+    /// this reason, this command initially reads the accuracy, then a new instance of it is created
+    /// from the PlayerEventProcessor to call the <see cref="ShowAccuracy"/> method to display the
+    /// actual accuracy.
+    /// </remarks>
     public class AccCmd : IBotCommand
     {
         private readonly bool _isIrcAccessAllowed = true;
@@ -149,7 +156,7 @@ namespace SST.Core.Commands.None
                 return false;
             }
 
-            await ShowAccSinglePlayer(c);
+            await ReadAccuracy(c);
             return true;
         }
 
@@ -178,7 +185,9 @@ namespace SST.Core.Commands.None
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdSay(message, false);
+            }
         }
 
         /// <summary>
@@ -189,7 +198,34 @@ namespace SST.Core.Commands.None
         public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+            }
+        }
+
+        /// <summary>
+        /// Shows the accuracy of a single player.
+        /// </summary>
+        /// <remarks>
+        /// This is called from the player event processor after the accuracy data has been handled.
+        /// </remarks>
+        public async Task ShowAccuracy()
+        {
+            if (string.IsNullOrEmpty(_sst.ServerInfo.PlayerFollowedForAccuracy))
+            {
+                Log.Write("Accuracy display is unavailable because player last followed is not set.",
+                    _logClassType, _logPrefix);
+                return;
+            }
+
+            var accStr = FormatAccString(_sst.ServerInfo.PlayerFollowedForAccuracy);
+
+            await _sst.QlCommands.QlCmdSay(string.Format("^3{0}'s^7 in-game accuracy: {1}",
+                _sst.ServerInfo.PlayerFollowedForAccuracy, accStr), false);
+
+            Log.Write(string.Format("Displaying {0}'s accuracy, which is: {1}",
+                _sst.ServerInfo.PlayerFollowedForAccuracy, Helpers.RemoveQlColorChars(accStr)),
+                _logClassType, _logPrefix);
         }
 
         /// <summary>
@@ -202,8 +238,6 @@ namespace SST.Core.Commands.None
             // already there, so that the 1st player whose accuracy is being scanned on the next
             // go-around is correctly detected (QL issue)
             await _sst.QlCommands.SendToQlAsync("-acc;team s", true);
-            // Reset internal tracking
-            _sst.ServerInfo.PlayerCurrentlyFollowing = string.Empty;
             Log.Write("Ended accuracy scan.", _logClassType, _logPrefix);
         }
 
@@ -313,7 +347,7 @@ namespace SST.Core.Commands.None
         /// Retrieves the accuracy.
         /// </summary>
         /// <param name="c">The command argument information.</param>
-        private async Task RetrieveAccuracy(Cmd c)
+        private async Task ReadAccuracy(Cmd c)
         {
             var player = Helpers.GetArgVal(c, 1);
             _sst.QlCommands.SendToQl("team s", false);
@@ -321,33 +355,18 @@ namespace SST.Core.Commands.None
             if (id != -1)
             {
                 await _sst.QlCommands.SendToQlAsync(string.Format("follow {0}", id), true);
+                _sst.ServerInfo.PlayerFollowedForAccuracy = player;
             }
 
-            _sst.ServerInfo.PlayerCurrentlyFollowing = player;
+            // 1 limitation of synchronous cmd queue is that this will be only msg available for
+            // IRC, not actual accuracy string
+            StatusMessage = string.Format("Attempting to follow player {0} to determine accuracy",
+                player);
 
-            Log.Write(string.Format("Attempting to follow player {0} to determine accuracy",
-                player), _logClassType, _logPrefix);
+            Log.Write(StatusMessage, _logClassType, _logPrefix);
 
             await StartAccuracyRead();
             await EndAccuracyRead();
-        }
-
-        /// <summary>
-        /// Shows the accuracy of a single player.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        private async Task ShowAccSinglePlayer(Cmd c)
-        {
-            var player = Helpers.GetArgVal(c, 1);
-            await RetrieveAccuracy(c);
-            var accStr = FormatAccString(player);
-            StatusMessage = string.Format("^3{0}'s^7 in-game accuracy: {1}",
-                player, (string.IsNullOrEmpty(accStr) ? "^1not available^7" : accStr));
-            await SendServerSay(c, StatusMessage);
-
-            Log.Write(string.Format("Displaying {0}'s accuracy, which is: {1}",
-                player, (string.IsNullOrEmpty(accStr) ? "not available" : Helpers.RemoveQlColorChars(accStr))),
-                _logClassType, _logPrefix);
         }
 
         /// <summary>
