@@ -103,6 +103,7 @@ namespace SST.Ui
         {
             var cfg = _cfgHandler.ReadConfiguration();
             modAccDateEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.AccountDateOptions.isActive; });
+            modAccDateShowKickMsgCheckBox.InvokeIfRequired(c => { c.Checked = cfg.AccountDateOptions.showKickSoonMessage; });
             modAccDateAccAgeTextBox.InvokeIfRequired(
                 c => { c.Text = cfg.AccountDateOptions.minimumDaysRequired.ToString(); });
             UpdateActiveModulesStatusText();
@@ -172,6 +173,7 @@ namespace SST.Ui
         {
             var cfg = _cfgHandler.ReadConfiguration();
             modEloLimiterEnableCheckBox.InvokeIfRequired(c => { c.Checked = cfg.EloLimitOptions.isActive; });
+            modEloLimiterShowKickMsgCheckBox.InvokeIfRequired(c => { c.Checked = cfg.EloLimitOptions.showKickSoonMessage; });
             modEloLimiterMinEloTextBox.InvokeIfRequired(
                 c => { c.Text = cfg.EloLimitOptions.minimumRequiredElo.ToString(); });
             modEloLimiterMaxEloTextBox.InvokeIfRequired(c =>
@@ -873,6 +875,8 @@ namespace SST.Ui
                 cfg.CoreOptions.logSstEventsToDisk = coreLogEventsDiskCheckBox.Checked;
                 cfg.CoreOptions.minimizeToTray = coreMinimizeToTrayCheckBox.Checked;
                 cfg.CoreOptions.owner = coreOwnerNameTextBox.Text;
+                cfg.CoreOptions.showWelcomeMsgOnConnect = coreShowWelcomMsgCheckBox.Checked;
+                cfg.CoreOptions.denyUnevenShuffleVotes = coreDenyUnevenShuffleCheckBox.Checked;
                 _cfgHandler.WriteConfiguration(cfg);
                 await HandleCoreSettingsUpdate(cfg.CoreOptions);
                 Log.Write("Core settings saved.", _logClassType, _logPrefix);
@@ -1190,6 +1194,7 @@ namespace SST.Ui
                 var cfg = _cfgHandler.ReadConfiguration();
                 cfg.AccountDateOptions.isActive = modAccDateEnableCheckBox.Checked;
                 cfg.AccountDateOptions.minimumDaysRequired = uint.Parse(modAccDateAccAgeTextBox.Text);
+                cfg.AccountDateOptions.showKickSoonMessage = modAccDateShowKickMsgCheckBox.Checked;
                 _cfgHandler.WriteConfiguration(cfg);
                 if (cfg.AccountDateOptions.isActive && _sst.IsMonitoringServer)
                 {
@@ -1779,6 +1784,7 @@ namespace SST.Ui
 
                 var cfg = _cfgHandler.ReadConfiguration();
                 cfg.EloLimitOptions.isActive = modEloLimiterEnableCheckBox.Checked;
+                cfg.EloLimitOptions.showKickSoonMessage = modEloLimiterShowKickMsgCheckBox.Checked;
                 cfg.EloLimitOptions.minimumRequiredElo = minElo;
                 cfg.EloLimitOptions.maximumRequiredElo = ((modEloLimiterMaxEloTextBox.Text.Length == 0)
                     ? 0
@@ -2714,6 +2720,8 @@ namespace SST.Ui
         /// </summary>
         private void PopulateCoreOptionsUi()
         {
+            // Note: no InvokeIfRequired check because core options can only be
+            // set from the GUI (UI thread), there's no IRC or in-game interface for this
             var cfg = _cfgHandler.ReadConfiguration();
             coreAccountNameTextBox.Text = cfg.CoreOptions.accountName;
             coreAppendEventsCheckBox.Checked = cfg.CoreOptions.appendToActivityLog;
@@ -2725,6 +2733,8 @@ namespace SST.Ui
                 ToString(CultureInfo.InvariantCulture);
             coreHideQlConsoleCheckBox.Checked = cfg.CoreOptions.hideAllQlConsoleText;
             coreLogEventsDiskCheckBox.Checked = cfg.CoreOptions.logSstEventsToDisk;
+            coreShowWelcomMsgCheckBox.Checked = cfg.CoreOptions.showWelcomeMsgOnConnect;
+            coreDenyUnevenShuffleCheckBox.Checked = cfg.CoreOptions.denyUnevenShuffleVotes;
             // Special case for logging. Set value on population, otherwise it would be ignored
             Log.LogToDisk = coreLogEventsDiskCheckBox.Checked;
             coreMinimizeToTrayCheckBox.Checked = cfg.CoreOptions.minimizeToTray;

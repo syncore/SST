@@ -1,16 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using SST.Config;
-using SST.Database;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core.Commands.Modules
+﻿namespace SST.Core.Commands.Modules
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Module: Elo limiter. Kick player if player does not meet elo requirements.
     /// </summary>
@@ -40,12 +40,6 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="IModule"/> is active.
-        /// </summary>
-        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
-        public bool Active { get; set; }
-
-        /// <summary>
         /// Gets or sets the type of the game for the server.
         /// </summary>
         /// <value>The type of the game.</value>
@@ -53,6 +47,24 @@ namespace SST.Core.Commands.Modules
         {
             get { return _sst.ServerInfo.CurrentServerGameType; }
         }
+
+        /// <summary>
+        /// Gets or sets the maximum required Elo.
+        /// </summary>
+        /// <value>The maximum required Elo.</value>
+        public int MaximumRequiredElo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the minimum required Elo.
+        /// </summary>
+        /// <value>The minimum required Elo.</value>
+        public int MinimumRequiredElo { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IModule"/> is active.
+        /// </summary>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+        public bool Active { get; set; }
 
         /// <summary>
         /// Gets the minimum module arguments for the IRC command.
@@ -71,18 +83,6 @@ namespace SST.Core.Commands.Modules
         {
             get { return _isIrcAccessAllowed; }
         }
-
-        /// <summary>
-        /// Gets or sets the maximum required Elo.
-        /// </summary>
-        /// <value>The maximum required Elo.</value>
-        public int MaximumRequiredElo { get; set; }
-
-        /// <summary>
-        /// Gets or sets the minimum required Elo.
-        /// </summary>
-        /// <value>The minimum required Elo.</value>
-        public int MinimumRequiredElo { get; set; }
 
         /// <summary>
         /// Gets the name of the module.
@@ -107,61 +107,6 @@ namespace SST.Core.Commands.Modules
         /// </summary>
         /// <value>The command's status message.</value>
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        /// Removes players from server who do not meet the specified Elo requirements immediately
-        /// after enabling the elo limiter.
-        /// </summary>
-        public async Task BatchRemoveEloPlayers()
-        {
-            // disable
-
-            var qlrHelper = new QlRanksHelper();
-            // First make sure that the elo is correct and fetch if not
-            var playersToUpdate = (from player in _sst.ServerInfo.CurrentPlayers
-                                   where qlrHelper.PlayerHasInvalidEloData(player.Value)
-                                   select player.Key).ToList();
-            if (playersToUpdate.Any())
-            {
-                var qlr =
-                    await
-                        qlrHelper.RetrieveEloDataFromApiAsync(_sst.ServerInfo.CurrentPlayers, playersToUpdate);
-                if (qlr == null)
-                {
-                    await _sst.QlCommands.QlCmdSay(
-                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.", false);
-
-                    Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
-                        _logClassType, _logPrefix);
-                }
-            }
-            // Kick the players from the server...
-            foreach (var player in _sst.ServerInfo.CurrentPlayers.ToList())
-            {
-                // Still have invalid elo data...skip.
-                if (qlrHelper.PlayerHasInvalidEloData(player.Value))
-                {
-                    Log.Write(
-                        string.Format(
-                            "Still have invalid Elo data for player {0}; player won't be evaluated for kicking.",
-                            player.Key), _logClassType, _logPrefix);
-                    break;
-                }
-                await KickPlayerIfEloNotMet(player.Key);
-            }
-        }
-
-        /// <summary>
-        /// Checks to see if the player meets the elo requirement on connect.
-        /// </summary>
-        /// <param name="player">The player.</param>
-        public async Task CheckPlayerEloRequirement(string player)
-        {
-            var playerElo = QlRanksHelper.GetEloForGameType(_sst.ServerInfo, player);
-            // Likely invalid, skip.
-            if (playerElo == 0) return;
-            await KickPlayerIfEloNotMet(player);
-        }
 
         /// <summary>
         /// Displays the argument length error.
@@ -289,7 +234,9 @@ namespace SST.Core.Commands.Modules
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdSay(message, false);
+            }
         }
 
         /// <summary>
@@ -300,7 +247,9 @@ namespace SST.Core.Commands.Modules
         public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+            }
         }
 
         /// <summary>
@@ -324,6 +273,64 @@ namespace SST.Core.Commands.Modules
 
             // Reflect changes in UI
             _sst.UserInterface.PopulateModEloLimiterUi();
+        }
+
+        /// <summary>
+        /// Removes players from server who do not meet the specified Elo requirements immediately
+        /// after enabling the elo limiter.
+        /// </summary>
+        public async Task BatchRemoveEloPlayers()
+        {
+            // disable
+
+            var qlrHelper = new QlRanksHelper();
+            // First make sure that the elo is correct and fetch if not
+            var playersToUpdate = (from player in _sst.ServerInfo.CurrentPlayers
+                where qlrHelper.PlayerHasInvalidEloData(player.Value)
+                select player.Key).ToList();
+            if (playersToUpdate.Any())
+            {
+                var qlr =
+                    await
+                        qlrHelper.RetrieveEloDataFromApiAsync(_sst.ServerInfo.CurrentPlayers, playersToUpdate);
+                if (qlr == null)
+                {
+                    await _sst.QlCommands.QlCmdSay(
+                        "^1[ERROR]^7 Unable to retrieve QLRanks data. Elo limit might not be enforced.", false);
+
+                    Log.Write("QLRanks Elo data could not be retrieved. Elo limit might not be enforced.",
+                        _logClassType, _logPrefix);
+                }
+            }
+            // Kick the players from the server...
+            foreach (var player in _sst.ServerInfo.CurrentPlayers.ToList())
+            {
+                // Still have invalid elo data...skip.
+                if (qlrHelper.PlayerHasInvalidEloData(player.Value))
+                {
+                    Log.Write(
+                        string.Format(
+                            "Still have invalid Elo data for player {0}; player won't be evaluated for kicking.",
+                            player.Key), _logClassType, _logPrefix);
+                    break;
+                }
+                await KickPlayerIfEloNotMet(player.Key);
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the player meets the elo requirement on connect.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        public async Task CheckPlayerEloRequirement(string player)
+        {
+            var playerElo = QlRanksHelper.GetEloForGameType(_sst.ServerInfo, player);
+            // Likely invalid, skip.
+            if (playerElo == 0)
+            {
+                return;
+            }
+            await KickPlayerIfEloNotMet(player);
         }
 
         /// <summary>
@@ -422,30 +429,45 @@ namespace SST.Core.Commands.Modules
             var hasMaxEloSpecified = MaximumRequiredElo != 0;
             var hasMinEloSpecified = MinimumRequiredElo != 0;
 
-            if (!hasMinEloSpecified) return;
+            if (!hasMinEloSpecified)
+            {
+                return;
+            }
 
             // Elo limits don't apply to SuperUsers or higher
-            if (_users.GetUserLevel(player) >= UserLevel.SuperUser) return;
+            if (_users.GetUserLevel(player) >= UserLevel.SuperUser)
+            {
+                return;
+            }
             // Can't kick ourselves, though QL doesn't allow it anyway, don't show kick msg.
-            if (player.Equals(_sst.AccountName, StringComparison.InvariantCultureIgnoreCase)) return;
+            if (player.Equals(_sst.AccountName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
             // Get Elo for the current gametype
             var playerElo = QlRanksHelper.GetEloForGameType(_sst.ServerInfo, player);
             // Player Elo is either invalid or we're not in a QLRanks-supported gametype. Abort.
-            if (playerElo == 0) return;
+            if (playerElo == 0)
+            {
+                return;
+            }
             // Handle minimum
             if (playerElo < MinimumRequiredElo)
             {
                 Log.Write(
-                    string.Format("{0}'s {1} Elo is less than minimum required ({2})...Kicking player.",
+                    string.Format("{0}'s {1} Elo is less than minimum required ({2})...Will kick player shortly.",
                         player,
                         GameType.ToString().ToUpper(), MinimumRequiredElo), _logClassType, _logPrefix);
 
-                await _sst.QlCommands.QlCmdSay(
-                    string.Format(
-                        "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
-                        player, GameType.ToString().ToUpper(), playerElo,
-                        MinimumRequiredElo,
-                        hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""), false);
+                if (_configHandler.ReadConfiguration().EloLimitOptions.showKickSoonMessage)
+                {
+                    await _sst.QlCommands.QlCmdSay(
+                        string.Format(
+                            "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} {4}",
+                            player, GameType.ToString().ToUpper(), playerElo,
+                            MinimumRequiredElo,
+                            hasMaxEloSpecified ? string.Format("^7Max:^1 {0}", MaximumRequiredElo) : ""), false);
+                }
 
                 // Wait before notifying and kicking, so user's screen doesn't freeze on "awaiting
                 // snapshot", especially when connecting
@@ -454,24 +476,33 @@ namespace SST.Core.Commands.Modules
                         string.Format(
                             "^3You will be kicked because your {0} QLRanks Elo (^1{1}^3) doesn't meet this server's requirements. Min: ^1{2} {3}",
                             GameType.ToString().ToUpper(), playerElo, MinimumRequiredElo,
-                        hasMaxEloSpecified ? string.Format("^3Max:^1 {0}", MaximumRequiredElo) : ""), player, _kickTellDelaySecs);
+                            hasMaxEloSpecified ? string.Format("^3Max:^1 {0}", MaximumRequiredElo) : ""), player, _kickTellDelaySecs);
 
                 await _sst.QlCommands.CustCmdDelayedKickban(player, (_kickDelaySecs + 2));
                 return;
             }
             // Handle range
-            if (!hasMaxEloSpecified) return;
-            if (playerElo <= MaximumRequiredElo) return;
+            if (!hasMaxEloSpecified)
+            {
+                return;
+            }
+            if (playerElo <= MaximumRequiredElo)
+            {
+                return;
+            }
 
             Log.Write(
-                string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Kicking player.", player,
+                string.Format("{0}'s {1} Elo is greater than maximum allowed ({2})...Will kick player shortly.", player,
                     GameType.ToString().ToUpper(), MaximumRequiredElo), _logClassType, _logPrefix);
 
-            await _sst.QlCommands.QlCmdSay(
-                string.Format(
-                    "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} ^7Max:^1 {4}",
-                    player, GameType.ToString().ToUpper(), playerElo,
-                    MinimumRequiredElo, MaximumRequiredElo), false);
+            if (_configHandler.ReadConfiguration().EloLimitOptions.showKickSoonMessage)
+            {
+                await _sst.QlCommands.QlCmdSay(
+                    string.Format(
+                        "^3[=> KICK SOON]: ^1{0}^7 ({1} Elo:^1 {2}^7) does not meet this server's Elo requirements. Min:^2 {3} ^7Max:^1 {4}",
+                        player, GameType.ToString().ToUpper(), playerElo,
+                        MinimumRequiredElo, MaximumRequiredElo), false);
+            }
 
             await
                 _sst.QlCommands.QlCmdDelayedTell(

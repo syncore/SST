@@ -1,30 +1,30 @@
-﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core.Commands.SuperUser
+﻿namespace SST.Core.Commands.Owner
 {
+    using System;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
-    /// Command: Restart server monitoring.
+    /// Command: stop SST server monitoring from in-game.
     /// </summary>
-    public class ReloadCmd : IBotCommand
+    public class MonitorStopCmd : IBotCommand
     {
+        private readonly bool _isIrcAccessAllowed = false;
         private readonly Type _logClassType = MethodBase.GetCurrentMethod().DeclaringType;
-        private readonly string _logPrefix = "[CMD:RELOAD]";
+        private readonly string _logPrefix = "[CMD:STOPMONITOR]";
+        private readonly int _qlMinArgs = 1;
         private readonly SynServerTool _sst;
-        private bool _isIrcAccessAllowed = true;
-        private int _qlMinArgs = 0;
-        private UserLevel _userLevel = UserLevel.SuperUser;
+        private readonly UserLevel _userLevel = UserLevel.Owner;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReloadCmd"/> class.
+        /// Initializes a new instance of the <see cref="MonitorStopCmd"/> class.
         /// </summary>
         /// <param name="sst">The main class.</param>
-        public ReloadCmd(SynServerTool sst)
+        public MonitorStopCmd(SynServerTool sst)
         {
             _sst = sst;
         }
@@ -33,7 +33,10 @@ namespace SST.Core.Commands.SuperUser
         /// Gets the minimum arguments for the IRC command.
         /// </summary>
         /// <value>The minimum arguments for the IRC command.</value>
-        public int IrcMinArgs { get { return _qlMinArgs + 1; } }
+        public int IrcMinArgs
+        {
+            get { return _qlMinArgs + 1; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this command can be accessed from IRC.
@@ -82,14 +85,29 @@ namespace SST.Core.Commands.SuperUser
         /// Executes the specified command asynchronously.
         /// </summary>
         /// <param name="c">The command argument information.</param>
+        /// <returns><c>true</c> if the command was successfully executed, otherwise <c>false</c>.</returns>
         public async Task<bool> ExecAsync(Cmd c)
         {
-            await _sst.QlCommands.QlCmdSay("^3[ATTENTION] ^2Attempt to reload SST...please wait 10-15 seconds.", false);
-            StatusMessage = "^2[SUCCESS]^7 Attempting to reload server information";
+            if (_sst.IsMonitoringServer)
+            {
+                StatusMessage = "^2[SUCCESS]^7 Stopping SST server monitoring. To restart, use the GUI or IRC.";
+                await SendServerTell(c, StatusMessage);
+                Log.Write(string.Format("Owner {0} issued command to stop SST server monitoring. Stopping.",
+                    c.FromUser), _logClassType, _logPrefix);
+
+                _sst.StopMonitoring();
+                return true;
+            }
+
+            // Should not happen
+            StatusMessage = "^1[ERROR]^3 Unable to stop SST server monitoring.";
             await SendServerTell(c, StatusMessage);
-            Log.Write("Will attempt to restart server monitoring.", _logClassType, _logPrefix);
-            await _sst.ReloadInit();
-            return true;
+
+            Log.Write(string.Format(
+                "Owner {0} issued command to stop SST server monitoring. Unable to stop.",
+                c.FromUser), _logClassType, _logPrefix);
+
+            return false;
         }
 
         /// <summary>
@@ -112,7 +130,9 @@ namespace SST.Core.Commands.SuperUser
         public async Task SendServerSay(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdSay(message, false);
+            }
         }
 
         /// <summary>
@@ -123,7 +143,9 @@ namespace SST.Core.Commands.SuperUser
         public async Task SendServerTell(Cmd c, string message)
         {
             if (!c.FromIrc)
+            {
                 await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+            }
         }
     }
 }

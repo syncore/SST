@@ -29,20 +29,22 @@
         public double InitDelay = 6.5;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SynServerTool"/> main class.
+        /// Initializes a new instance of the <see cref="SynServerTool" /> main class.
         /// </summary>
+        /// <param name="isRestart">if set to <c>true</c> then the application was
+        /// launched for the process of restarting previous monitoring.</param>
         /// <remarks>
         /// Some notes/thoughts: All of the core functions of the bot including console text
         /// processing, player/server event processing, modules, command processing, vote
         /// management, parsing, etc. are initialized in this constructor and set as properties in
         /// this main class. The bot only allows one instance of itself for the explicit reason that
         /// Quake Live can only have one running copy open at a time. For this reason, this
-        /// initilizated <see cref="SynServerTool"/> object is frequently passed around the rest of
+        /// initilizated <see cref="SynServerTool" /> object is frequently passed around the rest of
         /// the code almost entirely through constructor injection and the properties are directly
         /// accessed rather than constantly instantiating new classes. In this application, access
         /// to state among most parts is crucial, and unfortunately that leads to some unavoidable
         /// tight coupling. Once intilizated, the bot will then call the
-        /// <see cref="CheckForAutoMonitoring"/> method which reads the configuration to see if the
+        /// <see cref="CheckForAutoMonitoring" /> method which reads the configuration to see if the
         /// user has specified whether server monitoring should begin on application start. If Quake
         /// Live is running, we will check to see if the client is connected to a server. If
         /// connected, we will retrieve the server information and players using built in QL
@@ -53,7 +55,7 @@
         /// user interface was not initially planned (the tool was going to only be command-driven
         /// in-game), but was later added during development for ease of use.
         /// </remarks>
-        public SynServerTool()
+        public SynServerTool(bool isRestart)
         {
             // Core
             ServerInfo = new ServerInfo();
@@ -71,8 +73,17 @@
             // Hook up command listener
             CommandProcessor = new CommandProcessor(this);
 
-            // Check if we should begin monitoring a server immediately
-            CheckForAutoMonitoring();
+            // If being launched as restart then automatically try to start monitoring and skip the check.
+            if (isRestart)
+            {
+                // ReSharper disable once UnusedVariable (synchronous)
+                var a = AttemptAutoMonitorStart();
+            }
+            else
+            {
+                // Otherwise, check if we should begin monitoring a server immediately per user's settings.
+                CheckForAutoMonitoring();
+            }
         }
 
         /// <summary>
@@ -167,6 +178,8 @@
         /// <value>The server information.</value>
         public ServerInfo ServerInfo { get; private set; }
 
+        public DateTime MonitoringStartedTime { get; private set; }
+        
         /// <summary>
         /// Gets or sets the user interface.
         /// </summary>
@@ -188,7 +201,7 @@
             if (!QlWindowUtils.QuakeLiveConsoleWindowExists())
             {
                 Log.Write(
-                    "User has enabled 'auto server monitoring on program start', but QL instance not found. Won't allow.",
+                    "Attempt to auto-start server monitoring on program start failed: QL instance not found.",
                     _logClassType, _logPrefix);
 
                 MessageBox.Show(
@@ -232,6 +245,8 @@
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            
+
             // Get player listing and perform initilization tasks
             GetServerInformation();
 
@@ -263,21 +278,19 @@
         }
 
         /// <summary>
-        /// Reloads the initialization step.
+        /// Calls the restarter executable to re-launch SST with the restart parameter.
         /// </summary>
-        /// <remarks>This is primarily designed to be accessed via an admin command from QL.</remarks>
-        public async Task ReloadInit()
+        public void RestartSst()
         {
-            if (Mod.Pickup.Active)
+            try
             {
-                Mod.Pickup.Manager.ResetPickupStatus();
+                Process.Start(new ProcessStartInfo { FileName = "RestartSST.exe" });
             }
-            Mod.Pickup.Active = false;
-
-            IsInitComplete = false;
-            StopMonitoring();
-            QlCommands.ClearQlWinConsole();
-            await BeginMonitoring();
+            catch (Exception ex)
+            {
+                Log.WriteCritical(string.Format("Error launching SST process restarter: {0}",
+                    ex), _logClassType, _logPrefix);
+            }
         }
 
         /// <summary>
@@ -559,6 +572,7 @@
                 QlCommands.SendToQl("print ^4***^5SST is now ^2LOADED^4***", false);
                 Log.Write("SST is now loaded on the server.", _logClassType, _logPrefix);
                 IsInitComplete = true;
+                MonitoringStartedTime = DateTime.Now;
                 _delayedInitTaskTimer.Enabled = false;
                 _delayedInitTaskTimer = null;
             };

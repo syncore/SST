@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+
 namespace SST.Config.Modules
 {
     /// <summary>
@@ -10,7 +11,6 @@ namespace SST.Config.Modules
         /// Gets or sets a value indicating whether this module is active.
         /// </summary>
         /// <value><c>true</c> if this module is active; otherwise, <c>false</c>.</value>
-
         public bool isActive { get; set; }
 
         /// <summary>
@@ -20,12 +20,22 @@ namespace SST.Config.Modules
         public uint minimumDaysRequired { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a message should be sent to the server
+        /// indicating that the player is to be kicked soon if the player doesn't meet the limit.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the 'kick soon' message should be sent to the server; otherwise <c>false</c>.
+        /// </value>
+        public bool showKickSoonMessage { get; set; }
+
+        /// <summary>
         /// Sets the defaults.
         /// </summary>
         public void SetDefaults()
         {
             isActive = false;
             minimumDaysRequired = 1;
+            showKickSoonMessage = false;
         }
     }
 }

@@ -164,7 +164,8 @@
             {
                 return;
             }
-            _disconnectScanTimer = new Timer(12000) { AutoReset = false, Enabled = true };
+            _sst.IsDisconnectionScanPending = true;
+            _disconnectScanTimer = new Timer(15000) { AutoReset = false, Enabled = true };
             _disconnectScanTimer.Elapsed += async (sender, args) =>
             {
                 await _sst.CheckQlServerConnectionExists();
@@ -181,15 +182,14 @@
                 }
 
                 // Verify teams (TEST)
-                await _sst.QlCommands.QlCmdDelayedConfigStrings(3, 2);
+                await _sst.QlCommands.QlCmdDelayedConfigStrings(4, 3);
 
                 _sst.IsDisconnectionScanPending = false;
                 _disconnectScanTimer.Enabled = false;
                 _disconnectScanTimer = null;
             };
 
-            _sst.IsDisconnectionScanPending = true;
-            Log.Write("Will check if server connection still exists in 12 seconds.",
+            Log.Write("Will check if server connection still exists in 15 seconds.",
                 _logClassType, _logPrefix);
         }
 

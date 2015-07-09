@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using SST.Config;
-using SST.Database;
-using SST.Enums;
-using SST.Interfaces;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core.Commands.Modules
+﻿namespace SST.Core.Commands.Modules
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Interfaces;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Module: Account date limiter. Kick player if player does not meet account registration date requirements.
     /// </summary>
@@ -106,20 +106,6 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
-        /// Enables the account date limiter.
-        /// </summary>
-        /// <param name="days">The days.</param>
-        /// <remarks>
-        /// This is for use with the auto Init() method and the UI and does not produce a message.
-        /// </remarks>
-        public async Task EnableAccountDateLimiter(uint days)
-        {
-            MinimumDaysRequired = days;
-            UpdateConfig(true);
-            await RunUserDateCheck(_sst.ServerInfo.CurrentPlayers);
-        }
-
-        /// <summary>
         /// Evaluates the account date limit command.
         /// </summary>
         /// <param name="c">The command argument information.</param>
@@ -184,6 +170,63 @@ namespace SST.Core.Commands.Modules
         }
 
         /// <summary>
+        /// Sends a QL say message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerSay(Cmd c, string message)
+        {
+            if (!c.FromIrc)
+            {
+                await _sst.QlCommands.QlCmdSay(message, false);
+            }
+        }
+
+        /// <summary>
+        /// Sends a QL tell message if the command was not sent from IRC.
+        /// </summary>
+        /// <param name="c">The command argument information.</param>
+        /// <param name="message">The message.</param>
+        public async Task SendServerTell(Cmd c, string message)
+        {
+            if (!c.FromIrc)
+            {
+                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
+            }
+        }
+
+        /// <summary>
+        /// Updates the configuration.
+        /// </summary>
+        public void UpdateConfig(bool active)
+        {
+            // Go into effect now
+            Active = active;
+
+            var cfg = _configHandler.ReadConfiguration();
+            cfg.AccountDateOptions.isActive = active;
+            cfg.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
+            _configHandler.WriteConfiguration(cfg);
+
+            // Reflect changes in UI
+            _sst.UserInterface.PopulateModAccountDateUi();
+        }
+
+        /// <summary>
+        /// Enables the account date limiter.
+        /// </summary>
+        /// <param name="days">The days.</param>
+        /// <remarks>
+        /// This is for use with the auto Init() method and the UI and does not produce a message.
+        /// </remarks>
+        public async Task EnableAccountDateLimiter(uint days)
+        {
+            MinimumDaysRequired = days;
+            UpdateConfig(true);
+            await RunUserDateCheck(_sst.ServerInfo.CurrentPlayers);
+        }
+
+        /// <summary>
         /// Runs the user date check on all current players.
         /// </summary>
         /// <param name="players">The players.</param>
@@ -206,45 +249,6 @@ namespace SST.Core.Commands.Modules
             var qlDateChecker = new QlAccountDateChecker();
             var date = await qlDateChecker.GetUserRegistrationDate(user);
             await VerifyUserDate(user, date);
-        }
-
-        /// <summary>
-        /// Sends a QL say message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerSay(Cmd c, string message)
-        {
-            if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdSay(message, false);
-        }
-
-        /// <summary>
-        /// Sends a QL tell message if the command was not sent from IRC.
-        /// </summary>
-        /// <param name="c">The command argument information.</param>
-        /// <param name="message">The message.</param>
-        public async Task SendServerTell(Cmd c, string message)
-        {
-            if (!c.FromIrc)
-                await _sst.QlCommands.QlCmdTell(message, c.FromUser);
-        }
-
-        /// <summary>
-        /// Updates the configuration.
-        /// </summary>
-        public void UpdateConfig(bool active)
-        {
-            // Go into effect now
-            Active = active;
-
-            var cfg = _configHandler.ReadConfiguration();
-            cfg.AccountDateOptions.isActive = active;
-            cfg.AccountDateOptions.minimumDaysRequired = MinimumDaysRequired;
-            _configHandler.WriteConfiguration(cfg);
-
-            // Reflect changes in UI
-            _sst.UserInterface.PopulateModAccountDateUi();
         }
 
         /// <summary>
@@ -287,21 +291,30 @@ namespace SST.Core.Commands.Modules
         /// <param name="regDate">The user's registration date.</param>
         private async Task VerifyUserDate(string user, DateTime regDate)
         {
-            if (regDate == default(DateTime)) return;
-            if (_userDb.GetUserLevel(user) >= UserLevel.SuperUser) return;
+            if (regDate == default(DateTime))
+            {
+                return;
+            }
+            if (_userDb.GetUserLevel(user) >= UserLevel.SuperUser)
+            {
+                return;
+            }
 
             if ((DateTime.Now - regDate).TotalDays < MinimumDaysRequired)
             {
-                await _sst.QlCommands.QlCmdSay(string.Format(
-                    "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of ^2{2} ^7days",
-                    user, regDate.ToString("d"), MinimumDaysRequired), false);
+                if (_configHandler.ReadConfiguration().AccountDateOptions.showKickSoonMessage)
+                {
+                    await _sst.QlCommands.QlCmdSay(string.Format(
+                        "^3[=> KICK SOON]: ^1{0}^7 (QL account date:^1 {1}^7)'s account is too new and does not meet the limit of ^2{2} ^7days",
+                        user, regDate.ToString("d"), MinimumDaysRequired), false);
+                }
 
                 // Inform the user as a courtesy
                 await _sst.QlCommands.QlCmdDelayedTell(
                     string.Format(
                         "^3You will be kicked because your account is too new (^1{0}^3) and doesn't meet this server's limit of ^1{1}^3 days.",
                         regDate.ToString("d"), MinimumDaysRequired), user, _kickTellDelaySecs);
-                await _sst.QlCommands.CustCmdDelayedKickban(user, (_kickDelaySecs+2));
+                await _sst.QlCommands.CustCmdDelayedKickban(user, (_kickDelaySecs + 2));
 
                 Log.Write(string.Format(
                     "Player {0}'s account is newer than minimum of {1} days that is required. Date created: {2}. Will attempt to kick player.",

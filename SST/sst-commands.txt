@@ -22,6 +22,11 @@ Notes: Name is without clan tag.
 Example: !deop SomePlayer
 ______________________________________________________
 
+Stop SST from monitoring the current server:
+Usage: !stop
+Example: !stop
+______________________________________________________
+
 Completely exit Quake Live and stop SST:
 Usage: !shutdown
 Example: !shutdown
@@ -78,6 +83,11 @@ ______________________________________________________
 Pause the match indefinitely:
 Usage: !pause
 Example: !pause
+______________________________________________________
+
+Restart SST and resume server monitoring:
+Usage: !restart
+Example: !restart
 ______________________________________________________
 
 Restore the teams from the last game:
@@ -407,11 +417,6 @@ Example: !lock blue
 Example: !lock both
 ______________________________________________________
 
-Reload and restart server monitoring:
-Usage: !reload
-Example: !reload
-______________________________________________________
-
 Force a team balance (bypass the suggestion vote):
 Usage: !suggest force
 Example: !suggest force
@@ -493,6 +498,11 @@ ______________________________________________________
 Show all commands allowed by your access level:
 Usage: !help
 Example: !help
+______________________________________________________
+
+Check the status of SST monitoring.
+Usage: !status
+Example: !status
 ______________________________________________________
 
 Vote to reject the team balance suggestion:

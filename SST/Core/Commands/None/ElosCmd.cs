@@ -221,7 +221,7 @@
                 elos.Append(string.Format("^3 * {0}", sp.ToString().TrimEnd(',', ' ')));
             }
 
-            StatusMessage = string.Format("^7{0}: {1} ^3* ^5Avg {2}, ^1Avg {3} ^3* ^to 7balance use: ^2{4}{5}",
+            StatusMessage = string.Format("^7{0}: {1} ^3* ^5Avg {2}, ^1Avg {3} ^3* ^7to balance use: ^2{4}{5}",
                 _sst.ServerInfo.CurrentServerGameType.ToString().ToUpper(), elos, GetTeamAvgElo(Team.Blue),
                 GetTeamAvgElo(Team.Red), CommandList.GameCommandPrefix, CommandList.CmdSuggestTeams);
             await SendServerSay(c, StatusMessage);

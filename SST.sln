@@ -5,6 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SST", "SST\SST.csproj", "{B348BB59-E933-41AD-8ADF-E0DBFA3B8F07}"
 	ProjectSection(ProjectDependencies) = postProject
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1} = {81DF2E2B-4078-48B3-9536-ECB3C7E802B1}
 		{9B9E7279-2036-4C51-8C1D-BEA1B329E629} = {9B9E7279-2036-4C51-8C1D-BEA1B329E629}
 		{47D551DA-96ED-4EF6-96BF-4832059D4700} = {47D551DA-96ED-4EF6-96BF-4832059D4700}
 	EndProjectSection
@@ -26,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{F061B9
 		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
 		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestartSST", "RestartSST\RestartSST\RestartSST.csproj", "{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +70,16 @@ Global
 		{47D551DA-96ED-4EF6-96BF-4832059D4700}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{47D551DA-96ED-4EF6-96BF-4832059D4700}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{47D551DA-96ED-4EF6-96BF-4832059D4700}.Release|x86.ActiveCfg = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Debug|Mixed Platforms.Build.0 = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{81DF2E2B-4078-48B3-9536-ECB3C7E802B1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

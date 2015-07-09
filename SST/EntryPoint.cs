@@ -10,13 +10,13 @@ namespace SST
     internal static class EntryPoint
     {
         private static readonly Mutex Mutex = new Mutex(true, "{8f2334f9-3466-4aa0-bb24-09cfe88a02f8}");
-        private static SynServerTool _sst;
+        private static SynServerTool sst;
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
             if (Mutex.WaitOne(TimeSpan.Zero, true))
             {
@@ -33,11 +33,20 @@ namespace SST
                     Application.Exit();
                 }
 
-                // Main class
-                _sst = new SynServerTool();
+                if (args.Length > 0)
+                {
+                    if (args[0].Equals("--restart", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        sst = new SynServerTool(true);
+                    }
+                }
+                else
+                {
+                    sst = new SynServerTool(false);
+                }
 
                 // Load the GUI
-                Application.Run(new UserInterface(_sst));
+                Application.Run(new UserInterface(sst));
             }
             else
             {

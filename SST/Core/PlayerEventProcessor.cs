@@ -260,7 +260,7 @@
                 }
 
                 _sst.Mod.Irc.IrcManager.SendIrcMessage(_sst.Mod.Irc.IrcManager.IrcSettings.ircChannel,
-                    string.Format("[{0} @ QL]: {1}", msgFrom, msgContent));
+                    string.Format("[QL] {0}: {1}", msgFrom, msgContent));
             }
 
             // Check to see if chat message is a valid command
@@ -339,6 +339,12 @@
                 return;
             }
             UpdatePlayerTeam(player, tm);
+            // If IRC module is active, send the message to the IRC channel
+            if (_sst.Mod.Irc.Active && _sst.Mod.Irc.IsConnectedToIrc)
+            {
+                _sst.Mod.Irc.IrcManager.SendIrcMessage(_sst.Mod.Irc.IrcManager.IrcSettings.ircChannel,
+                    string.Format("{0} has joined the {1} team.", player, team.ToUpperInvariant()));
+            }
         }
 
         /// <summary>
@@ -520,13 +526,16 @@
         private async Task SendConnectionInfoMessage(string player)
         {
             var cfg = _cfgHandler.ReadConfiguration();
-            await
-                _sst.QlCommands.QlCmdDelayedTell(
-                    string.Format(
-                        "^7This server is running SST v^5{0}^7. Use ^3{1}{2}^7 for command list. One command is allowed every ^3{3}^7 seconds.",
-                        Helpers.GetVersion(), CommandList.GameCommandPrefix, CommandList.CmdHelp,
-                        cfg.CoreOptions.requiredTimeBetweenCommands),
-                    player, 25);
+            if (cfg.CoreOptions.showWelcomeMsgOnConnect)
+            {
+                await
+                    _sst.QlCommands.QlCmdDelayedTell(
+                        string.Format(
+                            "^7This server is running SST v^5{0}^7. Use ^3{1}{2}^7 for command list. One command is allowed every ^3{3}^7 seconds.",
+                            Helpers.GetVersion(), CommandList.GameCommandPrefix, CommandList.CmdHelp,
+                            cfg.CoreOptions.requiredTimeBetweenCommands),
+                        player, 25);
+            }
         }
 
         /// <summary>

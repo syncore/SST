@@ -35,6 +35,9 @@ namespace SST.Core
         public const string CmdLock = "lock";
         public const string CmdMap = "map";
         public const string CmdModule = "mod";
+        public const string CmdMonitorRestart = "restart";
+        public const string CmdMonitorStatus = "status";
+        public const string CmdMonitorStop = "stop";
         public const string CmdMute = "mute";
         public const string CmdOp = "op";
         public const string CmdPause = "pause";
@@ -49,13 +52,14 @@ namespace SST.Core
         public const string CmdPickupUserInfo = "pinfo";
         public const string CmdPickupWho = "who";
         public const string CmdRejectTeamSuggestion = "reject";
-        public const string CmdReload = "reload";
         public const string CmdRestoreTeams = "restoreteams";
         public const string CmdSeen = "seen";
         public const string CmdServers = "servers";
         public const string CmdShutdown = "shutdown";
         public const string CmdStopServer = "stopserver";
         public const string CmdSuggestTeams = "suggest";
+        // For those familiar with Minobot
+        public const string CmdSuggestTeams2 = "teams";
         public const string CmdTeamSize = "ts";
         public const string CmdTimeBan = "timeban";
         public const string CmdUnban = "unban";
@@ -110,6 +114,9 @@ namespace SST.Core
             Commands.Add(CmdModule, new ModuleCmd(_sst));
             Commands.Add(CmdLock, new LockCmd(_sst));
             Commands.Add(CmdOp, new OpCmd(_sst));
+            Commands.Add(CmdMonitorRestart, new MonitorRestartCmd(_sst));
+            Commands.Add(CmdMonitorStatus, new MonitorStatusCmd(_sst));
+            Commands.Add(CmdMonitorStop, new MonitorStopCmd(_sst));
             Commands.Add(CmdMute, new MuteCmd(_sst));
             Commands.Add(CmdVoteNo, new VoteNoCmd(_sst));
             Commands.Add(CmdKickBan, new KickBanCmd(_sst));
@@ -129,6 +136,7 @@ namespace SST.Core
             Commands.Add(CmdRestoreTeams, new RestoreTeamsCmd(_sst));
             Commands.Add(CmdServers, new ServersCmd(_sst));
             Commands.Add(CmdSuggestTeams, new SuggestTeamsCmd(_sst));
+            Commands.Add(CmdSuggestTeams2, new SuggestTeamsCmd(_sst));
             Commands.Add(CmdTeamSize, new TeamsizeCmd(_sst));
             Commands.Add(CmdTimeBan, new TimeBanCmd(_sst));
             Commands.Add(CmdUnban, new UnbanCmd(_sst));
@@ -136,7 +144,6 @@ namespace SST.Core
             Commands.Add(CmdUnmute, new UnmuteCmd(_sst));
             Commands.Add(CmdUnpause, new UnpauseCmd(_sst));
             Commands.Add(CmdUsers, new UsersCmd(_sst));
-            Commands.Add(CmdReload, new ReloadCmd(_sst));
             Commands.Add(CmdSeen, new SeenCmd(_sst));
             Commands.Add(CmdShutdown, new ShutdownCmd(_sst));
             Commands.Add(CmdStopServer, new StopServerCmd(_sst));

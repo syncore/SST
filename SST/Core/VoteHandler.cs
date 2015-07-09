@@ -1,15 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using SST.Database;
-using SST.Enums;
-using SST.Model;
-using SST.Util;
-
-namespace SST.Core
+﻿namespace SST.Core
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using SST.Config;
+    using SST.Database;
+    using SST.Enums;
+    using SST.Model;
+    using SST.Util;
+
     /// <summary>
     /// Class responsible for handling vote events on a QL server.
     /// </summary>
@@ -49,7 +50,7 @@ namespace SST.Core
             {
                 _voteDetails = value;
                 // ReSharper disable once UnusedVariable (synchronous)
-                Task v = VoteDetailsSet(value);
+                var v = VoteDetailsSet(value);
             }
         }
 
@@ -77,7 +78,7 @@ namespace SST.Core
         /// <param name="details">The matched vote details.</param>
         private async Task DenyAdminKick(Match details)
         {
-            string admin = details.Groups["votearg"].Value;
+            var admin = details.Groups["votearg"].Value;
             int id;
             await _sst.QlCommands.SendToQlAsync("vote no", false);
             await
@@ -108,7 +109,6 @@ namespace SST.Core
         private async Task DenyUnevenShuffle()
         {
             await _sst.QlCommands.SendToQlAsync("vote no", false);
-            await _sst.QlCommands.QlCmdSay("^3Please do not shuffle with an uneven number of players.", false);
             Log.Write("Denied shuffle vote because teams are uneven.", _logClassType, _logPrefix);
         }
 
@@ -118,27 +118,27 @@ namespace SST.Core
         /// <param name="details">The vote details.</param>
         private async Task EvalVoteWithAutoVote(Match details)
         {
-            string votetype = details.Groups["votetype"].Value;
-            string votearg = details.Groups["votearg"].Value;
-            string fullVote = string.Format("{0} {1}", votetype, votearg);
+            var votetype = details.Groups["votetype"].Value;
+            var votearg = details.Groups["votearg"].Value;
+            var fullVote = string.Format("{0} {1}", votetype, votearg);
             // Some votes by their nature if called properly (i.e. shuffle) will not have args. But
             // sometimes people might try to get clever and call shuffle with joke args (seen it
             // done before) so might want to handle. But better option is to inform admins to just
             // specify shuffle as a no arg vote rule when adding.
-            bool hasArg = !string.IsNullOrEmpty(votearg);
+            var hasArg = !string.IsNullOrEmpty(votearg);
 
             // Vote with args -- match exactly
-            foreach (AutoVote a in _sst.Mod.AutoVoter.AutoVotes.Where
+            foreach (var a in _sst.Mod.AutoVoter.AutoVotes.Where
                 (a => a.VoteHasArgs)
-                .Where(a => hasArg && a.VoteText.Equals(fullVote, StringComparison.InvariantCultureIgnoreCase))
+                                  .Where(a => hasArg && a.VoteText.Equals(fullVote, StringComparison.InvariantCultureIgnoreCase))
                 )
             {
                 await PerformAutoVoteAction(a);
             }
             // Generic vote (specified without args in the auto voter module) -- match beginning
-            foreach (AutoVote a in _sst.Mod.AutoVoter.AutoVotes.Where
+            foreach (var a in _sst.Mod.AutoVoter.AutoVotes.Where
                 (a => !a.VoteHasArgs)
-                .Where(a => a.VoteText.StartsWith(votetype, StringComparison.InvariantCultureIgnoreCase)))
+                                  .Where(a => a.VoteText.StartsWith(votetype, StringComparison.InvariantCultureIgnoreCase)))
             {
                 await PerformAutoVoteAction(a);
             }
@@ -153,13 +153,22 @@ namespace SST.Core
         /// </returns>
         private bool IsAdminClientKickAttempt(Match details)
         {
-            string type = details.Groups["votetype"].Value;
-            string votearg = details.Groups["votearg"].Value;
-            if (!type.Equals("clientkick", StringComparison.InvariantCultureIgnoreCase)) return false;
+            var type = details.Groups["votetype"].Value;
+            var votearg = details.Groups["votearg"].Value;
+            if (!type.Equals("clientkick", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
             int id;
-            if (!int.TryParse(votearg, out id)) return false;
-            string user = _sst.ServerEventProcessor.GetPlayerNameFromId(id);
-            if (string.IsNullOrEmpty(user)) return false;
+            if (!int.TryParse(votearg, out id))
+            {
+                return false;
+            }
+            var user = _sst.ServerEventProcessor.GetPlayerNameFromId(id);
+            if (string.IsNullOrEmpty(user))
+            {
+                return false;
+            }
 
             return _users.GetUserLevel(user) >= UserLevel.Admin;
         }
@@ -173,9 +182,12 @@ namespace SST.Core
         /// </returns>
         private bool IsAdminKickAttempt(Match details)
         {
-            string type = details.Groups["votetype"].Value;
-            string votearg = details.Groups["votearg"].Value;
-            if (!type.Equals("kick", StringComparison.InvariantCultureIgnoreCase)) return false;
+            var type = details.Groups["votetype"].Value;
+            var votearg = details.Groups["votearg"].Value;
+            if (!type.Equals("kick", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
 
             return _users.GetUserLevel(votearg) >= UserLevel.Admin;
         }
@@ -189,27 +201,55 @@ namespace SST.Core
         /// </returns>
         private bool IsDisallowedPickupModeVote(Match details)
         {
-            string type = details.Groups["votetype"].Value;
+            var type = details.Groups["votetype"].Value;
             // Ignore cases when the bot calls the vote, i.e. setting the teamsize when setting up
             // the pickup teams.
-            if (VoteCaller.Equals(_sst.AccountName)) return false;
+            if (VoteCaller.Equals(_sst.AccountName))
+            {
+                return false;
+            }
             // Shuffle votes are not allowed in pickup mode
-            if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
             // Teamsize votes are not allowed in pickup mode;
-            if (type.StartsWith("teamsize", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (type.StartsWith("teamsize", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
             return false;
         }
 
         /// <summary>
-        /// Determines whether a shuffle vote occurs while the teams are even.
+        /// Handles the shuffle vote.
         /// </summary>
-        /// <param name="details">The details.</param>
-        /// <returns><c>true</c> if shuffle vote occurred with even teams, otherwise <c>false</c></returns>
-        private bool IsEvenShuffle(Match details)
+        /// <remarks>
+        /// This is to check whether shuffle votes with un-even teams should be denied per the
+        /// user's settings.
+        /// </remarks>
+        private async Task HandleShuffleVote()
         {
-            string type = details.Groups["votetype"].Value;
-            if (!type.StartsWith("shuffle", StringComparison.InvariantCultureIgnoreCase)) return true;
-            return _sst.ServerInfo.HasEvenTeams();
+            var cfgHandler = new ConfigHandler();
+            var cfg = cfgHandler.ReadConfiguration();
+            if (!cfg.CoreOptions.denyUnevenShuffleVotes)
+            {
+                return;
+            }
+
+            // TODO: investigate the timing of this
+            Log.Write("Requesting cstr (teams) to handle shuffle vote.", _logClassType, _logPrefix);
+            //await _sst.QlCommands.SendToQlAsync("configstrings", true);
+
+            // Block
+            _sst.QlCommands.SendToQlAsync("configstrings", true).Wait();
+
+            if (!_sst.ServerInfo.HasEvenTeams())
+            {
+                await DenyUnevenShuffle();
+            }
+
+            _sst.QlCommands.ClearBothQlConsoles();
         }
 
         /// <summary>
@@ -251,12 +291,13 @@ namespace SST.Core
             {
                 await EvalVoteWithAutoVote(details);
             }
-            if (!IsEvenShuffle(details))
+            if (details.Groups["votetype"].Value.StartsWith("shuffle",
+                StringComparison.InvariantCultureIgnoreCase))
             {
-                await DenyUnevenShuffle();
+                await HandleShuffleVote();
             }
             if (_sst.Mod.Pickup.Active && (_sst.Mod.Pickup.Manager.IsPickupPreGame ||
-                _sst.Mod.Pickup.Manager.IsPickupInProgress))
+                                           _sst.Mod.Pickup.Manager.IsPickupInProgress))
             {
                 if (IsDisallowedPickupModeVote(details))
                 {

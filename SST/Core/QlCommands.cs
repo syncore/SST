@@ -252,21 +252,12 @@
         }
 
         /// <summary>
-        /// Sends the 'configstrings' command to QL.
-        /// </summary>
-        public async Task QlCmdConfigStrings()
-        {
-            Log.Write("Requesting cstr", _logClassType, _logPrefix);
-            await SendToQlAsync("configstrings", true);
-        }
-
-        /// <summary>
         /// Sends a delayed config strings request.
         /// </summary>
         /// <param name="runCmdInSeconds">The number of seconds to wait before the request.</param>
         /// <param name="numTimes">The number of times to send the request. </param>
         /// <remarks>
-        /// For numTimes > 1, runCmdInSeconds is staggered by the num times.
+        /// For numTimes > 1, runCmdInSeconds is staggered by the # of times.
         /// </remarks>
         public async Task QlCmdDelayedConfigStrings(int runCmdInSeconds, int numTimes)
         {
@@ -276,7 +267,7 @@
             {
                 await _sst.QlCommands.SendToQlDelayedAsync("configstrings", false,
                     (i*runCmdInSeconds));
-                await Task.Delay((i*runCmdInSeconds*1000)+1200);
+                await Task.Delay((i*runCmdInSeconds*1000)+1400);
                 ClearBothQlConsoles();
             }
         }

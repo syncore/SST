@@ -53,6 +53,14 @@ namespace SST.Config.Core
         public bool checkForUpdatesOnStart { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether shuffle votes called with uneven teams should be denied.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if shuffle votes called with uenven teams should be denied; otherwise, <c>false</c>.
+        /// </value>
+        public bool denyUnevenShuffleVotes { get; set; }
+
+        /// <summary>
         /// Gets or sets the elo cache interval, which is the time in minutes after which the cached
         /// elo data will expire.
         /// </summary>
@@ -99,6 +107,16 @@ namespace SST.Config.Core
         public double requiredTimeBetweenCommands { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the welcome message should be shown when a
+        /// player connects to the server.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the welcome message should be shown when a player connects to the server;
+        /// otherwise, <c>false</c>.
+        /// </value>
+        public bool showWelcomeMsgOnConnect { get; set; }
+
+        /// <summary>
         /// Sets the defaults.
         /// </summary>
         public void SetDefaults()
@@ -108,12 +126,14 @@ namespace SST.Config.Core
             autoMonitorServerOnStart = false;
             autoOpAdmins = true;
             checkForUpdatesOnStart = true;
-            owner = defaultUnsetOwnerName;
-            requiredTimeBetweenCommands = 6.5;
+            denyUnevenShuffleVotes = false;
             eloCacheExpiration = 300; // 5 hours
             hideAllQlConsoleText = true;
             logSstEventsToDisk = false;
             minimizeToTray = true;
+            owner = defaultUnsetOwnerName;
+            requiredTimeBetweenCommands = 6.5;
+            showWelcomeMsgOnConnect = true;
         }
     }
 }
