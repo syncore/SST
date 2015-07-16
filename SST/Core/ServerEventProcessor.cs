@@ -181,6 +181,8 @@
                     _sst.StopMonitoring();
                 }
 
+                // Clear the current players so preexisting players from last map (if any) don't remain (TEST)
+                _sst.ServerInfo.CurrentPlayers.Clear();
                 // Verify teams (TEST)
                 await _sst.QlCommands.QlCmdDelayedConfigStrings(4, 3);
 

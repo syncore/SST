@@ -131,9 +131,9 @@
                 return false;
             }
 
-            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Please wait...", false);
+            await _sst.QlCommands.QlCmdSay("^2[TEAMBALANCE]^7 Please wait.... Calculating most even teams.", false);
             // Verify the teams (TEST)
-            await _sst.QlCommands.QlCmdDelayedConfigStrings(2, 1);
+            await _sst.QlCommands.QlCmdDelayedConfigStrings(1, 2);
 
             var blueTeam = _sst.ServerInfo.GetTeam(Team.Blue);
             var redTeam = _sst.ServerInfo.GetTeam(Team.Red);
